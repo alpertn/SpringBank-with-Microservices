@@ -1,5 +1,6 @@
 package com.springbank.user_service.model;
 
+import com.springbank.user_service.repository.repository;
 import org.iban4j.Iban; // Iban olusturma
 import org.iban4j.CountryCode; // Iban olusturma
 
@@ -20,12 +21,12 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class User {
+public class Users {
 
     @Id
     @UuidGenerator
@@ -39,9 +40,10 @@ public class User {
     private String customerSurname;
 
     @PrePersist
-    public void generateIban(){
-        iban = Iban.random(CountryCode.TR).toString();
+    public void generateIban() {
+        String newIban = Iban.random(CountryCode.TR).toString();
+
+        iban = newIban;
+
     }
-
-
 }
