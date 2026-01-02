@@ -7,14 +7,13 @@
 <p align="center">
   <img src="readme/architect.png" alt="Architech" />
 </p>
-"https://img.shields.io/badge/Spring%20Security-6DB33F?logo=springsecurity&logoColor=fff" 
 
 ## Projenin Mimari Çizimi Draw.io Linki
 
 <div align="center">
 
 <a href="https://app.diagrams.net/?#Uhttps://raw.githubusercontent.com/alpertn/SpringBank-with-Microservices/refs/heads/main/readme/cizim.drawio">
-  <img src="https://img.shields.io/badge/Open_in-Draw.io-orange?style=for-the-badge&logo=diagrams.net" alt="Open in Draw.io">
+  <img src="https://img.shields.io/badge/Open_in-Draw.io-orange?style=for-the-badge&logo=diagrams.net" alt="Draw.io'da Çizimi Aç">
 </a>
 
 </div>
