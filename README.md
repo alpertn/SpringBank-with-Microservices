@@ -8,8 +8,6 @@
   <img src="readme/architect.png" alt="Architech" />
 </p>
 
-## Projenin Mimari Çizimi Draw.io Linki
-
 <div align="center">
 
 <a href="https://app.diagrams.net/?#Uhttps://raw.githubusercontent.com/alpertn/SpringBank-with-Microservices/refs/heads/main/readme/cizim.drawio">
