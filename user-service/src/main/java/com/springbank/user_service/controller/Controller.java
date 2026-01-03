@@ -34,24 +34,24 @@ public class Controller {
         return ResponseEntity.ok(service.findUserByIban(iban));
     }
 
-    @PostMapping("/checkusersbalancewithiban")
-    public ResponseEntity<CheckUserBalanceDto> checkUser(@NotEmpty String senderIban, String receiverIban){
-        return ResponseEntity.ok(service.checkUsersBalance(senderIban,receiverIban));
-    }
+//    @PostMapping("/checkusersbalancewithiban")
+//    public ResponseEntity<CheckUserBalanceDto> checkUser(@NotEmpty String senderIban, String receiverIban){
+//        return ResponseEntity.ok(service.checkUsersBalance(senderIban,receiverIban));
+//    }
 
     @PostMapping("/finduserbyid")
     public ResponseEntity<Users> findUserById(@NotEmpty String uuid){
         return ResponseEntity.ok(service.findUsersById(uuid));
     }
 
-    @PostMapping("/deleteusermoneywithiban")
-    public ResponseEntity<Boolean> deleteUserMoneyWithIban(@NotEmpty String iban, @NotEmpty String balance){
-
-        if (service.DeleteMoneyByIban(iban,Double.valueOf(balance)) == true){
-            return ResponseEntity.ok().build();
-        }
-        return (ResponseEntity<Boolean>) ResponseEntity.notFound();
-
-    }
+//    @PostMapping("/deleteusermoneywithiban")
+//    public ResponseEntity<Boolean> deleteUserMoneyWithIban(@NotEmpty String iban, @NotEmpty String balance){
+//
+//        if (service.DeleteMoneyByIban(iban,Double.valueOf(balance)) == true){
+//            return ResponseEntity.ok().build();
+//        }
+//        return (ResponseEntity<Boolean>) ResponseEntity.notFound();
+//
+//    }
 
 }

@@ -22,10 +22,7 @@ public interface repository extends JpaRepository<Users, String>{
 
     Optional<Users> getUsersById(String id);
 
-    @Modifying
-    @Transactional
-    @Query("UPDATE Users a SET a.customerBalance = a.customerBalance - :amount WHERE a.iban = :iban")
-    int deleteMoneyByIban(@Param("iban") String iban, @Param("amount") Double amount);
+
 
 
 }

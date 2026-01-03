@@ -42,42 +42,12 @@ public class service {
                 .orElseThrow(() -> new UserNotFoundException("User Not Found By TCKN. Details === " + tckn));
     }
 
-    public UsersBalanceDto findUsesrBalanceWithIban(String iban){
-        return repository.getUsersByIban(iban)
-                .map(Users -> new UsersBalanceDto(Users.getId(),Users.getIban(),Users.getCustomerBalance()))
-                .orElseThrow(() -> new UserNotFoundException("User Balance Not Found With Iban" + iban));
-    }
 
-    public CheckUserBalanceDto checkUsersBalance(String senderIban, String receiverIban){ // repo zaten optional<Users> oldugu icin her turlu users aliyoruz ve users aldigimiz veriden usersin icindeki 2 - 3 veriyi cekip yeni checkuserbalance dto olusturuyoruz
-
-        Users senderUser = repository.getUsersByIban(senderIban)
-                .orElseThrow(() -> new UserNotFoundException("User Not Found By Iban. Details ===" + senderIban));
-
-        Users receiverUser = repository.getUsersByIban(receiverIban)
-                .orElseThrow(() -> new UserNotFoundException("User Not Found By Iban. Details ===" + receiverIban));
-
-
-        return CheckUserBalanceDto.builder()
-                .senderUserId(senderUser.getId())
-                .receiverUserId(receiverUser.getId())
-                .senderIban(senderUser.getIban())
-                .receiverIban(receiverUser.getIban())
-                .senderUserBalance(Double.valueOf(senderUser.getCustomerBalance()))
-                .receiverUserBalance(Double.valueOf(receiverUser.getCustomerBalance())).build();
-
-    }
 
     public Users findUsersById(String id){
         return repository.getUsersById(id)
                 .orElseThrow(() -> new UserNotFoundByIdException("User Not Found By Id. Details ==== " + id));
     }
 
-    public Boolean DeleteMoneyByIban(String iban, Double balance){
-        int changes =  repository.deleteMoneyByIban(iban,balance);
-
-        if (changes ==0) throw new BalanceException("Database Can Not Delete User's Balance. Details ==== " + "Iban = " + iban + " Balance " + balance );
-
-        return true;
-    }
 
 }

@@ -32,18 +32,9 @@ public class Users {
     @UuidGenerator
     private String id;
     private String tckimlikNo;
-    private String iban;
     private String password;
-    @Builder.Default
-    private Double customerBalance = 0.00;
     private String customerName;
     private String customerSurname;
 
-    @PrePersist
-    public void generateIban() {
-        String newIban = Iban.random(CountryCode.TR).toString();
 
-        iban = newIban;
-
-    }
 }

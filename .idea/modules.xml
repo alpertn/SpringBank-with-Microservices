@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/SpringBank-with-Microservices.iml" filepath="$PROJECT_DIR$/.idea/SpringBank-with-Microservices.iml" />
+      <module fileurl="file://$PROJECT_DIR$/money-service/money-service.iml" filepath="$PROJECT_DIR$/money-service/money-service.iml" />
     </modules>
   </component>
 </project>
