@@ -7,6 +7,13 @@ import java.util.Optional;
 
 public interface repository extends JpaRepository<Users, String>{
 
-    Optional<Users> getUserByIban(String iban);
+    Optional<Users> getUsersByIban(String iban);
 
+    Optional<Users> getUsersByTckimlikNo(String tckimlikNo);
+
+    Optional<Users> getUsersByPassword(String password);
+
+    Optional<Users> getUsersByCustomerNameAndCustomerSurname(String customerName, String customerSurname);
+
+    Optional<Users> getUsersById(String id);
 }
