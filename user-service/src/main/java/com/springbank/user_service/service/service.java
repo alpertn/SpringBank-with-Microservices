@@ -2,6 +2,7 @@ package com.springbank.user_service.service;
 
 
 import com.springbank.user_service.dto.CheckUserBalanceDto;
+import com.springbank.user_service.exception.BalanceException;
 import com.springbank.user_service.exception.UserNotFoundByIdException;
 import com.springbank.user_service.exception.UserNotFoundException;
 import com.springbank.user_service.model.Users;
@@ -71,6 +72,12 @@ public class service {
                 .orElseThrow(() -> new UserNotFoundByIdException("User Not Found By Id. Details ==== " + id));
     }
 
+    public Boolean DeleteMoneyByIban(String iban, Double balance){
+        int changes =  repository.deleteMoneyByIban(iban,balance);
 
+        if (changes ==0) throw new BalanceException("Database Can Not Delete User's Balance. Details ==== " + "Iban = " + iban + " Balance " + balance );
+
+        return true;
+    }
 
 }
