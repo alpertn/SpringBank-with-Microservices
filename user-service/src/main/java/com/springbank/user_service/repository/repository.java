@@ -3,6 +3,7 @@ package com.springbank.user_service.repository;
 import com.springbank.user_service.model.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface repository extends JpaRepository<Users, String>{
@@ -13,7 +14,9 @@ public interface repository extends JpaRepository<Users, String>{
 
     Optional<Users> getUsersByPassword(String password);
 
-    Optional<Users> getUsersByCustomerNameAndCustomerSurname(String customerName, String customerSurname);
+    Optional<Users> getUsersByCustomerNameAndCustomerSurname(String customerName, String customerSurname); // iki farki sorgu yapabiliyorsun
 
     Optional<Users> getUsersById(String id);
+
+
 }
