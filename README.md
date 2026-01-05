@@ -25,6 +25,6 @@
     <h4>4 - Spring AI ile Yapay Zeka Destekli Fraud Detection ( Proje Bitiminde Asistan Da Eklenilebilir )</h4>
     <h4>5 - Kubernetes ile Container Orkestra Yonetimi ( Docker Image 10dan fazla olursa )</h4>
     <h4>6 - Redis ( Kesin Eklenecek )</h4>
-    <h4>7 - Spring Cloud Config ve Vault ( Gerekirse )</h4>
+    <h4>7 - Spring Cloud Config </h4>
     
 </div>
