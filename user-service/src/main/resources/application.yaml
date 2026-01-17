@@ -1,0 +1,60 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: user-service
+
+  # Kubernetes Service Discovery
+  cloud:
+    kubernetes:
+      discovery:
+        enabled: true
+
+  # Veritabanı Ayarları
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:postgres}:${POSTGRES_PORT:5432}/${POSTGRES_DB:banking_money}
+    username: ${POSTGRES_USER:banking_admin}
+    password: ${POSTGRES_PASSWORD:local_password}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  # Redis
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:redis}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+
+# --- SADECE OPENFEIGN AYARLARI ---
+feign:
+  # Circuit Breaker KAPALI (Varsayılan zaten kapalıdır ama emin olmak için sildik)
+  client:
+    config:
+      default:
+        # Timeoutlar önemlidir. Karşı taraf cevap vermezse sonsuza kadar beklemesin.
+        connectTimeout: 5000 # 5 saniyede bağlanamazsa hata ver
+        readTimeout: 5000    # 5 saniyede cevap gelmezse hata ver
+        loggerLevel: BASIC   # Loglarda temel istekleri gör
+
+# Monitoring (Opsiyonel ama tavsiye edilir)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+logging: # Bağlantı: Loglama. Varsa: Uygulama takibi. Yoksa: Karanlık.
+  pattern: # Bağlantı: Format. Varsa: Okunabilir. Yoksa: Karışık.
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n" # Bağlantı: Konsol Dizilimi. Varsa: Tarih başta, mesaj sonda. Yoksa: Varsayılan Spring logu.
+  level: # Bağlantı: Log Seviyesi. Varsa: Gürültü engellenir. Yoksa: Çok log basar.
+    root: INFO # Bağlantı: Genel Seviye. Varsa: Önemli bilgiler. Yoksa: Debug detayları.
