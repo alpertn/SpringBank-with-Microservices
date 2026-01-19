@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.banking-microservices</groupId>
-	<artifactId>money-service</artifactId>
+	<artifactId>exception</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>money-service</name>
+	<name>exception</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
@@ -75,11 +75,6 @@
 			<artifactId>spring-boot-starter-actuator-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>org.iban4j</groupId>
-            <artifactId>iban4j</artifactId>
-            <version>3.2.11-RELEASE</version>
-        </dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cache-test</artifactId>
