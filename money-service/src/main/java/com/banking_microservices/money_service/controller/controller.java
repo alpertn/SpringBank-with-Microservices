@@ -26,7 +26,7 @@ public class controller {
     }
 
     @PostMapping("/createusermoney")
-    public ResponseEntity<?> userOlustur(@NotNull @RequestBody String userId){
+    public ResponseEntity<?> userOlustur(@Valid @RequestBody String userId){
         return ResponseEntity.ok(service.generateUser(userId));
     }
 
