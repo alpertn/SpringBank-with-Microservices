@@ -1,22 +1,22 @@
 apiVersion: v1
-kind: NameSpace
+kind: Namespace
 metadata:
   name: banking-microservices # Tum banking mikroservisler icin izole
 
 ---
 
 #
-#Postgres ConfigMap
+#Postgres ConfigMap --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #
 
 apiVersion: v1
-kind : ConfigMap
+kind: ConfigMap
 metadata:
   name: Postgres-Database-Init-Configmap-Script
   namespace: banking-microservices
 data:
   # Postgres .sql ı gordugudne ve postgres'ı tanimladigimizda otomatik olarak calistirir GRANT ALL PRIVILEGES ON DATABASE full yetki verir dblere
-  init-databases.sql: | 
+  init-databases.sql: |
     CREATE DATABASE banking_auth;
     CREATE DATABASE banking_users;
     CREATE DATABASE banking_money;
@@ -30,10 +30,10 @@ data:
     GRANT ALL PRIVILEGES ON DATABASE banking TO banking_admin;
 ---
 #
-#Postgres Database Deployment Script
+#Postgres Database Deployment Script --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #
 
-apiVersion: v1
+apiVersion: apps/v1
 # Deployment Nasil calistirilacaginin configini yapar.
 kind: Deployment
 metadata:
@@ -52,7 +52,7 @@ spec:
     spec:
       containers:
         - name : postgres # " - " liste icin kullanilir
-          image: postgres:15 alphine
+          image: postgres:15-alpine
           ports:
             - containerPort: 5432
           env:
@@ -61,6 +61,7 @@ spec:
             - name: POSTGRES_PASSWORD
               value: banking_admin
             - name: POSTGRES_DB # Docker calistirildiktan sonra olustacak database. bu database init-databases.sql configini calistiracak ve ayri ayri databaseler olusturucak
+              value: postgres
           volumeMounts:
             - mountPath: /var/lib/postgresql/data  # Container içindeki klasör PostgreSQL verilerini tutar
               name: postgres-data                   # Volume'un ismi (aşağıdaki volumes kısmıyla eşleşmeli)
@@ -68,11 +69,11 @@ spec:
             - mountPath: /docker-entrypoint-initdb.d  # Init script'lerin konulacağı klasör
               name: init-script                        # Volume'un ismi (ConfigMap'ten gelir)
       volumes:
-        - name: Postgres-Data
+        - name: postgres-data
           emptyDir: {} # Bos olmasini yani yeniden baslatildiginda silinmesini kaydolammasini saglar
         - name: init-script
           configMap:
-            Name: Postgres-Database-Init-Configmap-Script # Init scriptini alacagi yer.
+            name: Postgres-Database-Init-Configmap-Script # Init scriptini alacagi yer.
 
 ---
 
@@ -91,10 +92,10 @@ spec:
 ---
 
 #
-#REDIS CACHE SETTINGS
+#REDIS CACHE SETTINGS --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #
 
-apiVersion: v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: redis
@@ -116,7 +117,7 @@ spec:
             - containerPort : 6379
 ---
 
-apiVersion: apps/v1
+apiVersion: v1
 kind: Service
 metadata:
   name: redis
@@ -128,12 +129,12 @@ spec:
     - port: 6379
       targetPort: 6379
 
-
+---
 #
-#ZIPKIN LOGGING SETTINGS
+#ZIPKIN LOGGING SETTINGS --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #
 
-apiVersion: v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: zipkin
@@ -153,7 +154,7 @@ spec:
         - name: zipkin
           image: openzipkin/zipkin
           ports:
-            containerPort: 9411
+            - containerPort: 9411
 ---
 
 apiVersion: v1
@@ -167,4 +168,3 @@ spec:
   ports:
     - port: 9411
       targetPort: 9411
-
