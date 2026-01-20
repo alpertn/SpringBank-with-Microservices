@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: NameSpace
+metadata:
+  name: banking-microservices # Tum banking mikroservisler icin izole
+
+---
+
+#
+#Postgres ConfigMap
+#
+
+apiVersion: v1
+kind : ConfigMap
+metadata:
+  name: Postgres Database Init Script
+  namespace: banking-microservices
+data:
+  # Postgres .sql ı gordugudne ve postgres'ı tanimladigimizda otomatik olarak calistirir GRANT ALL PRIVILEGES ON DATABASE full yetki verir dblere
+  init-databases.sql: | 
+    CREATE DATABASE banking_auth;
+    CREATE DATABASE banking_users;
+    CREATE DATABASE banking_money;
+    CREATE DATABASE banking_transactions;
+    CREATE DATABASE banking;
+
+    GRANT ALL PRIVILEGES ON DATABASE banking_auth TO banking_admin;
+    GRANT ALL PRIVILEGES ON DATABASE banking_users TO banking_admin;
+    GRANT ALL PRIVILEGES ON DATABASE banking_money TO banking_admin;
+    GRANT ALL PRIVILEGES ON DATABASE banking_transactions TO banking_admin;
+    GRANT ALL PRIVILEGES ON DATABASE banking TO banking_admin;
+---
+#
+#Postgres Database Deployment Script
+#
+
+apiVersion: v1
+# Deployment Nasil calistirilacaginin configini yapar.
+kind: Deployment
+metadata:
+  name: Postgres
+  namespace: banking-microservices
+# Spec: Specification yani information
+spec:
+  replicas: 1  # Kac Tane Pod calistirialcak
+  selector:
+    matchLabels:
+      app: postgres # Tum podlarin uygulama ismi
+  template:
+    metadata:
+      labels:
+        app: postgres # Pod a yapistirilan etiket
+    spec:
+      containers:
+        - name : postgres # " - " liste icin kullanilir
+          image: postgres:15 alphine
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: banking_admin
+            - name: POSTGRES_PASSWORD
+              value: banking_admin
+            - name: POSTGRES_DB # Docker calistirildiktan sonra olustacak database. bu database init-databases.sql configini calistiracak ve ayri ayri databaseler olusturucak
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data  # Container içindeki klasör PostgreSQL verilerini tutar
+              name: postgres-data                   # Volume'un ismi (aşağıdaki volumes kısmıyla eşleşmeli)
+
+            - mountPath: /docker-entrypoint-initdb.d  # Init script'lerin konulacağı klasör
+              name: init-script                        # Volume'un ismi (ConfigMap'ten gelir)
+
+
+
+
+
