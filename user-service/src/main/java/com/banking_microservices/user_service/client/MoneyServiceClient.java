@@ -1,19 +1,15 @@
 package com.banking_microservices.user_service.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "money-service")
 public interface MoneyServiceClient {
 
-    @PostMapping("/api/createusermoney")
-    String createUser(@RequestBody String userId);
+
 
 }
 
-//String createUser(@RequestBody String userId);
+
 //import org.springframework.cloud.openfeign.FeignClient;
 //import org.springframework.web.bind.annotation.PostMapping;
 //import org.springframework.web.bind.annotation.RequestBody;
