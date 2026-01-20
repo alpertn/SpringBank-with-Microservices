@@ -5,12 +5,14 @@ import com.banking_microservices.user_service.dto.UsersDto;
 import com.banking_microservices.user_service.exception.CreateUserException;
 import com.banking_microservices.user_service.exception.MailNotFoundException;
 import com.banking_microservices.user_service.exception.UserAlreadyExistsException;
+import com.banking_microservices.user_service.exception.UserSaveDatabaseException;
 import com.banking_microservices.user_service.models.Users;
 import com.banking_microservices.user_service.repository.repository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -18,6 +20,7 @@ import java.util.List;
 @Slf4j
 public class service {
 
+    private Gson gson = new Gson();
     @Autowired
     private repository repository;
 
@@ -32,31 +35,36 @@ public class service {
 
     @Transactional
     public Users findUserByMail(String mail) {
+        log.info("findUserByMail sorgusu icin parametre {}", gson.toJson(mail));
         return repository.findUsersByMail(mail)
                 .orElseThrow(() -> new MailNotFoundException("Mail Not Found: {}" + mail));
     }
 
-    public UsersDto saveUser(UsersDto usersDto){
+    public UsersDto saveUser(UsersDto usersDto) {
 
-        if(repository.existsBymail(usersDto.getMail())){
-            throw new UserAlreadyExistsException("Mail Already Exists {}" + usersDto.getMail());
+        if (repository.existsBymail(usersDto.getMail())) {
+            log.info("Mail already exists In Service.saveUser and Values =  {}", gson.toJson(usersDto));
+            throw new UserAlreadyExistsException("Mail Already Exists " + usersDto.getMail());
         }
 
-        try{
-            Users newUsers = Users
-                    .builder()
-                    .mail(usersDto.getMail())
-                    .password(usersDto.getPassword())
-                    .name(usersDto.getName())
-                    .surname(usersDto.getSurname())
-                    .role("USER")
-                    .build();
-        }catch (CreateUserException e){
-            throw new CreateUserException("Create User Exception In user-service info {} "+e.getMessage());
+        Users newUsers = Users
+                .builder()
+                .mail(usersDto.getMail())
+                .password(usersDto.getPassword())
+                .name(usersDto.getName())
+                .surname(usersDto.getSurname())
+                .role("USER")
+                .build();
+
+        try {
+            Users user = repository.save(newUsers);
+            log.info("User Olusturuldu! {}", gson.toJson(user));
+            return usersDto;
+
+        } catch (Exception e) {
+            log.warn("repository.save(newUsers); Sorgusunda Hata olustu.  {} --- {}", gson.toJson(newUsers), e.getMessage());
+            throw new UserSaveDatabaseException("User veritabanina kaydedilirken bir sorun olustu " + e.getMessage() + gson.toJson(newUsers));
         }
-
-
-
     }
 
 

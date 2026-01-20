@@ -12,7 +12,7 @@ metadata:
 apiVersion: v1
 kind : ConfigMap
 metadata:
-  name: Postgres Database Init Script
+  name: Postgres-Database-Init-Configmap-Script
   namespace: banking-microservices
 data:
   # Postgres .sql ı gordugudne ve postgres'ı tanimladigimizda otomatik olarak calistirir GRANT ALL PRIVILEGES ON DATABASE full yetki verir dblere
@@ -67,8 +67,104 @@ spec:
 
             - mountPath: /docker-entrypoint-initdb.d  # Init script'lerin konulacağı klasör
               name: init-script                        # Volume'un ismi (ConfigMap'ten gelir)
+      volumes:
+        - name: Postgres-Data
+          emptyDir: {} # Bos olmasini yani yeniden baslatildiginda silinmesini kaydolammasini saglar
+        - name: init-script
+          configMap:
+            Name: Postgres-Database-Init-Configmap-Script # Init scriptini alacagi yer.
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: banking-microservices
+spec:
+  selector:
+    app: postgres # postgres adina gelen tum istekleri bu alicak ve  app: postgres  adinda tanimlanan yere gondericek hepsini
+  ports:
+    - port: 5432 # veriyi alacagi port
+      targetPort: 5432 # veriyi gonderecegi port
+
+---
+
+#
+#REDIS CACHE SETTINGS
+#
+
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: banking-microservices
+spec:
+  replicas: 1 # pod number
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:alpine
+          ports:
+            - containerPort : 6379
+---
+
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: redis
+  namespace: banking-microservices
+spec:
+  selector:
+    app: redis
+  ports:
+    - port: 6379
+      targetPort: 6379
 
 
+#
+#ZIPKIN LOGGING SETTINGS
+#
 
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: zipkin
+  namespace: banking-microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zipkin
 
+  template:
+    metadata:
+      labels:
+        app: zipkin
+    spec:
+      containers:
+        - name: zipkin
+          image: openzipkin/zipkin
+          ports:
+            containerPort: 9411
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: zipkin
+  namespace: banking-microservices
+spec:
+  selector:
+    app: zipkin
+  ports:
+    - port: 9411
+      targetPort: 9411
 
