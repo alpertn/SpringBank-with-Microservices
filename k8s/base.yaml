@@ -168,3 +168,187 @@ spec:
   ports:
     - port: 9411
       targetPort: 9411
+
+---
+
+#
+# Zookeper For Kafka ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zookepeer # Bunun altinda calisir deployment
+  namespace: banking-microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zookepeer # altinda calistigi uygulamalarin ismi deploymentin yonetecegi podlarin labeli. Bu podlari yonetecek
+  template:
+    metadata:
+      labels:
+        app: zookeeper # Podlarin etiketi. yukardakiyle ayni olmali
+    spec:
+      containers:
+        - name: zookeeper
+          image: confluentinc/cp-zookeeper:7.5.0
+          ports:
+            - containerPort: 2081
+          env:
+            - name: ZOOKEEPER_CLIENT_PORT
+              value: 2181
+
+---
+
+#env:
+#  # ... diğer env'ler ...
+#  - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+#    value: kafka:9092
+
+
+##
+## ZOOKEEPER DEPLOYMENT ------------------------------------------------------------------------
+##
+#
+#apiVersion: apps/v1  # Kubernetes API versiyonu
+#kind: Deployment  # Kaynak tipi: Deployment (Pod'ları yöneten üst seviye obje)
+#metadata:
+#  name: zookeeper  # Bu deployment'ın adı
+#  namespace: banking-microservices  # Hangi namespace'de çalışacak
+#spec:
+#  replicas: 1  # Kaç tane pod oluşturulacak
+#  selector:
+#    matchLabels:
+#      app: zookeeper  # Bu deployment hangi etiketli pod'ları yönetecek (filtre görevi)
+#  template:  # Pod'ların nasıl oluşturulacağının şablonu
+#    metadata:
+#      labels:
+#        app: zookeeper  # Oluşturulacak pod'lara yapıştırılacak etiket (selector ile eşleşmeli!)
+#    spec:
+#      containers:  # Pod içindeki container'lar
+#        - name: zookeeper  # Container'ın adı
+#          image: confluentinc/cp-zookeeper:7.5.0  # Kullanılacak Docker image
+#          ports:
+#            - containerPort: 2181  # Container'ın hangi portunu açacağız
+#          env:  # Environment variables (ortam değişkenleri)
+#            - name: ZOOKEEPER_CLIENT_PORT  # Zookeeper'ın client bağlantı portu
+#              value: "2181"  # Port numarası (string olarak)
+#
+#---
+#
+##
+## ZOOKEEPER SERVICE ------------------------------------------------------------------------
+##
+#
+#apiVersion: v1  # Service için v1 API kullanılır
+#kind: Service  # Kaynak tipi: Service (Pod'lara network erişimi sağlar)
+#metadata:
+#  name: zookeeper  # Service'in adı (DNS adı olarak kullanılır: zookeeper:2181)
+#  namespace: banking-microservices  # Namespace
+#spec:
+#  selector:
+#    app: zookeeper  # Hangi pod'lara trafik yönlendirilecek (etiket filtresi)
+#  ports:
+#    - port: 2181  # Service'in dışarıya açtığı port (diğer pod'lar buraya bağlanır)
+#
+#---
+#
+##
+## KAFKA DEPLOYMENT ------------------------------------------------------------------------
+##
+#
+#apiVersion: apps/v1
+#kind: Deployment
+#metadata:
+#  name: kafka  # Bu deployment'ın adı
+#  namespace: banking-microservices
+#spec:
+#  replicas: 1  # 1 adet Kafka pod'u oluştur
+#  selector:
+#    matchLabels:
+#      app: kafka  # "app=kafka" etiketli pod'ları yönet
+#  template:
+#    metadata:
+#      labels:
+#        app: kafka  # Oluşturulacak pod'lara "app=kafka" etiketi yapıştır
+#    spec:
+#      containers:
+#        - name: kafka  # Container adı
+#          image: confluentinc/cp-kafka:7.5.0  # Kafka Docker image
+#          ports:
+#            - containerPort: 9092  # Kafka'nın çalışacağı port
+#          env:
+#            - name: KAFKA_ZOOKEEPER_CONNECT  # Kafka, Zookeeper'a nasıl bağlanacak
+#              value: zookeeper:2181  # Service discovery: "zookeeper" DNS adı otomatik çözülür
+#            - name: KAFKA_ADVERTISED_LISTENERS  # Kafka'ya dışarıdan nasıl bağlanılacak
+#              value: PLAINTEXT://kafka:9092  # Kafka service'inin DNS adı ve portu
+#            - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR  # Offset topic'in replikasyon faktörü
+#              value: "1"  # Tek broker olduğu için 1 (prod'da 3 olmalı)
+#
+#---
+#
+##
+## KAFKA SERVICE ------------------------------------------------------------------------
+##
+#
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: kafka  # Service adı (DNS: kafka:9092)
+#  namespace: banking-microservices
+#spec:
+#  selector:
+#    app: kafka  # "app=kafka" etiketli pod'lara yönlendir
+#  ports:
+#    - port: 9092  # Diğer servisler kafka:9092 ile bağlanır
+#
+#---
+#
+##
+## KAFKA-UI DEPLOYMENT ------------------------------------------------------------------------
+##
+#
+#apiVersion: apps/v1
+#kind: Deployment
+#metadata:
+#  name: kafka-ui  # Kafka UI deployment adı
+#  namespace: banking-microservices
+#spec:
+#  replicas: 1  # 1 UI pod'u
+#  selector:
+#    matchLabels:
+#      app: kafka-ui  # "app=kafka-ui" etiketli pod'ları yönet
+#  template:
+#    metadata:
+#      labels:
+#        app: kafka-ui  # Pod etiketi
+#    spec:
+#      containers:
+#        - name: kafka-ui  # Container adı
+#          image: provectuslabs/kafka-ui:latest  # Kafka UI image (web arayüzü)
+#          ports:
+#            - containerPort: 8080  # UI'ın çalışacağı port
+#          env:
+#            - name: KAFKA_CLUSTERS_0_NAME  # İlk cluster'ın adı (UI'da görünecek)
+#              value: banking-cluster
+#            - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS  # Kafka'ya nasıl bağlanacak
+#              value: kafka:9092  # Service discovery ile kafka service'ine bağlan
+#
+#---
+#
+##
+## KAFKA-UI SERVICE ------------------------------------------------------------------------
+##
+#
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: kafka-ui  # Service adı
+#  namespace: banking-microservices
+#spec:
+#  selector:
+#    app: kafka-ui  # "app=kafka-ui" etiketli pod'lara yönlendir
+#  ports:
+#    - port: 8080  # UI'a erişim portu
+#  type: LoadBalancer  # Dışarıdan erişilebilir (localhost:8080 gibi)
