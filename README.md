@@ -12,13 +12,13 @@
 </p>
 
 <div align="center">
-<h4> Draw Io'da Aç </h4>
-<a href="https://app.diagrams.net/?#Uhttps://raw.githubusercontent.com/alpertn/SpringBank-with-Microservices/refs/heads/main/readme/createuser.drawio" target="_blank">
-  <img src="https://img.shields.io/badge/Open_in-Draw.io-orange?style=for-the-badge&logo=diagrams.net" alt="Draw.io'da Çizimi Aç">
-</a>
-<a href="https://app.diagrams.net/?#Uhttps://raw.githubusercontent.com/alpertn/SpringBank-with-Microservices/refs/heads/main/readme/transfer.drawio" target="_blank">
-  <img src="https://img.shields.io/badge/Open_in-Draw.io-orange?style=for-the-badge&logo=diagrams.net" alt="Draw.io'da Çizimi Aç">
-</a>
+  <h4> Draw Io'da Aç </h4>
+  <a href="https://app.diagrams.net/?#Uhttps://raw.githubusercontent.com/alpertn/SpringBank-with-Microservices/refs/heads/main/readme/createuser.drawio" target="_blank">
+    <img src="https://img.shields.io/badge/Create_User-Draw.io-orange?style=for-the-badge&logo=diagrams.net" alt="Create User Diagram">
+  </a>
+  &nbsp; <a href="https://app.diagrams.net/?#Uhttps://raw.githubusercontent.com/alpertn/SpringBank-with-Microservices/refs/heads/main/readme/transfer.drawio" target="_blank">
+    <img src="https://img.shields.io/badge/Transfer-Draw.io-orange?style=for-the-badge&logo=diagrams.net" alt="Transfer Diagram">
+  </a>
 </div>
 
 
