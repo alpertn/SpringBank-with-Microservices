@@ -6,13 +6,13 @@ spring:
     name: user-service
 
   # Kubernetes Service Discovery
-  cloud:
+cloud:
     kubernetes:
       discovery:
         enabled: true
 
   # Veritabanı Ayarları
-  datasource:
+datasource:
     url: jdbc:postgresql://${POSTGRES_HOST:postgres}:${POSTGRES_PORT:5432}/${POSTGRES_DB:banking_money}
     username: ${POSTGRES_USER:banking_admin}
     password: ${POSTGRES_PASSWORD:local_password}
@@ -21,7 +21,7 @@ spring:
       maximum-pool-size: 10
       minimum-idle: 5
 
-  jpa:
+jpa:
     hibernate:
       ddl-auto: update
     show-sql: false
@@ -29,11 +29,6 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-  # Redis
-  data:
-    redis:
-      host: ${SPRING_DATA_REDIS_HOST:redis}
-      port: ${SPRING_DATA_REDIS_PORT:6379}
 
 # --- SADECE OPENFEIGN AYARLARI ---
 feign:
