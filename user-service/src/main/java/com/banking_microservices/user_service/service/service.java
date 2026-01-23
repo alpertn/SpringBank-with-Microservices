@@ -1,13 +1,14 @@
 package com.banking_microservices.user_service.service;
 
 
+import com.banking_microservices.user_service.client.MoneyServiceClient;
+import com.banking_microservices.user_service.dto.IdDto;
 import com.banking_microservices.user_service.dto.UsersDto;
-import com.banking_microservices.user_service.exception.CreateUserException;
-import com.banking_microservices.user_service.exception.MailNotFoundException;
-import com.banking_microservices.user_service.exception.UserAlreadyExistsException;
-import com.banking_microservices.user_service.exception.UserSaveDatabaseException;
+import com.banking_microservices.user_service.exception.*;
+import com.banking_microservices.user_service.kafka.KafkaSender;
 import com.banking_microservices.user_service.models.Users;
 import com.banking_microservices.user_service.repository.repository;
+import jakarta.persistence.Id;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,9 +24,13 @@ public class service {
     private Gson gson = new Gson();
     @Autowired
     private repository repository;
+    private MoneyServiceClient moneyServiceClient;
+    private final KafkaSender kafkaSender;
 
-    public service(repository repository) {
+    public service(repository repository, MoneyServiceClient moneyServiceClient, KafkaSender kafkaSender) {
         this.repository = repository;
+        this.moneyServiceClient = moneyServiceClient;
+        this.kafkaSender = kafkaSender;
     }
 
     @Transactional
@@ -59,7 +64,16 @@ public class service {
         try {
             Users user = repository.save(newUsers);
             log.info("User Olusturuldu! {}", gson.toJson(user));
-            return usersDto;
+            try{
+
+                kafkaSender.sendCreateUser(user.getId());
+                return usersDto;
+
+            }catch (Exception e){
+
+                throw new KafkaSendException("Kafka ile Create user topicine mesaj gonderilirken hata olustu.");
+
+            }
 
         } catch (Exception e) {
             log.warn("repository.save(newUsers); Sorgusunda Hata olustu.  {} --- {}", gson.toJson(newUsers), e.getMessage());

@@ -90,6 +90,37 @@ public class GlobalExceptionHandler {
     }
 
 
+    @ExceptionHandler(OpenFeignMoneyServiceClientException.class)
+    public ResponseEntity<ErrorResponseDto> handleOpenFeignMoneyServiceClientException(OpenFeignMoneyServiceClientException e, WebRequest webRequest){
+        log.warn("OpenFeignMoneyServiceClientException Error. {} Path {}", e.getMessage(), webRequest.getDescription(true));
+        ErrorResponseDto response = ErrorResponseDto
+                .builder()
+                .time(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("OpenFeignMoneyServiceClientException Exception")
+                .message(e.getMessage())
+                .path(webRequest.getDescription(true))
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(KafkaSendException.class)
+    public ResponseEntity<ErrorResponseDto> handleKafkaSendException(KafkaSendException e, WebRequest webRequest){
+        log.warn("KafkaSendException Error. {} Path {}", e.getMessage(), webRequest.getDescription(true));
+        ErrorResponseDto response = ErrorResponseDto
+                .builder()
+                .time(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("KafkaSendException Exception")
+                .message(e.getMessage())
+                .path(webRequest.getDescription(true))
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
 
 }
 
