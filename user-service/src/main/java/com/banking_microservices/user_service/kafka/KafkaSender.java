@@ -16,13 +16,13 @@ public class KafkaSender {
     }
 
 
-    public void sendCreateUser(String key) {
+    public void sendCreateUser(String userId) { // overload sayesinde keysiz de kullanabiliyoruz
         try{
-            kafkaTemplate.send("CreateUser-Topic", key);
-            log.info("Kafkaya mesaj gonderildi {} ", key);
+            kafkaTemplate.send("CreateUser-Topic", userId);
+            log.info("sendCreateUser mesaj gonderildi {} ", userId);
         }catch (Exception e){
-            log.warn("Kafkaya mesaj godnerilirken hata olustu {} " , key);
-            throw new KafkaSendException("Kafka Send Exception. "+ key);
+            log.warn("sendCreateUser Kafkaya mesaj godnerilirken hata olustu {} " , userId);
+            throw new KafkaSendException("Kafka Send Exception. "+ userId);
         }
 
 

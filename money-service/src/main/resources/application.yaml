@@ -1,9 +1,14 @@
 server:
-  port: 8082 # Servise göre değiştir (User: 8081, Money: 8082)
+  port: 8082
 
 spring:
   application:
-    name: money-service # Servise göre değiştir
+    name: money-service
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
   # Kubernetes Service Discovery
 cloud:
@@ -11,7 +16,6 @@ cloud:
     discovery:
       enabled: true
 
-  # Veritabanı Ayarları
 datasource:
     url: jdbc:postgresql://${POSTGRES_HOST:postgres}:${POSTGRES_PORT:5432}/${POSTGRES_DB:banking_money}
     username: ${POSTGRES_USER:banking_admin}
@@ -29,26 +33,22 @@ jpa:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-# --- SADECE OPENFEIGN AYARLARI ---
 feign:
-  # Circuit Breaker KAPALI (Varsayılan zaten kapalıdır ama emin olmak için sildik)
   client:
     config:
       default:
-        # Timeoutlar önemlidir. Karşı taraf cevap vermezse sonsuza kadar beklemesin.
-        connectTimeout: 5000 # 5 saniyede bağlanamazsa hata ver
-        readTimeout: 5000    # 5 saniyede cevap gelmezse hata ver
-        loggerLevel: BASIC   # Loglarda temel istekleri gör
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: BASIC
 
-# Monitoring (Opsiyonel ama tavsiye edilir)
 management:
   endpoints:
     web:
       exposure:
         include: health,info
 
-logging: # Bağlantı: Loglama. Varsa: Uygulama takibi. Yoksa: Karanlık.
-  pattern: # Bağlantı: Format. Varsa: Okunabilir. Yoksa: Karışık.
-    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n" # Bağlantı: Konsol Dizilimi. Varsa: Tarih başta, mesaj sonda. Yoksa: Varsayılan Spring logu.
-  level: # Bağlantı: Log Seviyesi. Varsa: Gürültü engellenir. Yoksa: Çok log basar.
-    root: INFO # Bağlantı: Genel Seviye. Varsa: Önemli bilgiler. Yoksa: Debug detayları.
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+  level:
+    root: INFO

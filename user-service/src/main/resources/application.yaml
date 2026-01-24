@@ -7,9 +7,7 @@ spring:
   kafka:
     bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}
     producer:
-      # Key'ler her zaman String'dir
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      # Value'ları Object olarak (JSON) yollamak istiyorsan bunu eklemelisin:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
   # Kubernetes Service Discovery
