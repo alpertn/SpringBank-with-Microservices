@@ -27,14 +27,12 @@ public class service {
 
         try {
             transaction newTransaction = transaction.builder()
-                    .type(request.getType())
+                    .transactionType(request.getTransactionType())
                     .senderUserId(request.getSenderUserId())
                     .receiverUserId(request.getReceiverUserId())
                     .senderIban(request.getSenderIban())
                     .receiverIban(request.getReceiverIban())
                     .money(request.getMoney())
-                    .senderBalanceAfterTransaction(request.getSenderBalanceAfterTransaction())
-                    .receiverBalanceAfterTransaction(request.getReceiverBalanceAfterTransaction())
                     .description(request.getDescription())
                     .error(request.getError())
                     .errorDescription(request.getErrorDescription())

@@ -15,4 +15,6 @@ public class KafkaSender {
         this.kafkaTemplate = kafkaTemplate;
     }
 
+
+
 }

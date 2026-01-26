@@ -14,8 +14,6 @@ import org.hibernate.validator.constraints.UUID;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import static com.banking_microservices.transaction_service.model.status.PROGRESS;
-
 @Entity
 @Table(name = "transactions")
 @Data
@@ -43,19 +41,7 @@ public class transaction {
     @Column(precision = 19, scale = 2)
     private BigDecimal money;
 
-    private TransactionType type;
-
-    @Builder.Default
-    private BigDecimal senderBalanceBeforeTransaction = null;
-
-    @Builder.Default
-    private BigDecimal senderBalanceAfterTransaction = null;
-
-    @Builder.Default
-    private BigDecimal receiverBalanceBeforeTransaction = null;
-
-    @Builder.Default
-    private BigDecimal receiverBalanceAfterTransaction = null;
+    private String transactionType;
 
     @Builder.Default
     private String description = null;
@@ -70,8 +56,7 @@ public class transaction {
     private String errorDescription = null;
 
     @Builder.Default
-    private status status = PROGRESS;
-
+    private String status = "PROGRESS";
 
 
 }
