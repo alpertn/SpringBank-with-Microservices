@@ -1,6 +1,5 @@
     package com.banking_microservices.transaction_service.repository;
 
-    import com.banking_microservices.transaction_service.model.TransactionType;
     import com.banking_microservices.transaction_service.model.transaction;
     import org.springframework.data.jpa.repository.JpaRepository;
     import org.springframework.stereotype.Repository;
@@ -14,8 +13,6 @@
         List<transaction> findBySenderUserId(String senderUserId);
 
         List<transaction> findByReceiverUserId(String receiverUserId);
-
-        List<transaction> findByType(TransactionType type);
 
         List<transaction> findBySenderUserIdOrReceiverUserIdOrderByLocalDateTimeDesc(String senderUserId, String receiverUserId);
 

@@ -1,13 +1,13 @@
 package com.banking_microservices.user_service.service;
 
 
+import com.banking_microservices.user_service.client.MoneyServiceClient;
+import com.banking_microservices.user_service.dto.KafkaTransactionTopicMessageDto;
 import com.banking_microservices.user_service.dto.UsersDto;
-import com.banking_microservices.user_service.exception.CreateUserException;
-import com.banking_microservices.user_service.exception.MailNotFoundException;
-import com.banking_microservices.user_service.exception.UserAlreadyExistsException;
-import com.banking_microservices.user_service.exception.UserSaveDatabaseException;
+import com.banking_microservices.user_service.exception.*;
+import com.banking_microservices.user_service.kafka.KafkaSender;
 import com.banking_microservices.user_service.models.Users;
-import com.banking_microservices.user_service.repository.repository;
+import com.banking_microservices.user_service.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,31 +18,35 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class service {
+public class UserService {
 
     private Gson gson = new Gson();
     @Autowired
-    private repository repository;
+    private UserRepository UserRepository;
+    private MoneyServiceClient moneyServiceClient;
+    private final KafkaSender kafkaSender;
 
-    public service(repository repository) {
-        this.repository = repository;
+    public UserService(UserRepository UserRepository, MoneyServiceClient moneyServiceClient, KafkaSender kafkaSender) {
+        this.UserRepository = UserRepository;
+        this.moneyServiceClient = moneyServiceClient;
+        this.kafkaSender = kafkaSender;
     }
 
     @Transactional
     public List<Users> getAllUsers(){
-        return repository.findAll();
+        return UserRepository.findAll();
     }
 
     @Transactional
     public Users findUserByMail(String mail) {
         log.info("findUserByMail sorgusu icin parametre {}", gson.toJson(mail));
-        return repository.findUsersByMail(mail)
+        return UserRepository.findUsersByMail(mail)
                 .orElseThrow(() -> new MailNotFoundException("Mail Not Found: {}" + mail));
     }
 
     public UsersDto saveUser(UsersDto usersDto) {
 
-        if (repository.existsBymail(usersDto.getMail())) {
+        if (UserRepository.existsBymail(usersDto.getMail())) {
             log.info("Mail already exists In Service.saveUser and Values =  {}", gson.toJson(usersDto));
             throw new UserAlreadyExistsException("Mail Already Exists " + usersDto.getMail());
         }
@@ -57,14 +61,31 @@ public class service {
                 .build();
 
         try {
-            Users user = repository.save(newUsers);
+            Users user = UserRepository.save(newUsers);
             log.info("User Olusturuldu! {}", gson.toJson(user));
-            return usersDto;
+            try{
+
+                kafkaSender.sendCreateUser(user.getId());
+                return usersDto;
+
+            }catch (Exception e){
+
+                throw new KafkaSendException("Kafka ile Create user topicine mesaj gonderilirken hata olustu.");
+
+            }
 
         } catch (Exception e) {
-            log.warn("repository.save(newUsers); Sorgusunda Hata olustu.  {} --- {}", gson.toJson(newUsers), e.getMessage());
+            log.warn("UserRepository.save(newUsers); Sorgusunda Hata olustu.  {} --- {}", gson.toJson(newUsers), e.getMessage());
             throw new UserSaveDatabaseException("User veritabanina kaydedilirken bir sorun olustu " + e.getMessage() + gson.toJson(newUsers));
         }
+    }
+
+    //
+    // Transaction Topic Message
+    //
+
+    public void transactionTopicMessageVerify(KafkaTransactionTopicMessageDto dto){
+
     }
 
 
@@ -95,7 +116,7 @@ public class service {
 //        moneyServiceClient.createAccount( // Money Service'e hesap aç - HTTP çağrısı
 //                new MoneyServiceClient.CreateAccountRequest(savedUser.getId(), new java.math.BigDecimal("1000"))); // 1000 TL başlangıç
 //        log.info("Account created for user {} with 1000 TL", savedUser.getId()); // Başarı logu
-//    } catch (Exception e) { // Money Service hatası yakala - Ağ hatası, service down, timeout vs
+//    } catch (Exception e) { // Money Service hatası yakala - Ağ hatası, UserService down, timeout vs
 //        log.warn("Account creation failed for user {}. Will be created on first login. Error: {}",
 //                savedUser.getId(), e.getMessage()); // Uyarı logu - Kullanıcı kaydı başarılı ama hesap oluşmadı
 //        // Kullanıcı kaydını iptal etme - Hesap sonra oluşturulabilir

@@ -1,11 +1,18 @@
 package com.banking_microservices.user_service.client;
 
+import com.banking_microservices.user_service.dto.IdDto;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "money-service")
+@FeignClient(name = "money-UserService")
+@Service
 public interface MoneyServiceClient {
 
-
+    @PostMapping("/api/createusermoney")
+    ResponseEntity<Object> createUser(@RequestBody IdDto userId);
 
 }
 
@@ -21,7 +28,7 @@ public interface MoneyServiceClient {
 //import java.math.BigDecimal;
 //import java.util.UUID;
 //
-//@FeignClient(name = "money-service", url = "${money.service.url:http://localhost:8082}") // Feign client tanımı. Money-Service'e HTTP çağrısı yapar. application.yml'den URL alır. Default localhost:8082. UserService.createUser() tarafından kullanılır. Olmazsa hesap açılamaz
+//@FeignClient(name = "money-UserService", url = "${money.UserService.url:http://localhost:8082}") // Feign client tanımı. Money-Service'e HTTP çağrısı yapar. application.yml'den URL alır. Default localhost:8082. UserService.createUser() tarafından kullanılır. Olmazsa hesap açılamaz
 //public interface MoneyServiceClient {
 //
 //    @PostMapping("/api/accounts") // POST /api/accounts endpoint'i. Yeni hesap oluşturur. UserService.createUser() içinde çağrılır. CreateAccountRequest gönderir. Olmazsa kullanıcı için hesap açılamaz
