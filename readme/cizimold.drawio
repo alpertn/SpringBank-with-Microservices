@@ -239,7 +239,7 @@
             <mxPoint x="1880" y="500" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="j6moqmTxQlSHtakC6lZJ-94" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="LISTENER 4&lt;br&gt;APPROVE&lt;br&gt;beforebalance - afterbalance = money&lt;br&gt;afterbalance&amp;nbsp;- beforebalance = money&amp;nbsp;&amp;nbsp;" vertex="1">
+        <mxCell id="j6moqmTxQlSHtakC6lZJ-94" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="LISTENER 4&lt;br&gt;APPROVE&lt;br&gt;beforebalance - afterbalance = userMoney&lt;br&gt;afterbalance&amp;nbsp;- beforebalance = userMoney&amp;nbsp;&amp;nbsp;" vertex="1">
           <mxGeometry height="70" width="260" x="1710" y="620" as="geometry" />
         </mxCell>
         <mxCell id="j6moqmTxQlSHtakC6lZJ-95" edge="1" parent="1" source="j6moqmTxQlSHtakC6lZJ-92" style="endArrow=classic;html=1;rounded=0;exitX=0.223;exitY=0.005;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.566;entryY=0.983;entryDx=0;entryDy=0;entryPerimeter=0;" target="j6moqmTxQlSHtakC6lZJ-46" value="">
