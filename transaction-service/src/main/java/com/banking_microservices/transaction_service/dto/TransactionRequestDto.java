@@ -4,7 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+import org.hibernate.annotations.UuidGenerator;
+import java.util.UUID;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -13,6 +14,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransactionRequestDto {
+
+    @UuidGenerator
+    private String eventUUID = UUID.randomUUID().toString();
+
     @Builder.Default
     private String senderUserId = null;
 
@@ -34,7 +39,7 @@ public class TransactionRequestDto {
 
 
     @Builder.Default
-    private String status = "ERROR";
+    private String status = "PROGRESS";
 
     @Builder.Default
     private Boolean error = false;

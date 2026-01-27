@@ -15,7 +15,7 @@ public class KafkaListenerService {
         this.service = service;
     }
 
-    @KafkaListener(topics = "CreateUser-Topic")
+    @KafkaListener(topics = "banking-microservices.transaction-created.v1")
     public void CreateUserListener(String userId){
         log.info("CreateUser-Topic'den mesaj geldi {} ", userId);
         service.generateUser(userId);

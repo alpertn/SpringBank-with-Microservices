@@ -1,9 +1,8 @@
 package com.banking_microservices.transaction_service.service;
 
+import com.banking_microservices.transaction_service.dto.Transaction;
 import com.banking_microservices.transaction_service.dto.TransactionRequestDto;
-import com.banking_microservices.transaction_service.exception.GetErrorLogsException;
-import com.banking_microservices.transaction_service.exception.TransactionNotFoundException;
-import com.banking_microservices.transaction_service.exception.TransactionSaveException;
+import com.banking_microservices.transaction_service.exception.*;
 import com.banking_microservices.transaction_service.model.transaction;
 import com.banking_microservices.transaction_service.repository.repository;
 import com.google.gson.Gson;
@@ -21,6 +20,34 @@ public class service {
 
     private final repository repository;
     private final Gson gson = new Gson();
+
+    public void createNewTransaction(Transaction transactionData){
+        log.info("veri transaction servisine geldi {}", transactionData);
+        try{
+            transaction transactionModel = transaction
+                    .builder()
+                    .senderIban(transactionData.getSenderIban())
+                    .receiverIban(transactionData.getReceiverIban())
+                    .money(transactionData.getAmount())
+                    .transactionType("TRANSFER")
+                    .build();
+
+            repository.save(transactionModel);
+
+            try{
+
+            }catch (Exception e){
+                throw new KafkaSendException("Kafka Exception. " +  gson.toJson(transactionData));
+            }
+
+            }catch (Exception e){
+            throw new TransactionDtoSyntaxException("Bir hata meydana geldi " + gson.toJson(transactionData));
+        }
+    }
+
+
+
+
 
     public transaction createTransaction(TransactionRequestDto request) {
         log.info("Transaction Kaydedilme istegi geldi. {}", gson.toJson(request));
