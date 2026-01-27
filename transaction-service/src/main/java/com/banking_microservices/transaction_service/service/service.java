@@ -1,7 +1,7 @@
 package com.banking_microservices.transaction_service.service;
 
 import com.banking_microservices.transaction_service.dto.Transaction;
-import com.banking_microservices.transaction_service.dto.TransactionRequestDto;
+import com.banking_microservices.transaction_service.dto.KafkaTransactionTopicMessageDto;
 import com.banking_microservices.transaction_service.exception.*;
 import com.banking_microservices.transaction_service.model.transaction;
 import com.banking_microservices.transaction_service.repository.repository;
@@ -49,7 +49,7 @@ public class service {
 
 
 
-    public transaction createTransaction(TransactionRequestDto request) {
+    public transaction createTransaction(KafkaTransactionTopicMessageDto request) {
         log.info("Transaction Kaydedilme istegi geldi. {}", gson.toJson(request));
 
         try {

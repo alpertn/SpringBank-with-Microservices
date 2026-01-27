@@ -1,3 +1,13 @@
+kafka:
+  topics:
+    transaction:
+      listener: ${KAFKA_TRANSACTION_TOPIC_LISTENER:banking-microservices.fraud-service.checked.v1}
+      sender: ${KAFKA_TRANSACTION_TOPIC_SENDER:banking-microservices.transaction-service.success.v1}
+      error: ${KAFKA_TRANSACTION_TOPIC_ERROR:banking-microservices.transaction-service.error.v1}
+
+
+
+
 server:
   port: 8082
 
@@ -10,7 +20,6 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
-  # Kubernetes Service Discovery
 cloud:
   kubernetes:
     discovery:

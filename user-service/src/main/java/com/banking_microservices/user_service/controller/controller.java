@@ -1,6 +1,6 @@
 package com.banking_microservices.user_service.controller;
 
-import com.banking_microservices.user_service.service.service;
+import com.banking_microservices.user_service.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,15 +19,15 @@ import com.google.gson.Gson;
 public class controller {
 
     private Gson gson = new Gson();
-    private final service service;
+    private final UserService UserService;
 
-    public controller(service service) {
-        this.service = service;
+    public controller(UserService UserService) {
+        this.UserService = UserService;
     }
 
     @PostMapping("/createuser")
     public ResponseEntity<UsersDto> createUser(@Valid @RequestBody UsersDto usersDto){
         log.info("createuser endpointine gelen request {}", gson.toJson(usersDto));
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.saveUser(usersDto)); // 201 status code donecektir
+        return ResponseEntity.status(HttpStatus.CREATED).body(UserService.saveUser(usersDto)); // 201 status code donecektir
     }
 }

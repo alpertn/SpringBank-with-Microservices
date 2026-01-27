@@ -1,13 +1,14 @@
-package com.banking_microservices.transaction_service.dto;
+package com.banking_microservices.money_service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
-import java.util.UUID;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -15,8 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class TransactionRequestDto {
 
-    @UuidGenerator
-    private String eventUUID = UUID.randomUUID().toString();
+    private String eventUUID;
 
     @Builder.Default
     private String senderUserId = null;

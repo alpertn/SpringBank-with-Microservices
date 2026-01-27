@@ -62,12 +62,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MoneyNotAvaibleException.class)
     public ResponseEntity<ErrorResponseDto> handleMoneyNotAvaibleException(MoneyNotAvaibleException e, WebRequest webRequest){
-        log.warn("Money Not Avaible. Error {} Path {}", e.getMessage(), webRequest.getDescription(true));
+        log.warn("UserMoney Not Avaible. Error {} Path {}", e.getMessage(), webRequest.getDescription(true));
         ErrorResponseDto response = ErrorResponseDto
                 .builder()
                 .time(LocalDateTime.now())
                 .status(HttpStatus.BAD_REQUEST.value())
-                .error("Money not avaible")
+                .error("UserMoney not avaible")
                 .message(e.getMessage())
                 .path(webRequest.getDescription(false))
                 .build();

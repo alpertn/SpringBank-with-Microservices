@@ -2,8 +2,8 @@ package com.banking_microservices.money_service.service;
 
 import com.banking_microservices.money_service.dto.MoneyDto;
 import com.banking_microservices.money_service.exception.*;
-import com.banking_microservices.money_service.models.Money;
-import com.banking_microservices.money_service.repository.repository;
+import com.banking_microservices.money_service.models.UserMoney;
+import com.banking_microservices.money_service.repository.UserMoneyRepository;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.iban4j.CountryCode;
@@ -15,35 +15,36 @@ import java.math.BigDecimal;
 
 @Service
 @Slf4j
-public class service {
+public class UserMoneyService {
 
-    private final repository repository;
+    private final UserMoneyRepository UserMoneyRepository;
     private final Gson gson;
 
-    public service(repository repository, Gson gson) {
-        this.repository = repository;
+    public UserMoneyService(UserMoneyRepository UserMoneyRepository, Gson gson) {
+        this.UserMoneyRepository = UserMoneyRepository;
         this.gson = gson;
     }
 
+
     @Transactional
-    public Money generateUser(String userId){
+    public UserMoney generateUser(String userId){
         log.info("generateUser isteği alındı. UserId: {}", gson.toJson(userId));
         try{
-            Money userMoney = Money.builder()
+            UserMoney userMoney = UserMoney.builder()
                     .userId(userId)
                     .userIban(generateRandomTurkishIban())
                     .build();
             try{
-                Money savedMoney = repository.save(userMoney);
-                log.info("Kullanıcı Money servisine kaydedildi: {}", gson.toJson(savedMoney));
-                return savedMoney;
+                UserMoney savedUserMoney = UserMoneyRepository.save(userMoney);
+                log.info("Kullanıcı UserMoney servisine kaydedildi: {}", gson.toJson(savedUserMoney));
+                return savedUserMoney;
             }catch (Exception e){
                 log.error("Veritabanına kayıt sırasında hata oluştu. UserId: {}", gson.toJson(userId), e);
-                throw new SaveUserException("Failed to save user on Money-Service " + userMoney.getUserId());
+                throw new SaveUserException("Failed to save user on UserMoney-Service " + userMoney.getUserId());
             }
         }catch(Exception e){
             log.error("generateUser metodunda beklenmeyen hata. UserId: {}", gson.toJson(userId), e);
-            throw new SaveUserException("Failed Save User in money-service " + userId + " details " + e.getMessage());
+            throw new SaveUserException("Failed Save User in money-UserMoneyService " + userId + " details " + e.getMessage());
         }
     }
 
@@ -51,7 +52,7 @@ public class service {
         String iban;
         do{
             iban = Iban.random(CountryCode.TR).toString();
-        } while(repository.existsByUserIban(iban));
+        } while(UserMoneyRepository.existsByUserIban(iban));
 
         log.debug("Yeni IBAN üretildi: {}", gson.toJson(iban));
         return iban;
@@ -59,37 +60,37 @@ public class service {
 
     public MoneyDto getAccountById(String id) {
         log.info("getAccountById isteği. ID: {}", gson.toJson(id));
-        Money money = repository.findById(id)
+        UserMoney userMoney = UserMoneyRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Hesap bulunamadı. ID: {}", gson.toJson(id));
                     return new UserNotFoundException("Account not found for ID: " + id);
                 });
-        return mapToDto(money);
+        return mapToDto(userMoney);
     }
 
     public MoneyDto getAccountByIban(String iban) {
         log.info("getAccountByIban isteği. IBAN: {}", gson.toJson(iban));
-        Money money = repository.findByUserIban(iban)
+        UserMoney userMoney = UserMoneyRepository.findByUserIban(iban)
                 .orElseThrow(() -> {
                     log.warn("Hesap bulunamadı. IBAN: {}", gson.toJson(iban));
                     return new UserNotFoundException("Account not found for IBAN: " + iban);
                 });
-        return mapToDto(money);
+        return mapToDto(userMoney);
     }
 
     public MoneyDto getAccountByUserId(String userId) {
         log.info("getAccountByUserId isteği. UserId: {}", gson.toJson(userId));
-        Money money = repository.findByUserId(userId)
+        UserMoney userMoney = UserMoneyRepository.findByUserId(userId)
                 .orElseThrow(() -> {
                     log.warn("Hesap bulunamadı. UserId: {}", gson.toJson(userId));
                     return new UserNotFoundException("Account not found for User ID: " + userId);
                 });
-        return mapToDto(money);
+        return mapToDto(userMoney);
     }
 
     public BigDecimal getBalanceById(String id) {
         log.info("getBalanceById isteği. ID: {}", gson.toJson(id));
-        return repository.findBalanceById(id)
+        return UserMoneyRepository.findBalanceById(id)
                 .orElseThrow(() -> {
                     log.warn("Bakiye bilgisi bulunamadı. ID: {}", gson.toJson(id));
                     return new UserNotFoundException("Balance info not found for ID: " + id);
@@ -98,7 +99,7 @@ public class service {
 
     public BigDecimal getBalanceByIban(String iban) {
         log.info("getBalanceByIban isteği. IBAN: {}", gson.toJson(iban));
-        return repository.findBalanceByIban(iban)
+        return UserMoneyRepository.findBalanceByIban(iban)
                 .orElseThrow(() -> {
                     log.warn("Bakiye bilgisi bulunamadı. IBAN: {}", gson.toJson(iban));
                     return new UserNotFoundException("Balance info not found for IBAN: " + iban);
@@ -107,7 +108,7 @@ public class service {
 
     public BigDecimal getBalanceByUserId(String userId) {
         log.info("getBalanceByUserId isteği. UserId: {}", gson.toJson(userId));
-        return repository.findBalanceByUserId(userId)
+        return UserMoneyRepository.findBalanceByUserId(userId)
                 .orElseThrow(() -> {
                     log.warn("Bakiye bilgisi bulunamadı. UserId: {}", gson.toJson(userId));
                     return new UserNotFoundException("Balance info not found for User ID: " + userId);
@@ -117,7 +118,7 @@ public class service {
     @Transactional
     public void depositMoneyById(String id, BigDecimal amount) {
         log.info("depositMoneyById isteği. ID: {}, Miktar: {}", gson.toJson(id), gson.toJson(amount));
-        int result = repository.incrementBalanceById(id, amount);
+        int result = UserMoneyRepository.incrementBalanceById(id, amount);
         if (result == 0) {
             log.error("Para yatırma başarısız. ID bulunamadı: {}", gson.toJson(id));
             throw new DepositFailedException("Deposit failed. ID not found: " + id);
@@ -133,7 +134,7 @@ public class service {
             log.warn("Yetersiz bakiye. ID: {}, Mevcut: {}, İstenen: {}", gson.toJson(id), gson.toJson(currentBalance), gson.toJson(amount));
             throw new MoneyNotAvaibleException("Insufficient funds for ID: " + id);
         }
-        int result = repository.decrementBalanceById(id, amount);
+        int result = UserMoneyRepository.decrementBalanceById(id, amount);
         if (result == 0) {
             log.error("Para çekme başarısız. ID bulunamadı: {}", gson.toJson(id));
             throw new UserNotFoundException("Withdraw failed. ID not found: " + id);
@@ -147,7 +148,7 @@ public class service {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new RuntimeException("Deposit amount must be positive");
         }
-        int result = repository.incrementBalanceByIban(iban, amount);
+        int result = UserMoneyRepository.incrementBalanceByIban(iban, amount);
         if (result == 0) {
             log.error("Para yatırma başarısız. IBAN bulunamadı: {}", gson.toJson(iban));
             throw new IbanNotFoundException("Deposit failed. IBAN not found: " + iban);
@@ -164,7 +165,7 @@ public class service {
             throw new MoneyNotAvaibleException("Insufficient funds for IBAN: " + iban);
         }
 
-        int result = repository.decrementBalanceByIban(iban, amount);
+        int result = UserMoneyRepository.decrementBalanceByIban(iban, amount);
         if (result == 0) {
             log.error("Para çekme başarısız. IBAN bulunamadı: {}", gson.toJson(iban));
             throw new IbanNotFoundException("Withdraw failed. IBAN not found: " + iban);
@@ -178,7 +179,7 @@ public class service {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new NegativeNumberException("Deposit amount must be positive");
         }
-        int result = repository.incrementBalanceByUserId(userId, amount);
+        int result = UserMoneyRepository.incrementBalanceByUserId(userId, amount);
         if (result == 0) {
             log.error("Para yatırma başarısız. UserId bulunamadı: {}", gson.toJson(userId));
             throw new UserNotFoundException("Deposit failed. User ID not found: " + userId);
@@ -189,7 +190,7 @@ public class service {
     @Transactional
     public void withdrawMoneyByUserId(String userId, BigDecimal amount) {
         log.info("withdrawMoneyByUserId isteği. UserId: {}, Miktar: {}", gson.toJson(userId), gson.toJson(amount));
-        BigDecimal currentBalance = repository.findBalanceByUserId(userId)
+        BigDecimal currentBalance = UserMoneyRepository.findBalanceByUserId(userId)
                 .orElseThrow(() -> {
                     log.warn("Bakiye bilgisi bulunamadı. UserId: {}", gson.toJson(userId));
                     return new MoneyNotAvaibleException("Balance info not found for User ID: " + userId);
@@ -200,7 +201,7 @@ public class service {
             throw new MoneyNotAvaibleException("Insufficient funds for User ID: " + userId);
         }
 
-        int result = repository.decrementBalanceByUserId(userId, amount);
+        int result = UserMoneyRepository.decrementBalanceByUserId(userId, amount);
         if (result == 0) {
             log.error("Para çekme başarısız. UserId bulunamadı: {}", gson.toJson(userId));
             throw new UserNotFoundException("Withdraw failed. User ID not found: " + userId);
@@ -208,12 +209,12 @@ public class service {
         log.info("Para çekme başarılı. UserId: {}", gson.toJson(userId));
     }
 
-    private MoneyDto mapToDto(Money money) {
+    private MoneyDto mapToDto(UserMoney userMoney) {
         return MoneyDto.builder()
-                .id(money.getId())
-                .userId(money.getUserId())
-                .userIban(money.getUserIban())
-                .money(money.getMoney())
+                .id(userMoney.getId())
+                .userId(userMoney.getUserId())
+                .userIban(userMoney.getUserIban())
+                .money(userMoney.getMoney())
                 .build();
     }
 }
