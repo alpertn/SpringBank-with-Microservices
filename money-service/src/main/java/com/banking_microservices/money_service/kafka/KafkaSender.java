@@ -37,7 +37,22 @@ public class KafkaSender {
     public void sendTransactionToUserService(String key, KafkaTransactionTopicMessageDto dto){
         try{
             String jsonMessageForKafka = gson.toJson(dto);
-            kafkaTemplate.send("kafka.topics.username-validation.sender", key, dto);
+            kafkaTemplate.send("${kafka.topics.username-validation.sender}", key, dto);
+            log.info("Kafkaya mesaj gonderildi {} {}", key, dto);
+
+        }catch (Exception e){
+
+            log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}" , key, dto);
+            throw new KafkaSendException("Kafka Send Exception. "+ key +" " + dto);
+
+        }
+    }
+
+    public void sendTransactionError(String key, KafkaTransactionTopicMessageDto dto){
+
+        try{
+            String jsonMessageForKafka = gson.toJson(dto);
+            kafkaTemplate.send("${kafka.topics.transaction.error}", key, dto);
             log.info("Kafkaya mesaj gonderildi {} {}", key, dto);
 
         }catch (Exception e){
