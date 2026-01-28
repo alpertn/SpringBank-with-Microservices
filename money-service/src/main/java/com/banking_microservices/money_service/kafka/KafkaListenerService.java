@@ -17,6 +17,11 @@ public class KafkaListenerService {
         KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
     }
 
+    @KafkaListener(topics = "${kafka.topics.username-validation.listener}")
+    public void listenUserValidationTopicOnUserService(String topic){
+
+    }
+
 }
 //private final Gson gson = new GsonBuilder().serializeNulls().create();
 //private UserMoneyService UserMoneyService;

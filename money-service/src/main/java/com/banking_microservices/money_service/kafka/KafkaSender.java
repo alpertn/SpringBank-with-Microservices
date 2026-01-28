@@ -22,7 +22,7 @@ public class KafkaSender {
     public void sendTransaction(String key, KafkaTransactionTopicMessageDto kafkaTransactionTopicMessageDto) {
         try{
             String jsonMessageForKafka = gson.toJson(kafkaTransactionTopicMessageDto);
-            kafkaTemplate.send("banking-microservices.transaction-service.created.v1", key, kafkaTransactionTopicMessageDto);
+            kafkaTemplate.send("${kafka.topics.transaction.sender}", key, kafkaTransactionTopicMessageDto);
             log.info("Kafkaya mesaj gonderildi {} {}", key, kafkaTransactionTopicMessageDto);
 
         }catch (Exception e){
@@ -32,5 +32,19 @@ public class KafkaSender {
 
         }
 
+    }
+
+    public void sendTransactionToUserService(String key, KafkaTransactionTopicMessageDto dto){
+        try{
+            String jsonMessageForKafka = gson.toJson(dto);
+            kafkaTemplate.send("kafka.topics.username-validation.sender", key, dto);
+            log.info("Kafkaya mesaj gonderildi {} {}", key, dto);
+
+        }catch (Exception e){
+
+            log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}" , key, dto);
+            throw new KafkaSendException("Kafka Send Exception. "+ key +" " + dto);
+
+        }
     }
 }

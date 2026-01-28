@@ -30,7 +30,7 @@ public class KafkaSender {
     public void sendTransaction(String key, KafkaTransactionTopicMessageDto kafkaTransactionTopicMessageDto) {
         try{
             String jsonMessageForKafka = gson.toJson(kafkaTransactionTopicMessageDto);
-            kafkaTemplate.send("banking-microservices.transaction-service.created.v1", key, kafkaTransactionTopicMessageDto);
+            kafkaTemplate.send("banking-microservices.transaction.transaction-service.created.v1", key, kafkaTransactionTopicMessageDto);
             log.info("Kafkaya mesaj gonderildi {} {}", key, kafkaTransactionTopicMessageDto);
 
         }catch (Exception e){
