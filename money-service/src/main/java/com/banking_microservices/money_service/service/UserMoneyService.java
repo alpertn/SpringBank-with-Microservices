@@ -26,7 +26,6 @@ public class UserMoneyService {
     }
 
 
-    @Transactional
     public UserMoney generateUser(String userId){
         log.info("generateUser isteği alındı. UserId: {}", gson.toJson(userId));
         try{
