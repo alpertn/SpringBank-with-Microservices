@@ -13,11 +13,14 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class Transaction {
 
+
     private String senderIban;
 
     private String receiverIban;
 
     private String receiverName;
+
+    private String receiverSurname;
 
     private BigDecimal amount;
 

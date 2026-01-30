@@ -62,4 +62,33 @@ public class KafkaSender {
 
         }
     }
+    public void sendCreateUserError(String key, KafkaTransactionTopicMessageDto dto){
+
+        try{
+            String jsonMessageForKafka = gson.toJson(dto);
+            kafkaTemplate.send("${kafka.topics.create-user.error}", key, dto);
+            log.info("Kafkaya mesaj gonderildi {} {}", key, dto);
+
+        }catch (Exception e){
+
+            log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}" , key, dto);
+            throw new KafkaSendException("Kafka Send Exception. "+ key +" " + dto);
+
+        }
+    }
+
+    public void sendCreateUserSuccess(String key, KafkaTransactionTopicMessageDto dto){
+
+        try{
+            String jsonMessageForKafka = gson.toJson(dto);
+            kafkaTemplate.send("${kafka.topics.create-user.sender}", key, dto);
+            log.info("Kafkaya mesaj gonderildi {} {}", key, dto);
+
+        }catch (Exception e){
+
+            log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}" , key, dto);
+            throw new KafkaSendException("Kafka Send Exception. "+ key +" " + dto);
+
+        }
+    }
 }

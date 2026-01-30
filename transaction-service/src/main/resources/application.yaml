@@ -4,10 +4,58 @@ spring:
   kafka:
     bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}
     producer:
-      # Key'ler her zaman String'dir
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      # Value'ları Object olarak (JSON) yollamak istiyorsan bunu eklemelisin:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
+kafka:
+  topics:
+    transaction:
+      listener: ${KAFKA_TRANSACTION_TOPIC_LISTENER:banking-microservices.transaction.transaction-service.success.v1}
+      sender: ${KAFKA_TRANSACTION_TOPIC_SENDER:banking-microservices.transaction.transaction-service.created.v1}
+      error: ${KAFKA_TRANSACTION_TOPIC_ERROR:banking-microservices.transaction.transaction-service.error.v1}
 
 
+server:
+  port: ${TRANSACTION_SERVICE_PORT_NUMBER:8999}
+
+cloud:
+  kubernetes:
+    discovery:
+      enabled: true
+
+datasource:
+  url: jdbc:postgresql://${POSTGRES_HOST:postgres}:${POSTGRES_PORT:5432}/${POSTGRES_DB:banking_money}
+  username: ${POSTGRES_USER:banking_admin}
+  password: ${POSTGRES_PASSWORD:local_password}
+  driver-class-name: org.postgresql.Driver
+  hikari:
+    maximum-pool-size: 10
+    minimum-idle: 5
+
+jpa:
+  hibernate:
+    ddl-auto: update
+  show-sql: false
+  properties:
+    hibernate:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: BASIC
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+  level:
+    root: INFO

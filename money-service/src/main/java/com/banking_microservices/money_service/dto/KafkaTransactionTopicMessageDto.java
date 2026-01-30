@@ -17,6 +17,12 @@ public class KafkaTransactionTopicMessageDto {
     private String eventUUID;
 
     @Builder.Default
+    private String name = null;
+
+    @Builder.Default
+    private String surname = null;
+
+    @Builder.Default
     private String senderUserId = null;
 
     @Builder.Default
