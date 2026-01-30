@@ -2,7 +2,7 @@ package com.banking_microservices.transaction_service.controller;
 
 import com.banking_microservices.transaction_service.dto.Transaction;
 import com.banking_microservices.transaction_service.kafka.KafkaSender;
-import com.banking_microservices.transaction_service.service.service;
+import com.banking_microservices.transaction_service.service.TransactionService;
 import com.google.gson.Gson;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -21,16 +21,17 @@ import java.util.Map;
 public class controller {
     private final KafkaSender kafkaSender;
     private final Gson gson = new Gson();
-    private service service;
+    private TransactionService transactionService;
 
-    public controller(KafkaSender kafkaSender, service service) {
+    public controller(KafkaSender kafkaSender, TransactionService TransactionService) {
         this.kafkaSender = kafkaSender;
-        this.service = service;
+        this.transactionService = TransactionService;
     }
 
-    @PostMapping
+
+    @PostMapping("/create/transaction")
     public ResponseEntity<?> transactionEntity(@Valid @RequestBody Transaction data){
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("Status",1));
-    }
+        transactionService.createTransaction(data);
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("Status",1));    }
 }

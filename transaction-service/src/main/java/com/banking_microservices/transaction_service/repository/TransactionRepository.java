@@ -8,7 +8,7 @@
     import java.util.List;
 
     @Repository
-    public interface repository extends JpaRepository<transaction, String> {
+    public interface TransactionRepository extends JpaRepository<transaction, String> {
 
         List<transaction> findBySenderUserId(String senderUserId);
 
@@ -21,5 +21,7 @@
         List<transaction> findByLocalDateTimeBetweenOrderByLocalDateTimeDesc(LocalDateTime startDate, LocalDateTime endDate);
 
         List<transaction> findBySenderUserIdAndLocalDateTimeBetween(String senderUserId, LocalDateTime startDate, LocalDateTime endDate);
+
+        boolean existsByEventId(String eventid);
 
     }

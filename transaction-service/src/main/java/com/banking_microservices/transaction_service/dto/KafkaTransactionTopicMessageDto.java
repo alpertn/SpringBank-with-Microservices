@@ -16,13 +16,13 @@ import java.time.LocalDateTime;
 public class KafkaTransactionTopicMessageDto {
 
     @UuidGenerator
-    private String eventUUID = UUID.randomUUID().toString();
+    private String eventUUID; //= UUID.randomUUID().toString()
 
     @Builder.Default
-    private String name = null;
+    private String receiverName = null;
 
     @Builder.Default
-    private String surname = null;
+    private String receiverSurname = null;
 
     @Builder.Default
     private String senderUserId = null;
@@ -38,7 +38,8 @@ public class KafkaTransactionTopicMessageDto {
 
     private BigDecimal money;
 
-    private String transactionType;
+    @Builder.Default
+    private String transactionType = "TRANSACTION'";
 
     @Builder.Default
     private String description = null;

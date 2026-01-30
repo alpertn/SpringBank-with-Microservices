@@ -6,10 +6,10 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>4.0.1</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/> <!-- lookup parent from TransactionRepository -->
 	</parent>
 	<groupId>com.banking-microservices</groupId>
-	<artifactId>transaction-service</artifactId>
+	<artifactId>transaction-TransactionService</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>transaction-service</name>
 	<description>Demo project for Spring Boot</description>

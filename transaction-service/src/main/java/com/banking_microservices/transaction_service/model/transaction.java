@@ -26,8 +26,12 @@ public class transaction {
     @UuidGenerator
     private String id;
 
+    private String eventId;
     @Builder.Default
-    private String eventId = null;
+    private String receiverName = null;
+
+    @Builder.Default
+    private String receiverSurname = null;
 
     @Builder.Default
     private String senderUserId = null;
