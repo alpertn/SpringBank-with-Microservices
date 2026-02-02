@@ -32,7 +32,9 @@
     <h4>5 - Container Docker image destekli</h4>
     <h4>6 - Gelismis Exception Handling</h4>
     <h4>7 - Redis</h4>
-    <h4>7 - Rate Limitting</h4>
-    <h4>7 - Global Exception Handling</h4>
+    <h4>8 - Rate Limitting</h4>
+    <h4>9 - Global Exception Handling</h4>
+    <h4>10 - KeyCloack ile token dogrulama</h4>
+
     
 </div>

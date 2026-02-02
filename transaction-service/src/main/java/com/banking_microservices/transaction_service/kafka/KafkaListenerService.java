@@ -5,14 +5,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class KafkaListenerService {
+    private final Gson gson = new GsonBuilder().serializeNulls().create();
     private final TransactionService TransactionService;
 
     public KafkaListenerService(TransactionService TransactionService) {
         this.TransactionService = TransactionService;
     }
 
-    //GsonBuilder().serializeNulls()
-
+    @KafkaListener
 
 
 }
