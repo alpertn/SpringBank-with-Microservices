@@ -1,8 +1,6 @@
-
 spring:
   application:
     name: gateway
 
 server:
-  port: 8080
-
+  port: ${GATEWAY_PORT_NUMBER:8082}

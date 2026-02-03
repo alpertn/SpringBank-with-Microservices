@@ -15,7 +15,7 @@ kafka:
 
 
 server:
-  port: 8082
+  port: ${MONEY_SERVICE_PORT_NUMBER:8082}
 
 spring:
   application:

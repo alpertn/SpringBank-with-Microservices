@@ -1,3 +1,6 @@
+server:
+  port: ${TRANSACTION_SERVICE_PORT_NUMBER:8083}
+
 spring:
   application:
     name: transaction-service
@@ -15,8 +18,7 @@ kafka:
       error: ${KAFKA_TRANSACTION_TOPIC_ERROR:banking-microservices.transaction.transaction-service.error.v1}
 
 
-server:
-  port: ${TRANSACTION_SERVICE_PORT_NUMBER:8999}
+
 
 cloud:
   kubernetes:

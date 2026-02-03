@@ -1,3 +1,7 @@
+server:
+  port: ${USER_SERVICE_PORT_NUMBER:8081}
+
+
 kafka:
   topics:
     create-user:
@@ -10,8 +14,7 @@ kafka:
       error: ${KAFKA_USERNAME_VALIDATION_LISTENER:banking-microservices.username-validation.money-service.error.v1}
 
 
-server:
-  port: 8083
+
 
 spring:
   application:
