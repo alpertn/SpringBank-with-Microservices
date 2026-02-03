@@ -158,7 +158,6 @@ spec:
               value: http://zipkin:9411 # SERVICE DISCOVERY GIBI BURAYI ARIYOR VE BULUYOR VE VERILER ZIPKININ BURASINA GIDIYOR HEM ZIPKINE GIDER HEMDE BURAYA GIDER
             - name: MANAGEMENT_TRACING_SAMPLING_PROBABILITY
               value: "1.0"
-            # OZEL VALUELER
             # PORT
             - name: TRANSACTION_SERVICE_PORT_NUMBER
               value: "8083"
