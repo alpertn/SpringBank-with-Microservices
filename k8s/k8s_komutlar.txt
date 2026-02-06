@@ -1,0 +1,912 @@
+================================================================================
+                    KUBERNETES KOMUT REHBERİ
+================================================================================
+
+--------------------------------------------------------------------------------
+KAYNAK OLUSTURMA
+--------------------------------------------------------------------------------
+
+# YAML dosyasindan kaynak olustur
+kubectl apply -f k8s/01-base.yaml
+
+# Dizindeki tum YAML'lari uygula
+kubectl apply -f k8s/
+
+NOT: apply komutu hem olusturur hem gunceller (idempotent)
+
+--------------------------------------------------------------------------------
+KAYNAKLARI GORUNTULEME - Genel Bakis
+--------------------------------------------------------------------------------
+
+# Namespace'deki tum kaynaklari göster
+kubectl get all -n banking-microservices
+
+# Tum namespace'lerdeki kaynaklar (kisa hali)
+kubectl get all -A
+
+# YAML dosyasindaki kaynaklarin durumunu goster
+kubectl get -f k8s/01-base.yaml
+
+NOT: "all" pod, service, deployment gibi temel kaynaklari kapsar
+NOT: get -f ile YAML'daki tum kaynaklarin durumunu gorebilirsiniz
+
+--------------------------------------------------------------------------------
+POD DURUMLARINI GORME
+--------------------------------------------------------------------------------
+
+# Pod'lari listele
+kubectl get pods -n banking-microservices
+
+# Tum pod'lari listele (tum namespace'ler)
+kubectl get pods -A
+
+# Detayli cikti (IP, Node bilgileri)
+kubectl get pods -o wide -n banking-microservices
+
+# Surekli izle (canli takip)
+kubectl get pods -n banking-microservices -w
+
+NOT: -w (watch) ile degisiklikler anlik gorulur
+NOT: Pod durumlari: Running, Pending, CrashLoopBackOff, Error
+
+--------------------------------------------------------------------------------
+DEPLOYMENT, SERVICE, CONFIGMAP GORME
+--------------------------------------------------------------------------------
+
+# Deployment'lari goster
+kubectl get deployments -n banking-microservices
+kubectl get deploy -n banking-microservices      # kisa hali
+
+# Service'leri goster
+kubectl get services -n banking-microservices
+kubectl get svc -n banking-microservices          # kisa hali
+
+# ConfigMap'leri goster
+kubectl get configmaps -n banking-microservices
+kubectl get cm -n banking-microservices           # kisa hali
+
+# Namespace'leri goster
+kubectl get namespaces
+kubectl get ns                                     # kisa hali
+
+NOT: get komutu her zaman liste halinde gosterir
+
+--------------------------------------------------------------------------------
+DETAYLI BILGI ALMA
+--------------------------------------------------------------------------------
+
+# Pod detaylarini goster
+kubectl describe pod postgres-xyz123 -n banking-microservices
+
+# Deployment detaylarini goster
+kubectl describe deployment postgres -n banking-microservices
+
+# Service detaylarini goster
+kubectl describe service postgres -n banking-microservices
+
+# YAML dosyasindaki tum kaynaklarin detayini goster
+kubectl describe -f k8s/01-base.yaml
+
+NOT: describe komutu event'leri, hatalari, config'i gosterir
+NOT: Sorun gidermede ilk bakilacak komut!
+
+--------------------------------------------------------------------------------
+LOGLARI GORME
+--------------------------------------------------------------------------------
+
+# Tek pod log'unu goster
+kubectl logs postgres-xyz123 -n banking-microservices
+
+# Tum pod'larin log'unu goster (deployment uzerinden)
+kubectl logs deployment/postgres -n banking-microservices
+
+# Tum pod'larin log'unu goster (label ile)
+kubectl logs -l app=postgres -n banking-microservices
+
+# Son 100 satiri goster
+kubectl logs postgres-xyz123 -n banking-microservices --tail=100
+
+# Canli takip et (tail -f gibi)
+kubectl logs -f postgres-xyz123 -n banking-microservices
+
+# Onceki calismanin log'u (crash olmussa)
+kubectl logs postgres-xyz123 -n banking-microservices --previous
+
+# Tum deployment'larin log'larini goster
+kubectl logs -l app -n banking-microservices --all-containers=true
+
+NOT: -f (follow) ile canli log akisi izlenir
+NOT: -l ile label'a gore tum pod'larin log'u gorunur
+NOT: --previous ile crash olmadan onceki durumu gorursunuz
+
+--------------------------------------------------------------------------------
+TEK POD YONETIMI - Pod Silme
+--------------------------------------------------------------------------------
+
+# Belirli bir pod'u sil
+kubectl delete pod postgres-xyz123 -n banking-microservices
+
+# Pod'u zorla sil (hemen)
+kubectl delete pod postgres-xyz123 -n banking-microservices --force --grace-period=0
+
+NOT: Deployment varsa yeni pod otomatik olusur
+NOT: --force dikkatli kullanin, data kaybi riski var
+
+--------------------------------------------------------------------------------
+TEK POD YONETIMI - Pod Restart
+--------------------------------------------------------------------------------
+
+# Yontem 1: Tek pod'u sil (Deployment yenisini olusturur)
+kubectl delete pod postgres-xyz123 -n banking-microservices
+
+# Yontem 2: Tek deployment'i restart et (o deployment'in tum pod'lari yeniden baslar)
+kubectl rollout restart deployment postgres -n banking-microservices
+
+# Yontem 3: Replica sayisini 0 yap, sonra tekrar artir (tek deployment icin)
+kubectl scale deployment postgres --replicas=0 -n banking-microservices
+kubectl scale deployment postgres --replicas=1 -n banking-microservices
+
+NOT: Kubernetes'te direkt "restart" komutu yok, silme ile restart yapilir
+NOT: rollout restart en temiz yontemdir, downtime minimumdir
+NOT: Tek pod degil, deployment bazinda restart yapilir
+
+--------------------------------------------------------------------------------
+TUM PODLARI YONETME
+--------------------------------------------------------------------------------
+
+# Tum pod'lari listele
+kubectl get pods --all-namespaces
+kubectl get pods -A
+
+# Belirli namespace'teki tum pod'lari sil
+kubectl delete pods --all -n banking-microservices
+
+# Tum namespace'lerdeki pod'lari sil (DIKKAT!)
+kubectl delete pods --all -A
+
+# Tum pod'larin log'larini goster (label ile)
+kubectl logs -l app=postgres -n banking-microservices --all-containers=true
+
+# Namespace'teki tum deployment'lari restart et
+kubectl rollout restart deployment -n banking-microservices
+
+# Tum namespace'lerdeki tum deployment'lari restart et
+kubectl get deployments -A -o name | xargs -I {} kubectl rollout restart {}
+
+# Belirli deployment'i restart et
+kubectl rollout restart deployment postgres -n banking-microservices
+
+# Tum deployment'larin restart durumunu izle
+kubectl rollout status deployment -n banking-microservices
+
+NOT: --all tum pod'lari siler
+NOT: Deployment varsa pod'lar tekrar olusur
+NOT: -A tum namespace'lerde islem yapar
+NOT: rollout restart deployment ile tum deployment'lar yeniden baslar
+
+--------------------------------------------------------------------------------
+TEK POD YONETIMI - Pod'a Baglanma
+--------------------------------------------------------------------------------
+
+# Pod icinde bash ac
+kubectl exec -it postgres-xyz123 -n banking-microservices -- bash
+
+# Pod icinde komut calistir
+kubectl exec -it postgres-xyz123 -n banking-microservices -- psql -U banking_admin
+
+NOT: -it interaktif terminal acmak icin gerekli
+NOT: -- dan sonraki kisim pod icinde calisacak komut
+
+--------------------------------------------------------------------------------
+KAYNAKLARI SILME - 1. Namespace ile Silme (ONERILEN)
+--------------------------------------------------------------------------------
+
+# Namespace'i sil (icindeki tum kaynaklar otomatik silinir)
+kubectl delete namespace banking-microservices
+
+# Silme islemini takip et
+kubectl get namespace banking-microservices
+
+NOT: En temiz ve hizli yontem
+NOT: Namespace silinince pod, service, deployment her sey gider
+
+--------------------------------------------------------------------------------
+KAYNAKLARI SILME - 2. YAML Dosyasi ile Silme
+--------------------------------------------------------------------------------
+
+# YAML'da tanimli tum kaynaklari sil
+kubectl delete -f k8s/01-base.yaml
+
+# Birden fazla dosya varsa (dizindeki tum YAML'lar)
+kubectl delete -f k8s/
+
+# Belirli YAML dosyalarini sil
+kubectl delete -f k8s/01-base.yaml -f k8s/02-services.yaml
+
+# YAML dosyasindaki kaynaklari zorla sil (hemen)
+kubectl delete -f k8s/01-base.yaml --force --grace-period=0
+
+NOT: apply'in tersi, YAML'daki her seyi siler
+NOT: Dizin belirtirseniz icindeki tum .yaml ve .yml dosyalari silinir
+NOT: --force ile aninda silme yapilir (dikkatli kullanin)
+
+--------------------------------------------------------------------------------
+YAML DOSYASI ILE RESTART
+--------------------------------------------------------------------------------
+
+# YAML'daki tek bir deployment'i restart et
+kubectl rollout restart deployment postgres -n banking-microservices
+
+# YAML'daki belirli deployment'lari tek tek restart et
+kubectl rollout restart deployment postgres -n banking-microservices
+kubectl rollout restart deployment redis -n banking-microservices
+kubectl rollout restart deployment kafka -n banking-microservices
+
+# Namespace'teki tum deployment'lari restart et (YAML'dakilerin hepsi)
+kubectl rollout restart deployment -n banking-microservices
+
+# Tum namespace'lerdeki tum deployment'lari restart et
+kubectl get deployments -A -o name | xargs -I {} kubectl rollout restart {}
+
+# YAML'i silip tekrar apply et (tam yeniden olusturma - en radikal)
+kubectl delete -f k8s/01-base.yaml
+kubectl apply -f k8s/01-base.yaml
+
+# Dizindeki tum YAML'lari silip tekrar apply et
+kubectl delete -f k8s/
+kubectl apply -f k8s/
+
+# Restart durumunu izle (tek deployment)
+kubectl rollout status deployment postgres -n banking-microservices
+
+# Tum deployment'larin restart durumunu izle
+kubectl rollout status deployment -n banking-microservices
+
+NOT: rollout restart deployment ile deployment'lar yeniden baslatilir
+NOT: Silip tekrar apply ile tam temiz baslangiç yapilir (daha uzun surer)
+NOT: rollout status ile restart ilerlmesini izleyebilirsiniz
+NOT: Namespace'teki tum deployment'lari restart = o namespace'teki her sey yeniden baslar
+
+--------------------------------------------------------------------------------
+YAML DOSYASI ILE GUNCELLEME
+--------------------------------------------------------------------------------
+
+# YAML dosyasini duzenle ve tekrar uygula
+kubectl apply -f k8s/01-base.yaml
+
+# YAML dosyasini uygula ve degisiklikleri goster
+kubectl apply -f k8s/01-base.yaml --dry-run=client
+
+# YAML dosyasindaki farkliliklari goster (uygulamadan)
+kubectl diff -f k8s/01-base.yaml
+
+# YAML dosyasini zorla uygula (override)
+kubectl apply -f k8s/01-base.yaml --force
+
+NOT: apply mevcut kaynaklari gunceller, yok ise olusturur
+NOT: --dry-run ile test edebilirsiniz (gercekte uygulanmaz)
+NOT: diff ile ne degisecegini onceden gorebilirsiniz
+
+--------------------------------------------------------------------------------
+KAYNAKLARI SILME - 3. Tek Tek Manuel Silme
+--------------------------------------------------------------------------------
+
+# Belirli deployment'i sil
+kubectl delete deployment postgres -n banking-microservices
+
+# Belirli service'i sil
+kubectl delete service postgres -n banking-microservices
+
+NOT: Sadece bir kaynagi silmek icin kullanilir
+NOT: Deployment silinince pod'lar da silinir
+
+--------------------------------------------------------------------------------
+KAYNAKLARI SILME - 4. Tum Kaynaklari Toplu Silme
+--------------------------------------------------------------------------------
+
+# Tum deployment'lari sil
+kubectl delete deployments --all -n banking-microservices
+
+# Tum service'leri sil
+kubectl delete services --all -n banking-microservices
+
+# Tum configmap'leri sil
+kubectl delete configmaps --all -n banking-microservices
+
+# Tum pod'lari sil
+kubectl delete pods --all -n banking-microservices
+
+# Belirli namespace'teki her seyi sil
+kubectl delete all --all -n banking-microservices
+
+NOT: --all tum kaynaklari siler, dikkatli kullanin
+NOT: "delete all --all" pod, service, deployment her seyi siler
+
+--------------------------------------------------------------------------------
+IZLEME VE DURUM KONTROLU
+--------------------------------------------------------------------------------
+
+# Pod durumlarini goster
+kubectl get pods -n banking-microservices
+
+# Tum pod durumlarini goster
+kubectl get pods -A
+
+# Hatali pod'lari filtrele
+kubectl get pods -n banking-microservices --field-selector=status.phase!=Running
+
+# Pod event'lerini goster (en yeni ustte)
+kubectl get events -n banking-microservices --sort-by='.lastTimestamp'
+
+# YAML dosyasindaki kaynaklarin event'lerini goster
+kubectl get events -n banking-microservices
+
+# Pod'un portunu local'e yonlendir
+kubectl port-forward service/postgres 5432:5432 -n banking-microservices
+
+NOT: Pod durumlari: Running, Pending, CrashLoopBackOff, Error
+NOT: port-forward ile localhost'tan erisim saglanir
+
+--------------------------------------------------------------------------------
+SORUN GIDERME
+--------------------------------------------------------------------------------
+
+# Pod neden calismiyor? (3 adim)
+kubectl describe pod postgres-xyz123 -n banking-microservices
+kubectl logs postgres-xyz123 -n banking-microservices
+kubectl get events -n banking-microservices
+
+# YAML dosyasindaki tum kaynaklarin durumunu kontrol et
+kubectl get -f k8s/01-base.yaml
+kubectl describe -f k8s/01-base.yaml
+
+# Pod'un YAML'ini goster
+kubectl get pod postgres-xyz123 -n banking-microservices -o yaml
+
+# Deployment'in YAML'ini goster
+kubectl get deployment postgres -n banking-microservices -o yaml
+
+NOT: Sorun giderme sirasi: describe -> logs -> events
+
+
+================================================================================
+                      DOCKER KOMUT REHBERİ
+================================================================================
+
+--------------------------------------------------------------------------------
+CONTAINER LISTELEME VE GORUNTULEME
+--------------------------------------------------------------------------------
+
+# Calisan container'lari listele
+docker ps
+
+# Tum container'lari listele (duran dahil)
+docker ps -a
+
+# Container detaylarini goster
+docker inspect container_adi
+
+# Container kaynak kullanimini goster
+docker stats
+
+# Tum container'larin kaynak kullanimini goster
+docker stats --all
+
+# Sadece container ID'lerini listele
+docker ps -q
+
+NOT: ps = process status (calisanlari gosterir)
+NOT: -a = all (tum container'lar)
+NOT: -q = quiet (sadece ID'ler)
+
+--------------------------------------------------------------------------------
+CONTAINER BASLATMA VE DURDURMA
+--------------------------------------------------------------------------------
+
+# Container calistir
+docker run -d --name postgres-db -p 5432:5432 postgres:15-alpine
+
+# Container'i baslat
+docker start postgres-db
+
+# Tum durdurulmus container'lari baslat
+docker start $(docker ps -aq)
+
+# Container'i durdur
+docker stop postgres-db
+
+# Tum container'lari durdur
+docker stop $(docker ps -q)
+
+# Container'i yeniden baslat (tek container)
+docker restart postgres-db
+
+# Tum container'lari yeniden baslat
+docker restart $(docker ps -q)
+
+# Tum container'lari yeniden baslat (duran dahil)
+docker restart $(docker ps -aq)
+
+# Container'i zorla durdur (hemen)
+docker kill postgres-db
+
+# Tum container'lari zorla durdur
+docker kill $(docker ps -q)
+
+NOT: run = ilk kez olustur ve calistir
+NOT: start = mevcut container'i baslat
+NOT: restart = tek veya tum container'lari yeniden baslat
+NOT: -d = detached mode (arka planda calisir)
+NOT: -p = port mapping (host:container)
+NOT: $(docker ps -q) = calisan container ID'leri
+NOT: $(docker ps -aq) = tum container ID'leri (duran dahil)
+
+--------------------------------------------------------------------------------
+CONTAINER LOGLARI
+--------------------------------------------------------------------------------
+
+# Container log'unu goster
+docker logs postgres-db
+
+# Tum container'larin log'unu goster
+docker ps -q | xargs -I {} docker logs {}
+
+# Son 100 satiri goster
+docker logs --tail 100 postgres-db
+
+# Canli takip et
+docker logs -f postgres-db
+
+# Timestamp'li log
+docker logs -t postgres-db
+
+# Belirli zamandan sonraki log'lar
+docker logs --since 30m postgres-db
+
+NOT: -f = follow (canli izle)
+NOT: -t = timestamps (zaman damgasi)
+NOT: --since = belirli zamandan beri (30m, 1h, 2d)
+
+--------------------------------------------------------------------------------
+CONTAINER'A BAGLANMA VE KOMUT CALISTIRMA
+--------------------------------------------------------------------------------
+
+# Container icinde bash ac
+docker exec -it postgres-db bash
+
+# Container icinde komut calistir
+docker exec -it postgres-db psql -U banking_admin
+
+# Calisan processleri goster
+docker top postgres-db
+
+NOT: exec = calisirken icine girer
+NOT: -it = interaktif terminal
+
+--------------------------------------------------------------------------------
+CONTAINER SILME
+--------------------------------------------------------------------------------
+
+# Tek container sil (once durdurmali)
+docker rm postgres-db
+
+# Container'i zorla sil (calisiyorken)
+docker rm -f postgres-db
+
+# Tum durdurulmus container'lari sil
+docker container prune
+
+# Belirli container'lari sil
+docker rm container1 container2 container3
+
+# Tum container'lari durdur ve sil
+docker stop $(docker ps -q)
+docker rm $(docker ps -aq)
+
+# Tek komutta: tum container'lari zorla sil
+docker rm -f $(docker ps -aq)
+
+NOT: rm = remove (siler)
+NOT: -f = force (zorla)
+NOT: prune = kullanilmayanlari temizle
+NOT: $(docker ps -aq) = tum container ID'leri (duran dahil)
+
+--------------------------------------------------------------------------------
+IMAGE YONETIMI
+--------------------------------------------------------------------------------
+
+# Image'lari listele
+docker images
+
+# Tum image'lari listele (ara katmanlar dahil)
+docker images -a
+
+# Image indir
+docker pull postgres:15-alpine
+
+# Image sil
+docker rmi postgres:15-alpine
+
+# Kullanilmayan image'lari sil
+docker image prune
+
+# Tum kullanilmayan image'lari sil (container'da olmayan)
+docker image prune -a
+
+# Tum image'lari sil
+docker rmi $(docker images -q)
+
+# Tum image'lari zorla sil
+docker rmi -f $(docker images -q)
+
+NOT: rmi = remove image
+NOT: pull = image'i registry'den indir
+NOT: prune = kullanilmayanlari temizle
+NOT: -a = all (hepsi)
+
+--------------------------------------------------------------------------------
+VOLUME YONETIMI
+--------------------------------------------------------------------------------
+
+# Volume'lari listele
+docker volume ls
+
+# Volume olustur
+docker volume create postgres-data
+
+# Volume detaylarini goster
+docker volume inspect postgres-data
+
+# Volume sil
+docker volume rm postgres-data
+
+# Kullanilmayan volume'lari sil
+docker volume prune
+
+# Tum volume'lari sil
+docker volume rm $(docker volume ls -q)
+
+# Tum volume'lari zorla sil
+docker volume rm -f $(docker volume ls -q)
+
+NOT: Volume = kalici data deposu
+NOT: Container silinse bile volume kalir
+NOT: prune sadece kullanilmayanlari siler
+
+--------------------------------------------------------------------------------
+NETWORK YONETIMI
+--------------------------------------------------------------------------------
+
+# Network'leri listele
+docker network ls
+
+# Network olustur
+docker network create banking-network
+
+# Network detaylarini goster
+docker network inspect banking-network
+
+# Network sil
+docker network rm banking-network
+
+# Kullanilmayan network'leri sil
+docker network prune
+
+# Tum custom network'leri sil (default'lar kalir)
+docker network rm $(docker network ls -q)
+
+NOT: Default network'ler: bridge, host, none
+NOT: Custom network DNS cozumlemesi saglar
+
+--------------------------------------------------------------------------------
+DOCKER COMPOSE KOMUTLARI
+--------------------------------------------------------------------------------
+
+# Servisleri baslat (arka planda)
+docker-compose up -d
+
+# Tum servisleri baslat ve log'lari goster
+docker-compose up
+
+# Servisleri durdur ve sil
+docker-compose down
+
+# Servisleri durdur (silmeden)
+docker-compose stop
+
+# Servisleri baslat
+docker-compose start
+
+# Tek servisi yeniden baslat
+docker-compose restart postgres
+
+# Tum servisleri yeniden baslat
+docker-compose restart
+
+# Belirli servisleri yeniden baslat
+docker-compose restart postgres redis kafka
+
+# Servisleri yeniden olustur (rebuild)
+docker-compose up -d --build
+
+# Servisleri zorla yeniden olustur
+docker-compose up -d --force-recreate
+
+# Tum servislerin log'larini goster
+docker-compose logs
+
+# Tum servislerin log'larini canli takip et
+docker-compose logs -f
+
+# Belirli servisin log'u
+docker-compose logs -f postgres
+
+# Servislerin durumunu goster
+docker-compose ps
+
+# Volume'lar ile birlikte sil
+docker-compose down -v
+
+# Image'lar ile birlikte sil
+docker-compose down --rmi all
+
+# Her seyi sil (container, volume, image, network)
+docker-compose down -v --rmi all
+
+# Compose dosyasini yeniden yukle ve restart (tam restart)
+docker-compose down
+docker-compose up -d
+
+# Sadece degisen servisleri yeniden olustur
+docker-compose up -d --build
+
+NOT: docker-compose.yml dosyasi gerekli
+NOT: -d = detached (arka plan)
+NOT: down = durdur ve sil
+NOT: restart = servisleri yeniden baslat (tek veya tumu)
+NOT: -f = follow (log'larda canli takip)
+NOT: --build = image'lari yeniden build et
+NOT: --force-recreate = her seyi bastan olustur
+
+--------------------------------------------------------------------------------
+DOCKER COMPOSE - YAML DOSYASI ILE YONETIM
+--------------------------------------------------------------------------------
+
+# Compose dosyasini uygula (ilk kez)
+docker-compose -f docker-compose.yml up -d
+
+# Belirli compose dosyasini kullan
+docker-compose -f docker-compose.prod.yml up -d
+
+# Birden fazla compose dosyasi kullan
+docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d
+
+# Compose dosyasindaki servisleri sil
+docker-compose -f docker-compose.yml down
+
+# Compose dosyasindaki tek servisi restart
+docker-compose -f docker-compose.yml restart postgres
+
+# Compose dosyasindaki tum servisleri restart
+docker-compose -f docker-compose.yml restart
+
+# Compose dosyasindaki tum servislerin log'u
+docker-compose -f docker-compose.yml logs -f
+
+# Compose dosyasini validate et (kontrol et)
+docker-compose -f docker-compose.yml config
+
+# Compose dosyasindaki degisiklikleri uygula (tam restart)
+docker-compose -f docker-compose.yml down
+docker-compose -f docker-compose.yml up -d
+
+# Compose dosyasini zorla yeniden olustur
+docker-compose -f docker-compose.yml up -d --force-recreate
+
+NOT: -f ile farkli compose dosyalari kullanabilirsiniz
+NOT: config ile YAML syntax hatalarini kontrol edebilirsiniz
+NOT: Birden fazla -f ile dosyalari birlestirip kullanabilirsiniz
+NOT: restart ile tek veya tum servisler yeniden baslatilir
+
+--------------------------------------------------------------------------------
+DOCKER SISTEM TEMIZLIGI
+--------------------------------------------------------------------------------
+
+# Kullanilmayan her seyi sil (container, network, image)
+docker system prune
+
+# Volume'lar dahil her seyi sil
+docker system prune -a --volumes
+
+# Onaysiz sil (dikkatli!)
+docker system prune -a --volumes -f
+
+# Disk kullanimini goster
+docker system df
+
+# Detayli disk kullanimi
+docker system df -v
+
+NOT: prune = buyuk temizlik yapar
+NOT: -a = tum image'lar dahil
+NOT: --volumes = volume'lari da sil
+NOT: DIKKAT: Geri donusu yok!
+
+--------------------------------------------------------------------------------
+TUM CONTAINER'LARI YONETME
+--------------------------------------------------------------------------------
+
+# Tum container'lari listele
+docker ps -a
+
+# Tum calisan container'lari listele
+docker ps
+
+# Tum container'lari durdur
+docker stop $(docker ps -q)
+
+# Tum container'lari baslat
+docker start $(docker ps -aq)
+
+# Tum calisan container'lari yeniden baslat
+docker restart $(docker ps -q)
+
+# Tum container'lari yeniden baslat (duran dahil)
+docker restart $(docker ps -aq)
+
+# Tum container'lari zorla durdur
+docker kill $(docker ps -q)
+
+# Tum container'lari sil
+docker rm -f $(docker ps -aq)
+
+# Tum container'larin log'larini goster
+docker ps -q | xargs -I {} docker logs {}
+
+# Tum container'larin statslarini goster
+docker stats --all
+
+NOT: $(docker ps -q) = calisan container ID'leri
+NOT: $(docker ps -aq) = tum container ID'leri
+NOT: xargs = her ID icin komutu calistirir
+NOT: restart ile tum container'lar yeniden baslatilabilir
+
+--------------------------------------------------------------------------------
+CONTAINER KAYNAK SINIRLAMA
+--------------------------------------------------------------------------------
+
+# CPU ve Memory sinirli container
+docker run -d --name limited-app \
+  --cpus=1.5 \
+  --memory=512m \
+  nginx
+
+# Mevcut container'in kaynaklarini guncelle
+docker update --cpus=2 --memory=1g limited-app
+
+# Tum container'larin kaynaklarini guncelle
+docker ps -q | xargs -I {} docker update --memory=1g {}
+
+NOT: --cpus = CPU cekirdek sayisi
+NOT: --memory = RAM limiti (m=MB, g=GB)
+NOT: update = calisirken kaynagi degistirir
+
+--------------------------------------------------------------------------------
+DOCKER BUILD (IMAGE OLUSTURMA)
+--------------------------------------------------------------------------------
+
+# Dockerfile'dan image olustur
+docker build -t my-app:1.0 .
+
+# Cache kullanmadan build et
+docker build --no-cache -t my-app:1.0 .
+
+# Farkli Dockerfile ile build
+docker build -f Dockerfile.dev -t my-app:dev .
+
+NOT: -t = tag (isim:versiyon)
+NOT: . = build context (mevcut dizin)
+NOT: --no-cache = her seyi bastan olusturur
+
+--------------------------------------------------------------------------------
+SORUN GIDERME
+--------------------------------------------------------------------------------
+
+# Container neden calismiyor?
+docker logs container_adi
+docker inspect container_adi
+docker ps -a
+
+# Tum container'larin durumu
+docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+
+# Container icindeki processleri goster
+docker top container_adi
+
+# Container kaynak kullanimini goster
+docker stats container_adi
+
+# Container'in IP adresini ogren
+docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' container_adi
+
+# Tum Docker bilgilerini goster
+docker info
+
+# Tum container'larin IP'lerini goster
+docker ps -q | xargs -I {} docker inspect -f '{{.Name}} - {{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' {}
+
+NOT: inspect = tum detaylari JSON formatinda verir
+NOT: stats = canli kaynak kullanimi
+NOT: info = Docker sistem bilgileri
+
+
+================================================================================
+                         HIZLI KARSILASTIRMA
+================================================================================
+
+KUBERNETES                                  DOCKER
+--------------------------------------------------------------------------------
+kubectl apply -f file.yaml                  docker-compose up -d
+kubectl delete -f file.yaml                 docker-compose down
+kubectl get -f file.yaml                    docker-compose ps
+kubectl describe -f file.yaml               docker-compose config
+kubectl rollout restart deploy/postgres     docker-compose restart postgres
+kubectl rollout restart deploy -n ns        docker-compose restart
+kubectl get pods                            docker ps
+kubectl get pods -A                         docker ps -a
+kubectl logs pod-adi                        docker logs container-adi
+kubectl logs -f pod-adi                     docker logs -f container-adi
+kubectl logs deployment/app                 docker-compose logs app
+kubectl exec -it pod -- bash                docker exec -it container bash
+kubectl delete pod pod-adi                  docker rm -f container-adi
+kubectl delete pods --all -n ns             docker rm -f $(docker ps -aq)
+kubectl describe pod pod-adi                docker inspect container-adi
+kubectl get all                             docker ps -a && docker images
+
+
+================================================================================
+                           HIZLI HATIRLATMALAR
+================================================================================
+
+KUBERNETES:
+apply   = Olustur/Guncelle          delete  = Sil
+get     = Listele                   exec    = Baglan/Komut calistir
+describe= Detayli bilgi             logs    = Log'lari goster
+rollout restart = Yeniden baslat    scale   = Pod sayisini degistir
+diff    = Farkliliklari goster      --dry-run = Test et (uygulamadan)
+-f      = File (dosya belirt)       -n      = Namespace
+-w      = Watch (canli izle)        --all   = Hepsini
+-A      = All namespaces            -l      = Label selector
+
+DOCKER:
+run     = Olustur ve calistir       rm      = Container sil
+start   = Baslat                    rmi     = Image sil
+stop    = Durdur                    exec    = Komut calistir
+restart = Yeniden baslat            kill    = Zorla durdur
+logs    = Log'lari goster           prune   = Temizle
+ps      = Listele                   inspect = Detayli bilgi
+stats   = Kaynak kullanimi          top     = Processler
+-f      = Force/Follow/File         -a      = All (hepsi)
+-d      = Detached (arka plan)      -q      = Quiet (sadece ID)
+-it     = Interactive Terminal      -v      = Volume
+
+DOCKER COMPOSE:
+up      = Baslat                    down    = Durdur ve sil
+restart = Yeniden baslat            logs    = Log'lari goster
+ps      = Durum goster              config  = Validate et
+--build = Yeniden build et          --force-recreate = Bastan olustur
+-f      = File (compose dosyasi)    -d      = Detached mode
+
+TUM KAYNAKLARI SILME:
+Kubernetes: kubectl delete -f k8s/ VEYA kubectl delete namespace ns-adi
+Docker:     docker-compose down -v --rmi all VEYA docker system prune -a --volumes -f
+
+TEK CONTAINER/POD RESTART:
+Kubernetes: kubectl rollout restart deployment postgres -n ns VEYA kubectl delete pod pod-adi -n ns
+Docker:     docker restart container-adi VEYA docker-compose restart postgres
+
+TUM CONTAINER/POD RESTART:
+Kubernetes: kubectl rollout restart deployment -n ns VEYA kubectl delete -f file.yaml && kubectl apply -f file.yaml
+Docker:     docker restart $(docker ps -q) VEYA docker-compose restart
+
+================================================================================

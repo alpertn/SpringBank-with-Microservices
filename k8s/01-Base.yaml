@@ -26,7 +26,7 @@ metadata:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: Postgres-Database-Init-Configmap-Script
+  name: postgres-database-init-configmap
   namespace: banking-microservices
 data:
   # Postgres .sql ı gordugudne ve postgres'ı tanimladigimizda otomatik olarak calistirir GRANT ALL PRIVILEGES ON DATABASE full yetki verir dblere
@@ -53,7 +53,7 @@ apiVersion: apps/v1
 # Deployment Nasil calistirilacaginin configini yapar.
 kind: Deployment
 metadata:
-  name: Postgres
+  name: postgres
   namespace: banking-microservices
 # Spec: Specification yani information
 spec:
@@ -302,15 +302,15 @@ spec:
     spec:
       containers:
         - name: keycloak
-          image: quay.io/keycloak/keycloak:23.0 # Keycloak resmi image. Red Hat tarafindan gelistiriliyor.
+          image: quay.io/keycloak/keycloak:23.0
           args: ["start-dev"] # Development modu. Production'da start --optimized kullan ve veritabani bagla.
           ports:
             - containerPort: 8080 # Keycloak web arayuzu ve API bu portta calisir. Admin console, token endpoint vs. buradan erisiliyor.
           env:
             - name: KEYCLOAK_ADMIN # Keycloak admin paneline giris icin kullanici adi
-              value: admin
+              value: alper123
             - name: KEYCLOAK_ADMIN_PASSWORD # Admin sifresi. Production'da guvenli bir Secret kullan!
-              value: admin
+              value: alper123A
             - name: KC_HTTP_ENABLED # HTTP aktif. Production'da HTTPS kullan (KC_HTTPS_ENABLED).
               value: "true"
             - name: KC_HOSTNAME_STRICT # Hostname kontrolu kapali. Production'da true yap ve domain belirt.
