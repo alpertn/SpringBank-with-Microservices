@@ -41,6 +41,9 @@ spec:
             # Port Numarasi
             - name: USER_SERVICE_PORT_NUMBER
               value: "8081"
+            # --- KAFKA AYARLARI ---
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092
 
 #server:
 #  port: ${MONEY_SERVICE_PORT_NUMBER:8082}
@@ -102,6 +105,9 @@ spec:
             # Harici Zorunlu Olmayanlar
             - name: MONEY_SERVICE_PORT_NUMBER
               value: "8082"
+            # --- KAFKA AYARLARI ---
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092
 
 ---
 
@@ -161,6 +167,9 @@ spec:
             # PORT
             - name: TRANSACTION_SERVICE_PORT_NUMBER
               value: "8083"
+            # --- KAFKA AYARLARI ---
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092
 
 
 ---
@@ -220,9 +229,18 @@ spec:
               value: "6379"
             - name: SPRING_DATA_REDIS_HOST
               value: redis
+            # --- KEYCLOAK AYARLARI ---
+            - name: KEYCLOAK_SERVER_URL
+              value: http://keycloak:8080
+            - name: KEYCLOAK_REALM
+              value: banking
+            - name: KEYCLOAK_CLIENT_ID
+              value: banking-app
+            - name: KEYCLOAK_CLIENT_SECRET
+              value: secret123
             # --- ZIPKIN AYARLARI ---
             - name: SPRING_ZIPKIN_BASE_URL
-              value: http://zipkin:9411 # SERVICE DISCOVERY GIBI BURAYI ARIYOR VE BULUYOR VE VERILER ZIPKININ BURASINA GIDIYOR HEM ZIPKINE GIDER HEMDE BURAYA GIDER
+              value: http://zipkin:9411
             - name: MANAGEMENT_TRACING_SAMPLING_PROBABILITY
               value: "1.0"
 ---
@@ -283,14 +301,17 @@ spec:
               value: banking_admin
             - name: SPRING_R2DBC_PASSWORD
               value: local_password
+            # --- JWT TOKEN AYARI ---
+            - name: JWT_TOKEN_ISSUER_URI
+              value: http://keycloak:8080/realms/banking
             # --- ZIPKIN AYARLARI ---
             - name: SPRING_ZIPKIN_BASE_URL
-              value: http://zipkin:9411 # SERVICE DISCOVERY GIBI BURAYI ARIYOR VE BULUYOR VE VERILER ZIPKININ BURASINA GIDIYOR HEM ZIPKINE GIDER HEMDE BURAYA GIDER
+              value: http://zipkin:9411
             - name: MANAGEMENT_TRACING_SAMPLING_PROBABILITY
               value: "1.0"
             # Port
             - name: GATEWAY_PORT_NUMBER
-              value : "8095"
+              value: "8095"
 ---
 apiVersion: v1
 kind: Service
@@ -308,5 +329,64 @@ spec:
 ---
 
 #
+# Fraud-Service --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #
-#
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fraud-service
+  namespace: banking-microservices
+spec:
+  replicas: 1 # Kac tane pod calistirilacak. Production'da 2-3 yapilabilir yuk dagitimi icin.
+  selector:
+    matchLabels:
+      app: fraud-service # Bu deployment sadece app=fraud-service etiketli podlari yonetir. Selector ve labels eslesmelidir yoksa deployment calismaz.
+  template:
+    metadata:
+      labels:
+        app: fraud-service # Olusturdugumuz pod'a yapistirilacak etiket. Yukaridaki selector bunu ariyor.
+    spec:
+      containers:
+        - name: fraud-service
+          image: banking/fraud-service:1.0.0
+          imagePullPolicy: IfNotPresent # Yerel Docker'da varsa internete gitme. docker build yapildiginda localde olusur. Production'da Always kullan.
+          ports:
+            - containerPort: 8085 # Fraud-service Spring Boot uygulamasinin calistigi port. kubectl describe pod ile bu port gozukur.
+          env:
+            # Postgres Ayarlari
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres:5432/banking_fraud
+            - name: SPRING_DATASOURCE_USERNAME
+              value: banking_admin
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: local_password
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: update
+            # --- KAFKA AYARLARI ---
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092
+            # --- ZIPKIN AYARLARI ---
+            - name: SPRING_ZIPKIN_BASE_URL
+              value: http://zipkin:9411
+            - name: MANAGEMENT_TRACING_SAMPLING_PROBABILITY
+              value: "1.0"
+            # PORT
+            - name: FRAUD_SERVICE_PORT_NUMBER
+              value: "8085"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: fraud-service # Diger servisler fraud-service:8085 seklinde ulasir. Gateway bu servise istek gonderebilir fraud kontrolu icin.
+  namespace: banking-microservices
+spec:
+  selector:
+    app: fraud-service # app=fraud-service etiketli podlara gelen istekleri yonlendirir. Birden fazla pod varsa otomatik load balance yapar.
+  ports:
+    - port: 8085 # Service'in dinledigi port. Diger servisler bu porta istek atar.
+      targetPort: 8085 # Container icindeki porta yonlendirir. Spring Boot server.port ile ayni olmali.
+
+---

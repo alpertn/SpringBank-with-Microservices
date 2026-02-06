@@ -1,51 +1,57 @@
 server:
-  port: ${GATEWAY_PORT_NUMBER:8082}
+  port: ${GATEWAY_PORT_NUMBER:8095}
 
 spring:
   application:
     name: gateway
   cloud:
     gateway:
-      routes: # rota demek.
-        # Auth-Service icin rota
-        - id: auth-service # tamamen benim belirledigim alan
-          uri: ${AUTH_SERVICE_ROUTE_URI:http://auth-service:8084}
+      routes:
+        - id: auth-service
+          uri: ${AUTH_SERVICE_URL:http://auth-service:8084}
           predicates:
-            - Path/api/auth/** # bu gatewaya gonderilen istegi auth serviceye gonderir ve direkt gonderir. /api/auth yerine gelen tum istekler oldugu gubu http://auth-service:8084 ye gider. eger api/auth varsa yine oldugu gibi gider
+            - Path=/api/auth/**
 
-        # User Service Icin Routes
         - id: user-service
-          uri: ${USER_SERVICE_ROUTE_URI:http://user-service:8084}
+          uri: ${USER_SERVICE_URL:http://user-service:8081}
           predicates:
-            - Path/api/users/**
+            - Path=/api/users/**
 
-        # Money Service
         - id: money-service
-          uri: ${MONEY_SERVICE_ROUTE_URI:http://money-service:8082}
+          uri: ${MONEY_SERVICE_URL:http://money-service:8082}
           predicates:
             - Path=/api/accounts/**
 
-        # Transaction Service
         - id: transaction-service
-          uri: ${TRANSACTION_SERVICE_ROUTE_URI:http://transaction-service:8083}
+          uri: ${TRANSACTION_SERVICE_URL:http://transaction-service:8083}
           predicates:
             - Path=/api/transactions/**
 
   security:
     oauth2:
-      resourceserver: # kaynak sunucusu
-        jwt: # jwt token kullaniyorum
-          issuer-uri: ${JWT_TOKEN_ISSUER_URI:http://keycloak:8080/realms/banking-microservices} # tokeni ureten veren kaynak
+      resourceserver:
+        jwt:
+          issuer-uri: ${JWT_TOKEN_ISSUER_URI:http://keycloak:8080/realms/banking-microservices}
 
+  r2dbc:
+    url: ${SPRING_R2DBC_URL:r2dbc:postgresql://localhost:5432/banking}
+    username: ${SPRING_R2DBC_USERNAME:banking_admin}
+    password: ${SPRING_R2DBC_PASSWORD:local_password}
 
   data:
     redis:
       host: ${REDIS_HOST:localhost}
-      port: 6379
+      port: ${SPRING_DATA_REDIS_PORT:6379}
       repositories:
         enabled: false
-# Health check
+
+  zipkin:
+    base-url: ${SPRING_ZIPKIN_BASE_URL:http://localhost:9411}
+
 management:
+  tracing:
+    sampling:
+      probability: ${MANAGEMENT_TRACING_SAMPLING_PROBABILITY:1.0}
   endpoints:
     web:
       exposure:

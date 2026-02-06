@@ -12,8 +12,6 @@ kafka:
       sender: ${KAFKA_USERNAME_VALIDATION_SENDER:banking-microservices.username-validation.money-service.progress.v1}
       listener: ${KAFKA_USERNAME_VALIDATION_LISTENER:banking-microservices.username-validation.user-service.success.v1}
 
-
-
 server:
   port: ${MONEY_SERVICE_PORT_NUMBER:8082}
 
@@ -21,32 +19,31 @@ spring:
   application:
     name: money-service
   kafka:
-    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-
-cloud:
-  kubernetes:
-    discovery:
-      enabled: true
-
-datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST:postgres}:${POSTGRES_PORT:5432}/${POSTGRES_DB:banking_money}
-    username: ${POSTGRES_USER:banking_admin}
-    password: ${POSTGRES_PASSWORD:local_password}
+  cloud:
+    kubernetes:
+      discovery:
+        enabled: true
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/banking_money}
+    username: ${SPRING_DATASOURCE_USERNAME:banking_admin}
+    password: ${SPRING_DATASOURCE_PASSWORD:local_password}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
       minimum-idle: 5
-
-jpa:
+  jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
     show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  zipkin:
+    base-url: ${SPRING_ZIPKIN_BASE_URL:http://localhost:9411}
 
 feign:
   client:
@@ -57,6 +54,9 @@ feign:
         loggerLevel: BASIC
 
 management:
+  tracing:
+    sampling:
+      probability: ${MANAGEMENT_TRACING_SAMPLING_PROBABILITY:1.0}
   endpoints:
     web:
       exposure:

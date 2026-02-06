@@ -1,8 +1,24 @@
 server:
-  port: ${AUTH-SERVICE_PORT_NUMBER:8084}
-pring:
+  port: ${AUTH_SERVICE_PORT_NUMBER:8084}
+
+spring:
   application:
     name: auth-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/banking_auth}
+    username: ${SPRING_DATASOURCE_USERNAME:banking_admin}
+    password: ${SPRING_DATASOURCE_PASSWORD:local_password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+    show-sql: false
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+  zipkin:
+    base-url: ${SPRING_ZIPKIN_BASE_URL:http://localhost:9411}
 
 keycloak:
   server-url: ${KEYCLOAK_SERVER_URL:http://localhost:8080}
@@ -10,8 +26,10 @@ keycloak:
   client-id: ${KEYCLOAK_CLIENT_ID:banking-app}
   client-secret: ${KEYCLOAK_CLIENT_SECRET:secret123}
 
-# Actuator - Health check
 management:
+  tracing:
+    sampling:
+      probability: ${MANAGEMENT_TRACING_SAMPLING_PROBABILITY:1.0}
   endpoints:
     web:
       exposure:

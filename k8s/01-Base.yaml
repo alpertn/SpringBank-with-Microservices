@@ -1,3 +1,17 @@
+# Kubernet Icin Onemli Olanlar.
+### 1
+# spec (Specification) basligi ile type: LoadBalancer yazarsaniz uzaktan portunu yazarak erisilebilir. yazmazsaniz erisilemez.
+# Yapmazsan Otomatik olarak type : ClusterIP olarak isaretlenir buda mikroservisler arasinda iletiism icindir disariya acik degildir.
+# Gateway da LoadBalancer'dır ordan aldigi bilgileri ClusterIp olan veya olmayan mikroservislere yonlendrir.
+### 2
+## Dns ile haberlesme
+# metadata:
+#  name: keycloak
+# namespace: banking-microservice
+# Bu Seneryoda Dns ismi keycloack olucak ve diger mikroservisler keycloack:PORTNUMBER ile iletisim kurablecek buraya.
+
+
+
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -21,12 +35,14 @@ data:
     CREATE DATABASE banking_users;
     CREATE DATABASE banking_money;
     CREATE DATABASE banking_transactions;
+    CREATE DATABASE banking_fraud;
     CREATE DATABASE banking;
 
     GRANT ALL PRIVILEGES ON DATABASE banking_auth TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking_users TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking_money TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking_transactions TO banking_admin;
+    GRANT ALL PRIVILEGES ON DATABASE banking_fraud TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking TO banking_admin;
 ---
 #
@@ -178,13 +194,13 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: zookepeer # Bunun altinda calisir deployment
+  name: zookeeper # Bunun altinda calisir deployment
   namespace: banking-microservices
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: zookepeer # altinda calistigi uygulamalarin ismi deploymentin yonetecegi podlarin labeli. Bu podlari yonetecek
+      app: zookeeper # altinda calistigi uygulamalarin ismi deploymentin yonetecegi podlarin labeli. Bu podlari yonetecek
   template:
     metadata:
       labels:
@@ -194,209 +210,126 @@ spec:
         - name: zookeeper
           image: confluentinc/cp-zookeeper:7.5.0
           ports:
-            - containerPort: 2081
+            - containerPort: 2181
           env:
             - name: ZOOKEEPER_CLIENT_PORT
-              value: 2181
+              value: "2181"
+            - name: ZOOKEEPER_TICK_TIME
+              value: "2000"
 
 ---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper # Diger servisler bu isimle zookeeper:2181 seklinde ulasir. Kubernetes icinde DNS gibi calisir.
+  namespace: banking-microservices
+spec:
+  selector:
+    app: zookeeper # app: zookeeper etiketli podlara gelen tum istekleri bu service karsilar ve yonlendirir
+  ports:
+    - port: 2181 # Zookeeper'in dinledigi standart port. Kafka metadata bilgilerini buradan alir. Topic, partition bilgileri burada tutulur.
+      targetPort: 2181 # Container icindeki porta yonlendir. port ve targetPort genelde ayni olur ama farkli da olabilir.
+
+---
+
 #
-# Keycloack ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# KAFKA DEPLOYMENT --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #
 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka  # Bu deployment'ın adı
+  namespace: banking-microservices
+spec:
+  replicas: 1  # 1 adet Kafka pod'u oluştur
+  selector:
+    matchLabels:
+      app: kafka  # "app=kafka" etiketli pod'ları yönet
+  template:
+    metadata:
+      labels:
+        app: kafka  # Oluşturulacak pod'lara "app=kafka" etiketi yapıştır
+    spec:
+      containers:
+        - name: kafka  # Container adı
+          image: confluentinc/cp-kafka:7.5.0  # Kafka Docker image
+          ports:
+            - containerPort: 9092  # Kafka'nın çalışacağı port
+          env:
+            - name: KAFKA_ZOOKEEPER_CONNECT  # ZORUNLU: Kafka, Zookeeper'a nasıl bağlanacak
+              value: zookeeper:2181
+            - name: KAFKA_ADVERTISED_LISTENERS  # ZORUNLU: Client'ların Kafka'ya bağlanma adresi
+              value: PLAINTEXT://kafka:9092
+            - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR  # ZORUNLU (tek broker): Varsayılan 3, tek broker'da hata verir
+              value: "1"
 
+---
 
-##apiVersion: apps/v1
-#kind: Deployment
-#metadata:
-#  name: keycloak
-#  namespace: banking-system
-#spec:
-#  replicas: 1
-#  selector:
-#    matchLabels:
-#      app: keycloak
-#  template:
-#    metadata:
-#      labels:
-#        app: keycloak
-#    spec:
-#      containers:
-#        - name: keycloak
-#          image: quay.io/keycloak/keycloak:23.0
-#          args: ["start-dev"]
-#          ports:
-#            - containerPort: 8080
-#          env:
-#            - name: KEYCLOAK_ADMIN
-#              value: admin
-#            - name: KEYCLOAK_ADMIN_PASSWORD
-#              value: admin
-#            - name: KC_HTTP_ENABLED
-#              value: "true"
-#            - name: KC_HOSTNAME_STRICT
-#              value: "false"
-#---
-#apiVersion: v1
-#kind: Service
-#metadata:
-#  name: keycloak
-#  namespace: banking-system
-#spec:
-#  selector:
-#    app: keycloak
-#  ports:
-#    - port: 8080
-#      targetPort: 8080
-#  type: LoadBalancer
-#env:
-#  # ... diğer env'ler ...
-#  - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-#    value: kafka:9092
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka  # Service adi. Diger servisler kafka:9092 yazarak ulasir. Kubernetes DNS otomatik cozumler. Ornegin user-service icinden kafka:9092 yazinca bu service'e gelir.
+  namespace: banking-microservices
+spec:
+  selector:
+    app: kafka  # app=kafka etiketli podlara trafik yonlendirir. Birden fazla kafka pod olsa bile hepsine load balance yapar.
+  ports:
+    - port: 9092  # Kafka broker portu. Producer mesaj gonderirken, Consumer mesaj alirken bu porta baglanir. SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092 bu yuzden calisiyor.
+      targetPort: 9092 # Pod icindeki Kafka container'inin dinledigi port
 
+---
 
-##
-## ZOOKEEPER DEPLOYMENT ------------------------------------------------------------------------
-##
 #
-#apiVersion: apps/v1  # Kubernetes API versiyonu
-#kind: Deployment  # Kaynak tipi: Deployment (Pod'ları yöneten üst seviye obje)
-#metadata:
-#  name: zookeeper  # Bu deployment'ın adı
-#  namespace: banking-microservices  # Hangi namespace'de çalışacak
-#spec:
-#  replicas: 1  # Kaç tane pod oluşturulacak
-#  selector:
-#    matchLabels:
-#      app: zookeeper  # Bu deployment hangi etiketli pod'ları yönetecek (filtre görevi)
-#  template:  # Pod'ların nasıl oluşturulacağının şablonu
-#    metadata:
-#      labels:
-#        app: zookeeper  # Oluşturulacak pod'lara yapıştırılacak etiket (selector ile eşleşmeli!)
-#    spec:
-#      containers:  # Pod içindeki container'lar
-#        - name: zookeeper  # Container'ın adı
-#          image: confluentinc/cp-zookeeper:7.5.0  # Kullanılacak Docker image
-#          ports:
-#            - containerPort: 2181  # Container'ın hangi portunu açacağız
-#          env:  # Environment variables (ortam değişkenleri)
-#            - name: ZOOKEEPER_CLIENT_PORT  # Zookeeper'ın client bağlantı portu
-#              value: "2181"  # Port numarası (string olarak)
+# KEYCLOAK - Kimlik Dogrulama Servisi ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #
-#---
-#
-##
-## ZOOKEEPER SERVICE ------------------------------------------------------------------------
-##
-#
-#apiVersion: v1  # Service için v1 API kullanılır
-#kind: Service  # Kaynak tipi: Service (Pod'lara network erişimi sağlar)
-#metadata:
-#  name: zookeeper  # Service'in adı (DNS adı olarak kullanılır: zookeeper:2181)
-#  namespace: banking-microservices  # Namespace
-#spec:
-#  selector:
-#    app: zookeeper  # Hangi pod'lara trafik yönlendirilecek (etiket filtresi)
-#  ports:
-#    - port: 2181  # Service'in dışarıya açtığı port (diğer pod'lar buraya bağlanır)
-#
-#---
-#
-##
-## KAFKA DEPLOYMENT ------------------------------------------------------------------------
-##
-#
-#apiVersion: apps/v1
-#kind: Deployment
-#metadata:
-#  name: kafka  # Bu deployment'ın adı
-#  namespace: banking-microservices
-#spec:
-#  replicas: 1  # 1 adet Kafka pod'u oluştur
-#  selector:
-#    matchLabels:
-#      app: kafka  # "app=kafka" etiketli pod'ları yönet
-#  template:
-#    metadata:
-#      labels:
-#        app: kafka  # Oluşturulacak pod'lara "app=kafka" etiketi yapıştır
-#    spec:
-#      containers:
-#        - name: kafka  # Container adı
-#          image: confluentinc/cp-kafka:7.5.0  # Kafka Docker image
-#          ports:
-#            - containerPort: 9092  # Kafka'nın çalışacağı port
-#          env:
-#            - name: KAFKA_ZOOKEEPER_CONNECT  # Kafka, Zookeeper'a nasıl bağlanacak
-#              value: zookeeper:2181  # Service discovery: "zookeeper" DNS adı otomatik çözülür
-#            - name: KAFKA_ADVERTISED_LISTENERS  # Kafka'ya dışarıdan nasıl bağlanılacak
-#              value: PLAINTEXT://kafka:9092  # Kafka service'inin DNS adı ve portu
-#            - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR  # Offset topic'in replikasyon faktörü
-#              value: "1"  # Tek broker olduğu için 1 (prod'da 3 olmalı)
-#
-#---
-#
-##
-## KAFKA SERVICE ------------------------------------------------------------------------
-##
-#
-#apiVersion: v1
-#kind: Service
-#metadata:
-#  name: kafka  # Service adı (DNS: kafka:9092)
-#  namespace: banking-microservices
-#spec:
-#  selector:
-#    app: kafka  # "app=kafka" etiketli pod'lara yönlendir
-#  ports:
-#    - port: 9092  # Diğer servisler kafka:9092 ile bağlanır
-#
-#---
-#
-##
-## KAFKA-UI DEPLOYMENT ------------------------------------------------------------------------
-##
-#
-#apiVersion: apps/v1
-#kind: Deployment
-#metadata:
-#  name: kafka-ui  # Kafka UI deployment adı
-#  namespace: banking-microservices
-#spec:
-#  replicas: 1  # 1 UI pod'u
-#  selector:
-#    matchLabels:
-#      app: kafka-ui  # "app=kafka-ui" etiketli pod'ları yönet
-#  template:
-#    metadata:
-#      labels:
-#        app: kafka-ui  # Pod etiketi
-#    spec:
-#      containers:
-#        - name: kafka-ui  # Container adı
-#          image: provectuslabs/kafka-ui:latest  # Kafka UI image (web arayüzü)
-#          ports:
-#            - containerPort: 8080  # UI'ın çalışacağı port
-#          env:
-#            - name: KAFKA_CLUSTERS_0_NAME  # İlk cluster'ın adı (UI'da görünecek)
-#              value: banking-cluster
-#            - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS  # Kafka'ya nasıl bağlanacak
-#              value: kafka:9092  # Service discovery ile kafka service'ine bağlan
-#
-#---
-#
-##
-## KAFKA-UI SERVICE ------------------------------------------------------------------------
-##
-#
-#apiVersion: v1
-#kind: Service
-#metadata:
-#  name: kafka-ui  # Service adı
-#  namespace: banking-microservices
-#spec:
-#  selector:
-#    app: kafka-ui  # "app=kafka-ui" etiketli pod'lara yönlendir
-#  ports:
-#    - port: 8080  # UI'a erişim portu
-#  type: LoadBalancer  # Dışarıdan erişilebilir (localhost:8080 gibi)
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  namespace: banking-microservices
+spec:
+  replicas: 1 # Keycloak tek instance calisir. Production'da HA (High Availability) icin 2+ yapilabilir ama veritabani paylasimi gerekir.
+  selector:
+    matchLabels:
+      app: keycloak # Bu deployment app=keycloak etiketli podlari yonetir
+  template:
+    metadata:
+      labels:
+        app: keycloak # Podlara yapistirilacak etiket. Service bu etiketi arar.
+    spec:
+      containers:
+        - name: keycloak
+          image: quay.io/keycloak/keycloak:23.0 # Keycloak resmi image. Red Hat tarafindan gelistiriliyor.
+          args: ["start-dev"] # Development modu. Production'da start --optimized kullan ve veritabani bagla.
+          ports:
+            - containerPort: 8080 # Keycloak web arayuzu ve API bu portta calisir. Admin console, token endpoint vs. buradan erisiliyor.
+          env:
+            - name: KEYCLOAK_ADMIN # Keycloak admin paneline giris icin kullanici adi
+              value: admin
+            - name: KEYCLOAK_ADMIN_PASSWORD # Admin sifresi. Production'da guvenli bir Secret kullan!
+              value: admin
+            - name: KC_HTTP_ENABLED # HTTP aktif. Production'da HTTPS kullan (KC_HTTPS_ENABLED).
+              value: "true"
+            - name: KC_HOSTNAME_STRICT # Hostname kontrolu kapali. Production'da true yap ve domain belirt.
+              value: "false"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak # Diger servisler keycloak:8080 seklinde ulasir. Gateway JWT_TOKEN_ISSUER_URI=http://keycloak:8080/realms/banking ile token dogrular.
+  namespace: banking-microservices
+spec:
+  selector:
+    app: keycloak # app=keycloak etiketli podlara yonlendir
+  ports:
+    - port: 8080 # Keycloak portu. Auth-service KEYCLOAK_SERVER_URL=http://keycloak:8080 ile buraya baglanir.
+      targetPort: 8080
+  type: LoadBalancer # Disaridan erisim icin. localhost:8080 ile admin paneline girebilirsin. minikube service keycloak komutuyla eris.
+
+---
+
