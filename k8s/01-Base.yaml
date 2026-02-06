@@ -200,7 +200,55 @@ spec:
               value: 2181
 
 ---
+#
+# Keycloack ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#
 
+
+
+##apiVersion: apps/v1
+#kind: Deployment
+#metadata:
+#  name: keycloak
+#  namespace: banking-system
+#spec:
+#  replicas: 1
+#  selector:
+#    matchLabels:
+#      app: keycloak
+#  template:
+#    metadata:
+#      labels:
+#        app: keycloak
+#    spec:
+#      containers:
+#        - name: keycloak
+#          image: quay.io/keycloak/keycloak:23.0
+#          args: ["start-dev"]
+#          ports:
+#            - containerPort: 8080
+#          env:
+#            - name: KEYCLOAK_ADMIN
+#              value: admin
+#            - name: KEYCLOAK_ADMIN_PASSWORD
+#              value: admin
+#            - name: KC_HTTP_ENABLED
+#              value: "true"
+#            - name: KC_HOSTNAME_STRICT
+#              value: "false"
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: keycloak
+#  namespace: banking-system
+#spec:
+#  selector:
+#    app: keycloak
+#  ports:
+#    - port: 8080
+#      targetPort: 8080
+#  type: LoadBalancer
 #env:
 #  # ... diğer env'ler ...
 #  - name: SPRING_KAFKA_BOOTSTRAP_SERVERS

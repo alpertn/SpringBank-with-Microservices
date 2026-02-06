@@ -1,3 +1,21 @@
-spring:
+server:
+  port: ${AUTH-SERVICE_PORT_NUMBER:8084}
+pring:
   application:
     name: auth-service
+
+keycloak:
+  server-url: ${KEYCLOAK_SERVER_URL:http://localhost:8080}
+  realm: ${KEYCLOAK_REALM:banking}
+  client-id: ${KEYCLOAK_CLIENT_ID:banking-app}
+  client-secret: ${KEYCLOAK_CLIENT_SECRET:secret123}
+
+# Actuator - Health check
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
