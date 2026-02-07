@@ -237,7 +237,7 @@ spec:
             - name: KEYCLOAK_CLIENT_ID
               value: banking-app
             - name: KEYCLOAK_CLIENT_SECRET
-              value: secret123
+              value: Iopu5gL8VfLtIX39701gkwd6iCd7gKW6
             # --- ZIPKIN AYARLARI ---
             - name: SPRING_ZIPKIN_BASE_URL
               value: http://zipkin:9411
