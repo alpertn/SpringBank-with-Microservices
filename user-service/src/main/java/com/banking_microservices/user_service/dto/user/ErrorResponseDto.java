@@ -1,4 +1,4 @@
-package com.banking_microservices.user_service.dto;
+package com.banking_microservices.user_service.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,12 +1,11 @@
 package com.banking_microservices.user_service.kafka;
 
-import com.banking_microservices.user_service.dto.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.user_service.dto.user.KafkaTransactionTopicMessageDto;
 import com.banking_microservices.user_service.repository.UserRepository;
 import com.banking_microservices.user_service.service.UserService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 

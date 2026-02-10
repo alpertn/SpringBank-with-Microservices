@@ -1,3 +1,12 @@
+#Önemli Notlar:
+
+#HPA çalışması için Metrics Server kurulmalı:
+#kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+#HPA durumunu kontrol et:
+#kubectl get hpa -n banking-microservices
+#Pod sayısını manuel görmek için:
+#kubectl get pods -n banking-microservices
+
 #
 #User-Service --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #
@@ -8,7 +17,7 @@ metadata:
   name: user-service
   namespace: banking-microservices
 spec:
-  replicas: 1
+  replicas: 2 # Baslangicta 2 pod calisir. HPA ile 2-6 arasinda otomatik scale olur.
   selector:
     matchLabels:
       app: user-service # olusturulan tum portlar ubnun altinda olusturulacak namespace bu olacak
@@ -20,9 +29,15 @@ spec:
       containers:
         - name: user-service
           image: banking/user-service:1.0.0
-          imagePullPolicy: IfNotPresent # bu yoksa internetten bul ve indir Sen bu projeyi local (yerel) ortamda geliştiriyorsan; IfNotPresent ayarı, Kubernetes'in internete boşuna gidip "Böyle bir şey yok" hatası almasını engeller. Local Geliştirme: IfNotPresent (Bilgisayarımdakini kullan). Canlı Ortam (Production): Genelde Always (veya private registry ayarları) kullanılır ki versiyonlar karışmasın.'
           ports:
             - containerPort: 8081 # ContainerPort Label'dir. kubernetes kubectl get pods -o wide kubectl describe pod user-service-xyz kodlaıryla komut calsıtırdııgmızda burdaki port gozukur. Labeldır bu. sprıng bootla aynı olması onerılır bu olmayadabılır.
+          resources: # Pod'un kullanacagi CPU ve Memory kaynaklarini tanimlar. Kubernetes buna gore pod'u hangi node'a koyacagina karar verir.
+            requests: # Pod'un calismasi icin gereken minimum kaynak. Kubernetes buna gore pod'u node'a atar. Node'da bu kadar kaynak yoksa pod baslatilmaz.
+              memory: "256Mi" # 256 Megabyte RAM. Pod baslatilirken en az bu kadar RAM gerekir.
+              cpu: "250m" # 250 millicore = 0.25 CPU core. 1000m = 1 CPU core. Pod baslatilirken en az bu kadar CPU gerekir.
+            limits: # Pod'un kullanabilecegi maksimum kaynak. Bu limiti asarsa pod restart olur veya throttle edilir (yavaslatilir).
+              memory: "512Mi" # Maksimum 512MB RAM kullanabilir. Asarsa pod kill edilir (OOMKilled).
+              cpu: "500m" # Maksimum 0.5 CPU core kullanabilir. Asarsa CPU throttle edilir (yavaslatilir ama kill edilmez).
           env:
             # Postgres Ayarlari
             - name: SPRING_DATASOURCE_URL
@@ -44,9 +59,23 @@ spec:
             # --- KAFKA AYARLARI ---
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
               value: kafka:9092
+            # Kafka Topic
+            # Create User
+            - name: KAFKA_CREATE_USER_SENDER
+              value: banking-microservices.username-validation.user-service.progress.v1
+            - name: KAFKA_CREATE_USER_LISTENER
+              value: banking-microservices.create-user.money-service.success.v1
+            - name: KAFKA_CREATE_USER_ERROR
+              value: banking-microservices.create-user.money-service.error.v1
+            # Username Validation
+            - name: KAFKA_USERNAME_VALIDATION_SENDER
+              value: banking-microservices.username-validation.user-service.success.v1
+            - name: KAFKA_USERNAME_VALIDATION_LISTENER
+              value: banking-microservices.username-validation.money-service.progress.v1
+            - name: KAFKA_USERNAME_VALIDATION_LISTENER
+              value: banking-microservices.username-validation.money-service.error.v1
 
-#server:
-#  port: ${MONEY_SERVICE_PORT_NUMBER:8082}
+
 ---
 
 apiVersion: v1
@@ -60,6 +89,35 @@ spec:
   ports:
     - port: 8081
       targetPort: 8081
+
+---
+
+apiVersion: autoscaling/v2 # Kubernetes'in otomatik scaling (olceklendirme) API'si. Pod sayisini otomatik artirip azaltir.
+kind: HorizontalPodAutoscaler # Yatay olceklendirme yapan Kubernetes resource'u. Pod sayisini degistirir (dikey olceklendirme pod'un CPU/Memory limitini artirir).
+metadata:
+  name: user-service-hpa # HPA'nin adi. kubectl get hpa komutuyla gorulur.
+  namespace: banking-microservices
+spec:
+  scaleTargetRef: # Hangi Deployment'in pod sayisini degistirecek
+    apiVersion: apps/v1
+    kind: Deployment
+    name: user-service # user-service deployment'inin pod sayisini kontrol eder
+  minReplicas: 2 # Minimum pod sayisi. Yuk olmasa bile en az 2 pod calisir. High availability (yuksek erisilebilirlik) icin.
+  maxReplicas: 6 # Maksimum pod sayisi. Yuk cok artsa bile 6'dan fazla pod baslatilmaz. Maliyet kontrolu icin.
+  metrics: # Hangi metriklere gore scaling yapilacak. CPU ve Memory'ye bakarak karar verir.
+    - type: Resource # Resource tipi metrik (CPU, Memory gibi). Custom metrikler de olabilir (ornek: HTTP request sayisi).
+      resource:
+        name: cpu # CPU kullanim oranina gore scale yapar
+        target:
+          type: Utilization # Utilization = Yuzde olarak kullanim orani
+          averageUtilization: 70 # Tum podlarin ortalama CPU'su %70'i gecerse yeni pod ekler. %70'in altina duserse pod azaltir. Ornek: 2 pod var, biri %80 biri %60 kullaniyor, ortalama %70. Yeni pod baslatilir.
+    - type: Resource
+      resource:
+        name: memory # Memory kullanim oranina gore scale yapar
+        target:
+          type: Utilization
+          averageUtilization: 80 # Tum podlarin ortalama memory'si %80'i gecerse yeni pod ekler. Memory leak kontrolu icin CPU'dan daha yuksek tutulur.
+
 ---
 
 #
@@ -72,7 +130,7 @@ metadata:
   name: money-service
   namespace: banking-microservices
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: money-service
@@ -84,9 +142,15 @@ spec:
       containers:
         - name: money-service
           image: banking/money-service:1.0.0
-          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8082
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           env:
             # Postgres Ayarlari
             - name: SPRING_DATASOURCE_URL
@@ -108,6 +172,23 @@ spec:
             # --- KAFKA AYARLARI ---
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
               value: kafka:9092
+            # Kafka Topic
+            - name: KAFKA_CREATE_USER_SENDER
+              value: banking-microservices.create-user.money-service.success.v1
+            - name: KAFKA_CREATE_USER_LISTENER
+              value: banking-microservices.username-validation.user-service.progress.v1
+            - name: KAFKA_CREATE_USER_ERROR
+              value: banking-microservices.create-user.money-service.error.v1
+            - name: KAFKA_TRANSACTION_TOPIC_LISTENER
+              value: banking-microservices.transaction.fraud-service.checked.v1
+            - name: KAFKA_TRANSACTION_TOPIC_SENDER
+              value: banking-microservices.transaction.transaction-service.success.v1
+            - name: KAFKA_TRANSACTION_TOPIC_ERROR
+              value: banking-microservices.transaction.transaction-service.error.v1
+            - name: KAFKA_USERNAME_VALIDATION_SENDER
+              value: banking-microservices.username-validation.money-service.progress.v1
+            - name: KAFKA_USERNAME_VALIDATION_LISTENER
+              value: banking-microservices.username-validation.user-service.success.v1
 
 ---
 
@@ -122,6 +203,35 @@ spec:
   ports:
     - port: 8082
       targetPort: 8082
+
+---
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: money-service-hpa
+  namespace: banking-microservices
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: money-service
+  minReplicas: 2
+  maxReplicas: 6
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+
 ---
 
 #
@@ -134,7 +244,7 @@ metadata:
   name: transaction-service
   namespace: banking-microservices
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: transaction-service
@@ -146,9 +256,15 @@ spec:
       containers:
         - name: transaction-service
           image: banking/transaction-service:1.0.0
-          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8083
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           env:
             # Postgres Ayarlari
             - name: SPRING_DATASOURCE_URL
@@ -185,6 +301,35 @@ spec:
   ports:
     - port: 8083
       targetPort: 8083
+
+---
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: transaction-service-hpa
+  namespace: banking-microservices
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: transaction-service
+  minReplicas: 2
+  maxReplicas: 6
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+
 ---
 
 #
@@ -197,7 +342,7 @@ metadata:
   name: auth-service
   namespace: banking-microservices
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: auth-service
@@ -209,9 +354,15 @@ spec:
       containers:
         - name: auth-service
           image: banking/auth-service:1.0.0
-          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8084
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           env:
             # Postgres Ayarlari
             - name: USER_SERVICE_URL
@@ -243,7 +394,11 @@ spec:
               value: http://zipkin:9411
             - name: MANAGEMENT_TRACING_SAMPLING_PROBABILITY
               value: "1.0"
+            - name: AUTH_SERVICE_PORT_NUMBER
+              value: "8084"
+
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -255,6 +410,35 @@ spec:
   ports:
     - port: 8084
       targetPort: 8084
+
+---
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: auth-service-hpa
+  namespace: banking-microservices
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: auth-service
+  minReplicas: 2
+  maxReplicas: 6
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+
 ---
 
 #
@@ -267,7 +451,7 @@ metadata:
   name: gateway
   namespace: banking-microservices
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: gateway
@@ -279,9 +463,15 @@ spec:
       containers:
         - name: gateway
           image: banking/gateway:1.0.0
-          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8095
+          resources:
+            requests:
+              memory: "512Mi" # Gateway tum servislere istek yonlendirdigi icin daha fazla memory kullanir. Diger servisler 256Mi kullanirken gateway 512Mi kullanir.
+              cpu: "500m" # Gateway yonetim isleri icin daha fazla CPU kullanir (routing, load balancing, filtering).
+            limits:
+              memory: "1Gi" # 1 Gigabyte = 1024 Megabyte. Gateway spike traffic (ani trafik artisi) durumunda 1GB'a kadar cikmaya calisabilir.
+              cpu: "1000m" # 1 CPU core. Gateway cok yogun trafikte tam bir core kullanabilir.
           env:
             - name: USER_SERVICE_URL # SERVICE DISCOVERY ICIN
               value: http://user-service:8081
@@ -312,7 +502,9 @@ spec:
             # Port
             - name: GATEWAY_PORT_NUMBER
               value: "8095"
+
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -328,6 +520,34 @@ spec:
 
 ---
 
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: gateway-hpa
+  namespace: banking-microservices
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: gateway
+  minReplicas: 2
+  maxReplicas: 6
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+
+---
+
 #
 # Fraud-Service --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #
@@ -338,7 +558,7 @@ metadata:
   name: fraud-service
   namespace: banking-microservices
 spec:
-  replicas: 1 # Kac tane pod calistirilacak. Production'da 2-3 yapilabilir yuk dagitimi icin.
+  replicas: 2 # Kac tane pod calistirilacak. Production'da 2-3 yapilabilir yuk dagitimi icin.
   selector:
     matchLabels:
       app: fraud-service # Bu deployment sadece app=fraud-service etiketli podlari yonetir. Selector ve labels eslesmelidir yoksa deployment calismaz.
@@ -350,9 +570,15 @@ spec:
       containers:
         - name: fraud-service
           image: banking/fraud-service:1.0.0
-          imagePullPolicy: IfNotPresent # Yerel Docker'da varsa internete gitme. docker build yapildiginda localde olusur. Production'da Always kullan.
           ports:
             - containerPort: 8085 # Fraud-service Spring Boot uygulamasinin calistigi port. kubectl describe pod ile bu port gozukur.
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           env:
             # Postgres Ayarlari
             - name: SPRING_DATASOURCE_URL
@@ -363,9 +589,6 @@ spec:
               value: local_password
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
               value: update
-            # --- KAFKA AYARLARI ---
-            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-              value: kafka:9092
             # --- ZIPKIN AYARLARI ---
             - name: SPRING_ZIPKIN_BASE_URL
               value: http://zipkin:9411
@@ -374,6 +597,16 @@ spec:
             # PORT
             - name: FRAUD_SERVICE_PORT_NUMBER
               value: "8085"
+            # --- KAFKA AYARLARI ---
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092
+            # Kafka Topic
+            - name: KAFKA_TRANSACTION_TOPIC_LISTENER
+              value: banking-microservices.transaction.transaction-service.created.v1
+            - name: KAFKA_TRANSACTION_TOPIC_SENDER
+              value: banking-microservices.transaction.fraud-service.checked.v1
+            - name: KAFKA_TRANSACTION_TOPIC_ERROR
+              value: banking-microservices.transaction.transaction-service.error.v1
 
 ---
 
@@ -388,5 +621,33 @@ spec:
   ports:
     - port: 8085 # Service'in dinledigi port. Diger servisler bu porta istek atar.
       targetPort: 8085 # Container icindeki porta yonlendirir. Spring Boot server.port ile ayni olmali.
+
+---
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: fraud-service-hpa
+  namespace: banking-microservices
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: fraud-service
+  minReplicas: 2
+  maxReplicas: 6
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
 
 ---

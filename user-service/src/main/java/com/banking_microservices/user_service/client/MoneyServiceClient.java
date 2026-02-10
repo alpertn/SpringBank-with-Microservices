@@ -1,6 +1,6 @@
 package com.banking_microservices.user_service.client;
 
-import com.banking_microservices.user_service.dto.IdDto;
+import com.banking_microservices.user_service.dto.user.IdDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

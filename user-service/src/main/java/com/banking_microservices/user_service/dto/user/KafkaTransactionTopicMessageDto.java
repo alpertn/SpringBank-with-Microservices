@@ -1,11 +1,10 @@
-package com.banking_microservices.user_service.dto;
+package com.banking_microservices.user_service.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UuidGenerator;
-import java.util.UUID;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 

@@ -1,12 +1,12 @@
 server:
   port: ${TRANSACTION_SERVICE_PORT_NUMBER:8083}
 
-kafka:
-  topics:
-    transaction:
-      listener: ${KAFKA_TRANSACTION_TOPIC_LISTENER:banking-microservices.transaction.transaction-service.success.v1}
-      sender: ${KAFKA_TRANSACTION_TOPIC_SENDER:banking-microservices.transaction.transaction-service.created.v1}
-      error: ${KAFKA_TRANSACTION_TOPIC_ERROR:banking-microservices.transaction.transaction-service.error.v1}
+  kafka:
+    topics:
+      transaction:
+        listener: ${KAFKA_TRANSACTION_TOPIC_LISTENER:banking-microservices.transaction.transaction-service.success.v1}
+        sender: ${KAFKA_TRANSACTION_TOPIC_SENDER:banking-microservices.transaction.transaction-service.created.v1}
+        error: ${KAFKA_TRANSACTION_TOPIC_ERROR:banking-microservices.transaction.transaction-service.error.v1}
 
 spring:
   application:

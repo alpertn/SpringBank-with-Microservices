@@ -1,27 +1,30 @@
-    package com.banking_microservices.transaction_service.repository;
+package com.banking_microservices.transaction_service.repository;
 
-    import com.banking_microservices.transaction_service.model.transaction;
-    import org.springframework.data.jpa.repository.JpaRepository;
-    import org.springframework.stereotype.Repository;
+import com.banking_microservices.transaction_service.model.TransactionEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-    import java.time.LocalDateTime;
-    import java.util.List;
+import java.time.LocalDateTime;
+import java.util.List;
 
-    @Repository
-    public interface TransactionRepository extends JpaRepository<transaction, String> {
+@Repository
+public interface TransactionRepository extends JpaRepository<TransactionEntity, String> {
 
-        List<transaction> findBySenderUserId(String senderUserId);
+    List<TransactionEntity> findBySenderUserId(String senderUserId);
 
-        List<transaction> findByReceiverUserId(String receiverUserId);
+    List<TransactionEntity> findByReceiverUserId(String receiverUserId);
 
-        List<transaction> findBySenderUserIdOrReceiverUserIdOrderByLocalDateTimeDesc(String senderUserId, String receiverUserId);
+    List<TransactionEntity> findBySenderUserIdOrReceiverUserIdOrderByLocalDateTimeDesc(String senderUserId,
+            String receiverUserId);
 
-        List<transaction> findByErrorTrue();
+    List<TransactionEntity> findByErrorTrue();
 
-        List<transaction> findByLocalDateTimeBetweenOrderByLocalDateTimeDesc(LocalDateTime startDate, LocalDateTime endDate);
+    List<TransactionEntity> findByLocalDateTimeBetweenOrderByLocalDateTimeDesc(LocalDateTime startDate,
+            LocalDateTime endDate);
 
-        List<transaction> findBySenderUserIdAndLocalDateTimeBetween(String senderUserId, LocalDateTime startDate, LocalDateTime endDate);
+    List<TransactionEntity> findBySenderUserIdAndLocalDateTimeBetween(String senderUserId, LocalDateTime startDate,
+            LocalDateTime endDate);
 
-        boolean existsByEventId(String eventid);
+    boolean existsByEventId(String eventid);
 
-    }
+}
