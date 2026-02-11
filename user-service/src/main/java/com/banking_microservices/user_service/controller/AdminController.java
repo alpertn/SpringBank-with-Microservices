@@ -73,7 +73,6 @@ public class AdminController {
         return ResponseEntity.ok(response);
     }
 
-    // Kullanıcıyı Aktif Yapma
     @PostMapping("/users/{id}/activate")
     public ResponseEntity<?> activateUser(@PathVariable String id) {
         log.info("Admin activate user request. ID: {}", id);
@@ -81,7 +80,6 @@ public class AdminController {
         return ResponseEntity.ok().build();
     }
 
-    // Kullanıcıyı Pasif Yapma
     @PostMapping("/users/{id}/deactivate")
     public ResponseEntity<?> deactivateUser(@PathVariable String id) {
         log.info("Admin deactivate user request. ID: {}", id);
@@ -89,14 +87,12 @@ public class AdminController {
         return ResponseEntity.ok().build();
     }
 
-    // Email ile Kullanıcı Arama
     @GetMapping("/search-by-email")
     public ResponseEntity<List<Users>> searchByEmail(@RequestParam String email) {
         log.info("Admin search by email request. Email: {}", email);
         return ResponseEntity.ok(userService.searchUsersByEmail(email));
     }
 
-    // Kullanıcı Şifre Sıfırlama (Admin)
     @PostMapping("/users/{id}/reset-password")
     public ResponseEntity<?> resetPassword(@PathVariable String id,
             @Valid @RequestBody AdminPasswordResetDto passwordDto) {

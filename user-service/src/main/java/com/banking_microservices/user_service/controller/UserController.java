@@ -30,23 +30,15 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUser(usersDto));
     }
 
-    // Şifre Değiştirme
     @PostMapping("/{userId}/change-password")
-    public ResponseEntity<?> changePassword(@PathVariable String userId,
-            @Valid @RequestBody ChangePasswordRequestDto requestDto) {
-        log.info("Password change request for user ID: {}", userId);
+    public ResponseEntity<?> changePassword(@PathVariable String userId, @Valid @RequestBody ChangePasswordRequestDto requestDto) {
         userService.changePassword(userId, requestDto.getCurrentPassword(), requestDto.getNewPassword());
-        log.info("Password changed successfully for user ID: {}", userId);
         return ResponseEntity.ok().build();
     }
 
-    // Email Değiştirme
     @PostMapping("/{userId}/change-email")
-    public ResponseEntity<?> changeEmail(@PathVariable String userId,
-            @Valid @RequestBody ChangeEmailRequestDto requestDto) {
-        log.info("Email change request for user ID: {}", userId);
+    public ResponseEntity<?> changeEmail(@PathVariable String userId, @Valid @RequestBody ChangeEmailRequestDto requestDto) {
         userService.changeEmail(userId, requestDto.getNewEmail(), requestDto.getPassword());
-        log.info("Email changed successfully for user ID: {}", userId);
         return ResponseEntity.ok().build();
     }
 

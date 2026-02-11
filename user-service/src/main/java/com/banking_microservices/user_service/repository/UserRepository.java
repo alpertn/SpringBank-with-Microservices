@@ -29,22 +29,8 @@ public interface UserRepository extends JpaRepository<Users, String> {
 
     long countByRole(String role);
 
-    // Role göre kullanıcıları bul
     List<Users> findByRole(String role);
 
-    // Email ile arama (kısmi eşleşme)
     List<Users> findByMailContainingIgnoreCase(String email);
 
-    // Gelişmiş arama için custom query
-    @Query("SELECT u FROM Users u WHERE " +
-            "(:name IS NULL OR LOWER(u.name) LIKE LOWER(CONCAT('%', :name, '%'))) AND " +
-            "(:surname IS NULL OR LOWER(u.surname) LIKE LOWER(CONCAT('%', :surname, '%'))) AND " +
-            "(:email IS NULL OR LOWER(u.mail) LIKE LOWER(CONCAT('%', :email, '%'))) AND " +
-            "(:role IS NULL OR u.role = :role) AND " +
-            "(:active IS NULL OR u.active = :active)")
-    List<Users> advancedSearch(@Param("name") String name,
-            @Param("surname") String surname,
-            @Param("email") String email,
-            @Param("role") String role,
-            @Param("active") Boolean active);
 }
