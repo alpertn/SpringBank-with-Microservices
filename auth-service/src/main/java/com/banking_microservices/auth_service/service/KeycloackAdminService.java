@@ -2,7 +2,10 @@ package com.banking_microservices.auth_service.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
@@ -25,6 +28,25 @@ public class KeycloackAdminService {
     @Value("${keycloak.admin-password:admin}")
     private String adminPassword;
 
+
+
+    public void createKeycloackUser(){
+        Map<String, Object> user = Map.of(
+                "username", email, // Login'de kullanılacak username
+                "firstName", firstName,
+                "lastName", lastName,
+                "enabled", true,
+                "credentials", List.of(Map.of(
+                        "type", "password",
+                        "value", password,
+                        "temporary", false // İlk girişte şifre değiştirme zorlamasın
+                )));
+    }
+
+
+
+
+
     @SuppressWarnings("unchecked")
     public Boolean existsByEmail(String email,String adminToken){
         List<Map<String, Object>> users = RestClient.create(keycloakUrl).get()
@@ -39,6 +61,27 @@ public class KeycloackAdminService {
             return true;
         }
 
+    }
+
+    private String getAdminToken(){
+        MultiValueMap<String,String> requestParams = new LinkedMultiValueMap<>();
+        requestParams.add("grant_type", "password");
+        requestParams.add("client_id", "admin-cli");
+        requestParams.add("username", adminUsername);
+        requestParams.add("password", adminPassword);
+
+        Map<String,Object> token = RestClient.create(keycloakUrl).post()
+                .uri("/realms/master/protocol/openid-connect/token")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(requestParams)
+                .retrieve()
+                .body(Map.class);
+
+        if(token == null  ||  !token.containsKey("access_token")){
+            return null;
+        }else{
+            return token.get("access_token").toString();
+        }
 
     }
 

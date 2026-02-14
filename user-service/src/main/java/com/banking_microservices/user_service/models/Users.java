@@ -31,7 +31,7 @@ public class Users {
     private String role = "USER";
     @Builder.Default
     private Boolean active = true;
-    @Column(name = "created_at", updatable = false)
+
     private LocalDateTime createdAt;
 
     @PrePersist
