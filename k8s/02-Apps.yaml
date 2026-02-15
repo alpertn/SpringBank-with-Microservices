@@ -1,4 +1,4 @@
-#Önemli Notlar:
+#Notlar
 
 #HPA çalışması için Metrics Server kurulmalı:
 #kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
@@ -17,7 +17,7 @@ metadata:
   name: user-service
   namespace: banking-microservices
 spec:
-  replicas: 2 # Baslangicta 2 pod calisir. HPA ile 2-6 arasinda otomatik scale olur.
+  replicas: 2 # baslangic podlari
   selector:
     matchLabels:
       app: user-service # olusturulan tum portlar ubnun altinda olusturulacak namespace bu olacak
@@ -30,16 +30,16 @@ spec:
         - name: user-service
           image: banking/user-service:1.0.0
           ports:
-            - containerPort: 8081 # ContainerPort Label'dir. kubernetes kubectl get pods -o wide kubectl describe pod user-service-xyz kodlaıryla komut calsıtırdııgmızda burdaki port gozukur. Labeldır bu. sprıng bootla aynı olması onerılır bu olmayadabılır.
-          resources: # Pod'un kullanacagi CPU ve Memory kaynaklarini tanimlar. Kubernetes buna gore pod'u hangi node'a koyacagina karar verir.
-            requests: # Pod'un calismasi icin gereken minimum kaynak. Kubernetes buna gore pod'u node'a atar. Node'da bu kadar kaynak yoksa pod baslatilmaz.
-              memory: "256Mi" # 256 Megabyte RAM. Pod baslatilirken en az bu kadar RAM gerekir.
-              cpu: "250m" # 250 millicore = 0.25 CPU core. 1000m = 1 CPU core. Pod baslatilirken en az bu kadar CPU gerekir.
+            - containerPort: 8081
+          resources: # Podun calisacagi cpu ve memory scaling
+            requests: # Pod minimum ozellikleri
+              memory: "256Mi" # min 256mb ram.
+              cpu: "250m" # Minimum 250 milicore cpu
             limits: # Pod'un kullanabilecegi maksimum kaynak. Bu limiti asarsa pod restart olur veya throttle edilir (yavaslatilir).
               memory: "512Mi" # Maksimum 512MB RAM kullanabilir. Asarsa pod kill edilir (OOMKilled).
               cpu: "500m" # Maksimum 0.5 CPU core kullanabilir. Asarsa CPU throttle edilir (yavaslatilir ama kill edilmez).
           env:
-            # Postgres Ayarlari
+            # Postgres
             - name: SPRING_DATASOURCE_URL
               value: jdbc:postgresql://postgres:5432/banking_users
             - name: SPRING_DATASOURCE_USERNAME
@@ -48,7 +48,7 @@ spec:
               value: local_password
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
               value: update
-            # --- ZIPKIN AYARLARI ---
+            # Zipkin
             - name: SPRING_ZIPKIN_BASE_URL
               value: http://zipkin:9411 # SERVICE DISCOVERY GIBI BURAYI ARIYOR VE BULUYOR VE VERILER ZIPKININ BURASINA GIDIYOR HEM ZIPKINE GIDER HEMDE BURAYA GIDER
             - name: MANAGEMENT_TRACING_SAMPLING_PROBABILITY
@@ -56,7 +56,7 @@ spec:
             # Port Numarasi
             - name: USER_SERVICE_PORT_NUMBER
               value: "8081"
-            # --- KAFKA AYARLARI ---
+            # Kafka
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
               value: kafka:9092
             # Kafka Topic
@@ -92,31 +92,31 @@ spec:
 
 ---
 
-apiVersion: autoscaling/v2 # Kubernetes'in otomatik scaling (olceklendirme) API'si. Pod sayisini otomatik artirip azaltir.
-kind: HorizontalPodAutoscaler # Yatay olceklendirme yapan Kubernetes resource'u. Pod sayisini degistirir (dikey olceklendirme pod'un CPU/Memory limitini artirir).
+apiVersion: autoscaling/v2 # Kubernetin auto scaling api. otomatik pod sayhisini azaltip arttirir
+kind: HorizontalPodAutoscaler # pod scaling icin kind.
 metadata:
-  name: user-service-hpa # HPA'nin adi. kubectl get hpa komutuyla gorulur.
+  name: user-service-hpa # hpa name
   namespace: banking-microservices
 spec:
   scaleTargetRef: # Hangi Deployment'in pod sayisini degistirecek
     apiVersion: apps/v1
     kind: Deployment
-    name: user-service # user-service deployment'inin pod sayisini kontrol eder
-  minReplicas: 2 # Minimum pod sayisi. Yuk olmasa bile en az 2 pod calisir. High availability (yuksek erisilebilirlik) icin.
-  maxReplicas: 6 # Maksimum pod sayisi. Yuk cok artsa bile 6'dan fazla pod baslatilmaz. Maliyet kontrolu icin.
-  metrics: # Hangi metriklere gore scaling yapilacak. CPU ve Memory'ye bakarak karar verir.
-    - type: Resource # Resource tipi metrik (CPU, Memory gibi). Custom metrikler de olabilir (ornek: HTTP request sayisi).
+    name: user-service # user-service nin pod sayisini degistiricek
+  minReplicas: 2 # Minimum pod
+  maxReplicas: 6 # Max pods
+  metrics: # Hangi metriklere gore scaling yapacak.
+    - type: Resource # resource tip metrics ornek cpu ram
       resource:
-        name: cpu # CPU kullanim oranina gore scale yapar
+        name: cpu # Cpu kullanimina gore scaling icin
         target:
-          type: Utilization # Utilization = Yuzde olarak kullanim orani
-          averageUtilization: 70 # Tum podlarin ortalama CPU'su %70'i gecerse yeni pod ekler. %70'in altina duserse pod azaltir. Ornek: 2 pod var, biri %80 biri %60 kullaniyor, ortalama %70. Yeni pod baslatilir.
+          type: Utilization # yuzde kullanim orani
+          averageUtilization: 70 # tum podlarin ortalama cpu kullanimi 70i gecerse pod ekler 70den inerse pod siler
     - type: Resource
       resource:
-        name: memory # Memory kullanim oranina gore scale yapar
+        name: memory # memory kullanimina gore scaling
         target:
           type: Utilization
-          averageUtilization: 80 # Tum podlarin ortalama memory'si %80'i gecerse yeni pod ekler. Memory leak kontrolu icin CPU'dan daha yuksek tutulur.
+          averageUtilization: 80 # tum podlarin ortalama cpu kullanimi 70i gecerse pod ekler 70den inerse pod siler
 
 ---
 
@@ -152,7 +152,7 @@ spec:
               memory: "512Mi"
               cpu: "500m"
           env:
-            # Postgres Ayarlari
+            # Postgres
             - name: SPRING_DATASOURCE_URL
               value: jdbc:postgresql://postgres:5432/banking_money
             - name: SPRING_DATASOURCE_USERNAME
@@ -161,7 +161,7 @@ spec:
               value: local_password
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
               value: update
-            # --- ZIPKIN AYARLARI ---
+            # Zipkin
             - name: SPRING_ZIPKIN_BASE_URL
               value: http://zipkin:9411 # SERVICE DISCOVERY GIBI BURAYI ARIYOR VE BULUYOR VE VERILER ZIPKININ BURASINA GIDIYOR HEM ZIPKINE GIDER HEMDE BURAYA GIDER
             - name: MANAGEMENT_TRACING_SAMPLING_PROBABILITY
@@ -169,7 +169,7 @@ spec:
             # Harici Zorunlu Olmayanlar
             - name: MONEY_SERVICE_PORT_NUMBER
               value: "8082"
-            # --- KAFKA AYARLARI ---
+            # Kafka
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
               value: kafka:9092
             # Kafka Topic
@@ -275,7 +275,7 @@ spec:
               value: local_password
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
               value: update
-            # --- ZIPKIN AYARLARI ---
+            # Zipkin
             - name: SPRING_ZIPKIN_BASE_URL
               value: http://zipkin:9411 # SERVICE DISCOVERY GIBI BURAYI ARIYOR VE BULUYOR VE VERILER ZIPKININ BURASINA GIDIYOR HEM ZIPKINE GIDER HEMDE BURAYA GIDER
             - name: MANAGEMENT_TRACING_SAMPLING_PROBABILITY
@@ -283,7 +283,7 @@ spec:
             # PORT
             - name: TRANSACTION_SERVICE_PORT_NUMBER
               value: "8083"
-            # --- KAFKA AYARLARI ---
+            # Kafka
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
               value: kafka:9092
 
@@ -364,7 +364,7 @@ spec:
               memory: "512Mi"
               cpu: "500m"
           env:
-            # Postgres Ayarlari
+            # Postgres
             - name: USER_SERVICE_URL
               value: http://user-service:8081
             - name: SPRING_DATASOURCE_URL
@@ -375,12 +375,12 @@ spec:
               value: local_password
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
               value: update
-            # Redis Ayarlari
+            # Redis
             - name: SPRING_DATA_REDIS_PORT
               value: "6379"
             - name: SPRING_DATA_REDIS_HOST
               value: redis
-            # --- KEYCLOAK AYARLARI ---
+            # Keycloack-
             - name: KEYCLOAK_SERVER_URL
               value: http://keycloak:8080
             - name: KEYCLOAK_REALM
@@ -389,13 +389,15 @@ spec:
               value: banking-app
             - name: KEYCLOAK_CLIENT_SECRET
               value: Iopu5gL8VfLtIX39701gkwd6iCd7gKW6
-            # --- ZIPKIN AYARLARI ---
+            # Zipkin
             - name: SPRING_ZIPKIN_BASE_URL
               value: http://zipkin:9411
             - name: MANAGEMENT_TRACING_SAMPLING_PROBABILITY
               value: "1.0"
             - name: AUTH_SERVICE_PORT_NUMBER
               value: "8084"
+            - name: KAFKA_CREATEUSER_SENDER
+              value: banking-microservices.create-user.auth-service.progress.v1
 
 ---
 
@@ -467,11 +469,11 @@ spec:
             - containerPort: 8095
           resources:
             requests:
-              memory: "512Mi" # Gateway tum servislere istek yonlendirdigi icin daha fazla memory kullanir. Diger servisler 256Mi kullanirken gateway 512Mi kullanir.
-              cpu: "500m" # Gateway yonetim isleri icin daha fazla CPU kullanir (routing, load balancing, filtering).
+              memory: "512Mi" # min
+              cpu: "500m" # min
             limits:
-              memory: "1Gi" # 1 Gigabyte = 1024 Megabyte. Gateway spike traffic (ani trafik artisi) durumunda 1GB'a kadar cikmaya calisabilir.
-              cpu: "1000m" # 1 CPU core. Gateway cok yogun trafikte tam bir core kullanabilir.
+              memory: "1Gi" # max 1 gb ram
+              cpu: "1000m" # max cpu core
           env:
             - name: USER_SERVICE_URL # SERVICE DISCOVERY ICIN
               value: http://user-service:8081
@@ -491,10 +493,10 @@ spec:
               value: banking_admin
             - name: SPRING_R2DBC_PASSWORD
               value: local_password
-            # --- JWT TOKEN AYARI ---
+            # Jwt token issuer uri
             - name: JWT_TOKEN_ISSUER_URI
               value: http://keycloak:8080/realms/banking
-            # --- ZIPKIN AYARLARI ---
+            # Zipkin
             - name: SPRING_ZIPKIN_BASE_URL
               value: http://zipkin:9411
             - name: MANAGEMENT_TRACING_SAMPLING_PROBABILITY
@@ -558,20 +560,20 @@ metadata:
   name: fraud-service
   namespace: banking-microservices
 spec:
-  replicas: 2 # Kac tane pod calistirilacak. Production'da 2-3 yapilabilir yuk dagitimi icin.
+  replicas: 2 # Max pod sayisi
   selector:
     matchLabels:
-      app: fraud-service # Bu deployment sadece app=fraud-service etiketli podlari yonetir. Selector ve labels eslesmelidir yoksa deployment calismaz.
+      app: fraud-service # Sadece fraud service imagesi icin.
   template:
     metadata:
       labels:
-        app: fraud-service # Olusturdugumuz pod'a yapistirilacak etiket. Yukaridaki selector bunu ariyor.
+        app: fraud-service # podun etiketi
     spec:
       containers:
         - name: fraud-service
           image: banking/fraud-service:1.0.0
           ports:
-            - containerPort: 8085 # Fraud-service Spring Boot uygulamasinin calistigi port. kubectl describe pod ile bu port gozukur.
+            - containerPort: 8085
           resources:
             requests:
               memory: "256Mi"
@@ -580,7 +582,7 @@ spec:
               memory: "512Mi"
               cpu: "500m"
           env:
-            # Postgres Ayarlari
+            # Postgres
             - name: SPRING_DATASOURCE_URL
               value: jdbc:postgresql://postgres:5432/banking_fraud
             - name: SPRING_DATASOURCE_USERNAME
@@ -589,7 +591,7 @@ spec:
               value: local_password
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
               value: update
-            # --- ZIPKIN AYARLARI ---
+            # Zipkin
             - name: SPRING_ZIPKIN_BASE_URL
               value: http://zipkin:9411
             - name: MANAGEMENT_TRACING_SAMPLING_PROBABILITY
@@ -597,7 +599,7 @@ spec:
             # PORT
             - name: FRAUD_SERVICE_PORT_NUMBER
               value: "8085"
-            # --- KAFKA AYARLARI ---
+            # Kafka
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
               value: kafka:9092
             # Kafka Topic
@@ -613,14 +615,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: fraud-service # Diger servisler fraud-service:8085 seklinde ulasir. Gateway bu servise istek gonderebilir fraud kontrolu icin.
+  name: fraud-service
   namespace: banking-microservices
 spec:
   selector:
-    app: fraud-service # app=fraud-service etiketli podlara gelen istekleri yonlendirir. Birden fazla pod varsa otomatik load balance yapar.
+    app: fraud-service
   ports:
-    - port: 8085 # Service'in dinledigi port. Diger servisler bu porta istek atar.
-      targetPort: 8085 # Container icindeki porta yonlendirir. Spring Boot server.port ile ayni olmali.
+    - port: 8085
+      targetPort: 8085
 
 ---
 

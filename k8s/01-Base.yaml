@@ -15,7 +15,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: banking-microservices # Tum banking mikroservisler icin izole
+  name: banking-microservices # Namespace
 
 ---
 
@@ -240,10 +240,10 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kafka  # Bu deployment'ın adı
+  name: kafka
   namespace: banking-microservices
 spec:
-  replicas: 1  # 1 adet Kafka pod'u oluştur
+  replicas: 1
   selector:
     matchLabels:
       app: kafka  # "app=kafka" etiketli pod'ları yönet
@@ -253,16 +253,16 @@ spec:
         app: kafka  # Oluşturulacak pod'lara "app=kafka" etiketi yapıştır
     spec:
       containers:
-        - name: kafka  # Container adı
-          image: confluentinc/cp-kafka:7.5.0  # Kafka Docker image
+        - name: kafka
+          image: confluentinc/cp-kafka:7.5.0
           ports:
-            - containerPort: 9092  # Kafka'nın çalışacağı port
+            - containerPort: 9092
           env:
-            - name: KAFKA_ZOOKEEPER_CONNECT  # ZORUNLU: Kafka, Zookeeper'a nasıl bağlanacak
+            - name: KAFKA_ZOOKEEPER_CONNECT
               value: zookeeper:2181
-            - name: KAFKA_ADVERTISED_LISTENERS  # ZORUNLU: Client'ların Kafka'ya bağlanma adresi
+            - name: KAFKA_ADVERTISED_LISTENERS  i
               value: PLAINTEXT://kafka:9092
-            - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR  # ZORUNLU (tek broker): Varsayılan 3, tek broker'da hata verir
+            - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
               value: "1"
 
 ---
@@ -270,19 +270,19 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: kafka  # Service adi. Diger servisler kafka:9092 yazarak ulasir. Kubernetes DNS otomatik cozumler. Ornegin user-service icinden kafka:9092 yazinca bu service'e gelir.
+  name: kafka
   namespace: banking-microservices
 spec:
   selector:
-    app: kafka  # app=kafka etiketli podlara trafik yonlendirir. Birden fazla kafka pod olsa bile hepsine load balance yapar.
+    app: kafka
   ports:
-    - port: 9092  # Kafka broker portu. Producer mesaj gonderirken, Consumer mesaj alirken bu porta baglanir. SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092 bu yuzden calisiyor.
-      targetPort: 9092 # Pod icindeki Kafka container'inin dinledigi port
+    - port: 9092
+      targetPort: 9092
 
 ---
 
 #
-# KEYCLOAK - Kimlik Dogrulama Servisi ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# KEYCLOAK ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #
 
 apiVersion: apps/v1
@@ -291,29 +291,29 @@ metadata:
   name: keycloak
   namespace: banking-microservices
 spec:
-  replicas: 1 # Keycloak tek instance calisir. Production'da HA (High Availability) icin 2+ yapilabilir ama veritabani paylasimi gerekir.
+  replicas: 1
   selector:
     matchLabels:
-      app: keycloak # Bu deployment app=keycloak etiketli podlari yonetir
+      app: keycloak
   template:
     metadata:
       labels:
-        app: keycloak # Podlara yapistirilacak etiket. Service bu etiketi arar.
+        app: keycloak
     spec:
       containers:
         - name: keycloak
           image: quay.io/keycloak/keycloak:23.0
-          args: ["start-dev"] # Development modu. Production'da start --optimized kullan ve veritabani bagla.
+          args: ["start-dev"]
           ports:
-            - containerPort: 8080 # Keycloak web arayuzu ve API bu portta calisir. Admin console, token endpoint vs. buradan erisiliyor.
+            - containerPort: 8080
           env:
-            - name: KEYCLOAK_ADMIN # Keycloak admin paneline giris icin kullanici adi
+            - name: KEYCLOAK_ADMIN
               value: alper123
-            - name: KEYCLOAK_ADMIN_PASSWORD # Admin sifresi. Production'da guvenli bir Secret kullan!
+            - name: KEYCLOAK_ADMIN_PASSWORD
               value: alper123A
-            - name: KC_HTTP_ENABLED # HTTP aktif. Production'da HTTPS kullan (KC_HTTPS_ENABLED).
+            - name: KC_HTTP_ENABLED
               value: "true"
-            - name: KC_HOSTNAME_STRICT # Hostname kontrolu kapali. Production'da true yap ve domain belirt.
+            - name: KC_HOSTNAME_STRICT
               value: "false"
 
 ---
@@ -321,15 +321,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: keycloak # Diger servisler keycloak:8080 seklinde ulasir. Gateway JWT_TOKEN_ISSUER_URI=http://keycloak:8080/realms/banking ile token dogrular.
+  name: keycloak
   namespace: banking-microservices
 spec:
   selector:
-    app: keycloak # app=keycloak etiketli podlara yonlendir
+    app: keycloak
   ports:
-    - port: 8080 # Keycloak portu. Auth-service KEYCLOAK_SERVER_URL=http://keycloak:8080 ile buraya baglanir.
+    - port: 8080
       targetPort: 8080
-  type: LoadBalancer # Disaridan erisim icin. localhost:8080 ile admin paneline girebilirsin. minikube service keycloak komutuyla eris.
+  type: LoadBalancer
 
 ---
 
