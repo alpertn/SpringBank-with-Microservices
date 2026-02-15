@@ -1,3 +1,8 @@
+kafka:
+  topics:
+    createuser:
+      sender: ${KAFKA_CREATEUSER_SENDER:banking-microservices.create-user.auth-service.progress.v1}
+
 server:
   port: ${AUTH_SERVICE_PORT_NUMBER:8084}
 
