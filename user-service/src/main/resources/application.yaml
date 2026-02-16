@@ -45,16 +45,7 @@ spring:
   zipkin:
     base-url: ${SPRING_ZIPKIN_BASE_URL:http://localhost:9411}
 
-# --- SADECE OPENFEIGN AYARLARI ---
-feign:
-  # Circuit Breaker KAPALI (Varsayılan zaten kapalıdır ama emin olmak için sildik)
-  client:
-    config:
-      default:
-        # Timeoutlar önemlidir. Karşı taraf cevap vermezse sonsuza kadar beklemesin.
-        connectTimeout: 5000 # 5 saniyede bağlanamazsa hata ver
-        readTimeout: 5000    # 5 saniyede cevap gelmezse hata ver
-        loggerLevel: BASIC   # Loglarda temel istekleri gör
+
 
 # Monitoring (Opsiyonel ama tavsiye edilir)
 management:

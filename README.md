@@ -1,6 +1,6 @@
 # SpringBank-with-Microservices
 
-## Projenin Mimari Çizimi
+## Projenin Mimari Çizimi (Mimari Cizim Guncel Degildir. En Kisa Surede Guncellenecektir. Altta olan mimari cizim 3 hafta oncenin cizimi.)
 
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="900">
 
@@ -30,11 +30,16 @@
     <h4>3 - Spring Security</h4>
     <h4>4 - Kafka ile Event Driven Architecture</h4>
     <h4>5 - Container Docker image destekli</h4>
-    <h4>6 - Gelismis Exception Handling</h4>
+    <h4>6 - Exception Handling</h4>
     <h4>7 - Redis</h4>
     <h4>8 - Rate Limitting</h4>
     <h4>9 - Global Exception Handling</h4>
     <h4>10 - KeyCloack ile token dogrulama</h4>
-
-    
+    <h4>11 - Spring Gateway</h4>
+    <h4>12 - Dogru Mikroservis Anlayisi ve mikroservis icerikli kod.</h4>
+    <h4>13 - Hpa(Kubernetes'ın ıcınde)</h4>
+    <h4>14 - Gson ( Google Json )</h4>
+    <h4>14 - Jpa</h4>
+    <h4>15 - PostgreSql</h4>
+    <h4>16 - Endpoint Kullanimi</h4>
 </div>

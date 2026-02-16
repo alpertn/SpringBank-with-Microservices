@@ -4,4 +4,7 @@ ondan sonr frauda gidecek
 frauddan yanit hata ise
 adamin parasi geri atilacak
 
-// money service ve user service create user guncellenecek
+// money service ve user service create user guncellenecekaw
+// Gateway duzenlenecek sadece hazir alinan kodlar var
+// saga pattern
+// saga pattern
