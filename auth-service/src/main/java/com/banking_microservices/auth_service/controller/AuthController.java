@@ -35,11 +35,11 @@ public class AuthController {
         return ResponseEntity.ok(authService.refleshTokenWithRefleshToken(request.getRefreshToken()));
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logoutEndpoint(@Valid @RequestBody LogOutRequestDto logoutRequest) {
-        authService.logOut(logoutRequest.getRefreshToken());
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping("/logout")
+//    public ResponseEntity<Void> logoutEndpoint(@Valid @RequestBody LogOutRequestDto logoutRequest) {
+//        authService.logOut(logoutRequest.getRefreshToken());
+//        return ResponseEntity.ok().build();
+//    }
 
     @PostMapping("register")
     public ResponseEntity<?> registerEndpoint(@Valid @RequestBody RegisterDto requestdto){
