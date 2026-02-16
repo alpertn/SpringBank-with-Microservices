@@ -1,6 +1,7 @@
 package com.banking_microservices.user_service.service;
 
 import com.banking_microservices.user_service.client.MoneyServiceClient;
+import com.banking_microservices.user_service.dto.RoleEnum.Role;
 import com.banking_microservices.user_service.dto.user.AuthServiceCreateUserTopicDto;
 import com.banking_microservices.user_service.dto.user.KafkaTransactionTopicMessageDto;
 import com.banking_microservices.user_service.dto.user.UsersDto;
@@ -41,48 +42,49 @@ public class UserService {
 
     @Transactional
     public Users findUserByMail(String mail) {
-        log.info("findUserByMail sorgusu icin parametre {}", gson.toJson(mail));
-        return UserRepository.findUsersByMail(mail)
-                .orElseThrow(() -> new MailNotFoundException("Mail Not Found: {}" + mail));
+        return UserRepository.findUsersByMail(mail).orElseThrow(() -> new MailNotFoundException("Mail Not Found: {}" + mail));
     }
 
     public Users saveUser(AuthServiceCreateUserTopicDto authServiceCreateUserTopicDto) {
 
         if (UserRepository.existsBymail(authServiceCreateUserTopicDto.getEmail())) {
-            log.info("Mail already exists In Service.saveUser and Values =  {}", gson.toJson(authServiceCreateUserTopicDto));
             throw new UserAlreadyExistsException("Mail Already Exists " + authServiceCreateUserTopicDto.getEmail());
         }
-
-        Users newUsers = Users
-                .builder()
-                .mail(authServiceCreateUserTopicDto.getEmail())
-                .password(authServiceCreateUserTopicDto.getPassword())
-                .name(authServiceCreateUserTopicDto.getName())
-                .surname(authServiceCreateUserTopicDto.getSurname())
-                .keycloackUUID(authServiceCreateUserTopicDto.getKeycloackUserUUID())
-                .role("USER")
-                .build();
-
-        try {
-            Users user = UserRepository.save(newUsers);
-            log.info("User Olusturuldu! {}", gson.toJson(user));
+        try{
+            Role role = Role.valueOf(String.valueOf(authServiceCreateUserTopicDto.getRole()));
+            Users newUsers = Users
+                    .builder()
+                    .mail(authServiceCreateUserTopicDto.getEmail())
+                    .password(authServiceCreateUserTopicDto.getPassword())
+                    .name(authServiceCreateUserTopicDto.getName())
+                    .surname(authServiceCreateUserTopicDto.getSurname())
+                    .keycloackUUID(authServiceCreateUserTopicDto.getKeycloackUserUUID())
+                    .role(Role.valueOf(role.name()))
+                    .build();
             try {
+                Users user = UserRepository.save(newUsers);
+                log.info("User Olusturuldu! {}", gson.toJson(user));
+                try {
 
-                kafkaSender.sendCreateUser(user.getId());
-                return newUsers;
+                    kafkaSender.sendCreateUser(user.getId());
+                    return newUsers;
+
+                } catch (Exception e) {
+
+                    throw new KafkaSendException("Kafka ile Create user topicine mesaj gonderilirken hata olustu.");
+
+                }
 
             } catch (Exception e) {
-
-                throw new KafkaSendException("Kafka ile Create user topicine mesaj gonderilirken hata olustu.");
-
+                throw new UserSaveDatabaseException("User veritabanina kaydedilirken bir sorun olustu " + e.getMessage() + gson.toJson(newUsers));
             }
 
-        } catch (Exception e) {
-            log.warn("UserRepository.save(newUsers); Sorgusunda Hata olustu.  {} --- {}", gson.toJson(newUsers),
-                    e.getMessage());
-            throw new UserSaveDatabaseException(
-                    "User veritabanina kaydedilirken bir sorun olustu " + e.getMessage() + gson.toJson(newUsers));
+        }catch (IllegalArgumentException e){
+            throw new RoleParseException("An error with parse role" + e.getMessage());
         }
+
+
+
     }
 
     //
@@ -99,8 +101,7 @@ public class UserService {
             kafkaSender.sendUsernameValidationSuccess(dto.getEventUUID(), dto);
         } catch (Exception e) {
             kafkaSender.sendUsernameValidationError(dto.getEventUUID(), dto);
-            throw new UserNameOrSurnameNotFoundException(
-                    "User Name Or Surname Not Found " + dto.getName() + " " + dto.getSurname());
+            throw new UserNameOrSurnameNotFoundException("User Name Or Surname Not Found " + dto.getName() + " " + dto.getSurname());
         }
     }
 
@@ -133,12 +134,12 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUserRole(String id, String newRole) {
+    public void updateUserRole(String id, Role newRole) {
         Users user = UserRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundById("User Not Found: " + id));
 
         try {
-            user.setRole(newRole.toUpperCase());
+            user.setRole(Role.valueOf(newRole.name()));
             UserRepository.save(user);
         } catch (Exception e) {
             throw new UserRoleUpdateException("Kullanici rolu guncellenemedi: " + id);
@@ -173,13 +174,6 @@ public class UserService {
         }
     }
 
-    // 3. Rol Bazlı İstatistikler
-    public Map<String, Long> getRoleStatistics() {
-        List<Users> allUsers = UserRepository.findAll();
-        Map<String, Long> roleStats = allUsers.stream()
-                .collect(Collectors.groupingBy(Users::getRole, Collectors.counting()));
-        return roleStats;
-    }
 
     // Email ile Kullanıcı Arama
     public List<Users> searchUsersByEmail(String email) {

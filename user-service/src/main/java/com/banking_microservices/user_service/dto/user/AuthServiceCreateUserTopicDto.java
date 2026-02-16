@@ -1,5 +1,6 @@
 package com.banking_microservices.user_service.dto.user;
 
+import com.banking_microservices.user_service.dto.RoleEnum.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,4 +16,5 @@ public class AuthServiceCreateUserTopicDto {
     private String Name;
     private String surname;
     private String password;
+    private Role role;
 }

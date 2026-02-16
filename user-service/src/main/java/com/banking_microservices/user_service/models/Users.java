@@ -1,5 +1,6 @@
 package com.banking_microservices.user_service.models;
 
+import com.banking_microservices.user_service.dto.RoleEnum.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +30,7 @@ public class Users {
     @Builder.Default
     private String surname = "Kar";
     @Builder.Default
-    private String role = "USER";
+    private Role role = Role.USER;
     @Builder.Default
     private Boolean active = true;
 
