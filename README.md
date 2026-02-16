@@ -1,6 +1,6 @@
 # SpringBank-with-Microservices
 
-## Projenin Mimari Çizimi (Mimari Cizim Guncel Degildir. En Kisa Surede Guncellenecektir. Altta olan mimari cizim 3 hafta oncenin cizimi.)
+## Projenin Mimari Çizimi (Transfer Mimari Cizimi guncel degildir en kisa surede guncellenecektir.)
 
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="900">
 
