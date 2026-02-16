@@ -1,5 +1,6 @@
 package com.banking_microservices.user_service.kafka;
 
+import com.banking_microservices.user_service.dto.user.AuthServiceCreateUserTopicDto;
 import com.banking_microservices.user_service.dto.user.KafkaTransactionTopicMessageDto;
 import com.banking_microservices.user_service.repository.UserRepository;
 import com.banking_microservices.user_service.service.UserService;
@@ -15,6 +16,11 @@ public class KafkaListenerService {
     private final UserService service;
     private final Gson gson = new GsonBuilder().serializeNulls().create();
     private final UserRepository repository;
+
+    @KafkaListener(topics = "${kafka.topics.create-user.authservicelistener}")
+    public void ListenAuthServiceTopic(String topicData){
+        AuthServiceCreateUserTopicDto dto = gson.fromJson(topicData, AuthServiceCreateUserTopicDto.class);
+    }
 
     public KafkaListenerService(UserService service, UserRepository repository) {
         this.service = service;

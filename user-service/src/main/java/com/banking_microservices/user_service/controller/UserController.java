@@ -24,11 +24,11 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/createuser")
-    public ResponseEntity<UsersDto> createUser(@Valid @RequestBody UsersDto usersDto) {
-        log.info("createuser endpointine gelen request {}", gson.toJson(usersDto));
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUser(usersDto));
-    }
+//    @PostMapping("/createuser")
+//    public ResponseEntity<UsersDto> createUser(@Valid @RequestBody UsersDto usersDto) {
+//        log.info("createuser endpointine gelen request {}", gson.toJson(usersDto));
+//        return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUser(usersDto));
+//    }
 
     @PostMapping("/{userId}/change-password")
     public ResponseEntity<?> changePassword(@PathVariable String userId, @Valid @RequestBody ChangePasswordRequestDto requestDto) {

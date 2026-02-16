@@ -4,6 +4,7 @@ server:
 kafka:
   topics:
     create-user:
+      authservicelistener: {$KAFKA_AUTH-SERVICE_CREATE-USER_LISTENER:banking-microservices.create-user.auth-service.progress.v1}
       sender: ${KAFKA_CREATE_USER_SENDER:banking-microservices.username-validation.user-service.progress.v1}
       listener: ${KAFKA_CREATE_USER_LISTENER:banking-microservices.create-user.money-service.success.v1}
       error: ${KAFKA_CREATE_USER_ERROR:banking-microservices.create-user.money-service.error.v1}
