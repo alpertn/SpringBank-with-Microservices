@@ -30,16 +30,16 @@ public class UserController {
 //        return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUser(usersDto));
 //    }
 
-    @PostMapping("/{userId}/change-password")
-    public ResponseEntity<?> changePassword(@PathVariable String userId, @Valid @RequestBody ChangePasswordRequestDto requestDto) {
-        userService.changePassword(userId, requestDto.getCurrentPassword(), requestDto.getNewPassword());
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/{userId}/change-email")
-    public ResponseEntity<?> changeEmail(@PathVariable String userId, @Valid @RequestBody ChangeEmailRequestDto requestDto) {
-        userService.changeEmail(userId, requestDto.getNewEmail(), requestDto.getPassword());
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping("/{userId}/change-password")
+//    public ResponseEntity<?> changePassword(@PathVariable String userId, @Valid @RequestBody ChangePasswordRequestDto requestDto) {
+//        userService.changePassword(userId, requestDto.getCurrentPassword(), requestDto.getNewPassword());
+//        return ResponseEntity.ok().build();
+//    }
+//
+//    @PostMapping("/{userId}/change-email")
+//    public ResponseEntity<?> changeEmail(@PathVariable String userId, @Valid @RequestBody ChangeEmailRequestDto requestDto) {
+//        userService.changeEmail(userId, requestDto.getNewEmail(), requestDto.getPassword());
+//        return ResponseEntity.ok().build();
+//    }
 
 }
