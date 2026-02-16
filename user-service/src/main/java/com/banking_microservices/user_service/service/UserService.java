@@ -1,6 +1,7 @@
 package com.banking_microservices.user_service.service;
 
 import com.banking_microservices.user_service.client.MoneyServiceClient;
+import com.banking_microservices.user_service.dto.user.AuthServiceCreateUserTopicDto;
 import com.banking_microservices.user_service.dto.user.KafkaTransactionTopicMessageDto;
 import com.banking_microservices.user_service.dto.user.UsersDto;
 import com.banking_microservices.user_service.exception.*;
@@ -45,19 +46,20 @@ public class UserService {
                 .orElseThrow(() -> new MailNotFoundException("Mail Not Found: {}" + mail));
     }
 
-    public UsersDto saveUser(UsersDto usersDto) {
+    public Users saveUser(AuthServiceCreateUserTopicDto authServiceCreateUserTopicDto) {
 
-        if (UserRepository.existsBymail(usersDto.getMail())) {
-            log.info("Mail already exists In Service.saveUser and Values =  {}", gson.toJson(usersDto));
-            throw new UserAlreadyExistsException("Mail Already Exists " + usersDto.getMail());
+        if (UserRepository.existsBymail(authServiceCreateUserTopicDto.getEmail())) {
+            log.info("Mail already exists In Service.saveUser and Values =  {}", gson.toJson(authServiceCreateUserTopicDto));
+            throw new UserAlreadyExistsException("Mail Already Exists " + authServiceCreateUserTopicDto.getEmail());
         }
 
         Users newUsers = Users
                 .builder()
-                .mail(usersDto.getMail())
-                .password(usersDto.getPassword())
-                .name(usersDto.getName())
-                .surname(usersDto.getSurname())
+                .mail(authServiceCreateUserTopicDto.getEmail())
+                .password(authServiceCreateUserTopicDto.getPassword())
+                .name(authServiceCreateUserTopicDto.getName())
+                .surname(authServiceCreateUserTopicDto.getSurname())
+                .keycloackUUID(authServiceCreateUserTopicDto.getKeycloackUserUUID())
                 .role("USER")
                 .build();
 

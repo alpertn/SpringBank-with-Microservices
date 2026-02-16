@@ -21,6 +21,7 @@ public class Users {
     @Id
     @UuidGenerator
     private String id;
+    private String keycloackUUID;
     private String mail;
     private String password;
     @Builder.Default

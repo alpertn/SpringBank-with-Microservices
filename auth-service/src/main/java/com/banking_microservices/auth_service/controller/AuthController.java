@@ -1,13 +1,11 @@
 package com.banking_microservices.auth_service.controller;
 
-import com.banking_microservices.auth_service.dto.LogOutRequestDto;
-import com.banking_microservices.auth_service.dto.LoginRequestDto;
-import com.banking_microservices.auth_service.dto.RefleshTokenRequestDto;
-import com.banking_microservices.auth_service.dto.TokenResponseDto;
+import com.banking_microservices.auth_service.dto.*;
 import com.banking_microservices.auth_service.service.AuthService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,6 +41,11 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("register")
+    public ResponseEntity<?> registerEndpoint(@Valid @RequestBody RegisterDto requestdto){
+        authService.createUser(requestdto);
+        return ResponseEntity.ok().build();
+    }
 
 
 }
