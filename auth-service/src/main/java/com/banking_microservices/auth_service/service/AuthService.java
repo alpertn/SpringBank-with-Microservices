@@ -2,6 +2,7 @@ package com.banking_microservices.auth_service.service;
 
 import com.banking_microservices.auth_service.dto.CreateUserTopicDto;
 import com.banking_microservices.auth_service.dto.RegisterDto;
+import com.banking_microservices.auth_service.dto.Role;
 import com.banking_microservices.auth_service.exception.KeycloackUserCreateException;
 import com.banking_microservices.auth_service.kafka.KafkaSender;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ public class AuthService {
     public void createUser(RegisterDto dto){
 
         try{
-            String keycloackUserUUID = keycloackAdminService.createKeycloackUser(dto);
+            String keycloackUserUUID = keycloackAdminService.createKeycloakUser(dto, Role.USER);
 
             CreateUserTopicDto userTopicDto = CreateUserTopicDto.builder()
                     .keycloackUserUUID(keycloackUserUUID)

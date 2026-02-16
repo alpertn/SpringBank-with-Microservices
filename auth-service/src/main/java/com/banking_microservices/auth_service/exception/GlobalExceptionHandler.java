@@ -120,4 +120,34 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(KeycloakAssignRoleException.class)
+    public ResponseEntity<ErrorResponseDto> handleKeycloakAssignRoleException(KeycloakAssignRoleException e, WebRequest webRequest) {
+        log.error("Unhandled Exception. {} Path {}", e.getMessage(), webRequest.getDescription(true));
+        ErrorResponseDto response = ErrorResponseDto
+                .builder()
+                .time(LocalDateTime.now())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .error("KeycloakAssignRoleException")
+                .message(e.getMessage())
+                .path(webRequest.getDescription(true))
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(KeycloakUserAlreadyExists.class)
+    public ResponseEntity<ErrorResponseDto> handleKeycloakUserAlreadyExists(KeycloakUserAlreadyExists e, WebRequest webRequest) {
+        log.error("Unhandled Exception. {} Path {}", e.getMessage(), webRequest.getDescription(true));
+        ErrorResponseDto response = ErrorResponseDto
+                .builder()
+                .time(LocalDateTime.now())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .error("KeycloakUserAlreadyExists")
+                .message(e.getMessage())
+                .path(webRequest.getDescription(true))
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

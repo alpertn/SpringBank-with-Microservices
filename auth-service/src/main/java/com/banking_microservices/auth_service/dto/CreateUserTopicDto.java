@@ -15,4 +15,5 @@ public class CreateUserTopicDto {
     private String Name;
     private String surname;
     private String password;
+    private Role role;
 }

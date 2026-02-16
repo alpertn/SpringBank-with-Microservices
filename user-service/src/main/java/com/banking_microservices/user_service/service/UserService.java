@@ -69,7 +69,7 @@ public class UserService {
             try {
 
                 kafkaSender.sendCreateUser(user.getId());
-                return usersDto;
+                return newUsers;
 
             } catch (Exception e) {
 
