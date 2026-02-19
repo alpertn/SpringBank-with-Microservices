@@ -29,6 +29,15 @@ public class IpBlacklistFilter implements GlobalFilter { //GlobalFilter implemet
             return chain.filter(exchange); // kabul ediyoruz istegi ve istegi gonderiyoruz chaine.
 
         }
+        // ip:blacklist setinde bu ip var mi diye sorguluyor
+        return redisTemplate.opsForSet().isMember("ip:blacklist" , ip)
+                .flatMap(trueOrElseRedisResponse -> {
+                    if(trueOrElseRedisResponse){
+                        return sendBlacklistedIpResponseAndCompleteRequest(exchange, ip); // chaini baslatmadan requesti kesmek icin bunu calistiriyor responseyi de yaziyor
+                    }else{
+                        return chain.filter(exchange); // eger blacklist degilse chaini baslatiyor.
+                    }
+                });
 
 
 
@@ -50,5 +59,9 @@ public class IpBlacklistFilter implements GlobalFilter { //GlobalFilter implemet
         }else{
             return false;
         }
+    }
+
+    private Mono<Void> sendBlacklistedIpResponseAndCompleteRequest(ServerWebExchange ex , String ip){
+
     }
 }
