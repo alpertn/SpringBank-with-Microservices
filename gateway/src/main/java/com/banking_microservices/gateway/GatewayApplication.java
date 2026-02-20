@@ -3,6 +3,7 @@ package com.banking_microservices.gateway;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+// pom xmldeki gateway yetiyor.
 @SpringBootApplication
 public class GatewayApplication {
 

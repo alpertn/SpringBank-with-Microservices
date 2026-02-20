@@ -62,6 +62,7 @@ public class IpBlacklistFilter implements GlobalFilter { //GlobalFilter implemet
     }
 
     private Mono<Void> sendBlacklistedIpResponseAndCompleteRequest(ServerWebExchange ex , String ip){
-
+        //        exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
+        //        return exchange.getResponse().setComplete();
     }
 }
