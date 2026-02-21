@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -61,8 +62,8 @@ public class IpBlacklistFilter implements GlobalFilter { //GlobalFilter implemet
         }
     }
 
-    private Mono<Void> sendBlacklistedIpResponseAndCompleteRequest(ServerWebExchange ex , String ip){
-        //        exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
-        //        return exchange.getResponse().setComplete();
+    private Mono<Void> sendBlacklistedIpResponseAndCompleteRequest(ServerWebExchange exchange , String ip){
+                exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
+                return exchange.getResponse().setComplete();
     }
 }
