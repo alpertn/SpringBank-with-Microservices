@@ -25,33 +25,33 @@ public class UserMoneyService {
         this.gson = gson;
     }
 
-
-    public UserMoney generateUser(String userId){
+    public UserMoney generateUser(String userId) {
         log.info("generateUser isteği alındı. UserId: {}", gson.toJson(userId));
-        try{
+        try {
             UserMoney userMoney = UserMoney.builder()
                     .userId(userId)
                     .userIban(generateRandomTurkishIban())
                     .build();
-            try{
+            try {
                 UserMoney savedUserMoney = UserMoneyRepository.save(userMoney);
                 log.info("Kullanıcı UserMoney servisine kaydedildi: {}", gson.toJson(savedUserMoney));
                 return savedUserMoney;
-            }catch (Exception e){
+            } catch (Exception e) {
                 log.error("Veritabanına kayıt sırasında hata oluştu. UserId: {}", gson.toJson(userId), e);
                 throw new SaveUserException("Failed to save user on UserMoney-Service " + userMoney.getUserId());
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             log.error("generateUser metodunda beklenmeyen hata. UserId: {}", gson.toJson(userId), e);
-            throw new SaveUserException("Failed Save User in money-UserMoneyService " + userId + " details " + e.getMessage());
+            throw new SaveUserException(
+                    "Failed Save User in money-UserMoneyService " + userId + " details " + e.getMessage());
         }
     }
 
     public String generateRandomTurkishIban() {
         String iban;
-        do{
+        do {
             iban = Iban.random(CountryCode.TR).toString();
-        } while(UserMoneyRepository.existsByUserIban(iban));
+        } while (UserMoneyRepository.existsByUserIban(iban));
 
         log.debug("Yeni IBAN üretildi: {}", gson.toJson(iban));
         return iban;
@@ -130,7 +130,8 @@ public class UserMoneyService {
         log.info("withdrawMoneyById isteği. ID: {}, Miktar: {}", gson.toJson(id), gson.toJson(amount));
         BigDecimal currentBalance = getBalanceById(id);
         if (currentBalance.compareTo(amount) < 0) {
-            log.warn("Yetersiz bakiye. ID: {}, Mevcut: {}, İstenen: {}", gson.toJson(id), gson.toJson(currentBalance), gson.toJson(amount));
+            log.warn("Yetersiz bakiye. ID: {}, Mevcut: {}, İstenen: {}", gson.toJson(id), gson.toJson(currentBalance),
+                    gson.toJson(amount));
             throw new MoneyNotAvaibleException("Insufficient funds for ID: " + id);
         }
         int result = UserMoneyRepository.decrementBalanceById(id, amount);
@@ -160,7 +161,8 @@ public class UserMoneyService {
         log.info("withdrawMoneyByIban isteği. IBAN: {}, Miktar: {}", gson.toJson(iban), gson.toJson(amount));
         BigDecimal currentBalance = getBalanceByIban(iban);
         if (currentBalance.compareTo(amount) < 0) {
-            log.warn("Yetersiz bakiye. IBAN: {}, Mevcut: {}, İstenen: {}", gson.toJson(iban), gson.toJson(currentBalance), gson.toJson(amount));
+            log.warn("Yetersiz bakiye. IBAN: {}, Mevcut: {}, İstenen: {}", gson.toJson(iban),
+                    gson.toJson(currentBalance), gson.toJson(amount));
             throw new MoneyNotAvaibleException("Insufficient funds for IBAN: " + iban);
         }
 
@@ -196,7 +198,8 @@ public class UserMoneyService {
                 });
 
         if (currentBalance.compareTo(amount) < 0) {
-            log.warn("Yetersiz bakiye. UserId: {}, Mevcut: {}, İstenen: {}", gson.toJson(userId), gson.toJson(currentBalance), gson.toJson(amount));
+            log.warn("Yetersiz bakiye. UserId: {}, Mevcut: {}, İstenen: {}", gson.toJson(userId),
+                    gson.toJson(currentBalance), gson.toJson(amount));
             throw new MoneyNotAvaibleException("Insufficient funds for User ID: " + userId);
         }
 

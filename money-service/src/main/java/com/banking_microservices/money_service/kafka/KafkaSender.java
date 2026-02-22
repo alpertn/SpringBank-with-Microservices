@@ -5,6 +5,7 @@ import com.banking_microservices.money_service.exception.KafkaSendException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -15,79 +16,95 @@ public class KafkaSender {
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final Gson gson = new GsonBuilder().serializeNulls().create();
 
+    @Value("${kafka.topics.transaction.sender}")
+    private String transactionSenderTopic;
+
+    @Value("${kafka.topics.username-validation.sender}")
+    private String usernameValidationSenderTopic;
+
+    @Value("${kafka.topics.transaction.error}")
+    private String transactionErrorTopic;
+
+    @Value("${kafka.topics.create-user.error}")
+    private String createUserErrorTopic;
+
+    @Value("${kafka.topics.create-user.sender}")
+    private String createUserSenderTopic;
+
     public KafkaSender(KafkaTemplate<String, Object> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
     public void sendTransaction(String key, KafkaTransactionTopicMessageDto kafkaTransactionTopicMessageDto) {
-        try{
+        try {
             String jsonMessageForKafka = gson.toJson(kafkaTransactionTopicMessageDto);
-            kafkaTemplate.send("${kafka.topics.transaction.sender}", key, kafkaTransactionTopicMessageDto);
+            kafkaTemplate.send(transactionSenderTopic, key, kafkaTransactionTopicMessageDto);
             log.info("Kafkaya mesaj gonderildi {} {}", key, kafkaTransactionTopicMessageDto);
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
-            log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}" , key, kafkaTransactionTopicMessageDto);
-            throw new KafkaSendException("Kafka Send Exception. "+ key +" " + kafkaTransactionTopicMessageDto);
+            log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}", key, kafkaTransactionTopicMessageDto);
+            throw new KafkaSendException("Kafka Send Exception. " + key + " " + kafkaTransactionTopicMessageDto);
 
         }
 
     }
 
-    public void sendTransactionToUserService(String key, KafkaTransactionTopicMessageDto dto){
-        try{
+    public void sendTransactionToUserService(String key, KafkaTransactionTopicMessageDto dto) {
+        try {
             String jsonMessageForKafka = gson.toJson(dto);
-            kafkaTemplate.send("${kafka.topics.username-validation.sender}", key, dto);
+            kafkaTemplate.send(usernameValidationSenderTopic, key, dto);
             log.info("Kafkaya mesaj gonderildi {} {}", key, dto);
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
-            log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}" , key, dto);
-            throw new KafkaSendException("Kafka Send Exception. "+ key +" " + dto);
+            log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}", key, dto);
+            throw new KafkaSendException("Kafka Send Exception. " + key + " " + dto);
 
         }
     }
 
-    public void sendTransactionError(String key, KafkaTransactionTopicMessageDto dto){
+    public void sendTransactionError(String key, KafkaTransactionTopicMessageDto dto) {
 
-        try{
+        try {
             String jsonMessageForKafka = gson.toJson(dto);
-            kafkaTemplate.send("${kafka.topics.transaction.error}", key, dto);
+            kafkaTemplate.send(transactionErrorTopic, key, dto);
             log.info("Kafkaya mesaj gonderildi {} {}", key, dto);
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
-            log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}" , key, dto);
-            throw new KafkaSendException("Kafka Send Exception. "+ key +" " + dto);
-
-        }
-    }
-    public void sendCreateUserError(String key, KafkaTransactionTopicMessageDto dto){
-
-        try{
-            String jsonMessageForKafka = gson.toJson(dto);
-            kafkaTemplate.send("${kafka.topics.create-user.error}", key, dto);
-            log.info("Kafkaya mesaj gonderildi {} {}", key, dto);
-
-        }catch (Exception e){
-
-            log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}" , key, dto);
-            throw new KafkaSendException("Kafka Send Exception. "+ key +" " + dto);
+            log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}", key, dto);
+            throw new KafkaSendException("Kafka Send Exception. " + key + " " + dto);
 
         }
     }
 
-    public void sendCreateUserSuccess(String key, KafkaTransactionTopicMessageDto dto){
+    public void sendCreateUserError(String key, KafkaTransactionTopicMessageDto dto) {
 
-        try{
+        try {
             String jsonMessageForKafka = gson.toJson(dto);
-            kafkaTemplate.send("${kafka.topics.create-user.sender}", key, dto);
+            kafkaTemplate.send(createUserErrorTopic, key, dto);
             log.info("Kafkaya mesaj gonderildi {} {}", key, dto);
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
-            log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}" , key, dto);
-            throw new KafkaSendException("Kafka Send Exception. "+ key +" " + dto);
+            log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}", key, dto);
+            throw new KafkaSendException("Kafka Send Exception. " + key + " " + dto);
+
+        }
+    }
+
+    public void sendCreateUserSuccess(String key, KafkaTransactionTopicMessageDto dto) {
+
+        try {
+            String jsonMessageForKafka = gson.toJson(dto);
+            kafkaTemplate.send(createUserSenderTopic, key, dto);
+            log.info("Kafkaya mesaj gonderildi {} {}", key, dto);
+
+        } catch (Exception e) {
+
+            log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}", key, dto);
+            throw new KafkaSendException("Kafka Send Exception. " + key + " " + dto);
 
         }
     }

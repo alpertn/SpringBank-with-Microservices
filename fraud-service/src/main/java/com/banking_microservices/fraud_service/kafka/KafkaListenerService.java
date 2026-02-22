@@ -16,11 +16,11 @@ public class KafkaListenerService {
     private service service;
 
     @KafkaListener(topics = "${kafka.topics.transaction.listener}")
-    public void CreateUserListener(String kafkaData){
+    public void CreateUserListener(String kafkaData) {
 
-        KafkaTransactionTopicMessageDto transactionRequest = gson.fromJson(kafkaData, KafkaTransactionTopicMessageDto.class); // fromjson kullanmamiz lazim java classina cevirmemiz icin
+        KafkaTransactionTopicMessageDto transactionRequest = gson.fromJson(kafkaData,
+                KafkaTransactionTopicMessageDto.class); // fromjson kullanmamiz lazim java classina cevirmemiz icin
         log.info("CreateUserListener data geldi {}", gson.toJson(kafkaData));
-
 
     }
 }

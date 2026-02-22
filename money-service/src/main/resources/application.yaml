@@ -3,7 +3,7 @@ kafka:
     create-user:
       sender: ${KAFKA_CREATE_USER_SENDER:banking-microservices.create-user.money-service.success.v1}
       listener: ${KAFKA_CREATE_USER_LISTENER:banking-microservices.username-validation.user-service.progress.v1}
-      error: ${KAFKA_CREATE_USER_LISTENER:banking-microservices.create-user.money-service.error.v1}
+      error: ${KAFKA_CREATE_USER_ERROR:banking-microservices.create-user.money-service.error.v1}
     transaction:
       listener: ${KAFKA_TRANSACTION_TOPIC_LISTENER:banking-microservices.transaction.fraud-service.checked.v1}
       sender: ${KAFKA_TRANSACTION_TOPIC_SENDER:banking-microservices.transaction.transaction-service.success.v1}

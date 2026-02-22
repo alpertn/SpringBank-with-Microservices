@@ -26,26 +26,27 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponseDto> loginEndpoint(@Valid @RequestBody LoginRequestDto loginRequestDto){
+    public ResponseEntity<TokenResponseDto> loginEndpoint(@Valid @RequestBody LoginRequestDto loginRequestDto) {
         return ResponseEntity.ok(authService.login(loginRequestDto));
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<RefleshTokenRequestDto> refreshTokenEndpoint(@Valid @RequestBody RefleshTokenRequestDto request) {
+    public ResponseEntity<RefleshTokenRequestDto> refreshTokenEndpoint(
+            @Valid @RequestBody RefleshTokenRequestDto request) {
         return ResponseEntity.ok(authService.refleshTokenWithRefleshToken(request.getRefreshToken()));
     }
 
-//    @PostMapping("/logout")
-//    public ResponseEntity<Void> logoutEndpoint(@Valid @RequestBody LogOutRequestDto logoutRequest) {
-//        authService.logOut(logoutRequest.getRefreshToken());
-//        return ResponseEntity.ok().build();
-//    }
+    // @PostMapping("/logout")
+    // public ResponseEntity<Void> logoutEndpoint(@Valid @RequestBody
+    // LogOutRequestDto logoutRequest) {
+    // authService.logOut(logoutRequest.getRefreshToken());
+    // return ResponseEntity.ok().build();
+    // }
 
     @PostMapping("register")
-    public ResponseEntity<?> registerEndpoint(@Valid @RequestBody RegisterDto requestdto){
+    public ResponseEntity<?> registerEndpoint(@Valid @RequestBody RegisterDto requestdto) {
         authService.createUser(requestdto);
         return ResponseEntity.ok().build();
     }
-
 
 }

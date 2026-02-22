@@ -18,7 +18,7 @@ public class KafkaListenerService {
     private final UserRepository repository;
 
     @KafkaListener(topics = "${kafka.topics.create-user.authservicelistener}")
-    public void ListenAuthServiceTopic(String topicData){
+    public void ListenAuthServiceTopic(String topicData) {
         AuthServiceCreateUserTopicDto dto = gson.fromJson(topicData, AuthServiceCreateUserTopicDto.class);
 
     }
@@ -36,11 +36,9 @@ public class KafkaListenerService {
         KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
     }
 
-
     @KafkaListener(topics = "${kafka.topics.username-validation.listener}")
     public void listenUsernameValidation(String topic) {
         KafkaTransactionTopicMessageDto dto = gson.fromJson(topic, KafkaTransactionTopicMessageDto.class);
         service.UsernameValidation(dto);
     }
 }
-

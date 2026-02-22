@@ -45,7 +45,7 @@ spec:
             - name: SPRING_DATASOURCE_USERNAME
               value: banking_admin
             - name: SPRING_DATASOURCE_PASSWORD
-              value: local_password
+              value: banking_admin
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
               value: update
             # Zipkin
@@ -158,7 +158,7 @@ spec:
             - name: SPRING_DATASOURCE_USERNAME
               value: banking_admin
             - name: SPRING_DATASOURCE_PASSWORD
-              value: local_password
+              value: banking_admin
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
               value: update
             # Zipkin
@@ -272,7 +272,7 @@ spec:
             - name: SPRING_DATASOURCE_USERNAME
               value: banking_admin
             - name: SPRING_DATASOURCE_PASSWORD
-              value: local_password
+              value: banking_admin
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
               value: update
             # Zipkin
@@ -372,7 +372,7 @@ spec:
             - name: SPRING_DATASOURCE_USERNAME
               value: banking_admin
             - name: SPRING_DATASOURCE_PASSWORD
-              value: local_password
+              value: banking_admin
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
               value: update
             # Redis
@@ -492,7 +492,7 @@ spec:
             - name: SPRING_R2DBC_USERNAME
               value: banking_admin
             - name: SPRING_R2DBC_PASSWORD
-              value: local_password
+              value: banking_admin
             # Jwt token issuer uri
             - name: JWT_TOKEN_ISSUER_URI
               value: http://keycloak:8080/realms/banking

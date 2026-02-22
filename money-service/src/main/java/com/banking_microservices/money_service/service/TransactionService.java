@@ -25,7 +25,8 @@ public class TransactionService {
     private final KafkaListenerService kafkaListenerService;
     private final KafkaLastActivityRepository kafkaLastActivityRepository;
 
-    public TransactionService(UserMoneyService service, UserMoneyRepository repository, KafkaSender kafkaSender, KafkaListenerService kafkaListenerService, KafkaLastActivityRepository kafkaLastActivityRepository) {
+    public TransactionService(UserMoneyService service, UserMoneyRepository repository, KafkaSender kafkaSender,
+            KafkaListenerService kafkaListenerService, KafkaLastActivityRepository kafkaLastActivityRepository) {
         this.service = service;
         this.repository = repository;
         this.kafkaSender = kafkaSender;
@@ -33,22 +34,21 @@ public class TransactionService {
         this.kafkaLastActivityRepository = kafkaLastActivityRepository;
     }
 
+    public void KafkaTransactionTopicService(KafkaTransactionTopicMessageDto dto) {
 
-    public void KafkaTransactionTopicService(KafkaTransactionTopicMessageDto dto){
-
-        if(kafkaLastActivityRepository.existsByEventUUID(dto.getEventUUID())){
-            throw new EventUUIDAlreadyExists("Event UUID Already exists KafkaTransactionTopicService " + dto.getEventUUID());
-        }else{
+        if (kafkaLastActivityRepository.existsByEventUUID(dto.getEventUUID())) {
+            throw new EventUUIDAlreadyExists(
+                    "Event UUID Already exists KafkaTransactionTopicService " + dto.getEventUUID());
+        } else {
             // varsa hata yoksa save ve continue
             // backtrack two sum gibi.
-            try{
+            try {
                 kafkaLastActivityRepository.save(
                         KafkaLastActivity
                                 .builder()
                                 .eventUUID(dto.getEventUUID())
-                                .build()
-                );
-            }catch (Exception e){
+                                .build());
+            } catch (Exception e) {
                 throw new EventSaveException("Event Save exception " + dto.getEventUUID());
             }
         }
@@ -60,7 +60,8 @@ public class TransactionService {
 
                     kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
 
-                    throw new IbanNotFoundException("KafkaTransactionTopicService Hesap bulunamadi." + gson.toJson(dto));
+                    throw new IbanNotFoundException(
+                            "KafkaTransactionTopicService Hesap bulunamadi." + gson.toJson(dto));
                 });
 
         repository.findBalanceByIban(dto.getReceiverIban()) // ORELSEGET
@@ -70,14 +71,15 @@ public class TransactionService {
 
                     kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
 
-                    throw new IbanNotFoundException("KafkaTransactionTopicService Hesap bulunamadi." + gson.toJson(dto));
+                    throw new IbanNotFoundException(
+                            "KafkaTransactionTopicService Hesap bulunamadi." + gson.toJson(dto));
                 });
 
-        if(balance.compareTo(dto.getMoney()) > 0){ // bigdecimal oldugu icin boyle yazmam lazim.
+        if (balance.compareTo(dto.getMoney()) > 0) { // bigdecimal oldugu icin boyle yazmam lazim.
 
-            kafkaSender.sendTransactionToUserService(dto.getEventUUID(),dto);
+            kafkaSender.sendTransactionToUserService(dto.getEventUUID(), dto);
 
-        }else{
+        } else {
             throw new MoneyNotAvaibleException("Money not avaible KafkaTransactionTopicService");
         }
 
@@ -86,9 +88,10 @@ public class TransactionService {
     // Rollback Icin Transactional Onemli
     // 200 cekildi 300 cekilirken hata aldi 500 yatiriyo hesaba
     @Transactional
-    public void createTransaction(KafkaTransactionTopicMessageDto dto){
+    public void createTransaction(KafkaTransactionTopicMessageDto dto) {
 
-        log.info("createTransaction veri geldi. Sender Iban {}, Receiver IBAN: {}, Amount: {}", gson.toJson(dto.getSenderIban()), gson.toJson(dto.getReceiverIban()), gson.toJson(dto.getMoney()));
+        log.info("createTransaction veri geldi. Sender Iban {}, Receiver IBAN: {}, Amount: {}",
+                gson.toJson(dto.getSenderIban()), gson.toJson(dto.getReceiverIban()), gson.toJson(dto.getMoney()));
 
         if (dto.getMoney().compareTo(BigDecimal.ZERO) <= 0) {
             log.error("Transfer Amount must be pozitife {}", gson.toJson(dto.getMoney()));
@@ -110,7 +113,8 @@ public class TransactionService {
 
                     kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
 
-                    throw new IbanNotFoundException("KafkaTransactionTopicService Hesap bulunamadi." + gson.toJson(dto));
+                    throw new IbanNotFoundException(
+                            "KafkaTransactionTopicService Hesap bulunamadi." + gson.toJson(dto));
                 });
 
         repository.findBalanceByIban(dto.getReceiverIban())
@@ -120,7 +124,8 @@ public class TransactionService {
 
                     kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
 
-                    throw new IbanNotFoundException("KafkaTransactionTopicService Hesap bulunamadi." + gson.toJson(dto));
+                    throw new IbanNotFoundException(
+                            "KafkaTransactionTopicService Hesap bulunamadi." + gson.toJson(dto));
                 });
 
         //
@@ -132,12 +137,13 @@ public class TransactionService {
 
             service.depositMoneyByIban(dto.getReceiverIban(), dto.getMoney());
 
-            log.info("Transfer Success Sender {}, Receiver {}, Transfer Amount {}", gson.toJson(dto.getSenderIban()), gson.toJson(dto.getReceiverIban()), gson.toJson(dto.getMoney()));
+            log.info("Transfer Success Sender {}, Receiver {}, Transfer Amount {}", gson.toJson(dto.getSenderIban()),
+                    gson.toJson(dto.getReceiverIban()), gson.toJson(dto.getMoney()));
 
             dto.setStatus("SUCCESS");
-            try{
-                kafkaSender.sendTransaction(dto.getEventUUID(),dto);
-            }catch (Exception e){
+            try {
+                kafkaSender.sendTransaction(dto.getEventUUID(), dto);
+            } catch (Exception e) {
                 throw new KafkaSendException("An Error While Send End Of Transaction On Kafka");
             }
 
@@ -147,14 +153,10 @@ public class TransactionService {
 
             kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
 
-            log.warn("An Error While withdraw Money {}" ,gson.toJson(dto));
+            log.warn("An Error While withdraw Money {}", gson.toJson(dto));
 
         }
 
     }
-
-
-
-
 
 }

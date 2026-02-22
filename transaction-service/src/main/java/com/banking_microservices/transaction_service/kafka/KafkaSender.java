@@ -1,6 +1,5 @@
 package com.banking_microservices.transaction_service.kafka;
 
-
 import com.banking_microservices.transaction_service.dto.KafkaTransactionTopicMessageDto;
 import com.banking_microservices.transaction_service.exception.KafkaSendException;
 import com.google.gson.Gson;
@@ -21,22 +20,25 @@ public class KafkaSender {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-
-    //public class TopicConstants {
-    //    public static final String TRANSFER_CREATED = "banking.transaction.transfer-created.v1";
-    //    public static final String BALANCE_CHANGED = "banking.account.balance-changed.v1";
-    //    public static final String USER_VERIFIED = "banking.user.identity-verified.v1";
-    //}
+    // public class TopicConstants {
+    // public static final String TRANSFER_CREATED =
+    // "banking.transaction.transfer-created.v1";
+    // public static final String BALANCE_CHANGED =
+    // "banking.account.balance-changed.v1";
+    // public static final String USER_VERIFIED =
+    // "banking.user.identity-verified.v1";
+    // }
     public void sendTransaction(String key, KafkaTransactionTopicMessageDto kafkaTransactionTopicMessageDto) {
-        try{
+        try {
             String jsonMessageForKafka = gson.toJson(kafkaTransactionTopicMessageDto);
-            kafkaTemplate.send("banking-microservices.transaction.transaction-service.created.v1", key, kafkaTransactionTopicMessageDto);
+            kafkaTemplate.send("banking-microservices.transaction.transaction-service.created.v1", key,
+                    kafkaTransactionTopicMessageDto);
             log.info("Kafkaya mesaj gonderildi {} {}", key, kafkaTransactionTopicMessageDto);
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
-            log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}" , key, kafkaTransactionTopicMessageDto);
-            throw new KafkaSendException("Kafka Send Exception. "+ key +" " + kafkaTransactionTopicMessageDto);
+            log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}", key, kafkaTransactionTopicMessageDto);
+            throw new KafkaSendException("Kafka Send Exception. " + key + " " + kafkaTransactionTopicMessageDto);
 
         }
 

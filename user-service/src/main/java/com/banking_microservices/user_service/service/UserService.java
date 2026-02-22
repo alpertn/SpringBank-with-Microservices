@@ -42,7 +42,8 @@ public class UserService {
 
     @Transactional
     public Users findUserByMail(String mail) {
-        return UserRepository.findUsersByMail(mail).orElseThrow(() -> new MailNotFoundException("Mail Not Found: {}" + mail));
+        return UserRepository.findUsersByMail(mail)
+                .orElseThrow(() -> new MailNotFoundException("Mail Not Found: {}" + mail));
     }
 
     public Users saveUser(AuthServiceCreateUserTopicDto authServiceCreateUserTopicDto) {
@@ -50,7 +51,7 @@ public class UserService {
         if (UserRepository.existsBymail(authServiceCreateUserTopicDto.getEmail())) {
             throw new UserAlreadyExistsException("Mail Already Exists " + authServiceCreateUserTopicDto.getEmail());
         }
-        try{
+        try {
             Role role = Role.valueOf(String.valueOf(authServiceCreateUserTopicDto.getRole()));
             Users newUsers = Users
                     .builder()
@@ -76,14 +77,13 @@ public class UserService {
                 }
 
             } catch (Exception e) {
-                throw new UserSaveDatabaseException("User veritabanina kaydedilirken bir sorun olustu " + e.getMessage() + gson.toJson(newUsers));
+                throw new UserSaveDatabaseException(
+                        "User veritabanina kaydedilirken bir sorun olustu " + e.getMessage() + gson.toJson(newUsers));
             }
 
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             throw new RoleParseException("An error with parse role" + e.getMessage());
         }
-
-
 
     }
 
@@ -101,7 +101,8 @@ public class UserService {
             kafkaSender.sendUsernameValidationSuccess(dto.getEventUUID(), dto);
         } catch (Exception e) {
             kafkaSender.sendUsernameValidationError(dto.getEventUUID(), dto);
-            throw new UserNameOrSurnameNotFoundException("User Name Or Surname Not Found " + dto.getName() + " " + dto.getSurname());
+            throw new UserNameOrSurnameNotFoundException(
+                    "User Name Or Surname Not Found " + dto.getName() + " " + dto.getSurname());
         }
     }
 
@@ -173,7 +174,6 @@ public class UserService {
             throw new UserUpdateException("Failed to update user status: " + id);
         }
     }
-
 
     // Email ile Kullanıcı Arama
     public List<Users> searchUsersByEmail(String email) {

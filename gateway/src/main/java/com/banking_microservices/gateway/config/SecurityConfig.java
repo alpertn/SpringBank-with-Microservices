@@ -34,27 +34,28 @@ public class SecurityConfig {
 
     }
 
-//    // Keycloak JWT -> Spring Security Authority dönüşümü
-//    private Converter<Jwt, Mono<AbstractAuthenticationToken>> jwtConverter() {
-//        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
-//        converter.setJwtGrantedAuthoritiesConverter(this::extractRoles);
-//        return new ReactiveJwtAuthenticationConverterAdapter(converter);
-//    }
-//
-//    // realm_access.roles -> ROLE_XXX
-//    @SuppressWarnings("unchecked")
-//    private Collection<GrantedAuthority> extractRoles(Jwt jwt) {
-//        Map<String, Object> realm = jwt.getClaim("realm_access");
-//        if (realm == null)
-//            return List.of();
-//
-//        List<String> roles = (List<String>) realm.get("roles");
-//        if (roles == null)
-//            return List.of();
-//
-//        return roles.stream()
-//                .<GrantedAuthority>map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
-//                .toList();
-//    }
+    // // Keycloak JWT -> Spring Security Authority dönüşümü
+    // private Converter<Jwt, Mono<AbstractAuthenticationToken>> jwtConverter() {
+    // JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+    // converter.setJwtGrantedAuthoritiesConverter(this::extractRoles);
+    // return new ReactiveJwtAuthenticationConverterAdapter(converter);
+    // }
+    //
+    // // realm_access.roles -> ROLE_XXX
+    // @SuppressWarnings("unchecked")
+    // private Collection<GrantedAuthority> extractRoles(Jwt jwt) {
+    // Map<String, Object> realm = jwt.getClaim("realm_access");
+    // if (realm == null)
+    // return List.of();
+    //
+    // List<String> roles = (List<String>) realm.get("roles");
+    // if (roles == null)
+    // return List.of();
+    //
+    // return roles.stream()
+    // .<GrantedAuthority>map(role -> new SimpleGrantedAuthority("ROLE_" +
+    // role.toUpperCase()))
+    // .toList();
+    // }
 
 }

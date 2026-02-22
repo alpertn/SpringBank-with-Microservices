@@ -16,10 +16,9 @@ public class AuthService {
     private KeycloackUserService keycloackUserService;
     private KafkaSender kafkaSender;
 
+    public void createUser(RegisterDto dto) {
 
-    public void createUser(RegisterDto dto){
-
-        try{
+        try {
             String keycloackUserUUID = keycloackAdminService.createKeycloakUser(dto, Role.USER);
 
             CreateUserTopicDto userTopicDto = CreateUserTopicDto.builder()
@@ -29,18 +28,12 @@ public class AuthService {
                     .password(dto.getPassword())
                     .email(dto.getEmail()).build();
 
-
             kafkaSender.sendCreateUserToUserTopic(userTopicDto);
 
-
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new KeycloackUserCreateException("An exception with Keycloack create user");
         }
 
-
-
     }
-
-
 
 }
