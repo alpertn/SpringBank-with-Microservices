@@ -9,3 +9,13 @@ adamin parasi geri atilacak
 // saga pattern
 // Shared Library
 Spring webflux Mono endpoint
+
+1 - TransactıonService send kafka topic message
+2 - Moneyservice bloke para
+3 - user service
+4 - fraud service
+5 - transaction service (Fraud service cagırıcak eski tr ansactionlarına bakacak)
+6 - money service ( Success)
+7 - Last(Transactıon service kaydı kaydedecek)
+not : bir kafka topici iki kere okunabileceği ihtimaline karsı-
+her mikroservisde eventUUID belırleme.

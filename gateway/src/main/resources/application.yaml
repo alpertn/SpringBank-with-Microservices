@@ -15,7 +15,7 @@ spring:
         - id: user-service
           uri: ${USER_SERVICE_URL:http://user-service:8081}
           predicates:
-            - Path=/api/users/**
+            - Path=/api/user/**
 
         - id: money-service
           uri: ${MONEY_SERVICE_URL:http://money-service:8082}
@@ -31,7 +31,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${JWT_TOKEN_ISSUER_URI:http://keycloak:8080/realms/banking-microservices}
+          issuer-uri: ${JWT_TOKEN_ISSUER_URI:http://keycloak:8080/realms/banking}
 
   r2dbc:
     url: ${SPRING_R2DBC_URL:r2dbc:postgresql://localhost:5432/banking}

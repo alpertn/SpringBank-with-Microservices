@@ -1,5 +1,6 @@
 package com.banking_microservices.gateway.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -21,41 +22,41 @@ import java.util.Map;
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
-    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity httpSecurity){
+    @Bean
+    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity httpSecurity) {
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .authorizeExchange(authorizeExchange -> authorizeExchange
-                        .pathMatchers("/api/auth/**").permitAll() // public
-                        .pathMatchers("/api/admin/**").hasRole("ADMIN")
+                        .pathMatchers("/", "/index.html", "/login.html", "/register.html").permitAll() // Frontend
+                                                                                                       // HTML'leri
+                                                                                                       // public
+                        .pathMatchers("/api/auth/**").permitAll() // API auth public
+                        .pathMatchers("/api/user/admin/**").hasRole("ADMIN")
                         .anyExchange().authenticated()) // geri kalani icin sadece login olmasi yeterli olsun
-                .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> jwt.jwtAuthenticationConverter(JwtConverter)))
-            //    .build()
-
-
+                .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConverter())))
+                .build();
     }
 
-    // // Keycloak JWT -> Spring Security Authority dönüşümü
-    // private Converter<Jwt, Mono<AbstractAuthenticationToken>> jwtConverter() {
-    // JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
-    // converter.setJwtGrantedAuthoritiesConverter(this::extractRoles);
-    // return new ReactiveJwtAuthenticationConverterAdapter(converter);
-    // }
-    //
-    // // realm_access.roles -> ROLE_XXX
-    // @SuppressWarnings("unchecked")
-    // private Collection<GrantedAuthority> extractRoles(Jwt jwt) {
-    // Map<String, Object> realm = jwt.getClaim("realm_access");
-    // if (realm == null)
-    // return List.of();
-    //
-    // List<String> roles = (List<String>) realm.get("roles");
-    // if (roles == null)
-    // return List.of();
-    //
-    // return roles.stream()
-    // .<GrantedAuthority>map(role -> new SimpleGrantedAuthority("ROLE_" +
-    // role.toUpperCase()))
-    // .toList();
-    // }
+    // Keycloak JWT -> Spring Security Authority dönüşümü
+    private Converter<Jwt, Mono<AbstractAuthenticationToken>> jwtConverter() {
+        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+        converter.setJwtGrantedAuthoritiesConverter(this::extractRoles);
+        return new ReactiveJwtAuthenticationConverterAdapter(converter);
+    }
 
+    // realm_access.roles -> ROLE_XXX
+    @SuppressWarnings("unchecked")
+    private Collection<GrantedAuthority> extractRoles(Jwt jwt) {
+        Map<String, Object> realm = jwt.getClaim("realm_access");
+        if (realm == null)
+            return List.of();
+
+        List<String> roles = (List<String>) realm.get("roles");
+        if (roles == null)
+            return List.of();
+
+        return roles.stream()
+                .<GrantedAuthority>map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
+                .toList();
+    }
 }

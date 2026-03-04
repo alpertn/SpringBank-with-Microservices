@@ -1,6 +1,6 @@
 package com.banking_microservices.user_service.models;
 
-import com.banking_microservices.user_service.dto.RoleEnum.Role;
+import com.banking_microservices.user_service.dto.RoleEnum.RoleEnum.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

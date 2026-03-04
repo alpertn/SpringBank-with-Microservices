@@ -1,0 +1,354 @@
+╔══════════════════════════════════════════════════════════════════════════════════════╗
+║           SPRINGBANK MİKROSERVİS PROJESİ - KAPSAMLI ANALİZ VE TEST RAPORU          ║
+║                          Tarih: 04.03.2026 - 01:39                                  ║
+║                     ✅ TÜM SORUNLAR DÜZELTİLDİ (v2)                                ║
+╚══════════════════════════════════════════════════════════════════════════════════════╝
+
+════════════════════════════════════════════════════════════════════════════════════════
+                              BÖLÜM 1: PROJE MİMARİSİ
+════════════════════════════════════════════════════════════════════════════════════════
+
+Proje 6 mikroservisten oluşan bir Spring Boot bankacılık uygulamasıdır.
+Kubernetes üzerinde deploy edilir, Gateway üzerinden tüm istekler yönlendirilir.
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                            MİKROSERVİS MİMARİSİ                                    │
+│                                                                                     │
+│   [Client/Postman]                                                                  │
+│        │                                                                            │
+│        ▼                                                                            │
+│   ┌─────────────────┐                                                               │
+│   │   GATEWAY        │  Port: 8095 (LoadBalancer - dışarıya açık)                   │
+│   │   Spring Cloud   │  JWT doğrulama + IP Blacklist Filter + Rate Limit            │
+│   └────┬─────────────┘                                                               │
+│        │                                                                            │
+│   ┌────┼────────────────────────────────────────────────────────┐                    │
+│   │    ├──► Auth-Service      (Port: 8084) - Keycloak entegre  │                    │
+│   │    ├──► User-Service      (Port: 8081) - PostgreSQL        │                    │
+│   │    ├──► Money-Service     (Port: 8082) - PostgreSQL        │                    │
+│   │    ├──► Transaction-Svc   (Port: 8083) - PostgreSQL        │                    │
+│   │    └──► Fraud-Service     (Port: 8085) - PostgreSQL        │                    │
+│   └─────────────────────────────────────────────────────────────┘                    │
+│                                                                                     │
+│   Altyapı:                                                                          │
+│   • PostgreSQL (5432) - 6 ayrı veritabanı                                           │
+│   • Redis (6379) - IP Blacklist & Cache                                             │
+│   • Kafka (9092) + Zookeeper (2181) - Event-Driven iletişim                         │
+│   • Keycloak (8080) - OAuth2/JWT kimlik doğrulama                                   │
+│   • Zipkin (9411) - Distributed Tracing                                             │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+
+════════════════════════════════════════════════════════════════════════════════════════
+                     BÖLÜM 2: GATEWAY ROUTING (Düzeltilmiş)
+════════════════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────────┬──────────────────────────────────────┬─────────────────────┐
+│  Gateway Path        │  Yönlendirildiği Servis              │  Güvenlik           │
+├──────────────────────┼──────────────────────────────────────┼─────────────────────┤
+│  /api/auth/**        │  auth-service:8084                   │  PUBLIC (permitAll) │
+│  /api/user/**        │  user-service:8081                   │  AUTHENTICATED      │
+│  /api/user/admin/**  │  user-service:8081                   │  hasRole("ADMIN")   │
+│  /api/accounts/**    │  money-service:8082                  │  AUTHENTICATED      │
+│  /api/transactions/**│  transaction-service:8083            │  AUTHENTICATED      │
+└──────────────────────┴──────────────────────────────────────┴─────────────────────┘
+
+✅ Tüm Gateway route'ları artık Controller path'leri ile uyumlu!
+
+
+════════════════════════════════════════════════════════════════════════════════════════
+                         BÖLÜM 3: TÜM AKTİF ENDPOİNTLER
+════════════════════════════════════════════════════════════════════════════════════════
+
+──────────────────────────────────────────────────────────────────────────────────────
+ 1. AUTH-SERVICE (Port: 8084) - @RequestMapping("/api/auth")
+    🔒 PUBLIC (Token gerektirmez)
+──────────────────────────────────────────────────────────────────────────────────────
+
+  ┌────┬─────────────────────────────┬──────────────────────────────────────────────┐
+  │ #  │ HTTP Metod/Path             │ Açıklama                                     │
+  ├────┼─────────────────────────────┼──────────────────────────────────────────────┤
+  │ 1  │ POST /api/auth/login        │ Keycloak üzerinden JWT Token alır            │
+  │ 2  │ POST /api/auth/refresh      │ Refresh token ile yeni access token alır     │
+  │ 3  │ POST /api/auth/register     │ Yeni kullanıcı kaydı (Keycloak + Kafka)      │
+  │ 4  │ POST /api/auth/logout       │ ✅ Oturumu kapatır (AKTİFLEŞTİRİLDİ)        │
+  └────┴─────────────────────────────┴──────────────────────────────────────────────┘
+
+  ─ Login Request/Response ─
+  POST http://localhost:8095/api/auth/login
+  Content-Type: application/json
+  {
+      "email": "testuser@bank.com",
+      "password": "pass123"
+  }
+  → Response:
+  {
+      "access_token": "eyJhbGciOiJSUzI1NiIsIn...",
+      "refresh_token": "eyJhbGciOiJIUzI1NiIsIn...",
+      "expires_in": 300
+  }
+
+  ─ Register Request ─
+  POST http://localhost:8095/api/auth/register
+  {
+      "email": "yeni@bank.com",
+      "Name": "Ali",
+      "surname": "Veli",
+      "password": "sifre123"
+  }
+
+  ─ Refresh Token Request ─
+  POST http://localhost:8095/api/auth/refresh
+  {
+      "refreshToken": "eyJhbGciOiJIUzI1NiIs..."
+  }
+
+  ─ Logout Request ─
+  POST http://localhost:8095/api/auth/logout
+  {
+      "refreshToken": "eyJhbGciOiJIUzI1NiIs..."
+  }
+
+
+──────────────────────────────────────────────────────────────────────────────────────
+ 2. USER-SERVICE - AdminController (Port: 8081)
+    @RequestMapping("/api/user/admin")
+    🔒 ADMIN rolü gerektirir
+──────────────────────────────────────────────────────────────────────────────────────
+
+  ┌────┬───────────────────────────────────────┬──────────────────────────────────────┐
+  │ #  │ HTTP Metod / Tam Path (Gateway ile)   │ Açıklama                             │
+  ├────┼───────────────────────────────────────┼──────────────────────────────────────┤
+  │ 1  │ GET  /api/user/admin/finduserbyid/{id}│ ID ile kullanıcı bul                │
+  │ 2  │ GET  /api/user/admin/search?query=... │ İsim/soyisim ile kullanıcı ara      │
+  │ 3  │ PATCH /api/user/admin/updaterole/{id} │ Kullanıcı rolünü değiştir           │
+  │    │       ?role=ADMIN                      │                                     │
+  │ 4  │ GET  /api/user/admin/stats/total      │ Toplam kullanıcı sayısı             │
+  │ 5  │ GET  /api/user/admin/search-by-email  │ Email ile kullanıcı ara             │
+  │    │       ?email=...                       │                                     │
+  └────┴───────────────────────────────────────┴──────────────────────────────────────┘
+
+
+──────────────────────────────────────────────────────────────────────────────────────
+ 3. MONEY-SERVICE (Port: 8082) - MoneyController
+    @RequestMapping("/api/accounts")    ✅ DÜZELTİLDİ (eskisi: /api)
+    🔒 AUTHENTICATED
+──────────────────────────────────────────────────────────────────────────────────────
+
+  ┌────┬──────────────────────────────────────┬───────────────────────────────────────┐
+  │ #  │ HTTP Metod / Tam Path                │ Açıklama                              │
+  ├────┼──────────────────────────────────────┼───────────────────────────────────────┤
+  │ 1  │ GET  /api/accounts/health             │ Health check                          │
+  │ 2  │ POST /api/accounts/createusermoney    │ Kullanıcıya hesap+IBAN oluştur        │
+  └────┴──────────────────────────────────────┴───────────────────────────────────────┘
+
+
+──────────────────────────────────────────────────────────────────────────────────────
+ 4. TRANSACTION-SERVICE (Port: 8083) - TransactionController
+    @RequestMapping("/api/transactions")  ✅ DÜZELTİLDİ (eskisi: /api)
+    🔒 AUTHENTICATED
+──────────────────────────────────────────────────────────────────────────────────────
+
+  ┌────┬──────────────────────────────────────┬───────────────────────────────────────┐
+  │ #  │ HTTP Metod / Tam Path                │ Açıklama                              │
+  ├────┼──────────────────────────────────────┼───────────────────────────────────────┤
+  │ 1  │ POST /api/transactions/create         │ Yeni işlem oluştur (Kafka'ya gönderir)│
+  └────┴──────────────────────────────────────┴───────────────────────────────────────┘
+
+  ─ Transaction Request Body ─
+  POST http://localhost:8095/api/transactions/create
+  Authorization: Bearer <token>
+  {
+      "senderIban": "TR123456789012345678901234",
+      "receiverIban": "TR987654321098765432109876",
+      "receiverName": "Mehmet",
+      "receiverSurname": "Demir",
+      "amount": 500.00,
+      "description": "Kira ödemesi"
+  }
+
+
+──────────────────────────────────────────────────────────────────────────────────────
+ 5. FRAUD-SERVICE (Port: 8085) - REST Controller YOK (Kafka-only)
+──────────────────────────────────────────────────────────────────────────────────────
+
+
+════════════════════════════════════════════════════════════════════════════════════════
+           BÖLÜM 4: POSTMAN İLE TEST REHBERİ (ADIM ADIM)
+════════════════════════════════════════════════════════════════════════════════════════
+
+──────────────────────────────────────────────────────────────────────────────────────
+ ADIM 1: POSTMAN'DA ORTAM DEĞİŞKENLERİ OLUŞTUR
+──────────────────────────────────────────────────────────────────────────────────────
+
+  1. Postman'ı açın → sağ üst "Environments" → "+" ile yeni ortam oluşturun
+  2. Adını "SpringBank" koyun ve şu değişkenleri ekleyin:
+
+  ┌────────────────────┬───────────────────────────────────┐
+  │  Değişken Adı       │  Başlangıç Değeri                 │
+  ├────────────────────┼───────────────────────────────────┤
+  │  base_url           │  http://localhost:8095             │
+  │  access_token       │  (boş bırakın)                    │
+  │  refresh_token      │  (boş bırakın)                    │
+  └────────────────────┴───────────────────────────────────┘
+
+  3. Save ile kaydedin ve bu ortamı seçili yapın.
+
+
+──────────────────────────────────────────────────────────────────────────────────────
+ ADIM 2: TOKEN ALMA VE OTOMATİK KAYDETME
+──────────────────────────────────────────────────────────────────────────────────────
+
+  1. Yeni request: POST → {{base_url}}/api/auth/login
+  2. Body → raw → JSON:
+     {
+         "email": "testuser@bank.com",
+         "password": "pass123"
+     }
+
+  3. Scripts sekmesi → "Post-response" kısmına şu kodu yapıştırın:
+  ┌─────────────────────────────────────────────────────────────────────────────┐
+  │  if (pm.response.code === 200) {                                            │
+  │      var jsonData = pm.response.json();                                     │
+  │      pm.environment.set("access_token", jsonData.access_token);             │
+  │      pm.environment.set("refresh_token", jsonData.refresh_token);           │
+  │      console.log("✅ Token başarıyla kaydedildi!");                          │
+  │  }                                                                          │
+  └─────────────────────────────────────────────────────────────────────────────┘
+
+  4. "Send" → Token otomatik kaydedilir!
+
+
+──────────────────────────────────────────────────────────────────────────────────────
+ ADIM 3: TOKEN İLE İSTEK GÖNDERME (3 YÖNTEM)
+──────────────────────────────────────────────────────────────────────────────────────
+
+  ═══ YÖNTEM 1: Authorization Tab (En Kolay) ═══
+  1. Yeni request → "Authorization" sekmesi
+  2. "Auth Type" → "Bearer Token"
+  3. Token alanına: {{access_token}}
+  4. Send!
+
+  ═══ YÖNTEM 2: Manuel Header ═══
+  Headers sekmesinde:
+     Key:   Authorization
+     Value: Bearer {{access_token}}
+
+  ═══ YÖNTEM 3: Collection Level (EN İYİSİ) ═══
+  1. Tüm istekleri bir Collection altına ekleyin
+  2. Collection → Edit → Authorization → Bearer Token → {{access_token}}
+  3. Artık TÜM isteklerde token otomatik eklenir!
+     (Sadece Login/Register için "No Auth" seçin)
+
+
+──────────────────────────────────────────────────────────────────────────────────────
+ ADIM 4: REFRESH TOKEN KULLANIMI
+──────────────────────────────────────────────────────────────────────────────────────
+
+  Token süresi dolduğunda (5 dk):
+  POST {{base_url}}/api/auth/refresh
+  Body:
+  {
+      "refreshToken": "{{refresh_token}}"
+  }
+
+  Scripts'e ekleyin:
+  ┌─────────────────────────────────────────────────────────────────────────────┐
+  │  if (pm.response.code === 200) {                                            │
+  │      var jsonData = pm.response.json();                                     │
+  │      if (jsonData.access_token)                                             │
+  │          pm.environment.set("access_token", jsonData.access_token);         │
+  │      if (jsonData.refresh_token)                                            │
+  │          pm.environment.set("refresh_token", jsonData.refresh_token);       │
+  │      console.log("✅ Token yenilendi!");                                    │
+  │  }                                                                          │
+  └─────────────────────────────────────────────────────────────────────────────┘
+
+
+════════════════════════════════════════════════════════════════════════════════════════
+        BÖLÜM 5: YAPILAN TÜM DÜZELTMELERİN LİSTESİ
+════════════════════════════════════════════════════════════════════════════════════════
+
+┌────┬────────────────────────────────┬───────────────────────────────────────────────┐
+│ #  │ Dosya                          │ Yapılan Düzeltme                              │
+├────┼────────────────────────────────┼───────────────────────────────────────────────┤
+│ 1  │ gateway/application.yaml       │ ✅ /api/users/** → /api/user/** düzeltildi    │
+│    │                                │ ✅ JWT issuer URI banking-microservices →      │
+│    │                                │    banking olarak düzeltildi                  │
+│    │                                │                                               │
+│ 2  │ gateway/SecurityConfig.java    │ ✅ /api/admin/** → /api/user/admin/**         │
+│    │                                │    AdminController ile uyumlu hale getirildi  │
+│    │                                │                                               │
+│ 3  │ money-service/controller.java  │ ✅ Dosya adı MoneyController.java yapıldı     │
+│    │  → MoneyController.java        │ ✅ class controller → MoneyController         │
+│    │                                │ ✅ @RequestMapping("/api") →                   │
+│    │                                │    @RequestMapping("/api/accounts")            │
+│    │                                │ ✅ "healty" → "healthy" yazım hatası           │
+│    │                                │                                               │
+│ 4  │ transaction-service/           │ ✅ @RequestMapping("/api") →                   │
+│    │  TransactionController.java    │    @RequestMapping("/api/transactions")        │
+│    │                                │ ✅ @PostMapping("/create/transaction") →        │
+│    │                                │    @PostMapping("/create")                      │
+│    │                                │                                               │
+│ 5  │ k8s/02-Apps.yaml               │ ✅ Fraud-Service DB şifresi local_password →   │
+│    │                                │    banking_admin düzeltildi                    │
+│    │                                │ ✅ HPA yorum hatası: "cpu" → "memory"           │
+│    │                                │                                               │
+│ 6  │ auth-service/AuthController    │ ✅ Logout endpoint aktifleştirildi             │
+│    │                                │    POST /api/auth/logout artık çalışır         │
+│    │                                │                                               │
+│ 7  │ auth-service/RegisterDto       │ ✅ Name → name (Java convention)               │
+│    │                                │    @JsonProperty("Name") ile uyumluluk korundu│
+│    │                                │                                               │
+│ 8  │ auth-service/CreateUserTopicDto│ ✅ Name → name (Java convention)               │
+│    │                                │    @JsonProperty("Name") ile uyumluluk korundu│
+│    │                                │                                               │
+│ 9  │ auth-service/AuthService       │ ✅ .Name(dto.getName()) →                      │
+│    │                                │    .name(dto.getName()) düzeltildi            │
+│    │                                │                                               │
+│ 10 │ user-service/                  │ ✅ Name → name (Java convention)               │
+│    │  AuthServiceCreateUserTopicDto │    @JsonProperty("Name") ile uyumluluk korundu│
+│    │                                │                                               │
+│ 11 │ test-apis.ps1                  │ ✅ Endpoint path'leri güncellendi              │
+│    │                                │    Düzeltilmiş route'larla uyumlu hale geldi  │
+└────┴────────────────────────────────┴───────────────────────────────────────────────┘
+
+
+════════════════════════════════════════════════════════════════════════════════════════
+         BÖLÜM 6: HIZLI TEST CHECKLIST
+════════════════════════════════════════════════════════════════════════════════════════
+
+  □ 1. Docker image'leri yeniden build edin (controller path'ler değişti!):
+       docker build -t SpringBankWithMicroservices/money-service:1.0.0 ./money-service
+       docker build -t SpringBankWithMicroservices/transaction-service:1.0.0 ./transaction-service
+       docker build -t SpringBankWithMicroservices/auth-service:1.0.0 ./auth-service
+       docker build -t SpringBankWithMicroservices/gateway:1.0.0 ./gateway
+
+  □ 2. K8s pod'larına uygulayın:
+       kubectl apply -f k8s/02-Apps.yaml
+       kubectl rollout restart deployment -n banking-microservices
+
+  □ 3. Port forwarding:
+       kubectl port-forward svc/gateway 8095:8095 -n banking-microservices
+       kubectl port-forward svc/keycloak 8080:8080 -n banking-microservices
+
+  □ 4. Login testi:
+       POST http://localhost:8095/api/auth/login
+       Body: { "email": "testuser@bank.com", "password": "pass123" }
+
+  □ 5. Token ile korunan endpoint:
+       GET http://localhost:8095/api/accounts/health
+       Authorization: Bearer <token>
+
+  □ 6. Transaction oluşturma:
+       POST http://localhost:8095/api/transactions/create
+       Authorization: Bearer <token>
+
+  □ 7. Admin endpoint (ADMIN rolü gerektirir):
+       GET http://localhost:8095/api/user/admin/stats/total
+       Authorization: Bearer <admin-token>
+
+
+════════════════════════════════════════════════════════════════════════════════════════
+  RAPOR SONU - Tüm sorunlar düzeltildi! - 04.03.2026
+════════════════════════════════════════════════════════════════════════════════════════

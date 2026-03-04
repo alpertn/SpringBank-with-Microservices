@@ -1,0 +1,44 @@
+# Keycloak Kurulum ve Konfigürasyon Rehberi (Kubernetes / Docker)
+
+Bu proje Spring Security ve Keycloak (Oauth2.0) kullanarak JWT güvenliği sağlamaktadır.
+
+Kubernetes (veya docker-compose) ilk çalıştığında "postgres" veritabanı sıfırdan oluşturulur. Bu sebeple Keycloak pod'u ilk kalktığında içerisinde SpringBank için gereken yetkiler ve sunucular (Realm/Client) bulunmaz. Sizin 1 defaya mahsus sisteme girip (veya script aracılığıyla) bunları bildirmeniz gerekir.
+
+## YÖNTEM 1 (Önerilen) - Otomatik PowerShell Scripti
+Proje ana dizininde konsola şu scriptleri yapıştırırsanız her şey otomatik kendi içinde test user ile kurulacaktır. Daha detaylı script sürümünü `SpringBankCalistirma.txt` dosyasından görüntüleyebilirsiniz.
+
+
+## YÖNTEM 2 - Manuel Arayüz (GUI) Kurulumu
+
+Eğer görsel arayüzden ayarlamak işinize geliyorsa:
+
+1. Tarayıcıdan http://localhost:8080/ sayfasına girin ve "Administration Console"a tıklayın.
+2. `k8s/01-Base.yaml` dosyasında yazıldığı üzere Keycloak Admin kullanıcı adı `alper123` ve şifresi `alper123A` olarak girerek oturum açın.
+
+### Adım 1: Realm Oluşturmak
+1. Sol üst menüden `master` yazan yere tıklayın ve "Create Realm" deyin.
+2. Realm name alanına `banking` yazın ve "Create" diyin. (Not: application.yaml ile birebir uyumlu olmalıdır).
+
+### Adım 2: Client (İstemci) Oluşturmak
+1. Sol taraftan "Clients" sekmesini seçin, "Create Client" diyin.
+2. Client ID: `banking-app`
+3. Next yapın. Capability config kısmında:
+   - "Client authentication" → **AÇIK (ON) yapılsın**. (Sebebi biz Backend'de client-secret kullanacağız).
+   - "Direct access grants" → Seçili olsun
+   - "Service accounts roles" → Seçili olsun
+4. Next diyin ve `Save` butonuna basarak kaydedin.
+
+### Adım 3: Secret Ayarlamak (Çok Önemli)
+Gateway ve Auth-Service, token oluştururken Keycloak'a bir parola/anahtar (secret) sunar. Bunu mikroservislerimizi yazdığımız `application.yaml`lara yazdığımız şekliyle eşleştirmeliyiz.
+1. Oluşturduğunuz `banking-app` isimli Client içerisine girin.
+2. Üst sekmelerden "Credentials" olanı seçin.
+3. Orada bir Client Secret (şifre) üretecek veya var olan çıkacaktır. "Regenerate" yapın veya kalemi kullanarak değerini `Iopu5gL8VfLtIX39701gkwd6iCd7gKW6` yapın (Eğer GUI bu spesifik key'e elle müsaade etmiyorsa `application.yaml` ve K8s içinde Keycloak Client Secret'i ürettirdiği passworde göre değiştirmelisiniz. O yüzden script olanı çok daha rahattır).
+
+### Adım 4: Test Kullanıcısı (User)
+Sisteme uygulamadan birinin login olabilmesi için Keycloak Users veritabanına bir kişi eklemeliyiz. Aslında Auth-Service `register` bunu kendisi arkada Java ile yapıyor fakat biz ilk başı manuel kontrol edelim.
+1. Sol menüden "Users" -> "Add User"a girin.
+2. Username: `testuser@bank.com`, Email: `testuser@bank.com`, Email Verified: `Yes` sonrasında Save deyin.
+3. Kişinin profiline girdikten sonra üstten "Credentials" sekmesine girip "Set Password" deyin.
+4. Şifresini `pass123` yapın, `Temporary` olayını kapalı konuma (Off) alın ve kaydedin.
+
+Sürecin tamamı bu kadardır. Mikroservis mimarisine API testi atmak için `http://localhost:8095/api/auth/login` kullanılmaya hazırdır!

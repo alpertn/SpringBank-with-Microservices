@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: banking/user-service:1.0.0
+          image: SpringBankWithMicroservices/user-service:1.0.0
           ports:
             - containerPort: 8081
           resources: # Podun calisacagi cpu ve memory scaling
@@ -116,7 +116,7 @@ spec:
         name: memory # memory kullanimina gore scaling
         target:
           type: Utilization
-          averageUtilization: 80 # tum podlarin ortalama cpu kullanimi 70i gecerse pod ekler 70den inerse pod siler
+          averageUtilization: 80 # tum podlarin ortalama memory kullanimi 80i gecerse pod ekler 80den inerse pod siler
 
 ---
 
@@ -141,7 +141,7 @@ spec:
     spec:
       containers:
         - name: money-service
-          image: banking/money-service:1.0.0
+          image: SpringBankWithMicroservices/money-service:1.0.0
           ports:
             - containerPort: 8082
           resources:
@@ -255,7 +255,7 @@ spec:
     spec:
       containers:
         - name: transaction-service
-          image: banking/transaction-service:1.0.0
+          image: SpringBankWithMicroservices/transaction-service:1.0.0
           ports:
             - containerPort: 8083
           resources:
@@ -353,7 +353,7 @@ spec:
     spec:
       containers:
         - name: auth-service
-          image: banking/auth-service:1.0.0
+          image: SpringBankWithMicroservices/auth-service:1.0.0
           ports:
             - containerPort: 8084
           resources:
@@ -389,6 +389,10 @@ spec:
               value: banking-app
             - name: KEYCLOAK_CLIENT_SECRET
               value: Iopu5gL8VfLtIX39701gkwd6iCd7gKW6
+            - name: KEYCLOAK_ADMIN_USERNAME
+              value: alper123
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              value: alper123A
             # Zipkin
             - name: SPRING_ZIPKIN_BASE_URL
               value: http://zipkin:9411
@@ -464,7 +468,7 @@ spec:
     spec:
       containers:
         - name: gateway
-          image: banking/gateway:1.0.0
+          image: SpringBankWithMicroservices/gateway:1.0.0
           ports:
             - containerPort: 8095
           resources:
@@ -571,7 +575,7 @@ spec:
     spec:
       containers:
         - name: fraud-service
-          image: banking/fraud-service:1.0.0
+          image: SpringBankWithMicroservices/fraud-service:1.0.0
           ports:
             - containerPort: 8085
           resources:
@@ -588,7 +592,7 @@ spec:
             - name: SPRING_DATASOURCE_USERNAME
               value: banking_admin
             - name: SPRING_DATASOURCE_PASSWORD
-              value: local_password
+              value: banking_admin
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
               value: update
             # Zipkin

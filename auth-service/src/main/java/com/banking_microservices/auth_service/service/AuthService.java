@@ -8,13 +8,16 @@ import com.banking_microservices.auth_service.kafka.KafkaSender;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class AuthService {
 
-    private KeycloackAdminService keycloackAdminService;
-    private KeycloackUserService keycloackUserService;
-    private KafkaSender kafkaSender;
+    private final KeycloackAdminService keycloackAdminService;
+    private final KeycloackUserService keycloackUserService;
+    private final KafkaSender kafkaSender;
 
     public void createUser(RegisterDto dto) {
 
@@ -23,7 +26,7 @@ public class AuthService {
 
             CreateUserTopicDto userTopicDto = CreateUserTopicDto.builder()
                     .keycloackUserUUID(keycloackUserUUID)
-                    .Name(dto.getName())
+                    .name(dto.getName())
                     .surname(dto.getSurname())
                     .password(dto.getPassword())
                     .email(dto.getEmail()).build();
@@ -31,7 +34,8 @@ public class AuthService {
             kafkaSender.sendCreateUserToUserTopic(userTopicDto);
 
         } catch (Exception e) {
-            throw new KeycloackUserCreateException("An exception with Keycloack create user");
+            log.error("Failed to create Keycloak user", e);
+            throw new KeycloackUserCreateException("An exception with Keycloack create user: " + e.getMessage());
         }
 
     }

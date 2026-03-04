@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpringBank - Kayıt Ol</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background-color: #f0f2f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #34a853;
+            margin-top: 0;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #34a853;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #2d9249;
+        }
+
+        .message {
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .error {
+            color: #d93025;
+        }
+
+        .success {
+            color: #1e8e3e;
+        }
+
+        .link {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .link a {
+            color: #1a73e8;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <h2>Kayıt Ol</h2>
+        <form id="registerForm">
+            <input type="text" id="firstName" placeholder="Ad" required>
+            <input type="text" id="lastName" placeholder="Soyad" required>
+            <input type="email" id="email" placeholder="E-posta Adresi" required>
+            <input type="password" id="password" placeholder="Şifre" required>
+            <button type="submit">Kayıt Ol</button>
+        </form>
+        <div id="msg" class="message"></div>
+        <div class="link">
+            Zaten hesabın var mı? <a href="/login.html">Giriş Yap</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const btn = document.querySelector('button');
+            const msgBox = document.getElementById('msg');
+            btn.disabled = true;
+            btn.innerText = 'Kayıt Yapılıyor...';
+
+            const payload = {
+                Name: document.getElementById('firstName').value,
+                surname: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
+            };
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    msgBox.className = 'message success';
+                    msgBox.innerText = 'Kayıt Başarılı! Login sayfasına yönlendiriliyorsunuz...';
+                    msgBox.style.display = 'block';
+                    setTimeout(() => {
+                        window.location.href = '/login.html';
+                    }, 2000);
+                } else {
+                    const text = await response.text();
+                    msgBox.className = 'message error';
+                    msgBox.innerText = 'Kayıt Hatası: ' + text;
+                    msgBox.style.display = 'block';
+                    btn.disabled = false;
+                    btn.innerText = 'Kayıt Ol';
+                }
+            } catch (error) {
+                console.error('Hata:', error);
+                msgBox.className = 'message error';
+                msgBox.innerText = 'Sunucuya bağlanılamadı!';
+                msgBox.style.display = 'block';
+                btn.disabled = false;
+                btn.innerText = 'Kayıt Ol';
+            }
+        });
+    </script>
+</body>
+
+</html>

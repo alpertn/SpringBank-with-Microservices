@@ -1,7 +1,7 @@
 package com.banking_microservices.user_service.service;
 
 import com.banking_microservices.user_service.client.MoneyServiceClient;
-import com.banking_microservices.user_service.dto.RoleEnum.Role;
+import com.banking_microservices.user_service.dto.RoleEnum.RoleEnum.Role;
 import com.banking_microservices.user_service.dto.user.AuthServiceCreateUserTopicDto;
 import com.banking_microservices.user_service.dto.user.KafkaTransactionTopicMessageDto;
 import com.banking_microservices.user_service.dto.user.UsersDto;

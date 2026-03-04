@@ -10,12 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.google.gson.Gson;
 
-
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/accounts")
 @Slf4j
-public class controller {
+public class MoneyController {
 
     private final Gson gson = new Gson();
     private final UserMoneyRepository UserMoneyRepository;
@@ -23,13 +22,13 @@ public class controller {
 
     @GetMapping("/health")
     public ResponseEntity<String> health() {
-        return ResponseEntity.ok("UserMoney UserMoneyService is healty");
+        return ResponseEntity.ok("UserMoney UserMoneyService is healthy");
     }
 
     @PostMapping("/createusermoney")
-    public ResponseEntity<?> userOlustur(@Valid @RequestBody IdDto userId){
+    public ResponseEntity<?> userOlustur(@Valid @RequestBody IdDto userId) {
         String gsonLog = gson.toJson(userId);
-        log.info("User Id Parametresi geldi. {}" , gsonLog);
+        log.info("User Id Parametresi geldi. {}", gsonLog);
         return ResponseEntity.ok(UserMoneyService.generateUser(userId.getId()));
     }
 

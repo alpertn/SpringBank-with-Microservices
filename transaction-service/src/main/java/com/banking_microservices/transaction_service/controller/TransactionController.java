@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/transactions")
 @Slf4j
 public class TransactionController {
     private final Gson gson = new Gson();
@@ -25,7 +25,7 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    @PostMapping("/create/transaction")
+    @PostMapping("/create")
     public ResponseEntity<?> transactionEntity(@Valid @RequestBody Transaction data) {
 
         transactionService.createTransaction(data);

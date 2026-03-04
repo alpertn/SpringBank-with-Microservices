@@ -1,0 +1,30 @@
+﻿
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.2)
+
+2026-03-03T21:17:29.402Z  INFO 1 --- [gateway] [           main] [                                                 ] c.b.gateway.GatewayApplication           : Starting GatewayApplication v0.0.1-SNAPSHOT using Java 21.0.10 with PID 1 (/app/app.jar started by root in /app)
+2026-03-03T21:17:29.413Z  INFO 1 --- [gateway] [           main] [                                                 ] c.b.gateway.GatewayApplication           : No active profile set, falling back to 1 default profile: "default"
+2026-03-03T21:17:35.287Z  INFO 1 --- [gateway] [           main] [                                                 ] o.s.cloud.context.scope.GenericScope     : BeanFactory id=bfb3efcf-da03-328b-91fb-3dc58e4c1903
+2026-03-03T21:17:44.083Z  INFO 1 --- [gateway] [           main] [                                                 ] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [After]
+2026-03-03T21:17:44.084Z  INFO 1 --- [gateway] [           main] [                                                 ] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Before]
+2026-03-03T21:17:44.084Z  INFO 1 --- [gateway] [           main] [                                                 ] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Between]
+2026-03-03T21:17:44.084Z  INFO 1 --- [gateway] [           main] [                                                 ] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Cookie]
+2026-03-03T21:17:44.084Z  INFO 1 --- [gateway] [           main] [                                                 ] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Header]
+2026-03-03T21:17:44.085Z  INFO 1 --- [gateway] [           main] [                                                 ] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Host]
+2026-03-03T21:17:44.085Z  INFO 1 --- [gateway] [           main] [                                                 ] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Method]
+2026-03-03T21:17:44.085Z  INFO 1 --- [gateway] [           main] [                                                 ] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Path]
+2026-03-03T21:17:44.085Z  INFO 1 --- [gateway] [           main] [                                                 ] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Query]
+2026-03-03T21:17:44.085Z  INFO 1 --- [gateway] [           main] [                                                 ] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [ReadBody]
+2026-03-03T21:17:44.085Z  INFO 1 --- [gateway] [           main] [                                                 ] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [RemoteAddr]
+2026-03-03T21:17:44.085Z  INFO 1 --- [gateway] [           main] [                                                 ] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [XForwardedRemoteAddr]
+2026-03-03T21:17:44.085Z  INFO 1 --- [gateway] [           main] [                                                 ] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Weight]
+2026-03-03T21:17:44.085Z  INFO 1 --- [gateway] [           main] [                                                 ] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [CloudFoundryRouteService]
+2026-03-03T21:17:45.263Z  INFO 1 --- [gateway] [           main] [                                                 ] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-03-03T21:17:47.267Z  INFO 1 --- [gateway] [           main] [                                                 ] o.s.b.web.embedded.netty.NettyWebServer  : Netty started on port 8095 (http)
+2026-03-03T21:17:47.593Z  INFO 1 --- [gateway] [           main] [                                                 ] c.b.gateway.GatewayApplication           : Started GatewayApplication in 21.197 seconds (process running for 24.731)
