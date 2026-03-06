@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class Transaction {
 
-
     private String senderIban;
 
     private String receiverIban;
@@ -22,6 +21,7 @@ public class Transaction {
 
     private String receiverSurname;
 
+    @com.fasterxml.jackson.annotation.JsonProperty("money")
     private BigDecimal amount;
 
     private String description;

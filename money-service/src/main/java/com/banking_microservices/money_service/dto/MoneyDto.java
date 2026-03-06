@@ -10,8 +10,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
-
 
 @Data
 @Builder
@@ -25,6 +25,11 @@ public class MoneyDto {
     private String userIban;
 
     @Builder.Default
+    @JsonProperty("money")
     private BigDecimal money = new BigDecimal("0.00");
+
+    @Builder.Default
+    @JsonProperty("blockedmoney")
+    private BigDecimal blockedMoney = new BigDecimal("0.00");
 
 }

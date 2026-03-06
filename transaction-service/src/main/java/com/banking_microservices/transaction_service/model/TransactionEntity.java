@@ -41,6 +41,7 @@ public class TransactionEntity {
     private String receiverIban;
 
     @Column(precision = 19, scale = 2)
+    @com.fasterxml.jackson.annotation.JsonProperty("money")
     private BigDecimal money;
 
     private String transactionType;

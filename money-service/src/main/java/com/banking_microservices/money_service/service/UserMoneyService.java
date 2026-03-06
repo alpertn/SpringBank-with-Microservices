@@ -217,6 +217,7 @@ public class UserMoneyService {
                 .userId(userMoney.getUserId())
                 .userIban(userMoney.getUserIban())
                 .money(userMoney.getMoney())
+                .blockedMoney(userMoney.getBlockedMoney())
                 .build();
     }
 }

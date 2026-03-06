@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -34,13 +35,13 @@ public class KafkaTransactionTopicMessageDto {
     @Builder.Default
     private String receiverIban = null;
 
+    @JsonProperty("money")
     private BigDecimal money;
 
     private String transactionType;
 
     @Builder.Default
     private String description = null;
-
 
     @Builder.Default
     private String status = "PROGRESS";

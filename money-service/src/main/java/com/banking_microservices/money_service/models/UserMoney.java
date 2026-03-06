@@ -32,5 +32,8 @@ public class UserMoney {
     @Builder.Default
     private BigDecimal money = new BigDecimal("0.00");
 
+    @Column(precision = 19, scale = 2)
+    @Builder.Default
+    private BigDecimal blockedMoney = new BigDecimal("0.00");
 
 }

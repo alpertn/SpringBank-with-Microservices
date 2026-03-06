@@ -33,7 +33,7 @@ public class KafkaProducerConfig {
         configProps.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);
         configProps.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 33554432);
         configProps.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
-        configProps.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
+        configProps.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "none");
 
         return new DefaultKafkaProducerFactory<>(configProps);
     }

@@ -5,6 +5,7 @@ import com.banking_microservices.transaction_service.exception.KafkaSendExceptio
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,9 @@ public class KafkaSender {
     private final Gson gson = new GsonBuilder()
             .serializeNulls()
             .create();
+
+    @Value("${kafka.topics.transaction.sender}")
+    private String transactionCreateTopic;
 
     public KafkaSender(KafkaTemplate<String, Object> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
@@ -31,7 +35,7 @@ public class KafkaSender {
     public void sendTransaction(String key, KafkaTransactionTopicMessageDto kafkaTransactionTopicMessageDto) {
         try {
             String jsonMessageForKafka = gson.toJson(kafkaTransactionTopicMessageDto);
-            kafkaTemplate.send("banking-microservices.transaction.transaction-service.created.v1", key,
+            kafkaTemplate.send(transactionCreateTopic, key,
                     kafkaTransactionTopicMessageDto);
             log.info("Kafkaya mesaj gonderildi {} {}", key, kafkaTransactionTopicMessageDto);
 

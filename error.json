@@ -1,0 +1,1 @@
+{"time":"2026-03-05T00:35:36.105893468","status":400,"error":"Runtime Exception","message":"An exception with Keycloack create user: Email Already Exists","path":"uri=/api/auth/register;client=192.168.65.3"}

@@ -5,9 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
-import java.util.UUID;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Data
 @Builder
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class KafkaTransactionTopicMessageDto {
 
     @UuidGenerator
-    private String eventUUID; //= UUID.randomUUID().toString()
+    private String eventUUID; // = UUID.randomUUID().toString()
 
     @Builder.Default
     private String receiverName = null;
@@ -43,7 +43,6 @@ public class KafkaTransactionTopicMessageDto {
 
     @Builder.Default
     private String description = null;
-
 
     @Builder.Default
     private String status = "PROGRESS";

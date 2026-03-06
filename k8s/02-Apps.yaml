@@ -57,8 +57,8 @@ spec:
             - name: USER_SERVICE_PORT_NUMBER
               value: "8081"
             # Kafka
-            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-              value: kafka:9092
+            - name: SPRING_APPLICATION_JSON
+              value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'
             # Kafka Topic
             # Create User
             - name: KAFKA_CREATE_USER_SENDER
@@ -170,8 +170,8 @@ spec:
             - name: MONEY_SERVICE_PORT_NUMBER
               value: "8082"
             # Kafka
-            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-              value: kafka:9092
+            - name: SPRING_APPLICATION_JSON
+              value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'
             # Kafka Topic
             - name: KAFKA_CREATE_USER_SENDER
               value: banking-microservices.create-user.money-service.success.v1
@@ -284,8 +284,8 @@ spec:
             - name: TRANSACTION_SERVICE_PORT_NUMBER
               value: "8083"
             # Kafka
-            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-              value: kafka:9092
+            - name: SPRING_APPLICATION_JSON
+              value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'
 
 
 ---
@@ -400,6 +400,8 @@ spec:
               value: "1.0"
             - name: AUTH_SERVICE_PORT_NUMBER
               value: "8084"
+            - name: SPRING_APPLICATION_JSON
+              value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'
             - name: KAFKA_CREATEUSER_SENDER
               value: banking-microservices.create-user.auth-service.progress.v1
 
@@ -604,8 +606,8 @@ spec:
             - name: FRAUD_SERVICE_PORT_NUMBER
               value: "8085"
             # Kafka
-            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-              value: kafka:9092
+            - name: SPRING_APPLICATION_JSON
+              value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'
             # Kafka Topic
             - name: KAFKA_TRANSACTION_TOPIC_LISTENER
               value: banking-microservices.transaction.transaction-service.created.v1

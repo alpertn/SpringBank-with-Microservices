@@ -1,0 +1,62 @@
+﻿Name:             kafka-566c475996-55czm
+Namespace:        banking-microservices
+Priority:         0
+Service Account:  default
+Node:             docker-desktop/192.168.65.3
+Start Time:       Thu, 05 Mar 2026 02:49:08 +0300
+Labels:           app=kafka
+                  pod-template-hash=566c475996
+Annotations:      kubectl.kubernetes.io/restartedAt: 2026-03-05T02:49:08+03:00
+Status:           Running
+IP:               10.1.5.61
+IPs:
+  IP:           10.1.5.61
+Controlled By:  ReplicaSet/kafka-566c475996
+Containers:
+  kafka:
+    Container ID:   docker://5e6b4580d62fa55e07ec3503795e5f9793bb7cec97945d84222806d85ca630ce
+    Image:          confluentinc/cp-kafka:7.5.0
+    Image ID:       docker-pullable://confluentinc/cp-kafka@sha256:fbbb6fa11b258a88b83f54d4f0bddfcffbf2279f99d66a843486e3da7bdfbf41
+    Port:           9092/TCP
+    Host Port:      0/TCP
+    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
+      Reason:       Error
+      Exit Code:    1
+      Started:      Thu, 05 Mar 2026 03:51:36 +0300
+      Finished:     Thu, 05 Mar 2026 03:51:38 +0300
+    Ready:          False
+    Restart Count:  17
+    Environment:
+      KAFKA_ZOOKEEPER_CONNECT:                 zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS:              PLAINTEXT://kafka:9092
+      KAFKA_LISTENERS:                         PLAINTEXT://0.0.0.0:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR:  1
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-c2r57 (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-c2r57:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason   Age                   From     Message
+  ----     ------   ----                  ----     -------
+  Normal   Started  50m (x9 over 67m)     kubelet  Started container kafka
+  Normal   Created  45m (x10 over 67m)    kubelet  Created container: kafka
+  Normal   Pulled   4m34s (x18 over 67m)  kubelet  Container image "confluentinc/cp-kafka:7.5.0" already present on machine
+  Warning  BackOff  98s (x297 over 66m)   kubelet  Back-off restarting failed container kafka in pod kafka-566c475996-55czm_banking-microservices(b05f5494-faa4-4640-8ce3-901c9abb249a)
