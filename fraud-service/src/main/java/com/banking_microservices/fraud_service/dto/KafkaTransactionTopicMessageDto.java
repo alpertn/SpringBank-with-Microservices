@@ -53,5 +53,8 @@ public class KafkaTransactionTopicMessageDto {
     private String errorDescription = null;
 
     @Builder.Default
+    private Boolean isMoneyBlocked = false;
+
+    @Builder.Default
     private LocalDateTime localDateTime = LocalDateTime.now();
 }

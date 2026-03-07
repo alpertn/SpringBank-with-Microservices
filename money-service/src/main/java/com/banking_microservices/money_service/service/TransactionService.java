@@ -33,7 +33,30 @@ public class TransactionService {
         this.kafkaListenerService = kafkaListenerService;
         this.kafkaLastActivityRepository = kafkaLastActivityRepository;
     }
+    public void blockMoney(KafkaTransactionTopicMessageDto dto){
 
+        // kafka exception sending eklenelecek
+
+        if(dto.getSenderIban().isEmpty()){
+            dto.setError(true);
+            dto.setErrorDescription("Sender Iban Not Found");
+            kafkaSender.sendTransactionError(dto.getEventUUID(),dto);
+            throw new IbanNotFoundException("Iban value is empty");
+        }
+
+        try{
+            repository.decrementAndBlockByIban(dto.getSenderIban(), dto.getMoney());
+        }catch (Exception e){
+            dto.setError(true);
+            dto.setErrorDescription("An Exception with decrement money and block money with iban.");
+            kafkaSender.sendTransactionError(dto.getEventUUID(),dto);
+            throw new DecramentAndBlockMoneyException("An exception with Decrement Money And Block money with Iban number. Iban = " + dto.getSenderIban());
+        }
+
+        dto.setIsMoneyBlocked(true);
+
+
+    }
     public void KafkaTransactionTopicService(KafkaTransactionTopicMessageDto dto) {
 
         if (kafkaLastActivityRepository.existsByEventUUID(dto.getEventUUID())) {

@@ -25,6 +25,7 @@ public interface UserMoneyRepository extends JpaRepository<UserMoney, String> {
 
     Optional<UserMoney> findByUserIban(String iban);
 
+
     @Transactional
     @Modifying
     @Query("UPDATE UserMoney m SET m.money = :newBalance WHERE m.userIban = :iban")
@@ -45,6 +46,11 @@ public interface UserMoneyRepository extends JpaRepository<UserMoney, String> {
 
     @Query("SELECT m.userIban FROM UserMoney m WHERE m.userId = :userId")
     Optional<String> findIbanByUserId(@Param("userId") String userId);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE UserMoney m SET m.money = m.money - :amount, m.blockedMoney = m.blockedMoney + :amount WHERE m.userIban = :iban")
+    int decrementAndBlockByIban(@Param("iban") String iban, @Param("amount") BigDecimal amount);
 
     @Query("SELECT m.id FROM UserMoney m WHERE m.userId = :userId")
     Optional<String> findIdByUserId(@Param("userId") String userId);
