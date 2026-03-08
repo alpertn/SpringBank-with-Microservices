@@ -57,6 +57,9 @@ public class TransactionEntity {
     private String errorDescription;
 
     @Builder.Default
+    private Boolean userValidation = false;
+
+    @Builder.Default
     private String status = "PROGRESS";
 
     @PrePersist

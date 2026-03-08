@@ -36,6 +36,12 @@ public class KafkaListenerService {
         KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
     }
 
+    @KafkaListener(topics = "${kafka.topics.transaction.listener}")
+    public void listenTransactionTopic(String topicData) {
+        KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
+        service.transactionTopicMessageVerify(dto);
+    }
+
     @KafkaListener(topics = "${kafka.topics.username-validation.listener}")
     public void listenUsernameValidation(String topic) {
         KafkaTransactionTopicMessageDto dto = gson.fromJson(topic, KafkaTransactionTopicMessageDto.class);

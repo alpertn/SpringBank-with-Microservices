@@ -23,6 +23,10 @@ public interface UserRepository extends JpaRepository<Users, String> {
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM Users u WHERE UPPER(TRIM(u.name)) = UPPER(TRIM(:name)) AND UPPER(TRIM(u.surname)) = UPPER(TRIM(:surname))")
     boolean existsByNameAndSurname(@Param("name") String name, @Param("surname") String surname);
 
+    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM Users u WHERE u.id = :id AND UPPER(TRIM(u.name)) = UPPER(TRIM(:name)) AND UPPER(TRIM(u.surname)) = UPPER(TRIM(:surname))")
+    boolean existsByIdAndNameAndSurname(@Param("id") String id, @Param("name") String name,
+            @Param("surname") String surname);
+
     void deleteUsersById(String id);
 
     List<Users> findByNameContainingIgnoreCaseOrSurnameContainingIgnoreCase(String name, String surname);

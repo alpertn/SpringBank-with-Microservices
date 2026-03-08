@@ -92,7 +92,16 @@ public class UserService {
     //
 
     public void transactionTopicMessageVerify(KafkaTransactionTopicMessageDto dto) {
-
+        if (UserRepository.existsByIdAndNameAndSurname(dto.getReceiverUserId(), dto.getName(), dto.getSurname())) {
+            dto.setUserValidation(true);
+            kafkaSender.sendTransactionUserValidationSuccess(dto.getEventUUID(), dto);
+        } else {
+            dto.setError(true);
+            dto.setErrorDescription("Username not found or ID mismatch. " + dto.getName() + " " + dto.getSurname());
+            kafkaSender.sendTransactionUsernameValidationError(dto.getEventUUID(), dto);
+            throw new UserNameOrSurnameNotFoundException(
+                    "User Name Or Surname Not Found or ID mismatch " + dto.getName() + " " + dto.getSurname());
+        }
     }
 
     public void UsernameValidation(KafkaTransactionTopicMessageDto dto) {

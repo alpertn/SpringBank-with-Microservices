@@ -19,3 +19,7 @@ Spring webflux Mono endpoint
 7 - Last(Transactıon service kaydı kaydedecek)
 not : bir kafka topici iki kere okunabileceği ihtimaline karsı-
 her mikroservisde eventUUID belırleme.
+
+Enriched Event
+
+transactıonServıce ılk tum verılerı verıyorç

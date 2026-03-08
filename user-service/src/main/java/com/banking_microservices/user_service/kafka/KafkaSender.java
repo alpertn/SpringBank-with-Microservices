@@ -22,6 +22,12 @@ public class KafkaSender {
     @Value("${kafka.topics.username-validation.error}")
     private String usernameValidationErrorTopic;
 
+    @Value("${kafka.topics.transaction.sender}")
+    private String transactionSenderTopic;
+
+    @Value("${kafka.topics.transaction.error}")
+    private String transactionErrorTopic;
+
     public KafkaSender(KafkaTemplate<String, Object> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
@@ -33,6 +39,26 @@ public class KafkaSender {
         } catch (Exception e) {
             log.warn("sendCreateUser Kafkaya mesaj godnerilirken hata olustu {} ", userId);
             throw new KafkaSendException("Kafka Send Exception. " + userId);
+        }
+    }
+
+    public void sendTransactionUserValidationSuccess(String key, KafkaTransactionTopicMessageDto dto) {
+        try {
+            kafkaTemplate.send(transactionSenderTopic, key, dto);
+            log.info("Transaction success kafkaya mesaj gonderildi {} {}", key, dto);
+        } catch (Exception e) {
+            log.warn("Transaction kafkaya mesaj gonderilirken hata olustu {} {}", key, dto);
+            throw new KafkaSendException("Kafka Send Exception. " + key + " " + dto);
+        }
+    }
+
+    public void sendTransactionUsernameValidationError(String key, KafkaTransactionTopicMessageDto dto) {
+        try {
+            kafkaTemplate.send(transactionErrorTopic, key, dto);
+            log.info("Transaction error kafkaya mesaj gonderildi {} {}", key, dto);
+        } catch (Exception e) {
+            log.warn("Transaction error kafkaya mesaj gonderilirken hata olustu {} {}", key, dto);
+            throw new KafkaSendException("Kafka Send Exception. " + key + " " + dto);
         }
     }
 

@@ -74,6 +74,13 @@ spec:
               value: banking-microservices.username-validation.money-service.progress.v1
             - name: KAFKA_USERNAME_VALIDATION_ERROR
               value: banking-microservices.username-validation.money-service.error.v1
+            # Transaction Validation
+            - name: KAFKA_TRANSACTION_USERNAME-VALIDATION_LISTENER
+              value: banking-microservices.transaction.money-service.block-money.success.v1
+            - name: KAFKA_TRANSACTION_USERNAME-VALIDATION_SENDER
+              value: banking-microservices.transaction.user-service.username-validation.success.v1
+            - name: KAFKA_TRANSACTION_TOPIC_ERROR
+              value: banking-microservices.transaction.transaction-service.error.v1
 
 
 ---
@@ -189,6 +196,14 @@ spec:
               value: banking-microservices.username-validation.money-service.progress.v1
             - name: KAFKA_USERNAME_VALIDATION_LISTENER
               value: banking-microservices.username-validation.user-service.success.v1
+            - name: KAFKA_TRANSACTION_USERNAME-VALIDATION_SENDER
+              value: banking-microservices.transaction.money-service.block-money.success.v1
+            - name: KAFKA_TRANSACTION_USERNAME-VALIDATION_LISTENER
+              value: banking-microservices.transaction.user-service.username-validation.success.v1
+            - name: KAFKA_TRANSACTION_BLOCKUSER_LISTENER
+              value: banking-microservices.transaction.transaction-service.created.v1
+            - name: KAFKA_TRANSACTION_BLOCKUSER_SENDER
+              value: banking-microservices.transaction.money-service.block-money.success.v1
 
 ---
 
@@ -286,6 +301,12 @@ spec:
             # Kafka
             - name: SPRING_APPLICATION_JSON
               value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'
+            - name: KAFKA_TRANSACTION_TOPIC_LISTENER
+              value: banking-microservices.transaction.transaction-service.success.v1
+            - name: KAFKA_TRANSACTION_TOPIC_SENDER
+              value: banking-microservices.transaction.transaction-service.created.v1
+            - name: KAFKA_TRANSACTION_TOPIC_ERROR
+              value: banking-microservices.transaction.transaction-service.error.v1
 
 
 ---

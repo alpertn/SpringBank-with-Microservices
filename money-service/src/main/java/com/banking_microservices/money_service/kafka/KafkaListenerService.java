@@ -17,12 +17,14 @@ public class KafkaListenerService {
     private final UserMoneyService userMoneyService;
     private final Gson gson = new GsonBuilder().serializeNulls().create();
     private final KafkaSender kafkaSender;
+    private final TransactionService transactionService;
 
     public KafkaListenerService(TransactionService service, UserMoneyService userMoneyService,
-            KafkaSender kafkaSender) {
+            KafkaSender kafkaSender, TransactionService transactionService) {
         this.service = service;
         this.userMoneyService = userMoneyService;
         this.kafkaSender = kafkaSender;
+        this.transactionService = transactionService;
     }
 
     /*
@@ -35,10 +37,16 @@ public class KafkaListenerService {
      * @param kafka topicinden gelen veri KafkaTransactionTopicMessageDto turunde
      * olmali.
      */
-    @KafkaListener(topics = "${kafka.topics.transaction.listener}")
+    @KafkaListener(topics = "${kafka.topics.transaction.transactionmoney.listener}")
     public void listenTransactionTopic(String topicData) {
         KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
         service.KafkaTransactionTopicService(dto);
+    }
+
+    @KafkaListener(topics = "${kafka.topics.transaction.blockmoney.listener}")
+    public void listenBlockMoney(String topicData) {
+        KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
+        transactionService.KafkaTransactionTopicBlockMoney(dto);
     }
 
     @KafkaListener(topics = "${kafka.topics.username-validation.listener}")
