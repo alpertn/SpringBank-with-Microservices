@@ -1,0 +1,84 @@
+/* SpringBank - Basit Bootstrap Teması */
+
+body {
+    background-color: #f8f9fa;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Basit Auth Kutusu */
+.auth-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e9ecef;
+}
+
+.auth-card {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    /* Bootstrap shadow-sm */
+}
+
+/* Navbar Ayarları */
+.navbar-brand {
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+/* Kutu Başlıkları */
+.card-title-sm {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: #6c757d;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.balance-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #007bff;
+    /* Bootstrap primary color */
+}
+
+/* Bilgi Satırları (Hesap özeti, admin paneli vb. detaylar için) */
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e9ecef;
+    font-size: 0.9rem;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-row .label {
+    color: #6c757d;
+}
+
+.info-row .value {
+    color: #212529;
+    font-weight: bold;
+}
+
+/* Sağ Üst Bildirim Menüsü (Dropdown ve Badge ayarları) */
+.nav-icon {
+    font-size: 1.2rem;
+    position: relative;
+    padding: 0.5rem;
+}
+
+.badge-notify {
+    position: absolute;
+    top: 5px;
+    right: 0px;
+    font-size: 0.6rem;
+}

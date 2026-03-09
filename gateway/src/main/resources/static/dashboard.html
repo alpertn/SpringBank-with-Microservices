@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpringBank - Dashboard</title>
+    <!-- Sadece Bootstrap 4.6 dahil edildi -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="bg-light">
+
+    <!-- Standart Bootstrap Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">SpringBank</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNav"
+                aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/dashboard.html">Hesap Özeti</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/transfer.html">Para Transferi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin.html">Yetkili Paneli</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto align-items-center">
+                    <!-- Bildirim (Bootstrap native dropdown) -->
+                    <li class="nav-item dropdown mr-3">
+                        <a class="nav-link nav-icon" href="#" id="notifDropdown" role="button" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            🔔 <span class="badge badge-danger badge-notify" id="notifBadge">2</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow-sm border-0"
+                            aria-labelledby="notifDropdown" style="width: 300px;">
+                            <h6 class="dropdown-header font-weight-bold border-bottom pb-2">Bildirimlerim</h6>
+                            <div id="notificationList">
+                                <a class="dropdown-item py-2 border-bottom" style="font-size:13px" href="#">Hesabınıza
+                                    giriş yapıldı. (IP: 192.168.1.1)</a>
+                                <a class="dropdown-item py-2" style="font-size:13px" href="#">SpringBank'a hoş
+                                    geldiniz!</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-outline-light btn-sm" onclick="API.logout()">Güvenli Çıkış</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Ana İcerik Konteyneri -->
+    <div class="container my-5">
+        <h4 class="mb-1 font-weight-bold text-dark">Hesap Özeti</h4>
+        <p class="text-muted mb-4">Varlıklarınız ve hesap hareketleriniz</p>
+
+        <!-- Hesap Bilgileri Kartı -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-4">
+                <div class="card-title-sm">Kullanılabilir Bakiye</div>
+                <div class="balance-value mb-3" id="balance">₺0.00</div>
+
+                <div class="info-row">
+                    <span class="label">Müşteri Adı Soyadı</span>
+                    <span class="value" id="userNameSurname">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Müşteri IBAN</span>
+                    <span class="value" id="userIban">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Blokeli Tutar</span>
+                    <span class="value" id="blockedMoney">₺0.00</span>
+                </div>
+                <div class="info-row border-0 pb-0">
+                    <span class="label">Hesap Durumu</span>
+                    <span class="value text-success">Aktif</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Para Yatırma ve Çekme Kartları Alanı (Hesabı olanlar görür) -->
+        <div class="row" id="transactionArea" style="display:none;">
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body p-4">
+                        <h6 class="font-weight-bold text-primary mb-3">Hesaba Para Yatır</h6>
+                        <div class="form-group">
+                            <label class="text-muted small font-weight-bold">Tutar (₺)</label>
+                            <input type="number" class="form-control" id="depositAmount" step="0.01" min="0.01"
+                                placeholder="0.00">
+                        </div>
+                        <button class="btn btn-primary btn-block" onclick="deposit()">Kendi Hesabıma Yatır</button>
+                        <div id="depositMsg" class="alert mt-3 mb-0" style="display:none; font-size:14px"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body p-4">
+                        <h6 class="font-weight-bold text-danger mb-3">Hesaptan Para Çek</h6>
+                        <div class="form-group">
+                            <label class="text-muted small font-weight-bold">Tutar (₺)</label>
+                            <input type="number" class="form-control" id="withdrawAmount" step="0.01" min="0.01"
+                                placeholder="0.00">
+                        </div>
+                        <button class="btn btn-danger btn-block" onclick="withdraw()">Kendi Hesabımdan Çek</button>
+                        <div id="withdrawMsg" class="alert mt-3 mb-0" style="display:none; font-size:14px"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hesap Oluşturma Alanı (Sadece hesabı olmayanlarda görünür) -->
+        <div class="card shadow-sm border-0 mb-4" id="createAccountArea" style="display:none;">
+            <div class="card-body p-4 text-center">
+                <h5 class="font-weight-bold text-dark mb-3">Henüz bir banka hesabınız yok</h5>
+                <p class="text-muted mb-4">SpringBank ayrıcalıklarından yararlanmak ve para transferi yapabilmek için
+                    hemen bir hesap oluşturun.</p>
+                <button class="btn btn-success" onclick="createAccount()">Hesap Oluştur</button>
+                <div id="createAccountMsg" class="alert mt-3 mb-0"
+                    style="display:none; text-align:left; font-size:14px"></div>
+            </div>
+        </div>
+
+        <!-- Başka Bir İBANA Hızlı Sorgu Atma (Şu an Devre Dışı) -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-4">
+                <h6 class="font-weight-bold text-dark mb-3">Başka Hesap Sorgula</h6>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="queryIban" placeholder="IBAN numarası giriniz...">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" onclick="queryAccount()">Sorgula</button>
+                    </div>
+                </div>
+                <div id="queryResult" class="mt-3 p-3 bg-light rounded" style="display:none"></div>
+            </div>
+        </div>
+
+        <!-- İşlem Geçmişi -->
+        <div class="card shadow-sm border-0 mb-4" id="transactionHistoryArea" style="display:none;">
+            <div class="card-body p-4">
+                <h6 class="font-weight-bold text-dark mb-3">Son İşlemleriniz</h6>
+                <div class="table-responsive">
+                    <table class="table table-hover table-sm border-bottom">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Tarih</th>
+                                <th>Türü</th>
+                                <th>Gönderen</th>
+                                <th>Alıcı</th>
+                                <th>Tutar</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionHistoryTableBody">
+                            <!-- JS tarafından doldurulacak -->
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-3">İşlemler yükleniyor...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/dashboard.js"></script>
+</body>
+
+</html>

@@ -27,9 +27,10 @@ public class SecurityConfig {
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .authorizeExchange(authorizeExchange -> authorizeExchange
-                        .pathMatchers("/", "/index.html", "/login.html", "/register.html").permitAll() // Frontend
-                                                                                                       // HTML'leri
-                                                                                                       // public
+                        .pathMatchers("/", "/index.html", "/login.html", "/register.html",
+                                "/dashboard.html", "/transfer.html", "/admin.html",
+                                "/css/**", "/js/**")
+                        .permitAll() // Frontend static dosyalar public
                         .pathMatchers("/api/auth/**").permitAll() // API auth public
                         .pathMatchers("/api/user/admin/**").hasRole("ADMIN")
                         .anyExchange().authenticated()) // geri kalani icin sadece login olmasi yeterli olsun

@@ -1,6 +1,8 @@
 package com.banking_microservices.transaction_service.controller;
 
 import com.banking_microservices.transaction_service.dto.Transaction;
+import com.banking_microservices.transaction_service.dto.TransactionHistory;
+import com.banking_microservices.transaction_service.model.TransactionEntity;
 import com.banking_microservices.transaction_service.service.TransactionService;
 import com.google.gson.Gson;
 import jakarta.validation.Valid;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -30,5 +33,11 @@ public class TransactionController {
 
         transactionService.createTransaction(data);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("Status", 1));
+    }
+
+    @PostMapping("/gettransactionhistorywithid")
+    public ResponseEntity<List<TransactionEntity>> getTransactionHistoryWithId(@Valid @RequestBody String id){
+        List<TransactionEntity> transactionList = transactionService.getTransactionHistory(id);
+        return ResponseEntity.ok(transactionList);
     }
 }

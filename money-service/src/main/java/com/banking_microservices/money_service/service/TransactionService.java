@@ -4,6 +4,7 @@ import com.banking_microservices.money_service.dto.KafkaTransactionTopicMessageD
 import com.banking_microservices.money_service.exception.*;
 import com.banking_microservices.money_service.kafka.KafkaListenerService;
 import com.banking_microservices.money_service.kafka.KafkaSender;
+import org.springframework.context.annotation.Lazy;
 import com.banking_microservices.money_service.models.KafkaLastActivity;
 import com.banking_microservices.money_service.repository.KafkaLastActivityRepository;
 import com.banking_microservices.money_service.repository.UserMoneyRepository;
@@ -26,7 +27,7 @@ public class TransactionService {
     private final KafkaLastActivityRepository kafkaLastActivityRepository;
 
     public TransactionService(UserMoneyService service, UserMoneyRepository repository, KafkaSender kafkaSender,
-            KafkaListenerService kafkaListenerService, KafkaLastActivityRepository kafkaLastActivityRepository) {
+            @Lazy KafkaListenerService kafkaListenerService, KafkaLastActivityRepository kafkaLastActivityRepository) {
         this.service = service;
         this.repository = repository;
         this.kafkaSender = kafkaSender;
