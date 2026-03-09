@@ -8,6 +8,8 @@ import org.hibernate.annotations.UuidGenerator;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
+import com.banking_microservices.transaction_service.model.TransactionEntity;
 
 @Data
 @Builder
@@ -61,4 +63,10 @@ public class KafkaTransactionTopicMessageDto {
 
     @Builder.Default
     private LocalDateTime localDateTime = LocalDateTime.now();
+
+    @Builder.Default
+    private List<TransactionEntity> senderTransactionHistory = null;
+
+    @Builder.Default
+    private List<TransactionEntity> receiverTransactionHistory = null;
 }

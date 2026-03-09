@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -60,4 +61,10 @@ public class KafkaTransactionTopicMessageDto {
 
     @Builder.Default
     private LocalDateTime localDateTime = LocalDateTime.now();
+
+    @Builder.Default
+    private List<TransactionEntity> senderTransactionHistory = null;
+
+    @Builder.Default
+    private List<TransactionEntity> receiverTransactionHistory = null;
 }

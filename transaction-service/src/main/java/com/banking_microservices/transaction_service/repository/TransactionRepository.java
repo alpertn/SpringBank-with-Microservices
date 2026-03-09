@@ -27,4 +27,6 @@ public interface TransactionRepository extends JpaRepository<TransactionEntity, 
 
     boolean existsByEventId(String eventid);
 
+    List<TransactionEntity> findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc(String senderIban, String receiverIban);
+
 }

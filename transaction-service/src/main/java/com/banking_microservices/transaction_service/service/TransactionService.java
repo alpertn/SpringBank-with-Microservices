@@ -88,11 +88,16 @@ public class TransactionService {
 
         try {
             transactionRepository.save(transactionModel);
-
         } catch (Exception e) {
             throw new TransactionSaveException("An Error With Save TransactionEntity " + e.getMessage());
         }
+        try{
+            dto.setSenderTransactionHistory(transactionRepository.findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc(dto.getSenderIban(), dto.getSenderIban()));
+            dto.setReceiverTransactionHistory(transactionRepository.findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc(dto.getReceiverIban(),dto.getReceiverIban()));
 
+        }catch (Exception e){
+            throw new GetEventHistoryException("An Exception With get Event History for transaction " + dto.getSenderIban() + ' ' + dto.getReceiverIban());
+        }
         try {
             kafkaSender.sendTransaction(dto.getEventUUID(), dto);
         } catch (Exception e) {
