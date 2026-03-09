@@ -20,7 +20,7 @@ public class KafkaListenerService {
     @KafkaListener(topics = "${kafka.topics.create-user.authservicelistener}")
     public void ListenAuthServiceTopic(String topicData) {
         AuthServiceCreateUserTopicDto dto = gson.fromJson(topicData, AuthServiceCreateUserTopicDto.class);
-
+        service.saveUser(dto);
     }
 
     public KafkaListenerService(UserService service, UserRepository repository) {

@@ -61,6 +61,8 @@ spec:
               value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'
             # Kafka Topic
             # Create User
+            - name: KAFKA_AUTH_SERVICE_CREATE_USER_LISTENER
+              value: banking-microservices.create-user.auth-service.progress.v1
             - name: KAFKA_CREATE_USER_SENDER
               value: banking-microservices.username-validation.user-service.progress.v1
             - name: KAFKA_CREATE_USER_LISTENER
@@ -79,8 +81,11 @@ spec:
               value: banking-microservices.transaction.money-service.block-money.success.v1
             - name: KAFKA_TRANSACTION_USERNAME-VALIDATION_SENDER
               value: banking-microservices.transaction.user-service.username-validation.success.v1
-            - name: KAFKA_TRANSACTION_TOPIC_ERROR
-              value: banking-microservices.transaction.transaction-service.error.v1
+            - name: KAFKA_TRANSACTION_USERNAME-VALIDATION_ERROR
+              value: banking-microservices.transaction.user-service.username-validation.error.v1
+            # Username Validation (from application.yaml)
+            - name: KAFKA_USERNAME_VALIDATION_ERROR
+              value: banking-microservices.username-validation.money-service.error.v1
 
 
 ---
@@ -196,6 +201,8 @@ spec:
               value: banking-microservices.username-validation.money-service.progress.v1
             - name: KAFKA_USERNAME_VALIDATION_LISTENER
               value: banking-microservices.username-validation.user-service.success.v1
+            - name: KAFKA_USERNAME_VALIDATION_ERROR
+              value: banking-microservices.username-validation.money-service.error.v1
             - name: KAFKA_TRANSACTION_USERNAME-VALIDATION_SENDER
               value: banking-microservices.transaction.money-service.block-money.success.v1
             - name: KAFKA_TRANSACTION_USERNAME-VALIDATION_LISTENER
@@ -631,7 +638,7 @@ spec:
               value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'
             # Kafka Topic
             - name: KAFKA_TRANSACTION_TOPIC_LISTENER
-              value: banking-microservices.transaction.transaction-service.created.v1
+              value: banking-microservices.transaction.money-service.block-money.success.v1
             - name: KAFKA_TRANSACTION_TOPIC_SENDER
               value: banking-microservices.transaction.fraud-service.checked.v1
             - name: KAFKA_TRANSACTION_TOPIC_ERROR

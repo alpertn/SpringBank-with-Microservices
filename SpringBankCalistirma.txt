@@ -1,4 +1,7 @@
 Docker Ile Build edip Docker imageye donusturme
+
+kubectl rollout restart deployment/user-service -n banking-microservices
+
 docker build -t SpringBankWithMicroservices/auth-service:1.0.0 ./auth-service
 docker build -t SpringBankWithMicroservices/user-service:1.0.0 ./user-service
 docker build -t SpringBankWithMicroservices/money-service:1.0.0 ./money-service

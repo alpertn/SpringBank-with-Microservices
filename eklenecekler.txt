@@ -22,4 +22,7 @@ her mikroservisde eventUUID belırleme.
 
 Enriched Event
 
-transactıonServıce ılk tum verılerı verıyorç
+transactıonServıce ılk tum verılerı verıyor
+
+Onemli:
+Gatewaydan gectigi gibi tokenden iban userId gibi verilerin alinmasi transaction ve digerleri icn.
