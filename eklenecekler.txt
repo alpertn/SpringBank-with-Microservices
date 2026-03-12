@@ -28,3 +28,4 @@ Onemli:
 Gatewaydan gectigi gibi tokenden iban userId gibi verilerin alinmasi transaction ve digerleri icn.
 
 Kafka event id ve event id table.
+circuit breake

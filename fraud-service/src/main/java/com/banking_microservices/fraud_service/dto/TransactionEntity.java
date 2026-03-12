@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TransactionEntity {
+public class  TransactionEntity {
     private String id;
     private String eventId;
     private String receiverName;

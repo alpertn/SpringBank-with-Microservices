@@ -21,6 +21,18 @@ public class KafkaTransactionTopicMessageDto {
     private String eventUUID; // = UUID.randomUUID().toString()
 
     @Builder.Default
+    private String senderName = null;
+
+    @Builder.Default
+    private String senderSurname = null;
+
+    @Builder.Default
+    private String senderEmail = null;
+
+    @Builder.Default
+    private String receiverEmail = null;
+
+    @Builder.Default
     private String receiverName = null;
 
     @Builder.Default

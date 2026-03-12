@@ -1,7 +1,6 @@
 package com.banking_microservices.transaction_service.controller;
 
 import com.banking_microservices.transaction_service.dto.Transaction;
-import com.banking_microservices.transaction_service.dto.TransactionHistory;
 import com.banking_microservices.transaction_service.model.TransactionEntity;
 import com.banking_microservices.transaction_service.service.TransactionService;
 import com.google.gson.Gson;
@@ -11,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,9 +29,19 @@ public class TransactionController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> transactionEntity(@Valid @RequestBody Transaction data) {
+    public ResponseEntity<?> transactionEntity(
+            @RequestHeader(value = "X-User-Id", required = false) String userId,
+            @RequestHeader(value = "X-User-Username", required = false) String userUsername,
+            @RequestHeader(value = "X-User-Roles", required = false) String userRoles,
+            @RequestHeader(value = "X-User-Email", required = false) String userEmail,
+            @RequestHeader(value = "X-User-Name", required = false) String userName,
+            @RequestHeader(value = "X-User-Surname", required = false) String userSurname,
 
-        transactionService.createTransaction(data);
+            @Valid @RequestBody Transaction data) {
+
+        log.info("Transferi baslatan kimlik -> ID: {}, Username: {}, Roles: {}", userId, userName, userRoles);
+
+        transactionService.createTransaction(data, userId,  userEmail,  userName , userSurname);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("Status", 1));
     }
 

@@ -23,9 +23,9 @@ public class AdminController {
         this.userService = userService;
     }
 
-    @GetMapping("/finduserbyid/{id}")
-    public ResponseEntity<Users> findUserById(@PathVariable String id) {
-        log.info("Admin findUserById istegi alindi. ID: {}", id);
+    @PostMapping("/finduserbyid")
+    public ResponseEntity<Users> findUserById(String id) {
+        log.info("Money Service AdminController findUserById Modulu Istegi aldi.  id : {}", id);
         return ResponseEntity.ok(userService.findUserById(id));
     }
 
@@ -45,7 +45,7 @@ public class AdminController {
         return ResponseEntity.ok(userService.getTotalUserCount());
     }
 
-    @GetMapping("/search-by-email")
+    @GetMapping("/findbyemail")
     public ResponseEntity<List<Users>> searchByEmail(@RequestParam String email) {
         log.info("Admin search by email request. Email: {}", email);
         return ResponseEntity.ok(userService.searchUsersByEmail(email));

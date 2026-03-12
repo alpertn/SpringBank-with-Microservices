@@ -28,17 +28,29 @@ public class TransactionEntity {
 
     private String eventId;
 
-    private String receiverName;
+    private String receiverName= null;
 
-    private String receiverSurname;
+    @Builder.Default
+    private String senderName = null;
 
-    private String senderUserId;
+    @Builder.Default
+    private String senderSurname = null;
 
-    private String receiverUserId;
+    @Builder.Default
+    private String senderEmail = null;
 
-    private String senderIban;
+    @Builder.Default
+    private String receiverEmail = null;
 
-    private String receiverIban;
+    private String receiverSurname= null;
+
+    private String senderUserId= null;
+
+    private String receiverUserId= null;
+
+    private String senderIban= null;
+
+    private String receiverIban= null;
 
     @Column(precision = 19, scale = 2)
     @com.fasterxml.jackson.annotation.JsonProperty("money")
@@ -46,7 +58,7 @@ public class TransactionEntity {
 
     private String transactionType;
 
-    private String description;
+    private String description = null;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime localDateTime;

@@ -8,6 +8,7 @@ import com.banking_microservices.transaction_service.model.TransactionEntity;
 import com.banking_microservices.transaction_service.repository.TransactionRepository;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,15 +61,19 @@ public class TransactionService {
     }
 
     @Transactional
-    public void createTransaction(Transaction transactionDto) {
+    public void createTransaction(Transaction transactionDto, String senderUserId, String senderMail, String senderName, String senderSurname) {
         String newEventUUID;
         do {
             newEventUUID = UUID.randomUUID().toString();
         } while (transactionRepository.existsByEventId(newEventUUID));
 
+
         KafkaTransactionTopicMessageDto dto = KafkaTransactionTopicMessageDto.builder()
                 .eventUUID(newEventUUID)
-                .senderIban(transactionDto.getSenderIban())
+                .senderUserId(senderUserId)
+                .senderEmail(senderMail)
+                .senderName(senderName)
+                .senderSurname(senderSurname)
                 .receiverIban(transactionDto.getReceiverIban())
                 .receiverName(transactionDto.getReceiverName())
                 .receiverSurname(transactionDto.getReceiverSurname())
@@ -78,7 +83,10 @@ public class TransactionService {
 
         TransactionEntity transactionModel = TransactionEntity.builder()
                 .eventId(newEventUUID)
-                .senderIban(transactionDto.getSenderIban())
+                .senderUserId(senderUserId)
+                .senderName(senderName)
+                .senderSurname(senderSurname)
+                .senderEmail(senderMail)
                 .receiverIban(transactionDto.getReceiverIban())
                 .receiverName(transactionDto.getReceiverName())
                 .receiverSurname(transactionDto.getReceiverSurname())
