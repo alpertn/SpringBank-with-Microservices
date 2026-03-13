@@ -1,28 +1,23 @@
 /* ===== SpringBank - Dashboard Sayfası JS ===== */
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Auth kontrolü - Yoksa api.js login sayfasına yönlendirir
     if (!API.checkAuth()) return;
 
-    // Kullanıcı bilgilerini ekrana doldur
     const user = API.getUserData();
     document.getElementById('user-name').innerText = user.name + ' ' + user.surname;
     document.getElementById('greeting').innerText = 'Hoş geldiniz, ' + user.name + ' 👋';
-    
-    // Admin ise admin menülerini göster
+
     if (user.roles?.includes('ADMIN')) {
         document.getElementById('admin-section').style.display = 'block';
         document.getElementById('admin-link').style.display = 'block';
         document.getElementById('user-role').innerText = 'Admin';
     }
 
-    // Çıkış Butonu
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => API.logout());
     }
 
-    // Sayfa açıldığında verileri yükle
     window.loadData();
 });
 
@@ -47,15 +42,44 @@ async function loadBalance() {
             document.getElementById('balance').innerText = API.formatMoney(data.money);
             document.getElementById('blocked').innerText = API.formatMoney(data.blockedmoney || 0);
             document.getElementById('iban').innerText = data.userIban || '-';
+            // Hesap var — hesap oluştur butonunu gizle, bakiye kartlarını göster
+            document.getElementById('no-account-banner').style.display = 'none';
+            document.getElementById('balance-cards').style.display = '';
+            document.getElementById('quick-action-create-account').style.display = 'none';
         } else {
-            document.getElementById('balance').innerText = '-';
-            document.getElementById('blocked').innerText = '-';
-            document.getElementById('iban').innerText = '-';
+            // Hesap yok — bakiye kartlarını gizle, oluştur butonunu göster
+            document.getElementById('balance-cards').style.display = 'none';
+            document.getElementById('no-account-banner').style.display = '';
+            document.getElementById('quick-action-create-account').style.display = '';
         }
     } catch(e) {
         console.error('Balance load error:', e);
     }
 }
+
+window.createAccount = async function() {
+    const btn = document.getElementById('btn-create-account');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="ph ph-spinner"></i> Oluşturuluyor...';
+
+    try {
+        const userId = API.getUserId();
+        const res = await API.call('/api/money-service/v1/accounts/createusermoney', 'POST', { id: userId });
+        if (res && res.ok) {
+            API.toast('Hesabınız başarıyla oluşturuldu!', 'success');
+            window.loadData();
+        } else {
+            const err = await res.json().catch(() => ({}));
+            API.toast('Hesap oluşturulamadı: ' + (err.message || 'Hata'), 'danger');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="ph ph-plus"></i> Hesap Oluştur';
+        }
+    } catch(e) {
+        API.toast('Bağlantı hatası', 'danger');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="ph ph-plus"></i> Hesap Oluştur';
+    }
+};
 
 async function loadTransactions() {
     const wrapper = document.getElementById('transactions-wrapper');
@@ -67,7 +91,7 @@ async function loadTransactions() {
 
         if (res && res.ok) {
             const data = await res.json();
-            
+
             if (!data || data.length === 0) {
                 wrapper.innerHTML = `
                     <div class="empty-state">
@@ -77,11 +101,10 @@ async function loadTransactions() {
                 `;
                 return;
             }
-            
-            // Tarihe göre yeniden eskiye diz ve sadece ilk 10'u göster
+
             data.sort((a,b) => new Date(b.localDateTime) - new Date(a.localDateTime));
             const recentData = data.slice(0, 10);
-            
+
             let html = `
                 <table>
                     <thead>
@@ -95,7 +118,7 @@ async function loadTransactions() {
                     </thead>
                     <tbody>
             `;
-            
+
             recentData.forEach(tx => {
                 let statusBadge = '';
                 if(tx.status === 'SUCCESS') statusBadge = '<span class="badge badge-success" style="font-size:11px;">Başarılı</span>';
@@ -104,7 +127,7 @@ async function loadTransactions() {
 
                 let typeLabel = tx.transactionType;
                 let isOutflow = tx.senderUserId === userId && typeLabel !== 'DEPOSIT';
-                
+
                 let amountSign = isOutflow ? '-' : '+';
                 let amountColor = isOutflow ? 'var(--danger)' : 'var(--success)';
                 if (typeLabel === 'DEPOSIT' || typeLabel === 'WITHDRAW') {
@@ -122,7 +145,7 @@ async function loadTransactions() {
                     </tr>
                 `;
             });
-            
+
             html += `</tbody></table>`;
             wrapper.innerHTML = html;
         } else {
