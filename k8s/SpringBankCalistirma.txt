@@ -28,7 +28,8 @@ kubectl delete -f k8s/01-Base.yaml
 Podlar Restart
 kubectl rollout restart deployment -n banking-microservices
 kubectl rollout restart deployment/gateway -n banking-microservices
-
+kubectl apply -f k8s/02-Apps.yaml -n banking-microservices
+kubectl rollout restart deployment/transaction-service deployment/money-service -n banking-microservices
 
 kubectl rollout restart deployment/gateway -n banking-microservices
 kubectl rollout restart deployment/fraud-service -n banking-microservices
