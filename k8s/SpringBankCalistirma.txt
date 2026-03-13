@@ -30,6 +30,22 @@ kubectl rollout restart deployment -n banking-microservices
 kubectl rollout restart deployment/gateway -n banking-microservices
 
 
+kubectl rollout restart deployment/gateway -n banking-microservices
+kubectl rollout restart deployment/fraud-service -n banking-microservices
+kubectl rollout restart deployment/user-service -n banking-microservices
+kubectl rollout restart deployment/auth-service -n banking-microservices
+kubectl rollout restart deployment/transaction-service -n banking-microservices
+kubectl rollout restart deployment/money-service -n banking-microservices
+
+docker build --no-cache -t SpringBankWithMicroservices/auth-service:1.0.0 ./auth-service
+docker build --no-cache -t SpringBankWithMicroservices/user-service:1.0.0 ./user-service
+docker build --no-cache -t SpringBankWithMicroservices/money-service:1.0.0 ./money-service
+docker build --no-cache -t SpringBankWithMicroservices/transaction-service:1.0.0 ./transaction-service
+docker build --no-cache -t SpringBankWithMicroservices/gateway:1.0.0 ./gateway
+docker build --no-cache -t SpringBankWithMicroservices/fraud-service:1.0.0 ./fraud-service
+kubectl rollout restart deployment -n banking-microservices
+kubectl get pods -n banking-microservices
+
 Docker Imageleri sil
 docker rmi SpringBankWithMicroservices/auth-service:1.0.0
 docker rmi SpringBankWithMicroservices/user-service:1.0.0
