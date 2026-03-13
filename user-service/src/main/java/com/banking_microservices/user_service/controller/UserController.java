@@ -14,7 +14,7 @@ import com.google.gson.Gson;
 
 @RestController
 @Slf4j
-@RequestMapping("/api/user")
+@RequestMapping("/api/user-service/v1/user")
 public class UserController {
 
     private final Gson gson = new GsonBuilder().serializeNulls().create();

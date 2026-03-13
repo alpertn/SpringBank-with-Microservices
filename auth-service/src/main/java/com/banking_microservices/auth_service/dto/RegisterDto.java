@@ -1,6 +1,5 @@
 package com.banking_microservices.auth_service.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RegisterDto {
     private String email;
-    @JsonProperty("Name")
     private String name;
     private String surname;
     private String password;

@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/transactions")
+@RequestMapping("/api/transaction-service/v1/transactions")
 @Slf4j
 public class TransactionController {
     private final Gson gson = new Gson();
@@ -30,7 +30,7 @@ public class TransactionController {
 
     @PostMapping("/create")
     public ResponseEntity<?> transactionEntity(
-            @RequestHeader(value = "X-User-Id", required = false) String userId,
+            @RequestHeader(value = "X-User-KeyloackId", required = false) String userId,
             @RequestHeader(value = "X-User-Username", required = false) String userUsername,
             @RequestHeader(value = "X-User-Roles", required = false) String userRoles,
             @RequestHeader(value = "X-User-Email", required = false) String userEmail,
@@ -39,9 +39,37 @@ public class TransactionController {
 
             @Valid @RequestBody Transaction data) {
 
-        log.info("Transferi baslatan kimlik -> ID: {}, Username: {}, Roles: {}", userId, userName, userRoles);
+        log.info("Transaction Service TransactionController transactionEntity Modulu Istegi aldi.  id : {}", userId);
 
         transactionService.createTransaction(data, userId,  userEmail,  userName , userSurname);
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("Status", 1));
+    }
+
+    @PostMapping("/deposit")
+    public ResponseEntity<?> deposit(
+            @RequestHeader(value = "X-User-KeyloackId", required = false) String userId,
+            @RequestHeader(value = "X-User-Email", required = false) String userEmail,
+            @RequestHeader(value = "X-User-Name", required = false) String userName,
+            @RequestHeader(value = "X-User-Surname", required = false) String userSurname,
+            @Valid @RequestBody com.banking_microservices.transaction_service.dto.DepositDto data) {
+
+        log.info("Transaction Service TransactionController deposit Modulu Istegi aldi.  id : {}", userId);
+
+        transactionService.createDeposit(data, userId,  userEmail,  userName , userSurname);
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("Status", 1));
+    }
+
+    @PostMapping("/withdraw")
+    public ResponseEntity<?> withdraw(
+            @RequestHeader(value = "X-User-KeyloackId", required = false) String userId,
+            @RequestHeader(value = "X-User-Email", required = false) String userEmail,
+            @RequestHeader(value = "X-User-Name", required = false) String userName,
+            @RequestHeader(value = "X-User-Surname", required = false) String userSurname,
+            @Valid @RequestBody com.banking_microservices.transaction_service.dto.WithdrawDto data) {
+
+        log.info("Transaction Service TransactionController withdraw Modulu Istegi aldi.  id : {}", userId);
+
+        transactionService.createWithdraw(data, userId,  userEmail,  userName , userSurname);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("Status", 1));
     }
 

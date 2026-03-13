@@ -4,11 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.UuidGenerator;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
+import com.banking_microservices.user_service.dto.user.TransactionEntity;
 
 @Data
 @Builder
@@ -16,13 +17,26 @@ import java.util.List;
 @AllArgsConstructor
 public class KafkaTransactionTopicMessageDto {
 
+    @UuidGenerator
     private String eventUUID;
 
     @Builder.Default
-    private String name = null;
+    private String senderName = null;
 
     @Builder.Default
-    private String surname = null;
+    private String senderSurname = null;
+
+    @Builder.Default
+    private String senderEmail = null;
+
+    @Builder.Default
+    private String receiverEmail = null;
+
+    @Builder.Default
+    private String receiverName = null;
+
+    @Builder.Default
+    private String receiverSurname = null;
 
     @Builder.Default
     private String senderUserId = null;
@@ -36,10 +50,10 @@ public class KafkaTransactionTopicMessageDto {
     @Builder.Default
     private String receiverIban = null;
 
-    @JsonProperty("money")
     private BigDecimal money;
 
-    private String transactionType;
+    @Builder.Default
+    private String transactionType = "TRANSACTION'";
 
     @Builder.Default
     private String description = null;

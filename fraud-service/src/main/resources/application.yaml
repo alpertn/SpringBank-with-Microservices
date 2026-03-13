@@ -2,6 +2,10 @@ kafka:
   topics:
     transaction:
       listener: ${KAFKA_TRANSACTION_TOPIC_LISTENER:banking-microservices.transaction.money-service.block-money.success.v1}
+      deposit:
+        listener: ${KAFKA_TRANSACTION_TOPIC_DEPOSIT_LISTENER:banking-microservices.transaction.deposit.created.v1}
+      withdraw:
+        listener: ${KAFKA_TRANSACTION_TOPIC_WITHDRAW_LISTENER:banking-microservices.transaction.withdraw.created.v1}
       sender: ${KAFKA_TRANSACTION_TOPIC_SENDER:banking-microservices.transaction.fraud-service.checked.v1}
       error: ${KAFKA_TRANSACTION_TOPIC_ERROR:banking-microservices.transaction.transaction-service.error.v1}
 server:
@@ -15,6 +19,8 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: fraud-service-group
   cloud:
     kubernetes:
       discovery:

@@ -1,45 +1,69 @@
-// Sisteme Yeni Kullanici Kaydi Istegi
-document.getElementById('registerForm').addEventListener('submit', async (e) => {
+/* ===== SpringBank - Register Sayfası JS ===== */
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Zaten giriş yapıldıysa dashboard'a yönlendir
+  if (API.getToken()) {
+    window.location.href = '/dashboard.html';
+    return;
+  }
+
+  const form = document.getElementById('register-form');
+  const btn  = document.getElementById('register-btn');
+  const msg  = document.getElementById('register-msg');
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // UI Elementleri
-    const btn = document.getElementById('regBtn');
-    const msgBox = document.getElementById('msg');
+    const name     = document.getElementById('name').value.trim();
+    const surname  = document.getElementById('surname').value.trim();
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const password2= document.getElementById('password2').value;
 
-    // Yukleme durumu
+    // Validasyon
+    if (!name || !surname || !email || !password) {
+      API.showMsg(msg, '❌ Tüm alanları doldurunuz.', 'danger');
+      return;
+    }
+    if (password !== password2) {
+      API.showMsg(msg, '❌ Şifreler eşleşmiyor.', 'danger');
+      return;
+    }
+    if (password.length < 6) {
+      API.showMsg(msg, '❌ Şifre en az 6 karakter olmalıdır.', 'danger');
+      return;
+    }
+
     btn.disabled = true;
-    btn.textContent = 'Kayıt yapılıyor...';
-    msgBox.style.display = 'none';
-
-    // Form verisi
-    const payload = {
-        Name: document.getElementById('firstName').value.trim(),
-        surname: document.getElementById('lastName').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        password: document.getElementById('password').value
-    };
+    btn.innerHTML = '<span class="spinner"></span> Hesap oluşturuluyor...';
+    API.hideMsg(msg);
 
     try {
-        // Kaydedici Backend cagirisi
-        const response = await fetch('/api/auth/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
+      // POST /api/auth-service/v1/auth/register
+      // RegisterDto: email, Name (büyük N - @JsonProperty), surname, password
+      const res = await fetch('/api/auth-service/v1/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, name: name, surname, password })
+      });
 
-        if (response.ok) {
-            API.showMsg(msgBox, 'Kayıt başarılı! Giriş sayfasına yönlendiriliyorsunuz...', 'success');
-            // Basarilisa 2 saniye sonra logine geri don
-            setTimeout(() => window.location.href = '/login.html', 2000);
-        } else {
-            const text = await response.text();
-            API.showMsg(msgBox, 'Kayıt hatası: ' + text, 'danger');
-            btn.disabled = false;
-            btn.textContent = 'Kayıt Ol';
-        }
+      if (res.ok || res.status === 201) {
+        API.showMsg(msg, '✅ Hesabınız oluşturuldu! Giriş sayfasına yönlendiriliyorsunuz...', 'success');
+        setTimeout(() => window.location.href = '/login.html', 2000);
+      } else {
+        let errMsg = `Kayıt başarısız (${res.status}).`;
+        try {
+          const errData = await res.json();
+          if (errData.message) errMsg = errData.message;
+        } catch { /* yoksay */ }
+        API.showMsg(msg, `❌ ${errMsg}`, 'danger');
+      }
     } catch (err) {
-        API.showMsg(msgBox, 'Sunucuya bağlanılamadı!', 'danger');
-        btn.disabled = false;
-        btn.textContent = 'Kayıt Ol';
+      API.showMsg(msg, '❌ Sunucuya bağlanılamadı.', 'danger');
+      console.error('Register error:', err);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = 'Hesap Oluştur';
     }
+  });
 });

@@ -12,7 +12,7 @@ import com.google.gson.Gson;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/accounts")
+@RequestMapping("/api/money-service/v1/accounts")
 @Slf4j
 public class MoneyController {
 
@@ -37,6 +37,12 @@ public class MoneyController {
     public ResponseEntity<?> getUserIbanWithUserId(@RequestBody java.util.Map<String, String> body) {
         String userId = body.get("userId");
         log.info("getUserIbanWithUserId istegi geldi. UserId: {}", userId);
+        return ResponseEntity.ok(UserMoneyService.getAccountByUserId(userId));
+    }
+
+    @GetMapping("/balance-info")
+    public ResponseEntity<?> getBalanceAndIban(@RequestHeader("X-User-KeyloackId") String userId) {
+        log.info("Money Service MoneyController getBalanceAndIban Modulu Istegi aldi.  id : {}", userId);
         return ResponseEntity.ok(UserMoneyService.getAccountByUserId(userId));
     }
 

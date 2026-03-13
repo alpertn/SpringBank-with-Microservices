@@ -27,6 +27,8 @@ kubectl delete -f k8s/01-Base.yaml
 
 Podlar Restart
 kubectl rollout restart deployment -n banking-microservices
+kubectl rollout restart deployment/gateway -n banking-microservices
+
 
 Docker Imageleri sil
 docker rmi SpringBankWithMicroservices/auth-service:1.0.0

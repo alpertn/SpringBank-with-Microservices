@@ -1,50 +1,123 @@
 <!DOCTYPE html>
 <html lang="tr">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SpringBank - Dijital Bankacılık Giriş</title>
-    <!-- Sadece Bootstrap 4.6 dahil edildi -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpringBank – Giriş Yap</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <style>
+    .auth-split {
+      display: flex;
+      min-height: 100vh;
+      background: var(--bg);
+    }
+    .auth-image {
+      flex: 1;
+      display: none;
+      background: linear-gradient(135deg, rgba(2,108,182,0.95) 0%, rgba(1,67,115,0.98) 100%), url('https://images.unsplash.com/photo-1550565118-3a14e8d0386f?q=80&w=2670&auto=format&fit=crop') no-repeat center center;
+      background-size: cover;
+      color: white;
+      padding: 60px;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    @media (min-width: 992px) { .auth-image { display: flex; } }
+    .auth-form-side {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px;
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .auth-image-title { font-size: 52px; font-weight: 800; line-height: 1.1; margin-bottom: 24px; letter-spacing: -1px;}
+    .auth-image-subtitle { font-size: 18px; opacity: 0.9; max-width: 400px; line-height: 1.6;}
+    .premium-logo { display:flex; align-items:center; gap:12px; font-size:24px; font-weight:800; letter-spacing:-0.5px; color:var(--primary-dark); margin-bottom: 40px;}
+    .premium-logo i { color: var(--primary); font-size: 32px; }
+    
+    .security-notice {
+      display: flex;
+      gap: 12px;
+      padding: 16px;
+      background: var(--warning-light);
+      border: 1px solid rgba(232, 143, 16, 0.3);
+      border-radius: 8px;
+      margin-top: 40px;
+    }
+    .security-notice-icon { color: var(--warning); font-size: 24px; flex-shrink: 0; }
+    .security-notice-text { font-size: 13px; color: var(--warning); line-height: 1.5; }
+    .security-notice-text strong { display: block; margin-bottom: 4px; }
+  </style>
 </head>
+<body>
 
-<!-- Sayfa Ortalanmış Oturum Açma Kutusu -->
-<div class="auth-wrapper">
-    <div class="auth-card">
-        <h3 class="text-center font-weight-bold mb-1 text-primary">SpringBank</h3>
-        <p class="text-center text-muted mb-4">Müşteri Girişi</p>
-        <!-- Kullanıcı Giriş Formu (JS tarafından yakalanır) -->
-        <form id="loginForm">
-            <div class="form-group">
-                <label>E-Posta Adresi</label>
-                <input type="email" class="form-control" id="email" placeholder="ornek@springbank.com" required>
-            </div>
-            <div class="form-group">
-                <label>Müşteri Şifresi</label>
-                <input type="password" class="form-control" id="password" placeholder="Şifreniz" required>
-            </div>
-            <button type="submit" class="btn btn-primary btn-block" id="loginBtn">Giriş Yap</button>
-        </form>
-
-        <!-- JS'den gelen hata veya başarı mesajları buraya yazdırılır -->
-        <div id="msg" class="alert mt-3" style="display:none; font-size:14px;"></div>
-
-        <hr>
-
-        <div class="text-center mt-3">
-            <small class="text-muted">
-                Hesabınız yok mu? <a href="/register.html">Kayıt Olun</a>
-            </small>
-        </div>
+<div class="auth-split">
+  
+  <div class="auth-form-side">
+    <a href="/index.html" style="text-decoration:none;">
+    <div class="premium-logo">
+      <i class="ph-fill ph-bank"></i> SpringBank
     </div>
+    </a>
+    
+    <h1 class="page-title" style="margin-bottom:8px;">Tekrar Hoş Geldiniz</h1>
+    <p class="page-subtitle" style="margin-bottom:32px; font-size:15px;">Hesabınıza güvenli bir şekilde giriş yapın.</p>
+
+    <form id="login-form" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="email">E-posta Adresi</label>
+        <div style="position:relative">
+          <i class="ph ph-envelope" style="position:absolute; left:14px; top:14px; color:var(--text-muted); font-size:18px;"></i>
+          <input id="email" type="email" class="form-control" placeholder="ornek@posta.com" required style="padding-left:40px;">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <label class="form-label" for="password" style="margin-bottom:0;">Şifre</label>
+          <a href="#" style="font-size:12px; color:var(--primary); font-weight:600; text-decoration:none;">Şifremi Unuttum</a>
+        </div>
+        <div style="position:relative">
+          <i class="ph ph-lock-key" style="position:absolute; left:14px; top:14px; color:var(--text-muted); font-size:18px;"></i>
+          <input id="password" type="password" class="form-control" placeholder="Şifrenizi girin" required style="padding-left:40px;">
+        </div>
+      </div>
+
+      <div id="login-msg" class="alert" style="display:none; margin-bottom:24px;"></div>
+
+      <button type="submit" id="login-btn" class="btn btn-primary btn-full btn-lg" style="margin-top:10px; padding:16px;">
+        Güvenli Giriş <i class="ph ph-arrow-right" style="font-size:18px"></i>
+      </button>
+    </form>
+
+    <div style="text-align:center; margin-top:32px; font-size:14px; color:var(--text-muted);">
+      Henüz müşterimiz değil misiniz? <a href="/register.html" style="color:var(--primary); font-weight:700; text-decoration:none;">Hesap Oluştur</a>
+    </div>
+
+    <div class="security-notice">
+      <i class="ph-fill ph-shield-warning security-notice-icon"></i>
+      <div class="security-notice-text">
+        <strong>Güvenlik Uyarısı</strong>
+        SpringBank personeli dahil hiç kimse sizden şifrenizi e-posta veya SMS yoluyla talep etmez. Resmi adresimizin <code>localhost:8095</code> olduğundan emin olun.
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-image">
+    <div style="font-size: 24px; font-weight:800; display:flex; align-items:center; gap:8px;">
+      <i class="ph-fill ph-bank"></i> SpringBank
+    </div>
+    <div>
+      <h1 class="auth-image-title">Güçlü <br>Teknoloji. <br>Güvenli Yarınlar.</h1>
+      <p class="auth-image-subtitle">Tüm finansal hayatınız tek bir ekranda, parmaklarınızın ucunda. Bizimle her zaman güvendesiniz.</p>
+    </div>
+  </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/api.js"></script>
 <script src="/js/login.js"></script>
 </body>
-
 </html>

@@ -78,8 +78,23 @@
 
             // jakartanin response kullaniyoruz keycloaka ait degil realmina istek gonderip responseyi aliyor
             Response response = keycloak.realm(realm).users().create(user);
+            
+            if (response.getStatus() != 201) {
+                String errorInfo = response.readEntity(String.class);
+                response.close();
+                log.error("Failed to create user in Keycloak. Status: {}, Info: {}", response.getStatus(), errorInfo);
+                throw new KeycloackUserCreateException("Keycloak user creation failed: " + errorInfo);
+            }
+            
             // Responseden User Id cekme.
-            String userId = response.getHeaderString("Location").substring(response.getHeaderString("Location").lastIndexOf('/') + 1);
+            String location = response.getHeaderString("Location");
+            if (location == null) {
+                response.close();
+                log.error("Failed to extract UserId: Location header is missing.");
+                throw new KeycloackUserCreateException("Location header missing after successful creation.");
+            }
+            
+            String userId = location.substring(location.lastIndexOf('/') + 1);
             // http istegi acik kaldigi icin kapatmamiz lazim.
             response.close();
 

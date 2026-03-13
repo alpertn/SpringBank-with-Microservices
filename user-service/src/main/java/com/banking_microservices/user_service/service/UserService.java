@@ -4,7 +4,6 @@ import com.banking_microservices.user_service.client.MoneyServiceClient;
 import com.banking_microservices.user_service.dto.RoleEnum.RoleEnum.Role;
 import com.banking_microservices.user_service.dto.user.AuthServiceCreateUserTopicDto;
 import com.banking_microservices.user_service.dto.user.KafkaTransactionTopicMessageDto;
-import com.banking_microservices.user_service.dto.user.UsersDto;
 import com.banking_microservices.user_service.exception.*;
 import com.banking_microservices.user_service.kafka.KafkaSender;
 import com.banking_microservices.user_service.models.Users;
@@ -16,8 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.gson.Gson;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -67,7 +64,7 @@ public class UserService {
                 log.info("User Olusturuldu! {}", gson.toJson(user));
                 try {
 
-                    kafkaSender.sendCreateUser(user.getId());
+                    kafkaSender.sendCreateUser(user.getKeycloackUUID());
                     return newUsers;
 
                 } catch (Exception e) {
@@ -92,26 +89,43 @@ public class UserService {
     //
 
     public void transactionTopicMessageVerify(KafkaTransactionTopicMessageDto dto) {
-        if (UserRepository.existsByIdAndNameAndSurname(dto.getReceiverUserId(), dto.getName(), dto.getSurname())) {
+        try {
+            Users senderUser = UserRepository.findUsersBykeycloackUUID(dto.getSenderUserId())
+                    .orElseThrow(() -> new UserNotFoundById("Sender Not Found: " + dto.getSenderUserId()));
+
+            dto.setSenderName(senderUser.getName());
+            dto.setSenderSurname(senderUser.getSurname());
+            dto.setSenderEmail(senderUser.getMail());
+
+            // User service cannot verify IBAN, so we only verify receiver name/surname exists
+            if (dto.getReceiverName() != null && dto.getReceiverSurname() != null) {
+                Users receiverUser = UserRepository.getUsersByNameAndSurname(dto.getReceiverName(), dto.getReceiverSurname())
+                        .orElseThrow(() -> new UserNameOrSurnameNotFoundException("Receiver Name/Surname Not Found"));
+
+                dto.setReceiverUserId(receiverUser.getKeycloackUUID());
+                dto.setReceiverEmail(receiverUser.getMail());
+            }
+
             dto.setUserValidation(true);
             kafkaSender.sendTransactionUserValidationSuccess(dto.getEventUUID(), dto);
-        } else {
+
+        } catch (Exception e) {
             dto.setError(true);
-            dto.setErrorDescription("Username not found or ID mismatch. " + dto.getName() + " " + dto.getSurname());
+            dto.setErrorDescription("Username not found or ID mismatch. " + e.getMessage());
             kafkaSender.sendTransactionUsernameValidationError(dto.getEventUUID(), dto);
             throw new UserNameOrSurnameNotFoundException(
-                    "User Name Or Surname Not Found or ID mismatch " + dto.getName() + " " + dto.getSurname());
+                    "User Name Or Surname Not Found or ID mismatch " + e.getMessage());
         }
     }
 
     public void UsernameValidation(KafkaTransactionTopicMessageDto dto) {
         try {
-            UserRepository.existsByNameAndSurname(dto.getName(), dto.getSurname());
+            UserRepository.existsByNameAndSurname(dto.getReceiverName(), dto.getReceiverSurname());
             kafkaSender.sendUsernameValidationSuccess(dto.getEventUUID(), dto);
         } catch (Exception e) {
             kafkaSender.sendUsernameValidationError(dto.getEventUUID(), dto);
             throw new UserNameOrSurnameNotFoundException(
-                    "User Name Or Surname Not Found " + dto.getName() + " " + dto.getSurname());
+                    "User Name Or Surname Not Found " + dto.getReceiverName() + " " + dto.getReceiverSurname());
         }
     }
 

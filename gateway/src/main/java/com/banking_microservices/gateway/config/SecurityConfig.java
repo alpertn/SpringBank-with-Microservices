@@ -29,23 +29,32 @@ public class SecurityConfig {
                 .authorizeExchange(authorizeExchange -> authorizeExchange
                         .pathMatchers("/", "/index.html", "/login.html", "/register.html",
                                 "/dashboard.html", "/transfer.html", "/admin.html",
-                                "/css/**", "/js/**")
-                        .permitAll() // Frontend static dosyalar public
-                        .pathMatchers("/api/auth/**").permitAll() // API auth public
-                        .pathMatchers("/api/user/admin/**").hasRole("ADMIN")
-                        .anyExchange().authenticated()) // geri kalani icin sadece login olmasi yeterli olsun
-                .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConverter())))
+                                "/deposit.html", "/withdraw.html", "/transactions.html",
+                                "/css/**", "/js/**", "/favicon.ico", "/images/**", "/fonts/**")
+                        .permitAll() // Tüm statik HTML sayfaları public — auth, API katmanında yapılır.
+                        .pathMatchers("/api/auth-service/**").permitAll() // login register public
+                        .pathMatchers("/api/user-service/admin/**").hasRole("ADMIN")
+                        .anyExchange().authenticated()) // geri kalani icin login yeterli olsun demek bu.
+                .oauth2ResourceServer(oauth -> oauth
+                        .authenticationEntryPoint((exchange, ex) -> {
+                            exchange.getResponse().getHeaders().remove("WWW-Authenticate");
+                            exchange.getResponse().setStatusCode(org.springframework.http.HttpStatus.UNAUTHORIZED);
+                            return exchange.getResponse().setComplete();
+                        })
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConverter())))
+                .httpBasic(httpBasic -> httpBasic.disable())
+                .formLogin(formLogin -> formLogin.disable())
                 .build();
     }
 
-    // Keycloak JWT -> Spring Security Authority dönüşümü
+    // Keycloak JWT  Spring Security Authority donusum
     private Converter<Jwt, Mono<AbstractAuthenticationToken>> jwtConverter() {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
         converter.setJwtGrantedAuthoritiesConverter(this::extractRoles);
         return new ReactiveJwtAuthenticationConverterAdapter(converter);
     }
 
-    // realm_access.roles -> ROLE_XXX
+    // formatter
     @SuppressWarnings("unchecked")
     private Collection<GrantedAuthority> extractRoles(Jwt jwt) {
         Map<String, Object> realm = jwt.getClaim("realm_access");

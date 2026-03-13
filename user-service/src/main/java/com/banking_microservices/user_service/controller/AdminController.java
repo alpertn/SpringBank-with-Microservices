@@ -14,7 +14,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/user/admin")
+@RequestMapping("/api/user-service/v1/admin")
 public class AdminController {
 
     private final UserService userService;

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/auth-service/v1/auth")
 public class AuthController {
 
     private final Gson gson = new GsonBuilder().serializeNulls().create();

@@ -40,5 +40,6 @@ Sisteme uygulamadan birinin login olabilmesi için Keycloak Users veritabanına 
 2. Username: `testuser@bank.com`, Email: `testuser@bank.com`, Email Verified: `Yes` sonrasında Save deyin.
 3. Kişinin profiline girdikten sonra üstten "Credentials" sekmesine girip "Set Password" deyin.
 4. Şifresini `pass123` yapın, `Temporary` olayını kapalı konuma (Off) alın ve kaydedin.
+5. Aynı ekranda üst menüden "Role mapping" sekmesine girin. "Assign role" butonuna tıklayıp listeden `USER` rolünü seçerek kaydedin (Aksi halde yetkisiz giriş hatası alırsınız).
 
 Sürecin tamamı bu kadardır. Mikroservis mimarisine API testi atmak için `http://localhost:8095/api/auth/login` kullanılmaya hazırdır!

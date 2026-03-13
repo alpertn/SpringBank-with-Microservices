@@ -20,6 +20,12 @@ public class KafkaSender {
     @Value("${kafka.topics.transaction.sender}")
     private String transactionCreateTopic;
 
+    @Value("${kafka.topics.transaction.deposit.sender}")
+    private String transactionDepositTopic;
+
+    @Value("${kafka.topics.transaction.withdraw.sender}")
+    private String transactionWithdrawTopic;
+
     public KafkaSender(KafkaTemplate<String, Object> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
@@ -35,16 +41,31 @@ public class KafkaSender {
     public void sendTransaction(String key, KafkaTransactionTopicMessageDto kafkaTransactionTopicMessageDto) {
         try {
             String jsonMessageForKafka = gson.toJson(kafkaTransactionTopicMessageDto);
-            kafkaTemplate.send(transactionCreateTopic, key,
-                    kafkaTransactionTopicMessageDto);
+            kafkaTemplate.send(transactionCreateTopic, key, kafkaTransactionTopicMessageDto);
             log.info("Kafkaya mesaj gonderildi {} {}", key, kafkaTransactionTopicMessageDto);
-
         } catch (Exception e) {
-
             log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}", key, kafkaTransactionTopicMessageDto);
             throw new KafkaSendException("Kafka Send Exception. " + key + " " + kafkaTransactionTopicMessageDto);
-
         }
+    }
 
+    public void sendDeposit(String key, KafkaTransactionTopicMessageDto kafkaTransactionTopicMessageDto) {
+        try {
+            kafkaTemplate.send(transactionDepositTopic, key, kafkaTransactionTopicMessageDto);
+            log.info("Kafkaya deposit mesaji gonderildi {} {}", key, kafkaTransactionTopicMessageDto);
+        } catch (Exception e) {
+            log.warn("Kafkaya deposit mesaji godnerilirken hata olustu {} {}", key, kafkaTransactionTopicMessageDto);
+            throw new KafkaSendException("Kafka Send Exception. " + key + " " + kafkaTransactionTopicMessageDto);
+        }
+    }
+
+    public void sendWithdraw(String key, KafkaTransactionTopicMessageDto kafkaTransactionTopicMessageDto) {
+        try {
+            kafkaTemplate.send(transactionWithdrawTopic, key, kafkaTransactionTopicMessageDto);
+            log.info("Kafkaya withdraw mesaji gonderildi {} {}", key, kafkaTransactionTopicMessageDto);
+        } catch (Exception e) {
+            log.warn("Kafkaya withdraw mesaji godnerilirken hata olustu {} {}", key, kafkaTransactionTopicMessageDto);
+            throw new KafkaSendException("Kafka Send Exception. " + key + " " + kafkaTransactionTopicMessageDto);
+        }
     }
 }

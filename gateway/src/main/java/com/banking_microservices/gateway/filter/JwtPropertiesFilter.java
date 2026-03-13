@@ -1,5 +1,7 @@
 package com.banking_microservices.gateway.filter;
 
+import org.springframework.cloud.gateway.filter.GlobalFilter;
+
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -17,7 +19,7 @@ import java.util.Map;
 
 @Order(-60)
 @Component
-public class JwtPropertiesFilter {
+public class JwtPropertiesFilter implements GlobalFilter {
     // icinden ip de cekilip eklenilecek.
     // hepsi bir liste halinde de dondurulebilir.
     @Override
@@ -30,17 +32,17 @@ public class JwtPropertiesFilter {
                 .flatMap(jwt -> {
 
                     String id = jwt.getClaimAsString("sub"); // keycloackdaki id bu. jwtden cekiyo degistirilebilir
-                    String keycloakUsername = jwt.getClaimAsString("preferred_username"); // degistirilecek
-                    String keycloakEmail = jwt.getClaimAsString("email'"); // degistirilecek
-                    String keycloakName = jwt.getClaimAsString("name'"); // degistirilecek
-                    String keycloakSurname = jwt.getClaimAsString("surname"); // degistirilecek
+                    String keycloakUsername = jwt.getClaimAsString("preferred_username");
+                    String keycloakEmail = jwt.getClaimAsString("email"); // Keycloak standart claim
+                    String keycloakName = jwt.getClaimAsString("given_name"); // Keycloak: ad = given_name
+                    String keycloakSurname = jwt.getClaimAsString("family_name"); // Keycloak: soyad = family_name
 
                     String rolesStr = extractRolesAsStringFormatter(jwt);
 
 
                     // requesti degistiriyoruz ve kendi eski requestten aldigimiz veirleri koyuyoruz
                     ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
-                            .header("X-User-Id", id != null ? id : "") // buna id yoksa direkt hata verme eklenilebilir
+                            .header("X-User-KeyloackId", id != null ? id : "") // buna id yoksa direkt hata verme eklenilebilir
                             .header("X-User-Email", keycloakEmail != null ? keycloakEmail : "") // != olmasina ragmen neden calisiyor arastirilacak.
                             .header("X-User-Username", keycloakUsername != null ? keycloakUsername : "")
                             .header("X-User-Name", keycloakName != null ? keycloakName : "")

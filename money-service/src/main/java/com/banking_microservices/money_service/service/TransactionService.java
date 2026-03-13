@@ -39,6 +39,10 @@ public class TransactionService {
 
         // kafka exception sending eklenelecek
 
+        if ((dto.getSenderIban() == null || dto.getSenderIban().isEmpty()) && dto.getSenderUserId() != null) {
+            dto.setSenderIban(repository.findIbanByUserId(dto.getSenderUserId()).orElse(null));
+        }
+
         if (dto.getSenderIban() == null || dto.getSenderIban().isEmpty()) {
             dto.setError(true);
             dto.setErrorDescription("Sender Iban Not Found");
@@ -94,6 +98,17 @@ public class TransactionService {
             }
         }
 
+        if ((dto.getSenderIban() == null || dto.getSenderIban().isEmpty()) && dto.getSenderUserId() != null) {
+            dto.setSenderIban(repository.findIbanByUserId(dto.getSenderUserId()).orElse(null));
+        }
+
+        if (dto.getSenderIban() == null || dto.getSenderIban().isEmpty()) {
+            dto.setError(true);
+            dto.setErrorDescription("Sender Iban Not Found");
+            kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
+            throw new IbanNotFoundException("Iban value is empty");
+        }
+
         BigDecimal balance = repository.findBalanceByIban(dto.getSenderIban()) // ORELSEGET
                 .orElseGet(() -> {
                     dto.setError(true);
@@ -108,12 +123,12 @@ public class TransactionService {
         repository.findBalanceByIban(dto.getReceiverIban()) // ORELSEGET
                 .orElseGet(() -> {
                     dto.setError(true);
-                    dto.setErrorDescription("Iban Number Not Found: " + dto.getSenderIban());
+                    dto.setErrorDescription("Receiver Iban Number Not Found: " + dto.getReceiverIban());
 
                     kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
 
                     throw new IbanNotFoundException(
-                            "KafkaTransactionTopicService Hesap bulunamadi." + gson.toJson(dto));
+                            "KafkaTransactionTopicService Receiver Hesap bulunamadi." + gson.toJson(dto));
                 });
 
         if (balance.compareTo(dto.getMoney()) > 0) { // bigdecimal oldugu icin boyle yazmam lazim.

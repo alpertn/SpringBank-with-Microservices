@@ -113,6 +113,106 @@ public class TransactionService {
         }
     }
 
+    @Transactional
+    public void createDeposit(com.banking_microservices.transaction_service.dto.DepositDto transactionDto, String senderUserId, String senderMail, String senderName, String senderSurname) {
+        String newEventUUID;
+        do {
+            newEventUUID = UUID.randomUUID().toString();
+        } while (transactionRepository.existsByEventId(newEventUUID));
+
+        KafkaTransactionTopicMessageDto dto = KafkaTransactionTopicMessageDto.builder()
+                .eventUUID(newEventUUID)
+                .senderUserId(senderUserId)
+                .senderEmail(senderMail)
+                .senderName(senderName)
+                .senderSurname(senderSurname)
+                .receiverIban(transactionDto.getAccountIban())
+                .receiverName(senderName)
+                .receiverSurname(senderSurname)
+                .money(transactionDto.getAmount())
+                .description(transactionDto.getDescription())
+                .transactionType("DEPOSIT")
+                .build();
+
+        TransactionEntity transactionModel = TransactionEntity.builder()
+                .eventId(newEventUUID)
+                .senderUserId(senderUserId)
+                .senderName(senderName)
+                .senderSurname(senderSurname)
+                .senderEmail(senderMail)
+                .receiverIban(transactionDto.getAccountIban())
+                .receiverName(senderName)
+                .receiverSurname(senderSurname)
+                .money(transactionDto.getAmount())
+                .description(transactionDto.getDescription())
+                .transactionType("DEPOSIT")
+                .build();
+
+        try {
+            transactionRepository.save(transactionModel);
+        } catch (Exception e) {
+            throw new TransactionSaveException("An Error With Save TransactionEntity " + e.getMessage());
+        }
+        try{
+            dto.setReceiverTransactionHistory(transactionRepository.findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc(dto.getReceiverIban(),dto.getReceiverIban()));
+        }catch (Exception e){
+            throw new GetEventHistoryException("An Exception With get Event History for transaction " + dto.getReceiverIban());
+        }
+        try {
+            kafkaSender.sendDeposit(dto.getEventUUID(), dto);
+        } catch (Exception e) {
+            throw new KafkaSendExceptionOnService("An Error With Send Kafka" + e.getMessage());
+        }
+    }
+
+    @Transactional
+    public void createWithdraw(com.banking_microservices.transaction_service.dto.WithdrawDto transactionDto, String senderUserId, String senderMail, String senderName, String senderSurname) {
+        String newEventUUID;
+        do {
+            newEventUUID = UUID.randomUUID().toString();
+        } while (transactionRepository.existsByEventId(newEventUUID));
+
+        KafkaTransactionTopicMessageDto dto = KafkaTransactionTopicMessageDto.builder()
+                .eventUUID(newEventUUID)
+                .senderUserId(senderUserId)
+                .senderEmail(senderMail)
+                .senderName(senderName)
+                .senderSurname(senderSurname)
+                .senderIban(transactionDto.getAccountIban())
+                .money(transactionDto.getAmount())
+                .description(transactionDto.getDescription())
+                .transactionType("WITHDRAW")
+                .build();
+
+        TransactionEntity transactionModel = TransactionEntity.builder()
+                .eventId(newEventUUID)
+                .senderUserId(senderUserId)
+                .senderName(senderName)
+                .senderSurname(senderSurname)
+                .senderEmail(senderMail)
+                .senderIban(transactionDto.getAccountIban())
+                .money(transactionDto.getAmount())
+                .description(transactionDto.getDescription())
+                .transactionType("WITHDRAW")
+                .build();
+
+        try {
+            transactionRepository.save(transactionModel);
+        } catch (Exception e) {
+            throw new TransactionSaveException("An Error With Save TransactionEntity " + e.getMessage());
+        }
+        try{
+            dto.setSenderTransactionHistory(transactionRepository.findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc(dto.getSenderIban(), dto.getSenderIban()));
+        }catch (Exception e){
+            throw new GetEventHistoryException("An Exception With get Event History for transaction " + dto.getSenderIban());
+        }
+        try {
+            kafkaSender.sendWithdraw(dto.getEventUUID(), dto);
+        } catch (Exception e) {
+            throw new KafkaSendExceptionOnService("An Error With Send Kafka" + e.getMessage());
+        }
+    }
+
     public List<TransactionEntity> getTransactionHistory(String userId) {
         try {
             log.info("getTransactionHistory methoduna istek geldi {}", userId);
