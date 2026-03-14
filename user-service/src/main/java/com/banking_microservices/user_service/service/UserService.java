@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.google.gson.Gson;
+
 
 import java.util.List;
 
@@ -20,15 +20,12 @@ import java.util.List;
 @Slf4j
 public class UserService {
 
-    private Gson gson = new Gson();
     @Autowired
     private UserRepository UserRepository;
-    private MoneyServiceClient moneyServiceClient;
     private final KafkaSender kafkaSender;
 
-    public UserService(UserRepository UserRepository, MoneyServiceClient moneyServiceClient, KafkaSender kafkaSender) {
+    public UserService(UserRepository UserRepository, KafkaSender kafkaSender) {
         this.UserRepository = UserRepository;
-        this.moneyServiceClient = moneyServiceClient;
         this.kafkaSender = kafkaSender;
     }
 
@@ -61,21 +58,12 @@ public class UserService {
                     .build();
             try {
                 Users user = UserRepository.save(newUsers);
-                log.info("User Olusturuldu! {}", gson.toJson(user));
-                try {
-
-                    kafkaSender.sendCreateUser(user.getKeycloackUUID());
-                    return newUsers;
-
-                } catch (Exception e) {
-
-                    throw new KafkaSendException("Kafka ile Create user topicine mesaj gonderilirken hata olustu.");
-
-                }
+                log.info("User Olusturuldu! {}", user);
+                return newUsers;
 
             } catch (Exception e) {
                 throw new UserSaveDatabaseException(
-                        "User veritabanina kaydedilirken bir sorun olustu " + e.getMessage() + gson.toJson(newUsers));
+                        "User veritabanina kaydedilirken bir sorun olustu " + e.getMessage() + newUsers);
             }
 
         } catch (IllegalArgumentException e) {
@@ -139,7 +127,7 @@ public class UserService {
         try {
             UserRepository.save(user);
         } catch (Exception e) {
-            throw new UserUpdateException("An Error With Update User. User : {}" + gson.toJson(user));
+            throw new UserUpdateException("An Error With Update User. User : {}" + user);
         }
     }
 

@@ -22,8 +22,7 @@ spring:
     redis:
       host: ${SPRING_DATA_REDIS_HOST:localhost}
       port: ${SPRING_DATA_REDIS_PORT:6379}
-  zipkin:
-    base-url: ${SPRING_ZIPKIN_BASE_URL:http://localhost:9411}
+
 
 keycloak:
   server-url: ${KEYCLOAK_SERVER_URL:http://localhost:8080}
@@ -32,9 +31,7 @@ keycloak:
   client-secret: ${KEYCLOAK_CLIENT_SECRET:secret123}
 
 management:
-  tracing:
-    sampling:
-      probability: ${MANAGEMENT_TRACING_SAMPLING_PROBABILITY:1.0}
+
   endpoints:
     web:
       exposure:

@@ -1,9 +1,6 @@
 kafka:
   topics:
-    create-user:
-      sender: ${KAFKA_CREATE_USER_SENDER:banking-microservices.create-user.money-service.success.v1}
-      listener: ${KAFKA_CREATE_USER_LISTENER:banking-microservices.username-validation.user-service.progress.v1}
-      error: ${KAFKA_CREATE_USER_ERROR:banking-microservices.create-user.money-service.error.v1}
+
     transaction:
       blockmoney:
         listener: ${KAFKA_TRANSACTION_BLOCKUSER_LISTENER:banking-microservices.transaction.transaction-service.created.v1}
@@ -60,14 +57,11 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-  zipkin:
-    base-url: ${SPRING_ZIPKIN_BASE_URL:http://localhost:9411}
+
 
 
 management:
-  tracing:
-    sampling:
-      probability: ${MANAGEMENT_TRACING_SAMPLING_PROBABILITY:1.0}
+
   endpoints:
     web:
       exposure:

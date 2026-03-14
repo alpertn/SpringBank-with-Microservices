@@ -45,13 +45,10 @@ spring:
       repositories:
         enabled: false
 
-  zipkin:
-    base-url: ${SPRING_ZIPKIN_BASE_URL:http://localhost:9411}
+
 
 management:
-  tracing:
-    sampling:
-      probability: ${MANAGEMENT_TRACING_SAMPLING_PROBABILITY:1.0}
+
   endpoints:
     web:
       exposure:

@@ -6,8 +6,7 @@ import com.banking_microservices.transaction_service.exception.*;
 import com.banking_microservices.transaction_service.kafka.KafkaSender;
 import com.banking_microservices.transaction_service.model.TransactionEntity;
 import com.banking_microservices.transaction_service.repository.TransactionRepository;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,7 @@ import java.util.UUID;
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
-    private final Gson gson = new GsonBuilder().serializeNulls().create();
+
     private final KafkaSender kafkaSender;
 
     public TransactionService(TransactionRepository transactionRepository, KafkaSender kafkaSender) {
@@ -52,10 +51,10 @@ public class TransactionService {
 
         try {
             transactionRepository.save(transactiondata);
-            log.info("TransactionEntity save succesfully {}", gson.toJson(transactiondata));
+            log.info("TransactionEntity save succesfully {}", transactiondata);
         } catch (Exception e) {
             throw new TransactionSaveException(
-                    "An Error With Save TransactionEntity. Details : " + e.getMessage() + gson.toJson(transactiondata));
+                    "An Error With Save TransactionEntity. Details : " + e.getMessage() + transactiondata);
         }
 
     }

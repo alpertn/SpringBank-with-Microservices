@@ -3,21 +3,20 @@ package com.banking_microservices.user_service.controller;
 import com.banking_microservices.user_service.dto.user.ChangeEmailRequestDto;
 import com.banking_microservices.user_service.dto.user.ChangePasswordRequestDto;
 import com.banking_microservices.user_service.service.UserService;
-import com.google.gson.GsonBuilder;
+
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.banking_microservices.user_service.dto.user.UsersDto;
-import com.google.gson.Gson;
+
 
 @RestController
 @Slf4j
 @RequestMapping("/api/user-service/v1/user")
 public class UserController {
 
-    private final Gson gson = new GsonBuilder().serializeNulls().create();
     private final UserService userService;
 
     public UserController(UserService userService) {

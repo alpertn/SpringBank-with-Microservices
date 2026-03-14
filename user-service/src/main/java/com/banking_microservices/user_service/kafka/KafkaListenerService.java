@@ -7,8 +7,8 @@ import com.banking_microservices.user_service.service.UserService;
 import com.banking_microservices.user_service.repository.KafkaEventRepository;
 import com.banking_microservices.user_service.models.KafkaEvent;
 import java.time.LocalDateTime;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -17,13 +17,17 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class KafkaListenerService {
     private final UserService service;
-    private final Gson gson = new GsonBuilder().serializeNulls().create();
-    private final UserRepository repository;
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private final KafkaEventRepository eventRepository;
+
+    @SneakyThrows
+    private <T> T fromJson(String json, Class<T> clazz) {
+        return objectMapper.readValue(json, clazz);
+    }
 
     @KafkaListener(topics = "${kafka.topics.create-user.authservicelistener}")
     public void ListenAuthServiceTopic(String topicData) {
-        AuthServiceCreateUserTopicDto dto = gson.fromJson(topicData, AuthServiceCreateUserTopicDto.class);
+        AuthServiceCreateUserTopicDto dto = fromJson(topicData, AuthServiceCreateUserTopicDto.class);
         eventRepository.save(KafkaEvent.builder()
                 .eventId(dto.getKeycloackUserUUID())
                 .topicName("create-user.authservicelistener")
@@ -33,9 +37,8 @@ public class KafkaListenerService {
         service.saveUser(dto);
     }
 
-    public KafkaListenerService(UserService service, UserRepository repository, KafkaEventRepository eventRepository) {
+    public KafkaListenerService(UserService service, KafkaEventRepository eventRepository) {
         this.service = service;
-        this.repository = repository;
         this.eventRepository = eventRepository;
     }
 
@@ -44,7 +47,7 @@ public class KafkaListenerService {
     //
     @KafkaListener(topics = "${kafka.topics.create-user.listener}")
     public void listenCreateUserTopic(String topicData) {
-        KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
+        KafkaTransactionTopicMessageDto dto = fromJson(topicData, KafkaTransactionTopicMessageDto.class);
         eventRepository.save(KafkaEvent.builder()
                 .eventId(dto.getEventUUID())
                 .topicName("create-user.listener")
@@ -55,7 +58,7 @@ public class KafkaListenerService {
 
     @KafkaListener(topics = "${kafka.topics.transaction.listener}")
     public void listenTransactionTopic(String topicData) {
-        KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
+        KafkaTransactionTopicMessageDto dto = fromJson(topicData, KafkaTransactionTopicMessageDto.class);
         eventRepository.save(KafkaEvent.builder()
                 .eventId(dto.getEventUUID())
                 .topicName("transaction.listener")
@@ -67,7 +70,7 @@ public class KafkaListenerService {
 
     @KafkaListener(topics = "${kafka.topics.username-validation.listener}")
     public void listenUsernameValidation(String topic) {
-        KafkaTransactionTopicMessageDto dto = gson.fromJson(topic, KafkaTransactionTopicMessageDto.class);
+        KafkaTransactionTopicMessageDto dto = fromJson(topic, KafkaTransactionTopicMessageDto.class);
         eventRepository.save(KafkaEvent.builder()
                 .eventId(dto.getEventUUID())
                 .topicName("username-validation.listener")

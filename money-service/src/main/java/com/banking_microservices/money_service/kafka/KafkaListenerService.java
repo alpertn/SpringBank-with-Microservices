@@ -1,14 +1,13 @@
 package com.banking_microservices.money_service.kafka;
 
 import com.banking_microservices.money_service.dto.KafkaTransactionTopicMessageDto;
-import com.banking_microservices.money_service.exception.KafkaCreateUserException;
 import com.banking_microservices.money_service.service.TransactionService;
 import com.banking_microservices.money_service.service.UserMoneyService;
 import com.banking_microservices.money_service.repository.KafkaEventRepository;
 import com.banking_microservices.money_service.model.KafkaEvent;
 import java.time.LocalDateTime;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class KafkaListenerService {
     private final TransactionService service;
     private final UserMoneyService userMoneyService;
-    private final Gson gson = new GsonBuilder().serializeNulls().create();
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private final KafkaSender kafkaSender;
     private final TransactionService transactionService;
     private final KafkaEventRepository eventRepository;
@@ -30,6 +29,11 @@ public class KafkaListenerService {
         this.kafkaSender = kafkaSender;
         this.transactionService = transactionService;
         this.eventRepository = eventRepository;
+    }
+
+    @SneakyThrows
+    private <T> T fromJson(String json, Class<T> clazz) {
+        return objectMapper.readValue(json, clazz);
     }
 
     /*
@@ -44,7 +48,7 @@ public class KafkaListenerService {
      */
     @KafkaListener(topics = "${kafka.topics.transaction.transactionmoney.listener}")
     public void listenTransactionTopic(String topicData) {
-        KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
+        KafkaTransactionTopicMessageDto dto = fromJson(topicData, KafkaTransactionTopicMessageDto.class);
         eventRepository.save(KafkaEvent.builder()
                 .eventId(dto.getEventUUID())
                 .topicName("transactionmoney")
@@ -56,7 +60,7 @@ public class KafkaListenerService {
 
     @KafkaListener(topics = "${kafka.topics.transaction.deposit.listener}")
     public void listenDepositTopic(String topicData) {
-        KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
+        KafkaTransactionTopicMessageDto dto = fromJson(topicData, KafkaTransactionTopicMessageDto.class);
         eventRepository.save(KafkaEvent.builder()
                 .eventId(dto.getEventUUID())
                 .topicName("deposit")
@@ -68,7 +72,7 @@ public class KafkaListenerService {
 
     @KafkaListener(topics = "${kafka.topics.transaction.withdraw.listener}")
     public void listenWithdrawTopic(String topicData) {
-        KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
+        KafkaTransactionTopicMessageDto dto = fromJson(topicData, KafkaTransactionTopicMessageDto.class);
         eventRepository.save(KafkaEvent.builder()
                 .eventId(dto.getEventUUID())
                 .topicName("withdraw")
@@ -80,7 +84,7 @@ public class KafkaListenerService {
 
     @KafkaListener(topics = "${kafka.topics.transaction.blockmoney.listener}")
     public void listenBlockMoney(String topicData) {
-        KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
+        KafkaTransactionTopicMessageDto dto = fromJson(topicData, KafkaTransactionTopicMessageDto.class);
         eventRepository.save(KafkaEvent.builder()
                 .eventId(dto.getEventUUID())
                 .topicName("blockmoney")
@@ -92,23 +96,13 @@ public class KafkaListenerService {
 
     @KafkaListener(topics = "${kafka.topics.username-validation.listener}")
     public void listenUserValidationTopicOnUserService(String topic) {
-        KafkaTransactionTopicMessageDto dto = gson.fromJson(topic, KafkaTransactionTopicMessageDto.class);
+        KafkaTransactionTopicMessageDto dto = fromJson(topic, KafkaTransactionTopicMessageDto.class);
         eventRepository.save(KafkaEvent.builder()
                 .eventId(dto.getEventUUID())
                 .topicName("username-validation")
                 .status("PROCESSED")
                 .createdAt(LocalDateTime.now())
                 .build());
-    }
-
-    @KafkaListener(topics = "${kafka.topics.create-user.listener}")
-    public void listenCreateUserTopicOnUserService(String topic) {
-        try {
-            userMoneyService.generateUser(topic);
-        } catch (Exception e) {
-            throw new KafkaCreateUserException("An Error In Create User On Kafka Topic Request");
-        }
-
     }
 
 }

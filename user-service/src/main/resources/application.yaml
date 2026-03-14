@@ -9,9 +9,6 @@ kafka:
       error: ${KAFKA_TRANSACTION_USERNAME-VALIDATION_ERROR:banking-microservices.transaction.user-service.username-validation.error.v1}
     create-user:
       authservicelistener: ${KAFKA_AUTH_SERVICE_CREATE_USER_LISTENER:banking-microservices.create-user.auth-service.progress.v1}
-      sender: ${KAFKA_CREATE_USER_SENDER:banking-microservices.username-validation.user-service.progress.v1}
-      listener: ${KAFKA_CREATE_USER_LISTENER:banking-microservices.create-user.money-service.success.v1}
-      error: ${KAFKA_CREATE_USER_ERROR:banking-microservices.create-user.money-service.error.v1}
     username-validation:
       sender: ${KAFKA_USERNAME_VALIDATION_SENDER:banking-microservices.username-validation.user-service.success.v1}
       listener: ${KAFKA_USERNAME_VALIDATION_LISTENER:banking-microservices.username-validation.money-service.progress.v1}
@@ -48,16 +45,13 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-  zipkin:
-    base-url: ${SPRING_ZIPKIN_BASE_URL:http://localhost:9411}
+
 
 
 
 # Monitoring (Opsiyonel ama tavsiye edilir)
 management:
-  tracing:
-    sampling:
-      probability: ${MANAGEMENT_TRACING_SAMPLING_PROBABILITY:1.0}
+
   endpoints:
     web:
       exposure:

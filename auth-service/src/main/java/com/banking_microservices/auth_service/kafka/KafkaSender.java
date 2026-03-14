@@ -2,17 +2,19 @@ package com.banking_microservices.auth_service.kafka;
 
 import com.banking_microservices.auth_service.dto.CreateUserTopicDto;
 import com.banking_microservices.auth_service.exception.KafkaSendException;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class KafkaSender {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
-    private final Gson gson = new GsonBuilder().serializeNulls().create();
+
 
     public KafkaSender(KafkaTemplate<String, Object> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
@@ -21,10 +23,22 @@ public class KafkaSender {
     @Value("${kafka.topics.createuser.sender}")
     private String createUserSenderTopic;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private String asJson(Object obj) {
+        try {
+            return objectMapper.writeValueAsString(obj);
+        } catch (Exception e) {
+            return obj.toString();
+        }
+    }
+
     public void sendCreateUserToUserTopic(CreateUserTopicDto dto) {
         try {
             kafkaTemplate.send(createUserSenderTopic, dto.getKeycloackUserUUID(), dto);
+            log.info("Kafkaya mesaj gonderildi {} {}", dto.getKeycloackUserUUID(), asJson(dto));
         } catch (Exception e) {
+            log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}", dto.getKeycloackUserUUID(), asJson(dto));
             throw new KafkaSendException("An Exception With dto to send kafka" + e.getMessage());
         }
     }
