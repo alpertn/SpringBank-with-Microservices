@@ -41,7 +41,6 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-
 feign:
   client:
     config:
@@ -51,7 +50,6 @@ feign:
         loggerLevel: BASIC
 
 management:
-
   endpoints:
     web:
       exposure:

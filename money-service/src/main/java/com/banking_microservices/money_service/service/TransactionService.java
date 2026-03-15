@@ -8,7 +8,8 @@ import org.springframework.context.annotation.Lazy;
 import com.banking_microservices.money_service.models.KafkaLastActivity;
 import com.banking_microservices.money_service.repository.KafkaLastActivityRepository;
 import com.banking_microservices.money_service.repository.UserMoneyRepository;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,17 +19,19 @@ import java.math.BigDecimal;
 @Slf4j
 @Service
 public class TransactionService {
-
+    private final Gson gson = new GsonBuilder().serializeNulls().create();
     private final UserMoneyService service;
     private final UserMoneyRepository repository;
     private final KafkaSender kafkaSender;
+    private final KafkaListenerService kafkaListenerService;
     private final KafkaLastActivityRepository kafkaLastActivityRepository;
 
     public TransactionService(UserMoneyService service, UserMoneyRepository repository, KafkaSender kafkaSender,
-                              KafkaLastActivityRepository kafkaLastActivityRepository) {
+            @Lazy KafkaListenerService kafkaListenerService, KafkaLastActivityRepository kafkaLastActivityRepository) {
         this.service = service;
         this.repository = repository;
         this.kafkaSender = kafkaSender;
+        this.kafkaListenerService = kafkaListenerService;
         this.kafkaLastActivityRepository = kafkaLastActivityRepository;
     }
 
@@ -56,7 +59,7 @@ public class TransactionService {
             kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
 
             throw new IbanNotFoundException(
-                    "KafkaTransactionTopicBlockMoney Hesap bulunamadi." + dto);
+                    "KafkaTransactionTopicBlockMoney Hesap bulunamadi." + gson.toJson(dto));
         }
 
         dto.setReceiverUserId(receiverId);
@@ -114,7 +117,7 @@ public class TransactionService {
                     kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
 
                     throw new IbanNotFoundException(
-                            "KafkaTransactionTopicService Hesap bulunamadi." + dto);
+                            "KafkaTransactionTopicService Hesap bulunamadi." + gson.toJson(dto));
                 });
 
         repository.findBalanceByIban(dto.getReceiverIban()) // ORELSEGET
@@ -125,7 +128,7 @@ public class TransactionService {
                     kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
 
                     throw new IbanNotFoundException(
-                            "KafkaTransactionTopicService Receiver Hesap bulunamadi." + dto);
+                            "KafkaTransactionTopicService Receiver Hesap bulunamadi." + gson.toJson(dto));
                 });
 
         if (balance.compareTo(dto.getMoney()) > 0) { // bigdecimal oldugu icin boyle yazmam lazim.
@@ -144,15 +147,15 @@ public class TransactionService {
     public void createTransaction(KafkaTransactionTopicMessageDto dto) {
 
         log.info("createTransaction veri geldi. Sender Iban {}, Receiver IBAN: {}, Amount: {}",
-                dto.getSenderIban(), dto.getReceiverIban(), dto.getMoney());
+                gson.toJson(dto.getSenderIban()), gson.toJson(dto.getReceiverIban()), gson.toJson(dto.getMoney()));
 
         if (dto.getMoney().compareTo(BigDecimal.ZERO) <= 0) {
-            log.error("Transfer Amount must be pozitife {}", dto.getMoney());
+            log.error("Transfer Amount must be pozitife {}", gson.toJson(dto.getMoney()));
             throw new NegativeNumberException("Transfer amount must be positive");
         }
 
         if (dto.getReceiverIban().equals(dto.getSenderIban())) {
-            log.error("The Transfer Iban and Receiver Iban Can Not Same. {}", dto.getSenderIban());
+            log.error("The Transfer Iban and Receiver Iban Can Not Same. {}", gson.toJson(dto.getSenderIban()));
             throw new SameAccountException("Cannot transfer to the same account");
         }
 
@@ -167,7 +170,7 @@ public class TransactionService {
                     kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
 
                     throw new IbanNotFoundException(
-                            "KafkaTransactionTopicService Hesap bulunamadi." + dto);
+                            "KafkaTransactionTopicService Hesap bulunamadi." + gson.toJson(dto));
                 });
 
         repository.findBalanceByIban(dto.getReceiverIban())
@@ -178,7 +181,7 @@ public class TransactionService {
                     kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
 
                     throw new IbanNotFoundException(
-                            "KafkaTransactionTopicService Hesap bulunamadi." + dto);
+                            "KafkaTransactionTopicService Hesap bulunamadi." + gson.toJson(dto));
                 });
 
         //
@@ -190,8 +193,8 @@ public class TransactionService {
 
             service.depositMoneyByIban(dto.getReceiverIban(), dto.getMoney());
 
-            log.info("Transfer Success Sender {}, Receiver {}, Transfer Amount {}", dto.getSenderIban(),
-                    dto.getReceiverIban(), dto.getMoney());
+            log.info("Transfer Success Sender {}, Receiver {}, Transfer Amount {}", gson.toJson(dto.getSenderIban()),
+                    gson.toJson(dto.getReceiverIban()), gson.toJson(dto.getMoney()));
 
             dto.setStatus("SUCCESS");
             try {
@@ -206,8 +209,8 @@ public class TransactionService {
 
             kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
 
-            log.warn("An Error While withdraw Money {}", dto);
-
+            log.warn("An Error While withdraw Money {}", gson.toJson(dto));
+            throw new DeposItOrWithdrawFailedException("Deposit or withdraw failed on Money-service createTransaction " + e.getMessage());
         }
 
     }

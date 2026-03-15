@@ -52,7 +52,7 @@ public class KafkaTransactionTopicMessageDto {
     private BigDecimal money;
 
     @Builder.Default
-    private String transactionType = "TRANSACTION'";
+    private String transactionType = "TRANSACTION";
 
     @Builder.Default
     private String description = null;

@@ -22,8 +22,6 @@ spring:
     redis:
       host: ${SPRING_DATA_REDIS_HOST:localhost}
       port: ${SPRING_DATA_REDIS_PORT:6379}
-
-
 keycloak:
   server-url: ${KEYCLOAK_SERVER_URL:http://localhost:8080}
   realm: ${KEYCLOAK_REALM:banking}
@@ -31,7 +29,6 @@ keycloak:
   client-secret: ${KEYCLOAK_CLIENT_SECRET:secret123}
 
 management:
-
   endpoints:
     web:
       exposure:

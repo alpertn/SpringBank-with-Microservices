@@ -1,6 +1,9 @@
 kafka:
   topics:
-
+    create-user:
+      sender: ${KAFKA_CREATE_USER_SENDER:banking-microservices.create-user.money-service.success.v1}
+      listener: ${KAFKA_CREATE_USER_LISTENER:banking-microservices.username-validation.user-service.progress.v1}
+      error: ${KAFKA_CREATE_USER_ERROR:banking-microservices.create-user.money-service.error.v1}
     transaction:
       blockmoney:
         listener: ${KAFKA_TRANSACTION_BLOCKUSER_LISTENER:banking-microservices.transaction.transaction-service.created.v1}
@@ -58,10 +61,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-
-
 management:
-
   endpoints:
     web:
       exposure:

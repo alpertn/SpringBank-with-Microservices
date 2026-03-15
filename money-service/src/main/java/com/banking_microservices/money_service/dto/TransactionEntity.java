@@ -1,29 +1,20 @@
 package com.banking_microservices.money_service.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "transactions")
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransactionEntity {
 
-    @Id
-    @UuidGenerator
     private String id;
 
     private String eventId;
@@ -52,7 +43,6 @@ public class TransactionEntity {
 
     private String receiverIban= null;
 
-    @Column(precision = 19, scale = 2)
     @com.fasterxml.jackson.annotation.JsonProperty("money")
     private BigDecimal money;
 
@@ -60,7 +50,6 @@ public class TransactionEntity {
 
     private String description = null;
 
-    @Column(name = "created_at", updatable = false)
     private LocalDateTime localDateTime;
 
     @Builder.Default
@@ -74,11 +63,6 @@ public class TransactionEntity {
     @Builder.Default
     private String status = "PROGRESS";
 
-    @PrePersist
-    protected void onCreate() {
-        if (localDateTime == null) {
-            localDateTime = LocalDateTime.now();
-        }
-    }
+
 
 }

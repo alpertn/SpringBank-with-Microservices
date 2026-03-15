@@ -6,7 +6,8 @@ import com.banking_microservices.transaction_service.exception.*;
 import com.banking_microservices.transaction_service.kafka.KafkaSender;
 import com.banking_microservices.transaction_service.model.TransactionEntity;
 import com.banking_microservices.transaction_service.repository.TransactionRepository;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ import java.util.UUID;
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
-
+    private final Gson gson = new GsonBuilder().serializeNulls().create();
     private final KafkaSender kafkaSender;
 
     public TransactionService(TransactionRepository transactionRepository, KafkaSender kafkaSender) {
@@ -51,10 +52,10 @@ public class TransactionService {
 
         try {
             transactionRepository.save(transactiondata);
-            log.info("TransactionEntity save succesfully {}", transactiondata);
+            log.info("TransactionEntity save succesfully {}", gson.toJson(transactiondata));
         } catch (Exception e) {
             throw new TransactionSaveException(
-                    "An Error With Save TransactionEntity. Details : " + e.getMessage() + transactiondata);
+                    "An Error With Save TransactionEntity. Details : " + e.getMessage() + gson.toJson(transactiondata));
         }
 
     }
@@ -98,12 +99,15 @@ public class TransactionService {
         } catch (Exception e) {
             throw new TransactionSaveException("An Error With Save TransactionEntity " + e.getMessage());
         }
-        try{
-            dto.setSenderTransactionHistory(transactionRepository.findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc(dto.getSenderIban(), dto.getSenderIban()));
-            dto.setReceiverTransactionHistory(transactionRepository.findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc(dto.getReceiverIban(),dto.getReceiverIban()));
-
-        }catch (Exception e){
-            throw new GetEventHistoryException("An Exception With get Event History for transaction " + dto.getSenderIban() + ' ' + dto.getReceiverIban());
+        try {
+            if (dto.getSenderIban() != null) {
+                dto.setSenderTransactionHistory(transactionRepository.findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc(dto.getSenderIban(), dto.getSenderIban()));
+            }
+            if (dto.getReceiverIban() != null) {
+                dto.setReceiverTransactionHistory(transactionRepository.findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc(dto.getReceiverIban(), dto.getReceiverIban()));
+            }
+        } catch (Exception e) {
+            log.warn("Transaction history alınamadı, devam ediliyor: {}", e.getMessage());
         }
         try {
             kafkaSender.sendTransaction(dto.getEventUUID(), dto);
@@ -125,6 +129,7 @@ public class TransactionService {
                 .senderEmail(senderMail)
                 .senderName(senderName)
                 .senderSurname(senderSurname)
+                .senderIban(transactionDto.getAccountIban())
                 .receiverIban(transactionDto.getAccountIban())
                 .receiverName(senderName)
                 .receiverSurname(senderSurname)
@@ -139,6 +144,7 @@ public class TransactionService {
                 .senderName(senderName)
                 .senderSurname(senderSurname)
                 .senderEmail(senderMail)
+                .senderIban(transactionDto.getAccountIban())
                 .receiverIban(transactionDto.getAccountIban())
                 .receiverName(senderName)
                 .receiverSurname(senderSurname)
@@ -152,10 +158,12 @@ public class TransactionService {
         } catch (Exception e) {
             throw new TransactionSaveException("An Error With Save TransactionEntity " + e.getMessage());
         }
-        try{
-            dto.setReceiverTransactionHistory(transactionRepository.findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc(dto.getReceiverIban(),dto.getReceiverIban()));
-        }catch (Exception e){
-            throw new GetEventHistoryException("An Exception With get Event History for transaction " + dto.getReceiverIban());
+        try {
+            if (dto.getReceiverIban() != null) {
+                dto.setReceiverTransactionHistory(transactionRepository.findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc(dto.getReceiverIban(), dto.getReceiverIban()));
+            }
+        } catch (Exception e) {
+            log.warn("Transaction history alınamadı, devam ediliyor: {}", e.getMessage());
         }
         try {
             kafkaSender.sendDeposit(dto.getEventUUID(), dto);
@@ -200,10 +208,12 @@ public class TransactionService {
         } catch (Exception e) {
             throw new TransactionSaveException("An Error With Save TransactionEntity " + e.getMessage());
         }
-        try{
-            dto.setSenderTransactionHistory(transactionRepository.findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc(dto.getSenderIban(), dto.getSenderIban()));
-        }catch (Exception e){
-            throw new GetEventHistoryException("An Exception With get Event History for transaction " + dto.getSenderIban());
+        try {
+            if (dto.getSenderIban() != null) {
+                dto.setSenderTransactionHistory(transactionRepository.findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc(dto.getSenderIban(), dto.getSenderIban()));
+            }
+        } catch (Exception e) {
+            log.warn("Transaction history alınamadı, devam ediliyor: {}", e.getMessage());
         }
         try {
             kafkaSender.sendWithdraw(dto.getEventUUID(), dto);

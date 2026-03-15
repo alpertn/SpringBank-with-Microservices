@@ -53,11 +53,18 @@ spec:
             - name: USER_SERVICE_PORT_NUMBER
               value: "8081"
             # Kafka
-            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-              value: kafka:9092
+            - name: SPRING_APPLICATION_JSON
+              value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'
             # Kafka Topic
+            # Create User
             - name: KAFKA_AUTH_SERVICE_CREATE_USER_LISTENER
               value: banking-microservices.create-user.auth-service.progress.v1
+            - name: KAFKA_CREATE_USER_SENDER
+              value: banking-microservices.username-validation.user-service.progress.v1
+            - name: KAFKA_CREATE_USER_LISTENER
+              value: banking-microservices.create-user.money-service.success.v1
+            - name: KAFKA_CREATE_USER_ERROR
+              value: banking-microservices.create-user.money-service.error.v1
             # Username Validation
             - name: KAFKA_USERNAME_VALIDATION_SENDER
               value: banking-microservices.username-validation.user-service.success.v1
@@ -72,6 +79,9 @@ spec:
               value: banking-microservices.transaction.user-service.username-validation.success.v1
             - name: KAFKA_TRANSACTION_USERNAME-VALIDATION_ERROR
               value: banking-microservices.transaction.user-service.username-validation.error.v1
+            # Username Validation (from application.yaml)
+            - name: KAFKA_USERNAME_VALIDATION_ERROR
+              value: banking-microservices.username-validation.money-service.error.v1
 
 
 ---
@@ -164,8 +174,15 @@ spec:
             - name: MONEY_SERVICE_PORT_NUMBER
               value: "8082"
             # Kafka
-            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-              value: kafka:9092
+            - name: SPRING_APPLICATION_JSON
+              value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'
+            # Kafka Topic
+            - name: KAFKA_CREATE_USER_SENDER
+              value: banking-microservices.create-user.money-service.success.v1
+            - name: KAFKA_CREATE_USER_LISTENER
+              value: banking-microservices.username-validation.user-service.progress.v1
+            - name: KAFKA_CREATE_USER_ERROR
+              value: banking-microservices.create-user.money-service.error.v1
             - name: KAFKA_TRANSACTION_TOPIC_LISTENER
               value: banking-microservices.transaction.fraud-service.checked.v1
             - name: KAFKA_TRANSACTION_TOPIC_SENDER
@@ -285,8 +302,8 @@ spec:
             - name: TRANSACTION_SERVICE_PORT_NUMBER
               value: "8083"
             # Kafka
-            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-              value: kafka:9092
+            - name: SPRING_APPLICATION_JSON
+              value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'
             - name: KAFKA_TRANSACTION_TOPIC_LISTENER
               value: banking-microservices.transaction.transaction-service.success.v1
             - name: KAFKA_TRANSACTION_TOPIC_SENDER
@@ -295,11 +312,7 @@ spec:
               value: banking-microservices.transaction.transaction-service.error.v1
             - name: KAFKA_TRANSACTION_TOPIC_DEPOSIT_SENDER
               value: banking-microservices.transaction.deposit.created.v1
-            - name: KAFKA_TRANSACTION_TOPIC_DEPOSIT_LISTENER
-              value: banking-microservices.transaction.deposit.created.v1
             - name: KAFKA_TRANSACTION_TOPIC_WITHDRAW_SENDER
-              value: banking-microservices.transaction.withdraw.created.v1
-            - name: KAFKA_TRANSACTION_TOPIC_WITHDRAW_LISTENER
               value: banking-microservices.transaction.withdraw.created.v1
             - name: KAFKA_TRANSACTION_LOGGER_LISTENER
               value: 'banking-microservices.transaction.*'
@@ -413,8 +426,8 @@ spec:
 
             - name: AUTH_SERVICE_PORT_NUMBER
               value: "8084"
-            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-              value: kafka:9092
+            - name: SPRING_APPLICATION_JSON
+              value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'
             - name: KAFKA_CREATEUSER_SENDER
               value: banking-microservices.create-user.auth-service.progress.v1
 
@@ -611,8 +624,8 @@ spec:
             - name: FRAUD_SERVICE_PORT_NUMBER
               value: "8085"
             # Kafka
-            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-              value: kafka:9092
+            - name: SPRING_APPLICATION_JSON
+              value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'
             # Kafka Topic
             - name: KAFKA_TRANSACTION_TOPIC_LISTENER
               value: banking-microservices.transaction.money-service.block-money.success.v1

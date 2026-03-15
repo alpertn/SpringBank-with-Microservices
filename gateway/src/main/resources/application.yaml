@@ -45,10 +45,7 @@ spring:
       repositories:
         enabled: false
 
-
-
 management:
-
   endpoints:
     web:
       exposure:

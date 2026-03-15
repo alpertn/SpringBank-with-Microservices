@@ -1,6 +1,6 @@
 package com.banking_microservices.user_service.kafka;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +26,7 @@ public class KafkaProducerConfig {
 
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JacksonSerializer.class);
+        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, GsonSerializer.class);
         configProps.put(ProducerConfig.ACKS_CONFIG, "all");
         configProps.put(ProducerConfig.RETRIES_CONFIG, 3);
         configProps.put(ProducerConfig.LINGER_MS_CONFIG, 1);
@@ -43,19 +43,15 @@ public class KafkaProducerConfig {
         return new KafkaTemplate<>(producerFactory());
     }
 
-    public static class JacksonSerializer implements Serializer<Object> {
-        private final ObjectMapper objectMapper = new ObjectMapper();
+    public static class GsonSerializer implements Serializer<Object> {
+        private final Gson gson = new Gson();
 
         @Override
         public byte[] serialize(String topic, Object data) {
-            try {
-                if (data == null) {
-                    return null;
-                }
-                return objectMapper.writeValueAsBytes(data);
-            } catch (Exception e) {
-                throw new RuntimeException("Error serializing Kafka message", e);
+            if (data == null) {
+                return null;
             }
+            return gson.toJson(data).getBytes();
         }
     }
 }

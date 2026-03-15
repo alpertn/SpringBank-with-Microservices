@@ -55,7 +55,6 @@ public class KafkaTransactionTopicMessageDto {
     @Builder.Default
     private String transactionType = "TRANSACTION";
 
-
     @Builder.Default
     private String description = null;
 
