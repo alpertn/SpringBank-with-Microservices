@@ -1,7 +1,6 @@
 package com.banking_microservices.money_service.kafka;
 
 import com.banking_microservices.money_service.dto.KafkaTransactionTopicMessageDto;
-import com.banking_microservices.money_service.exception.KafkaCreateUserException;
 import com.banking_microservices.money_service.service.TransactionService;
 import com.banking_microservices.money_service.service.UserMoneyService;
 import com.banking_microservices.money_service.repository.KafkaEventRepository;
@@ -52,11 +51,9 @@ public class KafkaListenerService {
         KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
         eventRepository.save(KafkaEvent.builder()
                 .eventId(dto.getEventUUID())
-                .topicName("transactionmoney")
-                .status("PROCESSED")
                 .createdAt(LocalDateTime.now())
                 .build());
-        service.KafkaTransactionTopicService(dto);
+        service.createTransaction(dto);
     }
 
     @KafkaListener(topics = "${kafka.topics.transaction.deposit.listener}")
@@ -64,8 +61,6 @@ public class KafkaListenerService {
         KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
         eventRepository.save(KafkaEvent.builder()
                 .eventId(dto.getEventUUID())
-                .topicName("deposit")
-                .status("PROCESSED")
                 .createdAt(LocalDateTime.now())
                 .build());
         userMoneyService.depositMoneyByIban(dto.getReceiverIban(), dto.getMoney());
@@ -76,8 +71,6 @@ public class KafkaListenerService {
         KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
         eventRepository.save(KafkaEvent.builder()
                 .eventId(dto.getEventUUID())
-                .topicName("withdraw")
-                .status("PROCESSED")
                 .createdAt(LocalDateTime.now())
                 .build());
         userMoneyService.withdrawMoneyByIban(dto.getSenderIban(), dto.getMoney());
@@ -88,8 +81,6 @@ public class KafkaListenerService {
         KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
         eventRepository.save(KafkaEvent.builder()
                 .eventId(dto.getEventUUID())
-                .topicName("blockmoney")
-                .status("PROCESSED")
                 .createdAt(LocalDateTime.now())
                 .build());
         transactionService.KafkaTransactionTopicBlockMoney(dto);
@@ -100,12 +91,8 @@ public class KafkaListenerService {
         KafkaTransactionTopicMessageDto dto = gson.fromJson(topic, KafkaTransactionTopicMessageDto.class);
         eventRepository.save(KafkaEvent.builder()
                 .eventId(dto.getEventUUID())
-                .topicName("username-validation")
-                .status("PROCESSED")
                 .createdAt(LocalDateTime.now())
                 .build());
     }
-
-
 
 }

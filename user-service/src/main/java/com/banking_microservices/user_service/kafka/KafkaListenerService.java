@@ -21,22 +21,20 @@ public class KafkaListenerService {
     private final UserRepository repository;
     private final KafkaEventRepository eventRepository;
 
+    public KafkaListenerService(UserService service, UserRepository repository, KafkaEventRepository eventRepository) {
+        this.service = service;
+        this.repository = repository;
+        this.eventRepository = eventRepository;
+    }
+
     @KafkaListener(topics = "${kafka.topics.create-user.authservicelistener}")
     public void ListenAuthServiceTopic(String topicData) {
         AuthServiceCreateUserTopicDto dto = gson.fromJson(topicData, AuthServiceCreateUserTopicDto.class);
         eventRepository.save(KafkaEvent.builder()
                 .eventId(dto.getKeycloackUserUUID())
-                .topicName("create-user.authservicelistener")
-                .status("PROCESSED")
                 .createdAt(LocalDateTime.now())
                 .build());
         service.saveUser(dto);
-    }
-
-    public KafkaListenerService(UserService service, UserRepository repository, KafkaEventRepository eventRepository) {
-        this.service = service;
-        this.repository = repository;
-        this.eventRepository = eventRepository;
     }
 
     //
@@ -47,8 +45,6 @@ public class KafkaListenerService {
         KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
         eventRepository.save(KafkaEvent.builder()
                 .eventId(dto.getEventUUID())
-                .topicName("create-user.listener")
-                .status("PROCESSED")
                 .createdAt(LocalDateTime.now())
                 .build());
     }
@@ -58,8 +54,6 @@ public class KafkaListenerService {
         KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
         eventRepository.save(KafkaEvent.builder()
                 .eventId(dto.getEventUUID())
-                .topicName("transaction.listener")
-                .status("PROCESSED")
                 .createdAt(LocalDateTime.now())
                 .build());
         service.transactionTopicMessageVerify(dto);
@@ -70,8 +64,6 @@ public class KafkaListenerService {
         KafkaTransactionTopicMessageDto dto = gson.fromJson(topic, KafkaTransactionTopicMessageDto.class);
         eventRepository.save(KafkaEvent.builder()
                 .eventId(dto.getEventUUID())
-                .topicName("username-validation.listener")
-                .status("PROCESSED")
                 .createdAt(LocalDateTime.now())
                 .build());
         service.UsernameValidation(dto);

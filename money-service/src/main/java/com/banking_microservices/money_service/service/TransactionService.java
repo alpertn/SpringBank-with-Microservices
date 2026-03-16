@@ -1,6 +1,7 @@
 package com.banking_microservices.money_service.service;
 
 import com.banking_microservices.money_service.dto.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.money_service.dto.enums.TransactionStatus;
 import com.banking_microservices.money_service.exception.*;
 import com.banking_microservices.money_service.kafka.KafkaListenerService;
 import com.banking_microservices.money_service.kafka.KafkaSender;
@@ -67,6 +68,8 @@ public class TransactionService {
         try {
             repository.decrementAndBlockByIban(dto.getSenderIban(), dto.getMoney());
             dto.setIsMoneyBlocked(true);
+            dto.setStatus(TransactionStatus.FUNDS_BLOCKED);
+            dto.setStatusDescription(TransactionStatus.FUNDS_BLOCKED.getDescription());
             kafkaSender.sendBlockedMoneyTopic(dto.getEventUUID(), dto);
         } catch (Exception e) {
             dto.setError(true);
@@ -196,7 +199,8 @@ public class TransactionService {
             log.info("Transfer Success Sender {}, Receiver {}, Transfer Amount {}", gson.toJson(dto.getSenderIban()),
                     gson.toJson(dto.getReceiverIban()), gson.toJson(dto.getMoney()));
 
-            dto.setStatus("SUCCESS");
+            dto.setStatus(TransactionStatus.COMPLETED);
+            dto.setStatusDescription(TransactionStatus.COMPLETED.getDescription());
             try {
                 kafkaSender.sendTransaction(dto.getEventUUID(), dto);
             } catch (Exception e) {
@@ -205,7 +209,7 @@ public class TransactionService {
 
         } catch (Exception e) {
             dto.setError(true);
-            dto.setErrorDescription("An Error While withdrawing money On Money-Service.");
+            dto.setErrorDescription("An Error While withdrawing money On Money-service.");
 
             kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
 

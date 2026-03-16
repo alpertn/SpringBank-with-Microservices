@@ -245,6 +245,21 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(RoleParseException.class)
+    public ResponseEntity<ErrorResponseDto> handleRoleParseException(RoleParseException e, WebRequest webRequest) {
+        log.warn("RoleParseException Error. {} Path {}", e.getMessage(), webRequest.getDescription(true));
+        ErrorResponseDto response = ErrorResponseDto
+                .builder()
+                .time(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Role Parse Error")
+                .message(e.getMessage())
+                .path(webRequest.getDescription(true))
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 }
 
 // package com.banking.user.exception;

@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import com.banking_microservices.user_service.dto.user.TransactionEntity;
+import com.banking_microservices.user_service.dto.enums.TransactionStatus;
 
 @Data
 @Builder
@@ -59,7 +60,10 @@ public class KafkaTransactionTopicMessageDto {
     private String description = null;
 
     @Builder.Default
-    private String status = "PROGRESS";
+    private TransactionStatus status = TransactionStatus.CREATED;
+
+    @Builder.Default
+    private String statusDescription = TransactionStatus.CREATED.getDescription();
 
     @Builder.Default
     private Boolean error = false;

@@ -2,9 +2,12 @@ package com.banking_microservices.transaction_service.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import com.banking_microservices.transaction_service.dto.enums.TransactionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -72,7 +75,11 @@ public class TransactionEntity {
     private Boolean userValidation = false;
 
     @Builder.Default
-    private String status = "PROGRESS";
+    @Enumerated(EnumType.STRING)
+    private TransactionStatus status = TransactionStatus.CREATED;
+
+    @Builder.Default
+    private String statusDescription = TransactionStatus.CREATED.getDescription();
 
     @PrePersist
     protected void onCreate() {

@@ -150,4 +150,34 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(KeycloackUserCreateException.class)
+    public ResponseEntity<ErrorResponseDto> handleKeycloackUserCreateException(KeycloackUserCreateException e, WebRequest webRequest) {
+        log.error("KeycloackUserCreateException. {} Path {}", e.getMessage(), webRequest.getDescription(true));
+        ErrorResponseDto response = ErrorResponseDto
+                .builder()
+                .time(LocalDateTime.now())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .error("KeycloackUserCreateException")
+                .message(e.getMessage())
+                .path(webRequest.getDescription(true))
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(KafkaSendException.class)
+    public ResponseEntity<ErrorResponseDto> handleKafkaSendException(KafkaSendException e, WebRequest webRequest) {
+        log.error("KafkaSendException. {} Path {}", e.getMessage(), webRequest.getDescription(true));
+        ErrorResponseDto response = ErrorResponseDto
+                .builder()
+                .time(LocalDateTime.now())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .error("KafkaSendException")
+                .message(e.getMessage())
+                .path(webRequest.getDescription(true))
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

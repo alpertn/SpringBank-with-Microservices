@@ -4,6 +4,7 @@ import com.banking_microservices.user_service.client.MoneyServiceClient;
 import com.banking_microservices.user_service.dto.RoleEnum.RoleEnum.Role;
 import com.banking_microservices.user_service.dto.user.AuthServiceCreateUserTopicDto;
 import com.banking_microservices.user_service.dto.user.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.user_service.dto.enums.TransactionStatus;
 import com.banking_microservices.user_service.exception.*;
 import com.banking_microservices.user_service.kafka.KafkaSender;
 import com.banking_microservices.user_service.models.Users;
@@ -107,6 +108,8 @@ public class UserService {
             }
 
             dto.setUserValidation(true);
+            dto.setStatus(TransactionStatus.VALIDATION_PENDING);
+            dto.setStatusDescription(TransactionStatus.VALIDATION_PENDING.getDescription());
             kafkaSender.sendTransactionUserValidationSuccess(dto.getEventUUID(), dto);
 
         } catch (Exception e) {

@@ -2,13 +2,13 @@ package com.banking_microservices.transaction_service.service;
 
 import com.banking_microservices.transaction_service.dto.Transaction;
 import com.banking_microservices.transaction_service.dto.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.transaction_service.dto.enums.TransactionStatus;
 import com.banking_microservices.transaction_service.exception.*;
 import com.banking_microservices.transaction_service.kafka.KafkaSender;
 import com.banking_microservices.transaction_service.model.TransactionEntity;
 import com.banking_microservices.transaction_service.repository.TransactionRepository;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,8 +77,9 @@ public class TransactionService {
                 .receiverIban(transactionDto.getReceiverIban())
                 .receiverName(transactionDto.getReceiverName())
                 .receiverSurname(transactionDto.getReceiverSurname())
-                .money(transactionDto.getAmount())
                 .description(transactionDto.getDescription())
+                .status(TransactionStatus.CREATED)
+                .statusDescription(TransactionStatus.CREATED.getDescription())
                 .build();
 
         TransactionEntity transactionModel = TransactionEntity.builder()
@@ -92,6 +93,8 @@ public class TransactionService {
                 .receiverSurname(transactionDto.getReceiverSurname())
                 .money(transactionDto.getAmount())
                 .description(transactionDto.getDescription())
+                .status(TransactionStatus.CREATED)
+                .statusDescription(TransactionStatus.CREATED.getDescription())
                 .build();
 
         try {
@@ -136,6 +139,8 @@ public class TransactionService {
                 .money(transactionDto.getAmount())
                 .description(transactionDto.getDescription())
                 .transactionType("DEPOSIT")
+                .status(com.banking_microservices.transaction_service.dto.enums.TransactionStatus.CREATED)
+                .statusDescription(com.banking_microservices.transaction_service.dto.enums.TransactionStatus.CREATED.getDescription())
                 .build();
 
         TransactionEntity transactionModel = TransactionEntity.builder()
@@ -151,6 +156,8 @@ public class TransactionService {
                 .money(transactionDto.getAmount())
                 .description(transactionDto.getDescription())
                 .transactionType("DEPOSIT")
+                .status(com.banking_microservices.transaction_service.dto.enums.TransactionStatus.CREATED)
+                .statusDescription(com.banking_microservices.transaction_service.dto.enums.TransactionStatus.CREATED.getDescription())
                 .build();
 
         try {
@@ -189,6 +196,8 @@ public class TransactionService {
                 .money(transactionDto.getAmount())
                 .description(transactionDto.getDescription())
                 .transactionType("WITHDRAW")
+                .status(com.banking_microservices.transaction_service.dto.enums.TransactionStatus.CREATED)
+                .statusDescription(com.banking_microservices.transaction_service.dto.enums.TransactionStatus.CREATED.getDescription())
                 .build();
 
         TransactionEntity transactionModel = TransactionEntity.builder()
@@ -201,6 +210,8 @@ public class TransactionService {
                 .money(transactionDto.getAmount())
                 .description(transactionDto.getDescription())
                 .transactionType("WITHDRAW")
+                .status(com.banking_microservices.transaction_service.dto.enums.TransactionStatus.CREATED)
+                .statusDescription(com.banking_microservices.transaction_service.dto.enums.TransactionStatus.CREATED.getDescription())
                 .build();
 
         try {

@@ -17,7 +17,5 @@ import java.time.LocalDateTime;
 public class KafkaEvent {
     @Id
     private String eventId;
-    private String topicName;
-    private String status; // PROCESSING, PROCESSED, ERROR
     private LocalDateTime createdAt;
 }

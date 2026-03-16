@@ -628,7 +628,7 @@ spec:
               value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'
             # Kafka Topic
             - name: KAFKA_TRANSACTION_TOPIC_LISTENER
-              value: banking-microservices.transaction.money-service.block-money.success.v1
+              value: banking-microservices.transaction.user-service.username-validation.success.v1
             - name: KAFKA_TRANSACTION_TOPIC_SENDER
               value: banking-microservices.transaction.fraud-service.checked.v1
             - name: KAFKA_TRANSACTION_TOPIC_ERROR

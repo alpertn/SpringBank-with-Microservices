@@ -1,7 +1,7 @@
 kafka:
   topics:
     transaction:
-      listener: ${KAFKA_TRANSACTION_TOPIC_LISTENER:banking-microservices.transaction.money-service.block-money.success.v1}
+      listener: ${KAFKA_TRANSACTION_TOPIC_LISTENER:banking-microservices.transaction.user-service.username-validation.success.v1}
       deposit:
         listener: ${KAFKA_TRANSACTION_TOPIC_DEPOSIT_LISTENER:banking-microservices.transaction.deposit.created.v1}
       withdraw:
