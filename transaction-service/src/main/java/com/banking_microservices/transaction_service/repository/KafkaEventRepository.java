@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface KafkaEventRepository extends JpaRepository<KafkaEvent, String> {
+    boolean existsByEventIdAndEventType(String eventId, String eventType);
 }

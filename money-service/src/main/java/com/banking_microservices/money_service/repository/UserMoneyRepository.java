@@ -38,7 +38,7 @@ public interface UserMoneyRepository extends JpaRepository<UserMoney, String> {
 
     @Transactional
     @Modifying
-    @Query("UPDATE UserMoney m SET m.money = m.money - :amount WHERE m.userIban = :iban")
+    @Query("UPDATE UserMoney m SET m.money = m.money - :amount WHERE m.userIban = :iban AND m.money >= :amount")
     int decrementBalanceByIban(@Param("iban") String iban, @Param("amount") BigDecimal amount);
 
     @Query("SELECT m.money FROM UserMoney m WHERE m.userId = :userId")
@@ -49,7 +49,7 @@ public interface UserMoneyRepository extends JpaRepository<UserMoney, String> {
 
     @Transactional
     @Modifying
-    @Query("UPDATE UserMoney m SET m.money = m.money - :amount, m.blockedMoney = m.blockedMoney + :amount WHERE m.userIban = :iban")
+    @Query("UPDATE UserMoney m SET m.money = m.money - :amount, m.blockedMoney = m.blockedMoney + :amount WHERE m.userIban = :iban AND m.money >= :amount")
     int decrementAndBlockByIban(@Param("iban") String iban, @Param("amount") BigDecimal amount);
 
     @Query("SELECT m.id FROM UserMoney m WHERE m.userId = :userId")
@@ -69,7 +69,7 @@ public interface UserMoneyRepository extends JpaRepository<UserMoney, String> {
 
     @Transactional
     @Modifying
-    @Query("UPDATE UserMoney m SET m.money = m.money - :amount WHERE m.userId = :userId")
+    @Query("UPDATE UserMoney m SET m.money = m.money - :amount WHERE m.userId = :userId AND m.money >= :amount")
     int decrementBalanceByUserId(@Param("userId") String userId, @Param("amount") BigDecimal amount);
 
     @Query("SELECT m.money FROM UserMoney m WHERE m.id = :id")
@@ -93,7 +93,7 @@ public interface UserMoneyRepository extends JpaRepository<UserMoney, String> {
 
     @Transactional
     @Modifying
-    @Query("UPDATE UserMoney m SET m.money = m.money - :amount WHERE m.id = :id")
+    @Query("UPDATE UserMoney m SET m.money = m.money - :amount WHERE m.id = :id AND m.money >= :amount")
     int decrementBalanceById(@Param("id") String id, @Param("amount") BigDecimal amount);
 
     boolean existsByUserIban(String iban);

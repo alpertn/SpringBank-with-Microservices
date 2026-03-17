@@ -1,6 +1,7 @@
 package com.banking_microservices.auth_service.kafka;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,14 +45,19 @@ public class KafkaProducerConfig {
     }
 
     public static class GsonSerializer implements Serializer<Object> {
-        private final Gson gson = new Gson();
+        private final Gson gson = new GsonBuilder()
+                .serializeNulls()
+                .registerTypeAdapter(java.time.LocalDateTime.class,
+                        (com.google.gson.JsonSerializer<java.time.LocalDateTime>) (src, type, ctx) ->
+                                new com.google.gson.JsonPrimitive(src.toString()))
+                .create();
 
         @Override
         public byte[] serialize(String topic, Object data) {
             if (data == null) {
                 return null;
             }
-            return gson.toJson(data).getBytes();
+            return gson.toJson(data).getBytes(java.nio.charset.StandardCharsets.UTF_8);
         }
     }
 }

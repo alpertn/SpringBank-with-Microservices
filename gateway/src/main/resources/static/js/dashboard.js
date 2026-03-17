@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.loadData();
 });
 
-window.copyIban = function() {
+window.copyIban = function () {
     const ibanText = document.getElementById('iban').innerText;
     if (ibanText && ibanText !== 'Yükleniyor...' && ibanText !== '-') {
         navigator.clipboard.writeText(ibanText);
@@ -29,7 +29,7 @@ window.copyIban = function() {
     }
 };
 
-window.loadData = function() {
+window.loadData = function () {
     loadBalance();
     loadTransactions();
 };
@@ -52,12 +52,12 @@ async function loadBalance() {
             document.getElementById('no-account-banner').style.display = '';
             document.getElementById('quick-action-create-account').style.display = '';
         }
-    } catch(e) {
+    } catch (e) {
         console.error('Balance load error:', e);
     }
 }
 
-window.createAccount = async function() {
+window.createAccount = async function () {
     const btn = document.getElementById('btn-create-account');
     btn.disabled = true;
     btn.innerHTML = '<i class="ph ph-spinner"></i> Oluşturuluyor...';
@@ -74,20 +74,56 @@ window.createAccount = async function() {
             btn.disabled = false;
             btn.innerHTML = '<i class="ph ph-plus"></i> Hesap Oluştur';
         }
-    } catch(e) {
+    } catch (e) {
         API.toast('Bağlantı hatası', 'danger');
         btn.disabled = false;
         btn.innerHTML = '<i class="ph ph-plus"></i> Hesap Oluştur';
     }
 };
 
+// DUZELTME: STATUS_MAP tum TransactionStatus enum degerlerini kapsayacak sekilde guncellendi.
+// Onceden sadece SUCCESS/PROGRESS/diger kontrolu vardi ve gercek enum degerleriyle eslesmiyordu.
+const STATUS_MAP = {
+    'CREATED':           { label: 'Oluşturuldu',        css: 'badge-info' },
+    'VALIDATION_PENDING':{ label: 'Doğrulanıyor',       css: 'badge-warning' },
+    'VALIDATION_FAILED': { label: 'Doğrulama Hatası',   css: 'badge-danger' },
+    'INSUFFICIENT_FUNDS':{ label: 'Yetersiz Bakiye',    css: 'badge-danger' },
+    'FRAUD_REVIEW':      { label: 'İncelemede',         css: 'badge-warning' },
+    'FRAUD_REJECTED':    { label: 'Reddedildi',         css: 'badge-danger' },
+    'FUNDS_BLOCKED':     { label: 'Bloke Edildi',       css: 'badge-warning' },
+    'FUNDS_BLOCK_FAILED':{ label: 'Bloke Hatası',       css: 'badge-danger' },
+    'PROCESSING':        { label: 'İşleniyor',          css: 'badge-warning' },
+    'COMPLETED':         { label: 'Tamamlandı',         css: 'badge-success' },
+    'FAILED':            { label: 'Başarısız',          css: 'badge-danger' },
+    'KAFKA_ERROR':       { label: 'Sistem Hatası',      css: 'badge-danger' },
+    'DECLINED':          { label: 'Reddedildi',         css: 'badge-danger' },
+    'REVERSED':          { label: 'İptal Edildi',       css: 'badge-warning' },
+};
+
+const TYPE_MAP = {
+    'TRANSACTION': 'Transfer',
+    'DEPOSIT':     'Para Yatırma',
+    'WITHDRAW':    'Para Çekme',
+};
+
+function getStatusBadge(status, statusDescription, small = false) {
+    const s = STATUS_MAP[status];
+    const sizeStyle = small ? 'font-size:11px;' : '';
+    if (s) {
+        const title = statusDescription ? ` title="${statusDescription}"` : '';
+        return `<span class="badge ${s.css}" style="${sizeStyle}"${title}>${s.label}</span>`;
+    }
+    return `<span class="badge badge-info" style="${sizeStyle}">${status || '-'}</span>`;
+}
+
 async function loadTransactions() {
     const wrapper = document.getElementById('transactions-wrapper');
     wrapper.innerHTML = `<div class="empty-state"><div class="spinner"></div><div class="empty-state-text" style="margin-top:12px">Hareketler yükleniyor...</div></div>`;
 
     try {
+        // DUZELTME: onceden POST + body ile userId gonderiliyordu. Endpoint GET + ?id=... olarak duzeltildi.
         const userId = API.getUserId();
-        const res = await API.call('/api/transaction-service/v1/transactions/gettransactionhistorywithid', 'POST', userId);
+        const res = await API.call(`/api/transaction-service/v1/transactions/gettransactionhistorywithid?id=${userId}`, 'GET');
 
         if (res && res.ok) {
             const data = await res.json();
@@ -102,7 +138,7 @@ async function loadTransactions() {
                 return;
             }
 
-            data.sort((a,b) => new Date(b.localDateTime) - new Date(a.localDateTime));
+            data.sort((a, b) => new Date(b.localDateTime) - new Date(a.localDateTime));
             const recentData = data.slice(0, 10);
 
             let html = `
@@ -120,28 +156,40 @@ async function loadTransactions() {
             `;
 
             recentData.forEach(tx => {
-                let statusBadge = '';
-                if(tx.status === 'SUCCESS') statusBadge = '<span class="badge badge-success" style="font-size:11px;">Başarılı</span>';
-                else if(tx.status === 'PROGRESS') statusBadge = '<span class="badge badge-warning" style="font-size:11px;">İşleniyor</span>';
-                else statusBadge = '<span class="badge badge-danger" style="font-size:11px;">Hatalı</span>';
+                // DUZELTME: statusBadge tum enum degerlerini karsilayacak sekilde guncellendi.
+                // statusDescription tooltip olarak badge'e eklendi.
+                const statusBadge = getStatusBadge(tx.status, tx.statusDescription, true);
 
-                let typeLabel = tx.transactionType;
-                let isOutflow = tx.senderUserId === userId && typeLabel !== 'DEPOSIT';
+                const typeLabel = TYPE_MAP[tx.transactionType] || tx.transactionType || '-';
 
+                let isOutflow = tx.senderUserId === userId && tx.transactionType !== 'DEPOSIT';
                 let amountSign = isOutflow ? '-' : '+';
                 let amountColor = isOutflow ? 'var(--danger)' : 'var(--success)';
-                if (typeLabel === 'DEPOSIT' || typeLabel === 'WITHDRAW') {
-                    amountSign = typeLabel === 'WITHDRAW' ? '-' : '+';
-                    amountColor = typeLabel === 'WITHDRAW' ? 'var(--danger)' : 'var(--success)';
+                if (tx.transactionType === 'DEPOSIT') {
+                    amountSign = '+';
+                    amountColor = 'var(--success)';
+                } else if (tx.transactionType === 'WITHDRAW') {
+                    amountSign = '-';
+                    amountColor = 'var(--danger)';
                 }
+
+                // DUZELTME: aciklama kisaltmasi 25 karakter'den 35'e cikarildi.
+                const desc = tx.description
+                    ? (tx.description.length > 35 ? tx.description.substring(0, 35) + '...' : tx.description)
+                    : '-';
+
+                // DUZELTME: islem nerede oldugu bilgisi - statusDescription satir alti olarak eklendi.
+                const statusDesc = tx.statusDescription
+                    ? `<div style="font-size:10px; color:var(--text-muted); margin-top:2px;">${tx.statusDescription}</div>`
+                    : '';
 
                 html += `
                     <tr>
                         <td style="font-size:13px;">${API.formatDate(tx.localDateTime)}</td>
-                        <td style="font-weight:600; font-size:13px;">${typeLabel || '-'}</td>
-                        <td style="color:var(--text-muted); font-size:13px;">${tx.description ? (tx.description.length>25 ? tx.description.substring(0,25)+'...' : tx.description) : '-'}</td>
+                        <td style="font-weight:600; font-size:13px;">${typeLabel}</td>
+                        <td style="color:var(--text-muted); font-size:13px;">${desc}</td>
                         <td style="color:${amountColor}; font-weight:700;">${amountSign}${API.formatMoney(tx.money)}</td>
-                        <td>${statusBadge}</td>
+                        <td>${statusBadge}${statusDesc}</td>
                     </tr>
                 `;
             });

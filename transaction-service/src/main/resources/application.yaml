@@ -9,8 +9,10 @@ kafka:
       error: ${KAFKA_TRANSACTION_TOPIC_ERROR:banking-microservices.transaction.transaction-service.error.v1}
       deposit:
         sender: ${KAFKA_TRANSACTION_TOPIC_DEPOSIT_SENDER:banking-microservices.transaction.deposit.created.v1}
+        listener: ${KAFKA_TRANSACTION_TOPIC_DEPOSIT_LISTENER:banking-microservices.transaction.deposit.money-service.success.v1}
       withdraw:
         sender: ${KAFKA_TRANSACTION_TOPIC_WITHDRAW_SENDER:banking-microservices.transaction.withdraw.created.v1}
+        listener: ${KAFKA_TRANSACTION_TOPIC_WITHDRAW_LISTENER:banking-microservices.transaction.withdraw.money-service.success.v1}
       logger:
         listener: ${KAFKA_TRANSACTION_LOGGER_LISTENER:banking-microservices.transaction.*}
 

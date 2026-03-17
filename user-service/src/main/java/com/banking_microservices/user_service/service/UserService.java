@@ -10,7 +10,6 @@ import com.banking_microservices.user_service.kafka.KafkaSender;
 import com.banking_microservices.user_service.models.Users;
 import com.banking_microservices.user_service.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.google.gson.Gson;
@@ -22,7 +21,9 @@ import java.util.List;
 public class UserService {
 
     private Gson gson = new Gson();
-    @Autowired
+
+    // DUZELTME: @Autowired ve constructor injection birlikte kullaniliyordu - tutarsiz injection pattern.
+    // @Autowired kaldirildi, tum injection constructor ile yapiliyor.
     private UserRepository UserRepository;
     private MoneyServiceClient moneyServiceClient;
     private final KafkaSender kafkaSender;
@@ -64,16 +65,16 @@ public class UserService {
                 Users user = UserRepository.save(newUsers);
                 log.info("User Olusturuldu! {}", gson.toJson(user));
                 try {
-
                     kafkaSender.sendCreateUser(user.getKeycloackUUID());
                     return newUsers;
-
                 } catch (Exception e) {
-
                     throw new KafkaSendException("Kafka ile Create user topicine mesaj gonderilirken hata olustu.");
-
                 }
 
+            } catch (KafkaSendException e) {
+                // DUZELTME: onceden catch(Exception e) blogu hem DB hatasini hem Kafka hatasini yutuyordu.
+                // KafkaSendException ayri yakalanarak UserSaveDatabaseException'a donusturulmemesi saglandı.
+                throw e;
             } catch (Exception e) {
                 throw new UserSaveDatabaseException(
                         "User veritabanina kaydedilirken bir sorun olustu " + e.getMessage() + gson.toJson(newUsers));
@@ -82,7 +83,6 @@ public class UserService {
         } catch (IllegalArgumentException e) {
             throw new RoleParseException("An error with parse role" + e.getMessage());
         }
-
     }
 
     //
@@ -122,8 +122,15 @@ public class UserService {
     }
 
     public void UsernameValidation(KafkaTransactionTopicMessageDto dto) {
+        // DUZELTME: onceden existsByNameAndSurname() sonucu hic kullanilmiyordu.
+        // Sonuc false ise error topic'e gondermeli. Duzeltildi.
+        boolean exists = UserRepository.existsByNameAndSurname(dto.getReceiverName(), dto.getReceiverSurname());
+        if (!exists) {
+            kafkaSender.sendUsernameValidationError(dto.getEventUUID(), dto);
+            throw new UserNameOrSurnameNotFoundException(
+                    "User Name Or Surname Not Found " + dto.getReceiverName() + " " + dto.getReceiverSurname());
+        }
         try {
-            UserRepository.existsByNameAndSurname(dto.getReceiverName(), dto.getReceiverSurname());
             kafkaSender.sendUsernameValidationSuccess(dto.getEventUUID(), dto);
         } catch (Exception e) {
             kafkaSender.sendUsernameValidationError(dto.getEventUUID(), dto);
@@ -135,7 +142,6 @@ public class UserService {
     public Users findUserById(String id) {
         return UserRepository.findUsersById(String.valueOf(id))
                 .orElseThrow(() -> new UserNotFoundById("User Not Found By Id: {}" + id));
-
     }
 
     public void updateUser(Users user) {
@@ -157,7 +163,6 @@ public class UserService {
         } catch (Exception e) {
             throw new DeleteUserException("An Error With delete user. id: " + id);
         }
-
     }
 
     @Transactional
@@ -283,5 +288,4 @@ public class UserService {
             throw new EmailChangeException("Failed to change email for user: " + userId);
         }
     }
-
 }

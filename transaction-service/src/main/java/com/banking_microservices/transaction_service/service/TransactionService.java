@@ -1,9 +1,14 @@
 package com.banking_microservices.transaction_service.service;
 
+import com.banking_microservices.transaction_service.dto.DepositDto;
 import com.banking_microservices.transaction_service.dto.Transaction;
+import com.banking_microservices.transaction_service.dto.WithdrawDto;
 import com.banking_microservices.transaction_service.dto.KafkaTransactionTopicMessageDto;
 import com.banking_microservices.transaction_service.dto.enums.TransactionStatus;
-import com.banking_microservices.transaction_service.exception.*;
+import com.banking_microservices.transaction_service.exception.GetErrorLogsException;
+import com.banking_microservices.transaction_service.exception.KafkaSendExceptionOnService;
+import com.banking_microservices.transaction_service.exception.TransactionNotFoundException;
+import com.banking_microservices.transaction_service.exception.TransactionSaveException;
 import com.banking_microservices.transaction_service.kafka.KafkaSender;
 import com.banking_microservices.transaction_service.model.TransactionEntity;
 import com.banking_microservices.transaction_service.repository.TransactionRepository;
@@ -32,9 +37,12 @@ public class TransactionService {
 
     @Transactional
     public void saveTransaction(KafkaTransactionTopicMessageDto topicMessage) {
-
         TransactionEntity transactiondata = TransactionEntity.builder()
                 .eventId(topicMessage.getEventUUID())
+                .senderName(topicMessage.getSenderName())
+                .senderSurname(topicMessage.getSenderSurname())
+                .senderEmail(topicMessage.getSenderEmail())
+                .receiverEmail(topicMessage.getReceiverEmail())
                 .receiverName(topicMessage.getReceiverName())
                 .receiverSurname(topicMessage.getReceiverSurname())
                 .senderUserId(topicMessage.getSenderUserId())
@@ -45,8 +53,10 @@ public class TransactionService {
                 .transactionType(topicMessage.getTransactionType())
                 .description(topicMessage.getDescription())
                 .status(topicMessage.getStatus())
+                .statusDescription(topicMessage.getStatusDescription())
                 .error(topicMessage.getError())
                 .errorDescription(topicMessage.getErrorDescription())
+                .userValidation(topicMessage.getUserValidation())
                 .localDateTime(topicMessage.getLocalDateTime())
                 .build();
 
@@ -57,7 +67,6 @@ public class TransactionService {
             throw new TransactionSaveException(
                     "An Error With Save TransactionEntity. Details : " + e.getMessage() + gson.toJson(transactiondata));
         }
-
     }
 
     @Transactional
@@ -67,7 +76,6 @@ public class TransactionService {
             newEventUUID = UUID.randomUUID().toString();
         } while (transactionRepository.existsByEventId(newEventUUID));
 
-
         KafkaTransactionTopicMessageDto dto = KafkaTransactionTopicMessageDto.builder()
                 .eventUUID(newEventUUID)
                 .senderUserId(senderUserId)
@@ -77,6 +85,7 @@ public class TransactionService {
                 .receiverIban(transactionDto.getReceiverIban())
                 .receiverName(transactionDto.getReceiverName())
                 .receiverSurname(transactionDto.getReceiverSurname())
+                .money(transactionDto.getAmount())
                 .description(transactionDto.getDescription())
                 .status(TransactionStatus.CREATED)
                 .statusDescription(TransactionStatus.CREATED.getDescription())
@@ -103,14 +112,11 @@ public class TransactionService {
             throw new TransactionSaveException("An Error With Save TransactionEntity " + e.getMessage());
         }
         try {
-            if (dto.getSenderIban() != null) {
-                dto.setSenderTransactionHistory(transactionRepository.findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc(dto.getSenderIban(), dto.getSenderIban()));
-            }
             if (dto.getReceiverIban() != null) {
                 dto.setReceiverTransactionHistory(transactionRepository.findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc(dto.getReceiverIban(), dto.getReceiverIban()));
             }
         } catch (Exception e) {
-            log.warn("Transaction history alınamadı, devam ediliyor: {}", e.getMessage());
+            log.warn("Transaction history alinamadi, devam ediliyor: {}", e.getMessage());
         }
         try {
             kafkaSender.sendTransaction(dto.getEventUUID(), dto);
@@ -120,7 +126,7 @@ public class TransactionService {
     }
 
     @Transactional
-    public void createDeposit(com.banking_microservices.transaction_service.dto.DepositDto transactionDto, String senderUserId, String senderMail, String senderName, String senderSurname) {
+    public void createDeposit(DepositDto transactionDto, String senderUserId, String senderMail, String senderName, String senderSurname) {
         String newEventUUID;
         do {
             newEventUUID = UUID.randomUUID().toString();
@@ -139,8 +145,8 @@ public class TransactionService {
                 .money(transactionDto.getAmount())
                 .description(transactionDto.getDescription())
                 .transactionType("DEPOSIT")
-                .status(com.banking_microservices.transaction_service.dto.enums.TransactionStatus.CREATED)
-                .statusDescription(com.banking_microservices.transaction_service.dto.enums.TransactionStatus.CREATED.getDescription())
+                .status(TransactionStatus.CREATED)
+                .statusDescription(TransactionStatus.CREATED.getDescription())
                 .build();
 
         TransactionEntity transactionModel = TransactionEntity.builder()
@@ -156,8 +162,8 @@ public class TransactionService {
                 .money(transactionDto.getAmount())
                 .description(transactionDto.getDescription())
                 .transactionType("DEPOSIT")
-                .status(com.banking_microservices.transaction_service.dto.enums.TransactionStatus.CREATED)
-                .statusDescription(com.banking_microservices.transaction_service.dto.enums.TransactionStatus.CREATED.getDescription())
+                .status(TransactionStatus.CREATED)
+                .statusDescription(TransactionStatus.CREATED.getDescription())
                 .build();
 
         try {
@@ -170,7 +176,7 @@ public class TransactionService {
                 dto.setReceiverTransactionHistory(transactionRepository.findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc(dto.getReceiverIban(), dto.getReceiverIban()));
             }
         } catch (Exception e) {
-            log.warn("Transaction history alınamadı, devam ediliyor: {}", e.getMessage());
+            log.warn("Transaction history alinamadi, devam ediliyor: {}", e.getMessage());
         }
         try {
             kafkaSender.sendDeposit(dto.getEventUUID(), dto);
@@ -180,7 +186,7 @@ public class TransactionService {
     }
 
     @Transactional
-    public void createWithdraw(com.banking_microservices.transaction_service.dto.WithdrawDto transactionDto, String senderUserId, String senderMail, String senderName, String senderSurname) {
+    public void createWithdraw(WithdrawDto transactionDto, String senderUserId, String senderMail, String senderName, String senderSurname) {
         String newEventUUID;
         do {
             newEventUUID = UUID.randomUUID().toString();
@@ -196,8 +202,8 @@ public class TransactionService {
                 .money(transactionDto.getAmount())
                 .description(transactionDto.getDescription())
                 .transactionType("WITHDRAW")
-                .status(com.banking_microservices.transaction_service.dto.enums.TransactionStatus.CREATED)
-                .statusDescription(com.banking_microservices.transaction_service.dto.enums.TransactionStatus.CREATED.getDescription())
+                .status(TransactionStatus.CREATED)
+                .statusDescription(TransactionStatus.CREATED.getDescription())
                 .build();
 
         TransactionEntity transactionModel = TransactionEntity.builder()
@@ -210,8 +216,8 @@ public class TransactionService {
                 .money(transactionDto.getAmount())
                 .description(transactionDto.getDescription())
                 .transactionType("WITHDRAW")
-                .status(com.banking_microservices.transaction_service.dto.enums.TransactionStatus.CREATED)
-                .statusDescription(com.banking_microservices.transaction_service.dto.enums.TransactionStatus.CREATED.getDescription())
+                .status(TransactionStatus.CREATED)
+                .statusDescription(TransactionStatus.CREATED.getDescription())
                 .build();
 
         try {
@@ -224,7 +230,7 @@ public class TransactionService {
                 dto.setSenderTransactionHistory(transactionRepository.findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc(dto.getSenderIban(), dto.getSenderIban()));
             }
         } catch (Exception e) {
-            log.warn("Transaction history alınamadı, devam ediliyor: {}", e.getMessage());
+            log.warn("Transaction history alinamadi, devam ediliyor: {}", e.getMessage());
         }
         try {
             kafkaSender.sendWithdraw(dto.getEventUUID(), dto);
@@ -246,7 +252,6 @@ public class TransactionService {
     public List<TransactionEntity> getTransactionsByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
         try {
             log.info("getTransactionsByDateRange methoduna istek geldi startDate {} endDate {}", startDate, endDate);
-
             return transactionRepository.findByLocalDateTimeBetweenOrderByLocalDateTimeDesc(startDate, endDate);
         } catch (Exception e) {
             log.warn("getTransactionsByDateRange  StartDate : {} EndDate : {} Exception : {}", startDate, endDate,
@@ -269,5 +274,21 @@ public class TransactionService {
         log.info("getTransactionById methoduna istek geldi {}", id);
         return transactionRepository.findById(id)
                 .orElseThrow(() -> new TransactionNotFoundException("TransactionEntity not found with id: " + id));
+    }
+
+    @Transactional
+    public void updateTransactionStatus(KafkaTransactionTopicMessageDto dto) {
+        transactionRepository.findByEventId(dto.getEventUUID()).ifPresent(entity -> {
+            entity.setStatus(dto.getStatus());
+            entity.setStatusDescription(dto.getStatusDescription());
+            entity.setError(dto.getError());
+            entity.setErrorDescription(dto.getErrorDescription());
+            try {
+                transactionRepository.save(entity);
+                log.info("Transaction status guncellendi: {} → {}", dto.getEventUUID(), dto.getStatus());
+            } catch (Exception e) {
+                throw new TransactionSaveException("Status guncellenemedi: " + e.getMessage());
+            }
+        });
     }
 }

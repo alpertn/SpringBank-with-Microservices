@@ -4,8 +4,10 @@ kafka:
       listener: ${KAFKA_TRANSACTION_TOPIC_LISTENER:banking-microservices.transaction.user-service.username-validation.success.v1}
       deposit:
         listener: ${KAFKA_TRANSACTION_TOPIC_DEPOSIT_LISTENER:banking-microservices.transaction.deposit.created.v1}
+        sender: ${KAFKA_TRANSACTION_TOPIC_DEPOSIT_SENDER:banking-microservices.transaction.deposit.fraud-checked.v1}
       withdraw:
         listener: ${KAFKA_TRANSACTION_TOPIC_WITHDRAW_LISTENER:banking-microservices.transaction.withdraw.created.v1}
+        sender: ${KAFKA_TRANSACTION_TOPIC_WITHDRAW_SENDER:banking-microservices.transaction.withdraw.fraud-checked.v1}
       sender: ${KAFKA_TRANSACTION_TOPIC_SENDER:banking-microservices.transaction.fraud-service.checked.v1}
       error: ${KAFKA_TRANSACTION_TOPIC_ERROR:banking-microservices.transaction.transaction-service.error.v1}
 server:
@@ -41,13 +43,6 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-feign:
-  client:
-    config:
-      default:
-        connectTimeout: 5000
-        readTimeout: 5000
-        loggerLevel: BASIC
 
 management:
   endpoints:

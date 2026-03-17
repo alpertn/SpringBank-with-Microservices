@@ -15,18 +15,22 @@ public interface TransactionRepository extends JpaRepository<TransactionEntity, 
     List<TransactionEntity> findByReceiverUserId(String receiverUserId);
 
     List<TransactionEntity> findBySenderUserIdOrReceiverUserIdOrderByLocalDateTimeDesc(String senderUserId,
-            String receiverUserId);
+                                                                                       String receiverUserId);
 
     List<TransactionEntity> findByErrorTrue();
 
     List<TransactionEntity> findByLocalDateTimeBetweenOrderByLocalDateTimeDesc(LocalDateTime startDate,
-            LocalDateTime endDate);
+                                                                               LocalDateTime endDate);
 
     List<TransactionEntity> findBySenderUserIdAndLocalDateTimeBetween(String senderUserId, LocalDateTime startDate,
-            LocalDateTime endDate);
+                                                                      LocalDateTime endDate);
 
     boolean existsByEventId(String eventid);
 
     List<TransactionEntity> findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc(String senderIban, String receiverIban);
+
+    // DUZELTME: eventId'ye gore tekli kayit bulmak icin metod eksikti.
+    // getTransactionById zaten ID (PK) ile cekiyor ama eventId ile sorgu yapmak gerekebilir.
+    java.util.Optional<TransactionEntity> findByEventId(String eventId);
 
 }

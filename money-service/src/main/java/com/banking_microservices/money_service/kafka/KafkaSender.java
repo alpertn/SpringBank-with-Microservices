@@ -14,10 +14,17 @@ import org.springframework.stereotype.Service;
 public class KafkaSender {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
-    private final Gson gson = new GsonBuilder().serializeNulls().create();
+    // DUZELTME: gson field'i birkac metodda "jsonMessageForKafka" dead code uretmek icin kullaniliyordu.
+    // Dead code satirlari temizlendi, gson artik kullanilmadigi icin kaldirildi.
 
     @Value("${kafka.topics.transaction.transactionmoney.sender}")
     private String transactionSenderTopic;
+
+    @Value("${kafka.topics.transaction.deposit.sender}")
+    private String depositSenderTopic;
+
+    @Value("${kafka.topics.transaction.withdraw.sender}")
+    private String withdrawSenderTopic;
 
     @Value("${kafka.topics.username-validation.sender}")
     private String usernameValidationSenderTopic;
@@ -40,17 +47,33 @@ public class KafkaSender {
 
     public void sendTransaction(String key, KafkaTransactionTopicMessageDto kafkaTransactionTopicMessageDto) {
         try {
-            String jsonMessageForKafka = gson.toJson(kafkaTransactionTopicMessageDto);
+            // DUZELTME: jsonMessageForKafka dead code satiri kaldirildi.
             kafkaTemplate.send(transactionSenderTopic, key, kafkaTransactionTopicMessageDto);
             log.info("Kafkaya mesaj gonderildi {} {}", key, kafkaTransactionTopicMessageDto);
-
         } catch (Exception e) {
-
             log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}", key, kafkaTransactionTopicMessageDto);
             throw new KafkaSendException("Kafka Send Exception. " + key + " " + kafkaTransactionTopicMessageDto);
-
         }
+    }
 
+    public void sendDepositSuccess(String key, KafkaTransactionTopicMessageDto dto) {
+        try {
+            kafkaTemplate.send(depositSenderTopic, key, dto);
+            log.info("Deposit success gonderildi: {}", key);
+        } catch (Exception e) {
+            log.warn("Deposit success gonderilirken hata: {}", e.getMessage());
+            throw new KafkaSendException("Kafka Deposit Success Exception. " + key);
+        }
+    }
+
+    public void sendWithdrawSuccess(String key, KafkaTransactionTopicMessageDto dto) {
+        try {
+            kafkaTemplate.send(withdrawSenderTopic, key, dto);
+            log.info("Withdraw success gonderildi: {}", key);
+        } catch (Exception e) {
+            log.warn("Withdraw success gonderilirken hata: {}", e.getMessage());
+            throw new KafkaSendException("Kafka Withdraw Success Exception. " + key);
+        }
     }
 
     public void sendBlockedMoneyTopic(String key, KafkaTransactionTopicMessageDto dto) {
@@ -65,60 +88,45 @@ public class KafkaSender {
 
     public void sendTransactionToUserService(String key, KafkaTransactionTopicMessageDto dto) {
         try {
-            String jsonMessageForKafka = gson.toJson(dto);
+            // DUZELTME: jsonMessageForKafka dead code satiri kaldirildi.
             kafkaTemplate.send(usernameValidationSenderTopic, key, dto);
             log.info("Kafkaya mesaj gonderildi {} {}", key, dto);
-
         } catch (Exception e) {
-
             log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}", key, dto);
             throw new KafkaSendException("Kafka Send Exception. " + key + " " + dto);
-
         }
     }
 
     public void sendTransactionError(String key, KafkaTransactionTopicMessageDto dto) {
-
         try {
-            String jsonMessageForKafka = gson.toJson(dto);
+            // DUZELTME: jsonMessageForKafka dead code satiri kaldirildi.
             kafkaTemplate.send(transactionErrorTopic, key, dto);
             log.info("Kafkaya mesaj gonderildi {} {}", key, dto);
-
         } catch (Exception e) {
-
             log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}", key, dto);
             throw new KafkaSendException("Kafka Send Exception. " + key + " " + dto);
-
         }
     }
 
     public void sendCreateUserError(String key, KafkaTransactionTopicMessageDto dto) {
-
         try {
-            String jsonMessageForKafka = gson.toJson(dto);
+            // DUZELTME: jsonMessageForKafka dead code satiri kaldirildi.
             kafkaTemplate.send(createUserErrorTopic, key, dto);
             log.info("Kafkaya mesaj gonderildi {} {}", key, dto);
-
         } catch (Exception e) {
-
             log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}", key, dto);
             throw new KafkaSendException("Kafka Send Exception. " + key + " " + dto);
-
         }
     }
 
     public void sendCreateUserSuccess(String key, KafkaTransactionTopicMessageDto dto) {
-
         try {
-            String jsonMessageForKafka = gson.toJson(dto);
+            // DUZELTME: jsonMessageForKafka dead code satiri kaldirildi.
             kafkaTemplate.send(createUserSenderTopic, key, dto);
             log.info("Kafkaya mesaj gonderildi {} {}", key, dto);
-
         } catch (Exception e) {
-
             log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}", key, dto);
             throw new KafkaSendException("Kafka Send Exception. " + key + " " + dto);
-
         }
     }
 }

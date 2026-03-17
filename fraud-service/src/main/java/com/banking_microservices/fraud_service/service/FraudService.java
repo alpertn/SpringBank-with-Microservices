@@ -5,16 +5,15 @@ import com.banking_microservices.fraud_service.kafka.KafkaSenderService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class service {
-    private KafkaSenderService kafkaSender;
+public class FraudService {
 
-    public service(KafkaSenderService kafkaSender) {
+    private final KafkaSenderService kafkaSender;
+
+    public FraudService(KafkaSenderService kafkaSender) {
         this.kafkaSender = kafkaSender;
     }
 
-    public void send(KafkaTransactionTopicMessageDto requestDto){
-        kafkaSender.sendTransaction(requestDto.getEventUUID(),requestDto);
+    public void send(KafkaTransactionTopicMessageDto requestDto) {
+        kafkaSender.sendTransaction(requestDto.getEventUUID(), requestDto);
     }
-
-
 }

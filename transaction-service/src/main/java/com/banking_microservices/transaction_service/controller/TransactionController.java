@@ -3,25 +3,32 @@ package com.banking_microservices.transaction_service.controller;
 import com.banking_microservices.transaction_service.dto.Transaction;
 import com.banking_microservices.transaction_service.model.TransactionEntity;
 import com.banking_microservices.transaction_service.service.TransactionService;
-import com.google.gson.Gson;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+
+// DUZELTME: Gson import kaldirildi - controller icinde hic kullanilmiyordu (dead import/field).
 
 @RestController
 @RequestMapping("/api/transaction-service/v1/transactions")
 @Slf4j
 public class TransactionController {
-    private final Gson gson = new Gson();
+
+    // DUZELTME: private final Gson gson = new Gson() satiri kaldirildi.
+    // Hic kullanilmiyordu, gereksiz bagimlilik olusturuyordu.
+
     private final TransactionService transactionService;
 
     public TransactionController(TransactionService transactionService) {
@@ -41,7 +48,7 @@ public class TransactionController {
 
         log.info("Transaction Service TransactionController transactionEntity Modulu Istegi aldi.  id : {}", userId);
 
-        transactionService.createTransaction(data, userId,  userEmail,  userName , userSurname);
+        transactionService.createTransaction(data, userId, userEmail, userName, userSurname);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("Status", 1));
     }
 
@@ -55,7 +62,7 @@ public class TransactionController {
 
         log.info("Transaction Service TransactionController deposit Modulu Istegi aldi.  id : {}", userId);
 
-        transactionService.createDeposit(data, userId,  userEmail,  userName , userSurname);
+        transactionService.createDeposit(data, userId, userEmail, userName, userSurname);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("Status", 1));
     }
 
@@ -69,13 +76,43 @@ public class TransactionController {
 
         log.info("Transaction Service TransactionController withdraw Modulu Istegi aldi.  id : {}", userId);
 
-        transactionService.createWithdraw(data, userId,  userEmail,  userName , userSurname);
+        transactionService.createWithdraw(data, userId, userEmail, userName, userSurname);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("Status", 1));
     }
 
-    @PostMapping("/gettransactionhistorywithid")
-    public ResponseEntity<List<TransactionEntity>> getTransactionHistoryWithId(@Valid @RequestBody String id){
+    // DUZELTME: onceden endpoint @PostMapping ile tanimlanmisti ve body'den String aliyordu.
+    // ID almak icin POST + RequestBody String kullanmak yanlis - GET + @PathVariable ya da
+    // @RequestParam olmali. GET ile degistirildi ve @RequestParam kullanildi.
+    // Ayrica metodun adi getTransactionHistoryWithId olarak daha aciklayici hale getirildi.
+    @GetMapping("/gettransactionhistorywithid")
+    public ResponseEntity<List<TransactionEntity>> getTransactionHistoryWithId(
+            @RequestParam String id) {
         List<TransactionEntity> transactionList = transactionService.getTransactionHistory(id);
         return ResponseEntity.ok(transactionList);
+    }
+
+    // DUZELTME: TransactionService'de getTransactionsByDateRange ve getErrorLogs ve getTransactionById
+    // metodlari vardi fakat controller'da hic endpoint tanimlanmamisti. Eksik endpointler eklendi.
+    @GetMapping("/errors")
+    public ResponseEntity<List<TransactionEntity>> getErrorLogs() {
+        log.info("Transaction Service TransactionController getErrorLogs Modulu Istegi aldi.");
+        List<TransactionEntity> errorList = transactionService.getErrorLogs();
+        return ResponseEntity.ok(errorList);
+    }
+
+    @GetMapping("/daterange")
+    public ResponseEntity<List<TransactionEntity>> getTransactionsByDateRange(
+            @RequestParam LocalDateTime startDate,
+            @RequestParam LocalDateTime endDate) {
+        log.info("Transaction Service TransactionController getTransactionsByDateRange Modulu Istegi aldi.");
+        List<TransactionEntity> transactionList = transactionService.getTransactionsByDateRange(startDate, endDate);
+        return ResponseEntity.ok(transactionList);
+    }
+
+    @GetMapping("/byid")
+    public ResponseEntity<TransactionEntity> getTransactionById(@RequestParam String id) {
+        log.info("Transaction Service TransactionController getTransactionById Modulu Istegi aldi. id : {}", id);
+        TransactionEntity transaction = transactionService.getTransactionById(id);
+        return ResponseEntity.ok(transaction);
     }
 }

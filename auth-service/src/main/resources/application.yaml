@@ -27,6 +27,8 @@ keycloak:
   realm: ${KEYCLOAK_REALM:banking}
   client-id: ${KEYCLOAK_CLIENT_ID:banking-app}
   client-secret: ${KEYCLOAK_CLIENT_SECRET:secret123}
+  admin-username: ${KEYCLOAK_ADMIN_USERNAME:admin}
+  admin-password: ${KEYCLOAK_ADMIN_PASSWORD:admin}
 
 management:
   endpoints:

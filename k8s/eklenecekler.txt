@@ -28,4 +28,3 @@ Onemli: Gatewaydan gectigi gibi tokenden iban userId gibi verilerin alinmasi tra
 
 Kafka event id ve event id table. -->> YAPILDI
 circuit breake
-herseyi test etmeni istiyorum sitedeki login register paragonderme gibi tum ozellikleri yapmamissin ve keycloack setup yerine manuel setup nasil olacak websiteye girerek onu da anlat ve %100 tum siteyi test et kontrol et

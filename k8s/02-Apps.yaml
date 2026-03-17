@@ -29,6 +29,7 @@ spec:
       containers:
         - name: user-service
           image: SpringBankWithMicroservices/user-service:1.0.0
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8081
           resources: # Podun calisacagi cpu ve memory scaling
@@ -55,6 +56,8 @@ spec:
             # Kafka
             - name: SPRING_APPLICATION_JSON
               value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092
             # Kafka Topic
             # Create User
             - name: KAFKA_AUTH_SERVICE_CREATE_USER_LISTENER
@@ -150,6 +153,7 @@ spec:
       containers:
         - name: money-service
           image: SpringBankWithMicroservices/money-service:1.0.0
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8082
           resources:
@@ -176,6 +180,8 @@ spec:
             # Kafka
             - name: SPRING_APPLICATION_JSON
               value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092
             # Kafka Topic
             - name: KAFKA_CREATE_USER_SENDER
               value: banking-microservices.create-user.money-service.success.v1
@@ -204,13 +210,13 @@ spec:
             - name: KAFKA_TRANSACTION_BLOCKUSER_SENDER
               value: banking-microservices.transaction.money-service.block-money.success.v1
             - name: KAFKA_TRANSACTION_TOPIC_DEPOSIT_LISTENER
-              value: banking-microservices.transaction.deposit.created.v1
+              value: banking-microservices.transaction.deposit.fraud-checked.v1
             - name: KAFKA_TRANSACTION_TOPIC_DEPOSIT_SENDER
-              value: banking-microservices.transaction.deposit.transaction-service.success.v1
+              value: banking-microservices.transaction.deposit.money-service.success.v1
             - name: KAFKA_TRANSACTION_TOPIC_WITHDRAW_LISTENER
-              value: banking-microservices.transaction.withdraw.created.v1
+              value: banking-microservices.transaction.withdraw.fraud-checked.v1
             - name: KAFKA_TRANSACTION_TOPIC_WITHDRAW_SENDER
-              value: banking-microservices.transaction.withdraw.transaction-service.success.v1
+              value: banking-microservices.transaction.withdraw.money-service.success.v1
 
 ---
 
@@ -278,6 +284,7 @@ spec:
       containers:
         - name: transaction-service
           image: SpringBankWithMicroservices/transaction-service:1.0.0
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8083
           resources:
@@ -304,6 +311,8 @@ spec:
             # Kafka
             - name: SPRING_APPLICATION_JSON
               value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092
             - name: KAFKA_TRANSACTION_TOPIC_LISTENER
               value: banking-microservices.transaction.transaction-service.success.v1
             - name: KAFKA_TRANSACTION_TOPIC_SENDER
@@ -312,8 +321,12 @@ spec:
               value: banking-microservices.transaction.transaction-service.error.v1
             - name: KAFKA_TRANSACTION_TOPIC_DEPOSIT_SENDER
               value: banking-microservices.transaction.deposit.created.v1
+            - name: KAFKA_TRANSACTION_TOPIC_DEPOSIT_LISTENER
+              value: banking-microservices.transaction.deposit.money-service.success.v1
             - name: KAFKA_TRANSACTION_TOPIC_WITHDRAW_SENDER
               value: banking-microservices.transaction.withdraw.created.v1
+            - name: KAFKA_TRANSACTION_TOPIC_WITHDRAW_LISTENER
+              value: banking-microservices.transaction.withdraw.money-service.success.v1
             - name: KAFKA_TRANSACTION_LOGGER_LISTENER
               value: 'banking-microservices.transaction.*'
 
@@ -384,6 +397,7 @@ spec:
       containers:
         - name: auth-service
           image: SpringBankWithMicroservices/auth-service:1.0.0
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8084
           resources:
@@ -428,6 +442,8 @@ spec:
               value: "8084"
             - name: SPRING_APPLICATION_JSON
               value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092
             - name: KAFKA_CREATEUSER_SENDER
               value: banking-microservices.create-user.auth-service.progress.v1
 
@@ -497,6 +513,7 @@ spec:
       containers:
         - name: gateway
           image: SpringBankWithMicroservices/gateway:1.0.0
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8095
           resources:
@@ -600,6 +617,7 @@ spec:
       containers:
         - name: fraud-service
           image: SpringBankWithMicroservices/fraud-service:1.0.0
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8085
           resources:
@@ -626,6 +644,8 @@ spec:
             # Kafka
             - name: SPRING_APPLICATION_JSON
               value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092
             # Kafka Topic
             - name: KAFKA_TRANSACTION_TOPIC_LISTENER
               value: banking-microservices.transaction.user-service.username-validation.success.v1
@@ -635,8 +655,12 @@ spec:
               value: banking-microservices.transaction.transaction-service.error.v1
             - name: KAFKA_TRANSACTION_TOPIC_DEPOSIT_LISTENER
               value: banking-microservices.transaction.deposit.created.v1
+            - name: KAFKA_TRANSACTION_TOPIC_DEPOSIT_SENDER
+              value: banking-microservices.transaction.deposit.fraud-checked.v1
             - name: KAFKA_TRANSACTION_TOPIC_WITHDRAW_LISTENER
               value: banking-microservices.transaction.withdraw.created.v1
+            - name: KAFKA_TRANSACTION_TOPIC_WITHDRAW_SENDER
+              value: banking-microservices.transaction.withdraw.fraud-checked.v1
 
 ---
 

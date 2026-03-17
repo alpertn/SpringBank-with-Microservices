@@ -9,7 +9,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Table;
+
 @Entity
+@Table(name = "kafka_event")
 @Data
 @Builder
 @NoArgsConstructor
@@ -17,5 +20,6 @@ import java.time.LocalDateTime;
 public class KafkaEvent {
     @Id
     private String eventId;
+    private String eventType;
     private LocalDateTime createdAt;
 }

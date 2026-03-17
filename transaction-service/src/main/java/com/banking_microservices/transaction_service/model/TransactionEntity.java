@@ -31,7 +31,7 @@ public class TransactionEntity {
 
     private String eventId;
 
-    private String receiverName= null;
+    private String receiverName = null;
 
     @Builder.Default
     private String senderName = null;
@@ -45,15 +45,15 @@ public class TransactionEntity {
     @Builder.Default
     private String receiverEmail = null;
 
-    private String receiverSurname= null;
+    private String receiverSurname = null;
 
-    private String senderUserId= null;
+    private String senderUserId = null;
 
-    private String receiverUserId= null;
+    private String receiverUserId = null;
 
-    private String senderIban= null;
+    private String senderIban = null;
 
-    private String receiverIban= null;
+    private String receiverIban = null;
 
     @Column(precision = 19, scale = 2)
     @com.fasterxml.jackson.annotation.JsonProperty("money")

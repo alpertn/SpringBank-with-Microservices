@@ -40,7 +40,8 @@ public class KafkaSender {
     // }
     public void sendTransaction(String key, KafkaTransactionTopicMessageDto kafkaTransactionTopicMessageDto) {
         try {
-            String jsonMessageForKafka = gson.toJson(kafkaTransactionTopicMessageDto);
+            // DUZELTME: jsonMessageForKafka degiskeni olusturulup hic kullanilmiyordu (dead code).
+            // Kaldirildi. KafkaTemplate zaten GsonSerializer ile serialize ediyor.
             kafkaTemplate.send(transactionCreateTopic, key, kafkaTransactionTopicMessageDto);
             log.info("Kafkaya mesaj gonderildi {} {}", key, kafkaTransactionTopicMessageDto);
         } catch (Exception e) {

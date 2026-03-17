@@ -38,6 +38,10 @@ kubectl rollout restart deployment/auth-service -n banking-microservices
 kubectl rollout restart deployment/transaction-service -n banking-microservices
 kubectl rollout restart deployment/money-service -n banking-microservices
 
+kubectl logs -n banking-microservices deploy/fraud-service --tail=200
+
+kubectl logs -n banking-microservices pod/fraud-service-799dc8d9b7-tk6n8 > fraud_logs.txt
+
 docker build --no-cache -t SpringBankWithMicroservices/auth-service:1.0.0 ./auth-service
 docker build --no-cache -t SpringBankWithMicroservices/user-service:1.0.0 ./user-service
 docker build --no-cache -t SpringBankWithMicroservices/money-service:1.0.0 ./money-service
@@ -46,6 +50,11 @@ docker build --no-cache -t SpringBankWithMicroservices/gateway:1.0.0 ./gateway
 docker build --no-cache -t SpringBankWithMicroservices/fraud-service:1.0.0 ./fraud-service
 kubectl rollout restart deployment -n banking-microservices
 kubectl get pods -n banking-microservices
+
+…\SpringBank-with-Microservices > kubectl logs -n banking-microservices -l app=transaction-service --since=2m 2>&1 | findstr /i "withdraw Withdraw error Error"
+
+
+kubectl logs -n banking-microservices deploy/fraud-service --tail=50 > fraud_logs_new.txt
 
 Docker Imageleri sil
 docker rmi SpringBankWithMicroservices/auth-service:1.0.0

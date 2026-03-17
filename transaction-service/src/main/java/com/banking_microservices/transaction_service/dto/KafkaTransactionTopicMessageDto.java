@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UuidGenerator;
+// DUZELTME: @UuidGenerator bir JPA/Hibernate anotasyonu, DTO'da kullanilmaz. Import kaldirildi.
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -18,8 +18,7 @@ import com.banking_microservices.transaction_service.dto.enums.TransactionStatus
 @AllArgsConstructor
 public class KafkaTransactionTopicMessageDto {
 
-    @UuidGenerator
-    private String eventUUID; // = UUID.randomUUID().toString()
+    private String eventUUID;
 
     @Builder.Default
     private String senderName = null;
