@@ -25,16 +25,14 @@
 
 <div align="center">
   <h2> Projedeki Teknolojiler </h2>
-    <h4>1 - Zipkin Log Trace</h4>
     <h4>2 - Kubernetes</h4>
     <h4>3 - Spring Security</h4>
     <h4>4 - Kafka ile Event Driven Architecture</h4>
     <h4>5 - Container Docker image destekli</h4>
     <h4>6 - Exception Handling</h4>
     <h4>7 - Redis</h4>
-    <h4>8 - Rate Limitting</h4>
     <h4>9 - Global Exception Handling</h4>
-    <h4>10 - KeyCloack ile token dogrulama</h4>
+    <h4>10 - KeyCloak ile token dogrulama</h4>
     <h4>11 - Spring Gateway</h4>
     <h4>12 - Dogru Mikroservis Anlayisi ve mikroservis icerikli kod.</h4>
     <h4>13 - Hpa(Kubernetes'ın ıcınde)</h4>
