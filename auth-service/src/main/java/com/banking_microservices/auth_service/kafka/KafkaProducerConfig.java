@@ -15,6 +15,10 @@ import org.apache.kafka.common.serialization.Serializer;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Kafka Icin Config
+ *
+ */
 @Configuration
 public class KafkaProducerConfig {
 
@@ -44,6 +48,9 @@ public class KafkaProducerConfig {
         return new KafkaTemplate<>(producerFactory());
     }
 
+    /**
+     * Gson Serializerin Amaci Kafka verileri alirken ve gonderirken Gson kullanirsak gson localdatatime verisini ceviremez. oyuzden Confige ekliyoruz.
+     */
     public static class GsonSerializer implements Serializer<Object> {
         private final Gson gson = new GsonBuilder()
                 .serializeNulls()

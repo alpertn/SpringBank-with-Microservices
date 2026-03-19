@@ -4,11 +4,18 @@ import com.banking_microservices.auth_service.dto.CreateUserTopicDto;
 import com.banking_microservices.auth_service.exception.KafkaSendException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.stereotype.Service;
 
+/**
+ * Kafka Topic Sender class
+ * <p> Bu class Kafka topiclerine veri gonderir <p>
+ */
 @Service
+@Slf4j
 public class KafkaSender {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
@@ -21,64 +28,23 @@ public class KafkaSender {
     @Value("${kafka.topics.createuser.sender}")
     private String createUserSenderTopic;
 
+    /**
+     * Kafka CreateUser  topıcıne mesaj gonderıcı.
+     * Bu class Controller tarafından Cagırılıyor.
+     *
+     * {@link CreateUserTopicDto} turundeki veriyi Kafka topic'ıne gonderır.
+     * @param dto createUserTopıcDto
+     */
     public void sendCreateUserToUserTopic(CreateUserTopicDto dto) {
         try {
+            log.info("sendCreateUserToUserTopic Class veri geldi. Auth-Service" + dto.getKeycloackUserUUID());
             kafkaTemplate.send(createUserSenderTopic, dto.getKeycloackUserUUID(), dto);
+            log.info("sendCreateUserToUserTopic Class Kafkaya veri gonderildi. Auth-Service" + dto.getKeycloackUserUUID());
+
         } catch (Exception e) {
+            log.warn("sendCreateUserToUserTopic Class Kafkaya veri Gonderilemedi. Auth-Service" + dto.getKeycloackUserUUID());
             throw new KafkaSendException("An Exception With dto to send kafka" + e.getMessage());
         }
     }
 
 }
-// @Slf4j
-// @Service
-// public class KafkaSender {
-//
-// private final KafkaTemplate<String, Object> kafkaTemplate;
-//
-// @Value("${kafka.topics.create-user.sender}")
-// private String createUserTopic;
-//
-// @Value("${kafka.topics.username-validation.sender}")
-// private String usernameValidationSuccessTopic;
-//
-// @Value("${kafka.topics.username-validation.error}")
-// private String usernameValidationErrorTopic;
-//
-// public KafkaSender(KafkaTemplate<String, Object> kafkaTemplate) {
-// this.kafkaTemplate = kafkaTemplate;
-// }
-//
-// public void sendCreateUser(String userId) {
-// try {
-// kafkaTemplate.send(createUserTopic, userId);
-// log.info("sendCreateUser mesaj gonderildi {} ", userId);
-// } catch (Exception e) {
-// log.warn("sendCreateUser Kafkaya mesaj godnerilirken hata olustu {} ",
-// userId);
-// throw new KafkaSendException("Kafka Send Exception. " + userId);
-// }
-// }
-//
-// public void sendUsernameValidationSuccess(String key,
-// KafkaTransactionTopicMessageDto dto) {
-// try {
-// kafkaTemplate.send(usernameValidationSuccessTopic, key, dto);
-// log.info("Kafkaya mesaj gonderildi {} {}", key, dto);
-// } catch (Exception e) {
-// log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}", key, dto);
-// throw new KafkaSendException("Kafka Send Exception. " + key + " " + dto);
-// }
-// }
-//
-// public void sendUsernameValidationError(String key,
-// KafkaTransactionTopicMessageDto dto) {
-// try {
-// kafkaTemplate.send(usernameValidationErrorTopic, key, dto);
-// log.info("Kafkaya mesaj gonderildi {} {}", key, dto);
-// } catch (Exception e) {
-// log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}", key, dto);
-// throw new KafkaSendException("Kafka Send Exception. " + key + " " + dto);
-// }
-// }
-// }

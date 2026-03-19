@@ -73,11 +73,11 @@ public class AuthController {
     }
 
     /**
-     * Keycloak a register istegi gonderir.
+     * Keycloak a register istegi gonderir. Bundan sonra KafkaTopic ine User Serviceye ulasacak sekilde istek gonderir ve iki mikroservisde de kayit olusturur.
      * @param requestdto
      * @return 200 status code
      */
-    @PostMapping("register")
+    @PostMapping("/register")
     public ResponseEntity<?> registerEndpoint(@Valid @RequestBody RegisterDto requestdto) {
         authService.createUser(requestdto);
         return ResponseEntity.ok().build();
