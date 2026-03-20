@@ -59,6 +59,6 @@ management:
 
 logging: # Bağlantı: Loglama. Varsa: Uygulama takibi. Yoksa: Karanlık.
   pattern: # Bağlantı: Format. Varsa: Okunabilir. Yoksa: Karışık.
-    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n" # Bağlantı: Konsol Dizilimi. Varsa: Tarih başta, mesaj sonda. Yoksa: Varsayılan Spring logu.
+    console: "[user-service] %msg%n" # Bağlantı: Konsol Dizilimi. Varsa: Tarih başta, mesaj sonda. Yoksa: Varsayılan Spring logu.
   level: # Bağlantı: Log Seviyesi. Varsa: Gürültü engellenir. Yoksa: Çok log basar.
     root: INFO # Bağlantı: Genel Seviye. Varsa: Önemli bilgiler. Yoksa: Debug detayları.

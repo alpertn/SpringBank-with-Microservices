@@ -40,6 +40,6 @@ management:
       show-details: always
 logging:
   pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    console: "[auth-service] %msg%n"
   level:
     root: INFO

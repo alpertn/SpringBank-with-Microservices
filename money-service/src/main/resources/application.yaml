@@ -63,6 +63,6 @@ management:
 
 logging:
   pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    console: "[money-service] %msg%n"
   level:
     root: INFO

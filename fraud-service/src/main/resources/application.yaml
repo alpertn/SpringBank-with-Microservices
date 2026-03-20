@@ -52,6 +52,6 @@ management:
 
 logging:
   pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    console: "[fraud-service] %msg%n"
   level:
     root: INFO

@@ -48,6 +48,6 @@ spring:
 
 logging:
   pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    console: "[transaction-service] %msg%n"
   level:
     root: INFO
