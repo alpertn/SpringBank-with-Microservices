@@ -24,6 +24,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+/**
+ * Login Register gibi Keycloak islemlerinin yapildigi
+ * Admin apisine gefrek kalmadan yapilabilen
+ * projeye eklenmis tum islemlerin methodlari buradadir.
+ *
+ * Login
+ * refleshTokenWithRefleshToken
+ * logout
+ * gibi methodlar vardir.
+ *
+ */
+
 @Service
 @Slf4j
 public class KeycloackUserService {
@@ -56,13 +68,22 @@ public class KeycloackUserService {
     @Value("${keycloak.client-secret}")
     private String clientSecret;
 
-    // Todo: Bunlar KeyCloack'da Client olusturdugumuzda otomatik olarak eklenilen
-    // Token olusturma ve Logout Endpointleri. Bunlar Kubernetten de gonderilebilir.
-    // Ama otomatik olusturuldugu icin gerek kalmiyor.
+    // Default Keycloak URI
     private static final String TOKEN_URI = "/realms/{realm}/protocol/openid-connect/token";
     private static final String LOGOUT_URI = "/realms/{realm}/protocol/openid-connect/logout";
 
-    // keycloackdan aldigi tokeni dondurur.
+
+    /**
+     * Called By {@link com.banking_microservices.auth_service.controller.AuthController}
+     *
+     * keycloakin Login apilerine istek gonderir.
+     *
+     * @param loginRequest {@link com.banking_microservices.auth_service.controller.AuthController} den aldigi veri
+     * @return {@link TokenResponseDto} token dondurur.
+     * @throws InvalidTokenException HttpClientErrorException.Unauthorized Expired veya invalid token.
+     * @throws KeycloakConnectionException ResourceAccessException aciga ciktiginda keycloackConnectionda hata vardir oyuzden daha anlasilir bir sekilde exception firlattim.
+     */
+
     public TokenResponseDto login(LoginRequestDto loginRequest) {
         log.info(" ({}) > KeycloackUserService | login -> Login islemi basladi. Request: {}", currentTime.get(), gson.toJson(loginRequest));
         var params = new HashMap<String, String>();
@@ -91,15 +112,32 @@ public class KeycloackUserService {
         }
     }
 
-    // KeyCloack MultiValueMap Object almasi lazim. sadece onu kabul ediyor. o
-    // yuzden aldigimiz Map'ı MultiValueMap'e cevırıyoruz
+
+    /**
+     * Formatter.
+     * Aldıgımız Map verıyı multıvalueMap'e cevırıyoruz.
+     * KeyCloack MultiValueMap Object almasi lazim. sadece onu kabul ediyor. o
+     * yuzden aldigimiz Map'ı MultiValueMap'e cevırıyoruz
+      * @param map
+     * @return {@link MultiValueMap<String, String>}
+     */
+
     private MultiValueMap<String, String> toMultiValueMap(Map<String, String> map) {
         var multiValueMap = new LinkedMultiValueMap<String, String>();
         map.forEach(multiValueMap::add); // bitene kadar ekliyor
         return multiValueMap;
     }
 
-    // eski tokeni gonderip yenisini aliyor.
+
+    /**
+     *  refresh token alıyor ve access token olusturup donduruyor.
+     *
+     * @param refleshToken
+     * @return
+     * @throws InvalidTokenException HttpClientErrorException.Unauthorized Expired veya invalid token.
+     * @throws KeycloakConnectionException ResourceAccessException aciga ciktiginda keycloackConnectionda hata vardir oyuzden daha anlasilir bir sekilde exception firlattim.
+     */
+
     public RefleshTokenRequestDto refleshTokenWithRefleshToken(String refleshToken) {
         log.info(" ({}) > KeycloackUserService | refleshTokenWithRefleshToken -> Refresh token islemi basladi. Token: {}", currentTime.get(), refleshToken);
         var params = new HashMap<String, String>();
@@ -128,7 +166,14 @@ public class KeycloackUserService {
         }
     }
 
-    // Logout URI Istek atiyor.
+
+    /**
+     * Keycloak'ın Logout URI Istek atiyor. logOut islemi ile Keycloak tokeni siliyor.
+     * @param refleshToken
+     * @throws KeycloakConnectionException ResourceAccessException Duz keycloackConnection Exceptiondur.
+     * @throws InvalidTokenException HttpClientErrorException.Unauthorized Expired veya invalid token.
+     */
+
     public void logOut(String refleshToken) { // Token silme
         log.info(" ({}) > KeycloackUserService | logOut -> Logout islemi basladi. Token: {}", currentTime.get(), refleshToken);
         var params = new HashMap<String, String>();

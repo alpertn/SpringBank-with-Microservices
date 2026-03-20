@@ -40,6 +40,8 @@ management:
       show-details: always
 logging:
   pattern:
-    console: "[auth-service] %msg%n"
+    console: "%-5level --- [auth-service] : %msg%n"
   level:
     root: INFO
+    org.apache.kafka: WARN
+    org.springframework.kafka: WARN

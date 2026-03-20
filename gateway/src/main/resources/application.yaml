@@ -57,6 +57,8 @@ management:
 
 logging:
   pattern:
-    console: "[gateway] %msg%n"
+    console: "%-5level --- [gateway] : %msg%n"
   level:
     root: INFO
+    org.apache.kafka: WARN
+    org.springframework.kafka: WARN

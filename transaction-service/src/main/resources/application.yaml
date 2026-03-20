@@ -48,6 +48,8 @@ spring:
 
 logging:
   pattern:
-    console: "[transaction-service] %msg%n"
+    console: "%-5level --- [transaction-service] : %msg%n"
   level:
     root: INFO
+    org.apache.kafka: WARN
+    org.springframework.kafka: WARN

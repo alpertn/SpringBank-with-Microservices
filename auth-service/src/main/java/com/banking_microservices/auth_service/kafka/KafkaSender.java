@@ -46,8 +46,9 @@ public class KafkaSender {
     private String createUserSenderTopic;
 
     /**
-     * Sends CreateUser message to Kafka topic.
-     * Called by Controller.
+     * CreateUser topıcıne mesaj gonderır
+     * Controller tarafından cagırılır.
+     *
      *
      * @param dto createUserTopicDto
      */

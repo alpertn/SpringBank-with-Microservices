@@ -52,6 +52,8 @@ management:
 
 logging:
   pattern:
-    console: "[fraud-service] %msg%n"
+    console: "%-5level --- [fraud-service] : %msg%n"
   level:
     root: INFO
+    org.apache.kafka: WARN
+    org.springframework.kafka: WARN

@@ -63,6 +63,8 @@ management:
 
 logging:
   pattern:
-    console: "[money-service] %msg%n"
+    console: "%-5level --- [money-service] : %msg%n"
   level:
     root: INFO
+    org.apache.kafka: WARN
+    org.springframework.kafka: WARN

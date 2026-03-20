@@ -1,5 +1,6 @@
 package com.banking_microservices.auth_service.service;
 
+import com.banking_microservices.auth_service.dto.CreateUserTopicDto;
 import com.banking_microservices.auth_service.dto.RegisterDto;
 import com.banking_microservices.auth_service.dto.Role;
 import com.banking_microservices.auth_service.exception.KeycloackUserCreateException;
@@ -30,10 +31,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Bu class {@link Keycloak} in dependecylerini kullanir.
+ * Keycloack Apilerine istek gonderir aldigi istegin response ceker.
+ *
+ * Genelde Controller -> AuthService -> KeycloackAdminService olarak ilerler.
+ *
+ * Keycloack Default config
+ * Keycloak Create User
+ * Keycloak assignRole
+ * Keycloack existsByUserId sorgulari vardir.
+ *
+ * */
+
 @Service
 @Slf4j
 public class KeycloackAdminService {
 
+    /**
+     * Gson Builder. {@link Gson} LocalDateTime gibi verileri almasi icinbu configi yazmamiz lazim.
+     */
     private final Gson gson = new GsonBuilder()
             .serializeNulls()
             .registerTypeAdapter(java.time.LocalDateTime.class,
@@ -64,7 +81,7 @@ public class KeycloackAdminService {
 
     private Keycloak keycloak;
 
-    // keycloack config
+    // keycloack default admin config.
     @PostConstruct
     public void init() {
         this.keycloak = KeycloakBuilder.builder()
@@ -76,6 +93,14 @@ public class KeycloackAdminService {
                 .build();
     }
 
+    /**
+     *
+     * Bu method CreateKeycloakUser yapar.
+     *
+     * @param register {@link com.banking_microservices.auth_service.controller.AuthController} gelen geri {@link AuthService} gelir. ve auth service called this method.
+     * @param role {@link AuthService} den gelen veridir.
+     * @return UserId Dondurur.
+     */
     public String createKeycloakUser(RegisterDto register, Role role) {
         log.info(" ({}) > KeycloackAdminService | createKeycloakUser -> Metoda veri geldi. DTO: {}, Role: {}", currentTime.get(), gson.toJson(register), role.name());
 
@@ -83,13 +108,13 @@ public class KeycloackAdminService {
             log.warn(" ({}) > KeycloackAdminService | createKeycloakUser -> Kullanici zaten var! DTO: {}", currentTime.get(), gson.toJson(register));
             throw new KeycloakUserAlreadyExists("Email Already Exists");
         }
-        // Ceredential (Password Bigileri icin keycloakda zorunludur)
+        // Ceredential passwrod bilgileri icin keycloak standartdi bu burdan gondermemiz lazim.
         CredentialRepresentation credential = new CredentialRepresentation();
         credential.setType(CredentialRepresentation.PASSWORD);
         credential.setValue(register.getPassword());
         credential.setTemporary(false);
 
-        // User
+        // User bilgileri.
         UserRepresentation user = new UserRepresentation();
         user.setEmail(register.getEmail());
         user.setUsername(register.getEmail());
@@ -118,6 +143,7 @@ public class KeycloackAdminService {
             throw new KeycloackUserCreateException("Location header missing after successful creation.");
         }
 
+        // FORMATTER
         String userId = location.substring(location.lastIndexOf('/') + 1);
         // http istegi acik kaldigi icin kapatmamiz lazim.
         response.close();
@@ -130,6 +156,13 @@ public class KeycloackAdminService {
 
     }
 
+
+    /**
+     * Keycloak Apilerini kullanarak id ve roleName ile AsiggnRole islemini yapan method
+     *
+     * @param userId userId
+     * @param roleName RoleName
+     */
     private void assignRole(String userId, String roleName) {
         log.info(" ({}) > KeycloackAdminService | assignRole -> Role atama islemi basladi. UserId: {}, Role: {}", currentTime.get(), userId, roleName);
         try {
@@ -144,11 +177,17 @@ public class KeycloackAdminService {
         }
     }
 
+    /**
+     * emaıl degıskenı alıp bunu keycloaka gonderıp sorgu baslatıp emaıl varmı yokmu sorusunu soran method.
+     *
+     *
+     * @param email
+     * @return TRUE veya FALSE
+     */
     public boolean existsByEmail(String email) {
         List<UserRepresentation> users = keycloak.realm(realm).users().searchByEmail(email, true);
-        boolean exists = users != null && !users.isEmpty();
-        log.info(" ({}) > KeycloackAdminService | existsByEmail -> Email kontrolu: {} - Mevcut mu? {}", currentTime.get(), email, exists);
-        return exists;
+        log.info(" ({}) > KeycloackAdminService | existsByEmail -> Email kontrolu: {} - Mevcut mu? {}", currentTime.get(), email, users!= null && !users.isEmpty());
+        return users!= null && !users.isEmpty();
     }
 
 }
