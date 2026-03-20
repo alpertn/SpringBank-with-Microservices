@@ -1,13 +1,3 @@
-Docker Ile Build edip Docker imageye donusturme
-
-kubectl rollout restart deployment/user-service -n banking-microservices
-
-docker build -t SpringBankWithMicroservices/auth-service:1.0.0 ./auth-service
-docker build -t SpringBankWithMicroservices/user-service:1.0.0 ./user-service
-docker build -t SpringBankWithMicroservices/money-service:1.0.0 ./money-service
-docker build -t SpringBankWithMicroservices/transaction-service:1.0.0 ./transaction-service
-docker build -t SpringBankWithMicroservices/gateway:1.0.0 ./gateway
-docker build -t SpringBankWithMicroservices/fraud-service:1.0.0 ./fraud-service
 
 Kubernet Icin Metrics server (Önce kurulmalı)
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
@@ -53,82 +43,7 @@ kubectl get pods -n banking-microservices
 
 …\SpringBank-with-Microservices > kubectl logs -n banking-microservices -l app=transaction-service --since=2m 2>&1 | findstr /i "withdraw Withdraw error Error"
 
-
 kubectl logs -n banking-microservices deploy/fraud-service --tail=50 > fraud_logs_new.txt
 
-Docker Imageleri sil
-docker rmi SpringBankWithMicroservices/auth-service:1.0.0
-docker rmi SpringBankWithMicroservices/user-service:1.0.0
-docker rmi SpringBankWithMicroservices/money-service:1.0.0
-docker rmi SpringBankWithMicroservices/transaction-service:1.0.0
-docker rmi SpringBankWithMicroservices/gateway:1.0.0
-docker rmi SpringBankWithMicroservices/fraud-service:1.0.0
+Arastirilacak
 
-namespace ile tum docker imageleri sil
-docker rmi $(docker images "SpringBankWithMicroservices/*" -q)
-
----------------------------------------------------------------------------------------------------------
-YENI TEST VE KEYCLOAK ADIMLARI
----------------------------------------------------------------------------------------------------------
-
-1. KEYCLOAK KURULUMU (İlk Çalıştırmada Zorunludur)
-Kubernet ayağa kalktığında Keycloak sıfır bir veritabanıyla başladığı için güvenlik ayarlarının yapılması gerekir.
-Aşağıdaki PowerShell komutlarını ard arda terminalinize yapıştırarak kurulumu otomatik yapabilirsiniz:
-
-# 1. Admin Token Al
-$adminTokenResponse = Invoke-RestMethod -Uri "http://localhost:8080/realms/master/protocol/openid-connect/token" -Method Post -Body @{
-    client_id = "admin-cli"
-    username = "alper123"
-    password = "alper123A"
-    grant_type = "password"
-}
-$adminToken = $adminTokenResponse.access_token
-
-# 2. Banking Realm Oluştur
-$realmConfig = @{ realm = "banking"; enabled = $true } | ConvertTo-Json
-Invoke-RestMethod -Uri "http://localhost:8080/admin/realms" -Method Post -Headers @{ Authorization = "Bearer $adminToken" } -Body $realmConfig -ContentType "application/json"
-
-# 3. Client Oluştur (Uygulamanın gateway/auth-service için kullandığı)
-$clientConfig = @{
-    clientId = "banking-app"
-    secret = "Iopu5gL8VfLtIX39701gkwd6iCd7gKW6"
-    enabled = $true
-    publicClient = $false
-    directAccessGrantsEnabled = $true
-    serviceAccountsEnabled = $true
-    standardFlowEnabled = $true
-} | ConvertTo-Json
-
-Invoke-RestMethod -Uri "http://localhost:8080/admin/realms/banking/clients" -Method Post -Headers @{ Authorization = "Bearer $adminToken" } -Body $clientConfig -ContentType "application/json"
-
-# 4. Test Kullanıcısı Oluştur
-$userConfig = @{
-    username = "testuser@bank.com"
-    email = "testuser@bank.com"
-    enabled = $true
-    emailVerified = $true
-    credentials = @(@{ type = "password"; value = "pass123"; temporary = $false})
-} | ConvertTo-Json -Depth 5
-
-Invoke-RestMethod -Uri "http://localhost:8080/admin/realms/banking/users" -Method Post -Headers @{ Authorization = "Bearer $adminToken" } -Body $userConfig -ContentType "application/json"
-
-
-2. SISTEM TESTI VE TOKEN ALMA (POSTMAN VEYA POWERSHELL)
-Sisteme erişmek ve Gateway index'ini görmek için http://localhost:8095/ adresine tarayıcıdan gidebilirsiniz.
-
-Token Almak İçin (Postman):
-URL: POST http://localhost:8095/api/auth/login
-Headers: Content-Type: application/json
-Body:
-{
-    "email": "testuser@bank.com",
-    "password": "pass123"
-}
-
-Token Almak İçin (PowerShell):
-$body = @{ email = "testuser@bank.com"; password = "pass123" } | ConvertTo-Json
-Invoke-RestMethod -Uri "http://localhost:8095/api/auth/login" -Method Post -Body $body -ContentType "application/json"
-
-Test: 
-Auth-Service üzerinden aldığınız JWT token'ı Postman'da "Authorization -> Bearer Token" kısmına yapıştırarak User Service vb. çağırabilirsiniz:
-Örn: GET http://localhost:8095/api/users/profile

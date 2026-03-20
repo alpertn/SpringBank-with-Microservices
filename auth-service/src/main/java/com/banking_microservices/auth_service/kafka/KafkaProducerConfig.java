@@ -11,12 +11,18 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.apache.kafka.common.serialization.Serializer;
+import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Kafka Icin Config
+ * Kafka Icin Producer Config. Bu olmazsa kafkaya veriler gonderilemez. kafkaya veirler raw olarak gonderilemedigi icin
+ * serializer yazmak zorundayiz. Bu defaulttur degisebilir.
+ * mesela ben verileri gson ile donusturdugum gibin gsonserializer ekledim.
+ * Javanin kendi kutuphanesini kullanacak olsayudiniz oraya da onu yazmaniz gerekti.
+ *
+ * Kafka icin {@link ProducerFactory} ve {@link KafkaTemplate} Beanlarını tanımlar.
  *
  */
 @Configuration
@@ -57,6 +63,9 @@ public class KafkaProducerConfig {
                 .registerTypeAdapter(java.time.LocalDateTime.class,
                         (com.google.gson.JsonSerializer<java.time.LocalDateTime>) (src, type, ctx) ->
                                 new com.google.gson.JsonPrimitive(src.toString()))
+                .registerTypeAdapter(java.time.LocalDateTime.class,
+                        (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
+                                java.time.LocalDateTime.parse(json.getAsString()))
                 .create();
 
         @Override

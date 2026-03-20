@@ -10,40 +10,56 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.function.Supplier;
+
 /**
- * Kafka Topic Sender class
  * <p> Bu class Kafka topiclerine veri gonderir <p>
+ * Kafka CreateUser  topıcıne mesaj gonderıcı.
+ * {@link CreateUserTopicDto} turundeki veriyi Kafka topic'ıne gonderır.
  */
 @Service
 @Slf4j
 public class KafkaSender {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
-    private final Gson gson = new GsonBuilder().serializeNulls().create();
+    
+    private final Gson gson = new GsonBuilder()
+            .serializeNulls()
+            .registerTypeAdapter(java.time.LocalDateTime.class,
+                    (com.google.gson.JsonSerializer<java.time.LocalDateTime>) (src, type, ctx) ->
+                            new com.google.gson.JsonPrimitive(src.toString()))
+            .registerTypeAdapter(java.time.LocalDateTime.class,
+                    (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
+                            java.time.LocalDateTime.parse(json.getAsString()))
+            .create();
 
-    public KafkaSender(KafkaTemplate<String, Object> kafkaTemplate) {
+    private final Supplier<String> currentTime;
+
+    public KafkaSender(KafkaTemplate<String, Object> kafkaTemplate, Supplier<String> currentTime) {
         this.kafkaTemplate = kafkaTemplate;
+        this.currentTime = currentTime;
     }
 
     @Value("${kafka.topics.createuser.sender}")
     private String createUserSenderTopic;
 
     /**
-     * Kafka CreateUser  topıcıne mesaj gonderıcı.
-     * Bu class Controller tarafından Cagırılıyor.
+     * Sends CreateUser message to Kafka topic.
+     * Called by Controller.
      *
-     * {@link CreateUserTopicDto} turundeki veriyi Kafka topic'ıne gonderır.
-     * @param dto createUserTopıcDto
+     * @param dto createUserTopicDto
      */
     public void sendCreateUserToUserTopic(CreateUserTopicDto dto) {
         try {
-            log.info("sendCreateUserToUserTopic Class veri geldi. Auth-Service" + dto.getKeycloackUserUUID());
+            log.info(" ({}) > KafkaSender | sendCreateUserToUserTopic -> Kafkaya veri gonderilmek uzere alindi. {}", currentTime.get(), gson.toJson(dto));
             kafkaTemplate.send(createUserSenderTopic, dto.getKeycloackUserUUID(), dto);
-            log.info("sendCreateUserToUserTopic Class Kafkaya veri gonderildi. Auth-Service" + dto.getKeycloackUserUUID());
+            log.info(" ({}) > KafkaSender | sendCreateUserToUserTopic -> Kafka Topicine veri gonderildi. {}", currentTime.get(), gson.toJson(dto));
 
         } catch (Exception e) {
-            log.warn("sendCreateUserToUserTopic Class Kafkaya veri Gonderilemedi. Auth-Service" + dto.getKeycloackUserUUID());
-            throw new KafkaSendException("An Exception With dto to send kafka" + e.getMessage());
+            log.warn(" ({}) > KafkaSender | sendCreateUserToUserTopic -> Kafka Topicine veri gonderilemedi! Hata: {}", currentTime.get(), e);
+            throw new KafkaSendException("An Exception With dto to send kafka" + e);
         }
     }
 

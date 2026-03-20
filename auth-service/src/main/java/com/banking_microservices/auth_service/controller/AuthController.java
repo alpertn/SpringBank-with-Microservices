@@ -6,81 +6,65 @@ import com.banking_microservices.auth_service.service.KeycloackUserService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.function.client.WebClient;
 
-/**
- * Auth Service icin Controller Class
- * <p>Register login refresh logout endpointleri var.
- * Tokeni Keycloakdan alir.</p>
- *
- */
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.function.Supplier;
 
 @RestController
 @RequestMapping("/api/auth-service/v1/auth")
+@Slf4j
 public class AuthController {
 
-    // Gson SerializeNulls ile null olan degerleri de gosterir.
-    private final Gson gson = new GsonBuilder().serializeNulls().create();
+    private final Gson gson = new GsonBuilder()
+            .serializeNulls()
+            .registerTypeAdapter(java.time.LocalDateTime.class,
+                    (com.google.gson.JsonSerializer<java.time.LocalDateTime>) (src, type, ctx) ->
+                            new com.google.gson.JsonPrimitive(src.toString()))
+            .registerTypeAdapter(java.time.LocalDateTime.class,
+                    (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
+                            java.time.LocalDateTime.parse(json.getAsString()))
+            .create();
+
+    private final Supplier<String> currentTime;
     private final KeycloackUserService keycloackUserService;
     private final AuthService authService;
 
-    // constructor
-    public AuthController(KeycloackUserService keycloackUserService, AuthService authService) {
+    public AuthController(KeycloackUserService keycloackUserService, AuthService authService, Supplier<String> currentTime) {
         this.keycloackUserService = keycloackUserService;
         this.authService = authService;
+        this.currentTime = currentTime;
     }
 
-    /**
-     * Kullanici Login bilgisini alir keycloaka gonderir ve token dondurur.
-     *
-     * <p> GlobalExceptionHandler ile internel server error yerine exception firlatir burdaki tum endpointler. </p>
-     * @param loginRequestDto gelen istek parametresi
-     * @return TokenResponseDto Keycloakdan aldigi tokeni dondurur.
-     */
     @PostMapping("/login")
     public ResponseEntity<TokenResponseDto> loginEndpoint(@Valid @RequestBody LoginRequestDto loginRequestDto) {
+        log.info(" ({}) > AuthController | loginEndpoint -> Login istegi alindi. Dto: {}", currentTime.get(), gson.toJson(loginRequestDto));
         return ResponseEntity.ok(keycloackUserService.login(loginRequestDto));
     }
 
-    /**
-     * Token Refresh
-     *
-     * @param refleshTokenRequestDto istegi alir
-     * @return RefleshTokenRequestDto yeni tokeni dondurur.
-     */
     @PostMapping("/refresh")
     public ResponseEntity<RefleshTokenRequestDto> refreshTokenEndpoint(@Valid @RequestBody RefleshTokenRequestDto refleshTokenRequestDto) {
+        log.info(" ({}) > AuthController | refreshTokenEndpoint -> Refresh token istegi alindi. Dto: {}", currentTime.get(), gson.toJson(refleshTokenRequestDto));
         return ResponseEntity.ok(keycloackUserService.refleshTokenWithRefleshToken(refleshTokenRequestDto.getRefreshToken()));
     }
 
-
-    /**
-     * Keycloak a logout urisine istek atar ve keycloak tokenini siler.
-     *
-     * @param logoutRequest istegi alir
-     */
     @PostMapping("/logout")
     public ResponseEntity<Void> logoutEndpoint(@Valid @RequestBody LogOutRequestDto logoutRequest) {
+        log.info(" ({}) > AuthController | logoutEndpoint -> Logout istegi alindi. Dto: {}", currentTime.get(), gson.toJson(logoutRequest));
         keycloackUserService.logOut(logoutRequest.getRefreshToken());
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * Keycloak a register istegi gonderir. Bundan sonra KafkaTopic ine User Serviceye ulasacak sekilde istek gonderir ve iki mikroservisde de kayit olusturur.
-     * @param requestdto
-     * @return 200 status code
-     */
     @PostMapping("/register")
     public ResponseEntity<?> registerEndpoint(@Valid @RequestBody RegisterDto requestdto) {
+        log.info(" ({}) > AuthController | registerEndpoint -> Register istegi alindi. Dto: {}", currentTime.get(), gson.toJson(requestdto));
         authService.createUser(requestdto);
         return ResponseEntity.ok().build();
     }
-
 }

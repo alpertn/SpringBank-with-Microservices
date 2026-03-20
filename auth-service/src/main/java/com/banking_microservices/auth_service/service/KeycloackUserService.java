@@ -6,6 +6,8 @@ import com.banking_microservices.auth_service.dto.TokenResponseDto;
 import com.banking_microservices.auth_service.exception.InvalidTokenException;
 import com.banking_microservices.auth_service.exception.KeycloakConnectionException;
 import com.banking_microservices.auth_service.exception.LoginException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -16,12 +18,31 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 @Service
 @Slf4j
 public class KeycloackUserService {
+
+    private final Gson gson = new GsonBuilder()
+            .serializeNulls()
+            .registerTypeAdapter(java.time.LocalDateTime.class,
+                    (com.google.gson.JsonSerializer<java.time.LocalDateTime>) (src, type, ctx) ->
+                            new com.google.gson.JsonPrimitive(src.toString()))
+            .registerTypeAdapter(java.time.LocalDateTime.class,
+                    (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
+                            java.time.LocalDateTime.parse(json.getAsString()))
+            .create();
+
+    private final Supplier<String> currentTime;
+
+    public KeycloackUserService(Supplier<String> currentTime) {
+        this.currentTime = currentTime;
+    }
 
     @Value("${keycloak.server-url}")
     private String keycloakUrl;
@@ -35,7 +56,6 @@ public class KeycloackUserService {
     @Value("${keycloak.client-secret}")
     private String clientSecret;
 
-
     // Todo: Bunlar KeyCloack'da Client olusturdugumuzda otomatik olarak eklenilen
     // Token olusturma ve Logout Endpointleri. Bunlar Kubernetten de gonderilebilir.
     // Ama otomatik olusturuldugu icin gerek kalmiyor.
@@ -44,7 +64,7 @@ public class KeycloackUserService {
 
     // keycloackdan aldigi tokeni dondurur.
     public TokenResponseDto login(LoginRequestDto loginRequest) {
-
+        log.info(" ({}) > KeycloackUserService | login -> Login islemi basladi. Request: {}", currentTime.get(), gson.toJson(loginRequest));
         var params = new HashMap<String, String>();
         params.put("client_id", clientId);
         params.put("client_secret", clientSecret);
@@ -53,15 +73,20 @@ public class KeycloackUserService {
         params.put("password", loginRequest.getPassword());
 
         try {
-            return RestClient.create(keycloakUrl).post()
+            log.info(" ({}) > KeycloackUserService | login -> Keycloak'a token istegi atiliyor.", currentTime.get());
+            TokenResponseDto response = RestClient.create(keycloakUrl).post()
                     .uri(TOKEN_URI, realm) // uri
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED) // request media type
                     .body(toMultiValueMap(params)) // keycloack icin uyumlu hale getir
                     .retrieve() // response
                     .body(TokenResponseDto.class); // body'ı tokenresponsedto ya donustur
+            log.info(" ({}) > KeycloackUserService | login -> Login basarili. Token alindi. {}", currentTime.get(), gson.toJson(response));
+            return response;
         } catch (HttpClientErrorException.Unauthorized e) {
+            log.warn(" ({}) > KeycloackUserService | login -> Login basarisiz! Gecersiz mail veya sifre. Email: {}", currentTime.get(), loginRequest.getEmail());
             throw new LoginException("Invalid mail or password.");
         } catch (ResourceAccessException e) {
+            log.warn(" ({}) > KeycloackUserService | login -> Keycloak serverine erisim saglanamadi! Hata: {}", currentTime.get(), e);
             throw new KeycloakConnectionException("Keycloak serverine erisim saglanamadi");
         }
     }
@@ -76,7 +101,7 @@ public class KeycloackUserService {
 
     // eski tokeni gonderip yenisini aliyor.
     public RefleshTokenRequestDto refleshTokenWithRefleshToken(String refleshToken) {
-
+        log.info(" ({}) > KeycloackUserService | refleshTokenWithRefleshToken -> Refresh token islemi basladi. Token: {}", currentTime.get(), refleshToken);
         var params = new HashMap<String, String>();
         params.put("client_id", clientId);
         params.put("client_secret", clientSecret);
@@ -84,22 +109,28 @@ public class KeycloackUserService {
         params.put("refresh_token", refleshToken);
 
         try {
-            return RestClient.create(keycloakUrl).post()
+            log.info(" ({}) > KeycloackUserService | refleshTokenWithRefleshToken -> Keycloak'a refresh token istegi atiliyor.", currentTime.get());
+            RefleshTokenRequestDto response = RestClient.create(keycloakUrl).post()
                     .uri(TOKEN_URI, realm) // uri
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                     .body(toMultiValueMap(params))
                     .retrieve()
                     .body(RefleshTokenRequestDto.class);
+            log.info(" ({}) > KeycloackUserService | refleshTokenWithRefleshToken -> Refresh token basarili. {}", currentTime.get(), gson.toJson(response));
+            return response;
         } catch (HttpClientErrorException.Unauthorized e) {
+            log.warn(" ({}) > KeycloackUserService | refleshTokenWithRefleshToken -> Refresh token suresi bitti.", currentTime.get());
             throw new InvalidTokenException("Refresh tokenin suresi bitti. yeniden token al.");
 
         } catch (ResourceAccessException e) {
+            log.warn(" ({}) > KeycloackUserService | refleshTokenWithRefleshToken -> Keycloack serverine ulasilamiyor! Hata: {}", currentTime.get(), e);
             throw new KeycloakConnectionException("Keycloack serverine ulasilamiyor.");
         }
     }
 
     // Logout URI Istek atiyor.
     public void logOut(String refleshToken) { // Token silme
+        log.info(" ({}) > KeycloackUserService | logOut -> Logout islemi basladi. Token: {}", currentTime.get(), refleshToken);
         var params = new HashMap<String, String>();
         params.put("client_id", clientId);
         params.put("client_secret", clientSecret);
@@ -107,20 +138,21 @@ public class KeycloackUserService {
         params.put("refresh_token", refleshToken);
 
         try {
+            log.info(" ({}) > KeycloackUserService | logOut -> Keycloak'a logout istegi atiliyor.", currentTime.get());
             RestClient.create(keycloakUrl).post()
                     .uri(LOGOUT_URI, realm)
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                     .body(toMultiValueMap(params))
                     .retrieve()
                     .toBodilessEntity();
+            log.info(" ({}) > KeycloackUserService | logOut -> Logout basarili.", currentTime.get());
         } catch (HttpClientErrorException.Unauthorized e) {
+            log.warn(" ({}) > KeycloackUserService | logOut -> Logout basarisiz! Token gecersiz.", currentTime.get());
             throw new InvalidTokenException("Token gecersiz.");
         } catch (ResourceAccessException e) {
+            log.warn(" ({}) > KeycloackUserService | logOut -> Keycloack serverine baglanilamadi! Hata: {}", currentTime.get(), e);
             throw new KeycloakConnectionException("Keycloack serverine baglanilamadi.");
         }
     }
-
-
-
 
 }

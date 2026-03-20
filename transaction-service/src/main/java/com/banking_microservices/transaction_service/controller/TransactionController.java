@@ -3,6 +3,8 @@ package com.banking_microservices.transaction_service.controller;
 import com.banking_microservices.transaction_service.dto.Transaction;
 import com.banking_microservices.transaction_service.model.TransactionEntity;
 import com.banking_microservices.transaction_service.service.TransactionService;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,23 +18,31 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-
-// DUZELTME: Gson import kaldirildi - controller icinde hic kullanilmiyordu (dead import/field).
 
 @RestController
 @RequestMapping("/api/transaction-service/v1/transactions")
 @Slf4j
 public class TransactionController {
 
-    // DUZELTME: private final Gson gson = new Gson() satiri kaldirildi.
-    // Hic kullanilmiyordu, gereksiz bagimlilik olusturuyordu.
-
+    private final Gson gson = new GsonBuilder()
+            .serializeNulls()
+            .registerTypeAdapter(java.time.LocalDateTime.class,
+                    (com.google.gson.JsonSerializer<java.time.LocalDateTime>) (src, type, ctx) ->
+                            new com.google.gson.JsonPrimitive(src.toString()))
+            .registerTypeAdapter(java.time.LocalDateTime.class,
+                    (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
+                            java.time.LocalDateTime.parse(json.getAsString()))
+            .create();
     private final TransactionService transactionService;
+    private final java.util.function.Supplier<String> currentTime;
 
-    public TransactionController(TransactionService transactionService) {
+    public TransactionController(TransactionService transactionService, java.util.function.Supplier<String> currentTime) {
         this.transactionService = transactionService;
+        this.currentTime = currentTime;
     }
 
     @PostMapping("/create")
@@ -46,7 +56,7 @@ public class TransactionController {
 
             @Valid @RequestBody Transaction data) {
 
-        log.info("Transaction Service TransactionController transactionEntity Modulu Istegi aldi.  id : {}", userId);
+        log.info(" ({}) > TransactionController | transactionEntity -> Istek alindi. UserId : {}, Dto: {}", currentTime.get(), userId, gson.toJson(data));
 
         transactionService.createTransaction(data, userId, userEmail, userName, userSurname);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("Status", 1));
@@ -60,7 +70,7 @@ public class TransactionController {
             @RequestHeader(value = "X-User-Surname", required = false) String userSurname,
             @Valid @RequestBody com.banking_microservices.transaction_service.dto.DepositDto data) {
 
-        log.info("Transaction Service TransactionController deposit Modulu Istegi aldi.  id : {}", userId);
+        log.info(" ({}) > TransactionController | deposit -> Istek alindi. UserId : {}, Dto: {}", currentTime.get(), userId, gson.toJson(data));
 
         transactionService.createDeposit(data, userId, userEmail, userName, userSurname);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("Status", 1));
@@ -74,28 +84,23 @@ public class TransactionController {
             @RequestHeader(value = "X-User-Surname", required = false) String userSurname,
             @Valid @RequestBody com.banking_microservices.transaction_service.dto.WithdrawDto data) {
 
-        log.info("Transaction Service TransactionController withdraw Modulu Istegi aldi.  id : {}", userId);
+        log.info(" ({}) > TransactionController | withdraw -> Istek alindi. UserId : {}, Dto: {}", currentTime.get(), userId, gson.toJson(data));
 
         transactionService.createWithdraw(data, userId, userEmail, userName, userSurname);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("Status", 1));
     }
 
-    // DUZELTME: onceden endpoint @PostMapping ile tanimlanmisti ve body'den String aliyordu.
-    // ID almak icin POST + RequestBody String kullanmak yanlis - GET + @PathVariable ya da
-    // @RequestParam olmali. GET ile degistirildi ve @RequestParam kullanildi.
-    // Ayrica metodun adi getTransactionHistoryWithId olarak daha aciklayici hale getirildi.
     @GetMapping("/gettransactionhistorywithid")
     public ResponseEntity<List<TransactionEntity>> getTransactionHistoryWithId(
             @RequestParam String id) {
+        log.info(" ({}) > TransactionController | getTransactionHistoryWithId -> Istek alindi. Id : {}", currentTime.get(), id);
         List<TransactionEntity> transactionList = transactionService.getTransactionHistory(id);
         return ResponseEntity.ok(transactionList);
     }
 
-    // DUZELTME: TransactionService'de getTransactionsByDateRange ve getErrorLogs ve getTransactionById
-    // metodlari vardi fakat controller'da hic endpoint tanimlanmamisti. Eksik endpointler eklendi.
     @GetMapping("/errors")
     public ResponseEntity<List<TransactionEntity>> getErrorLogs() {
-        log.info("Transaction Service TransactionController getErrorLogs Modulu Istegi aldi.");
+        log.info(" ({}) > TransactionController | getErrorLogs -> Istek alindi.", currentTime.get());
         List<TransactionEntity> errorList = transactionService.getErrorLogs();
         return ResponseEntity.ok(errorList);
     }
@@ -104,14 +109,14 @@ public class TransactionController {
     public ResponseEntity<List<TransactionEntity>> getTransactionsByDateRange(
             @RequestParam LocalDateTime startDate,
             @RequestParam LocalDateTime endDate) {
-        log.info("Transaction Service TransactionController getTransactionsByDateRange Modulu Istegi aldi.");
+        log.info(" ({}) > TransactionController | getTransactionsByDateRange -> Istek alindi. StartDate : {}, EndDate : {}", currentTime.get(), startDate, endDate);
         List<TransactionEntity> transactionList = transactionService.getTransactionsByDateRange(startDate, endDate);
         return ResponseEntity.ok(transactionList);
     }
 
     @GetMapping("/byid")
     public ResponseEntity<TransactionEntity> getTransactionById(@RequestParam String id) {
-        log.info("Transaction Service TransactionController getTransactionById Modulu Istegi aldi. id : {}", id);
+        log.info(" ({}) > TransactionController | getTransactionById -> Istek alindi. Id : {}", currentTime.get(), id);
         TransactionEntity transaction = transactionService.getTransactionById(id);
         return ResponseEntity.ok(transaction);
     }

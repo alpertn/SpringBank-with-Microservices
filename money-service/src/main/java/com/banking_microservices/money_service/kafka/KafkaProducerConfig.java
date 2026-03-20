@@ -50,6 +50,9 @@ public class KafkaProducerConfig {
             .registerTypeAdapter(java.time.LocalDateTime.class,
                 (com.google.gson.JsonSerializer<java.time.LocalDateTime>) (src, type, ctx) ->
                     new com.google.gson.JsonPrimitive(src.toString()))
+            .registerTypeAdapter(java.time.LocalDateTime.class,
+                (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
+                    java.time.LocalDateTime.parse(json.getAsString()))
             .create();
 
         @Override

@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.List;
 
@@ -20,18 +21,27 @@ import java.util.List;
 @Slf4j
 public class UserService {
 
-    private Gson gson = new Gson();
+    private final Gson gson = new GsonBuilder()
+            .serializeNulls()
+            .registerTypeAdapter(java.time.LocalDateTime.class,
+                    (com.google.gson.JsonSerializer<java.time.LocalDateTime>) (src, type, ctx) ->
+                            new com.google.gson.JsonPrimitive(src.toString()))
+            .registerTypeAdapter(java.time.LocalDateTime.class,
+                    (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
+                            java.time.LocalDateTime.parse(json.getAsString()))
+            .create();
 
-    // DUZELTME: @Autowired ve constructor injection birlikte kullaniliyordu - tutarsiz injection pattern.
-    // @Autowired kaldirildi, tum injection constructor ile yapiliyor.
     private UserRepository UserRepository;
     private MoneyServiceClient moneyServiceClient;
     private final KafkaSender kafkaSender;
 
-    public UserService(UserRepository UserRepository, MoneyServiceClient moneyServiceClient, KafkaSender kafkaSender) {
+    private final java.util.function.Supplier<String> currentTime;
+
+    public UserService(UserRepository UserRepository, MoneyServiceClient moneyServiceClient, KafkaSender kafkaSender, java.util.function.Supplier<String> currentTime) {
         this.UserRepository = UserRepository;
         this.moneyServiceClient = moneyServiceClient;
         this.kafkaSender = kafkaSender;
+        this.currentTime = currentTime;
     }
 
     @Transactional
@@ -63,7 +73,7 @@ public class UserService {
                     .build();
             try {
                 Users user = UserRepository.save(newUsers);
-                log.info("User Olusturuldu! {}", gson.toJson(user));
+                log.info(" ({}) > UserService | saveUser -> User Olusturuldu! Dto: {}", currentTime.get(), gson.toJson(user));
                 try {
                     kafkaSender.sendCreateUser(user.getKeycloackUUID());
                     return newUsers;
@@ -72,8 +82,6 @@ public class UserService {
                 }
 
             } catch (KafkaSendException e) {
-                // DUZELTME: onceden catch(Exception e) blogu hem DB hatasini hem Kafka hatasini yutuyordu.
-                // KafkaSendException ayri yakalanarak UserSaveDatabaseException'a donusturulmemesi saglandı.
                 throw e;
             } catch (Exception e) {
                 throw new UserSaveDatabaseException(
@@ -85,12 +93,9 @@ public class UserService {
         }
     }
 
-    //
-    // Transaction Topic Message
-    //
-
     public void transactionTopicMessageVerify(KafkaTransactionTopicMessageDto dto) {
         try {
+            log.info(" ({}) > UserService | transactionTopicMessageVerify -> Metoda veri geldi. Dto: {}", currentTime.get(), gson.toJson(dto));
             Users senderUser = UserRepository.findUsersBykeycloackUUID(dto.getSenderUserId())
                     .orElseThrow(() -> new UserNotFoundById("Sender Not Found: " + dto.getSenderUserId()));
 
@@ -98,7 +103,6 @@ public class UserService {
             dto.setSenderSurname(senderUser.getSurname());
             dto.setSenderEmail(senderUser.getMail());
 
-            // User service cannot verify IBAN, so we only verify receiver name/surname exists
             if (dto.getReceiverName() != null && dto.getReceiverSurname() != null) {
                 Users receiverUser = UserRepository.getUsersByNameAndSurname(dto.getReceiverName(), dto.getReceiverSurname())
                         .orElseThrow(() -> new UserNameOrSurnameNotFoundException("Receiver Name/Surname Not Found"));
@@ -110,9 +114,11 @@ public class UserService {
             dto.setUserValidation(true);
             dto.setStatus(TransactionStatus.VALIDATION_PENDING);
             dto.setStatusDescription(TransactionStatus.VALIDATION_PENDING.getDescription());
+            log.info(" ({}) > UserService | transactionTopicMessageVerify -> Validation basarili. Kafkaya mesaj atiliyor. Dto: {}", currentTime.get(), gson.toJson(dto));
             kafkaSender.sendTransactionUserValidationSuccess(dto.getEventUUID(), dto);
 
         } catch (Exception e) {
+            log.warn(" ({}) > UserService | transactionTopicMessageVerify -> Validation basarisiz! Hata: {}", currentTime.get(), e.getMessage());
             dto.setError(true);
             dto.setErrorDescription("Username not found or ID mismatch. " + e.getMessage());
             kafkaSender.sendTransactionUsernameValidationError(dto.getEventUUID(), dto);
@@ -122,17 +128,19 @@ public class UserService {
     }
 
     public void UsernameValidation(KafkaTransactionTopicMessageDto dto) {
-        // DUZELTME: onceden existsByNameAndSurname() sonucu hic kullanilmiyordu.
-        // Sonuc false ise error topic'e gondermeli. Duzeltildi.
+        log.info(" ({}) > UserService | UsernameValidation -> Metoda veri geldi. Dto: {}", currentTime.get(), gson.toJson(dto));
         boolean exists = UserRepository.existsByNameAndSurname(dto.getReceiverName(), dto.getReceiverSurname());
         if (!exists) {
+            log.warn(" ({}) > UserService | UsernameValidation -> Kullanici bulunamadi! Dto: {}", currentTime.get(), gson.toJson(dto));
             kafkaSender.sendUsernameValidationError(dto.getEventUUID(), dto);
             throw new UserNameOrSurnameNotFoundException(
                     "User Name Or Surname Not Found " + dto.getReceiverName() + " " + dto.getReceiverSurname());
         }
         try {
+            log.info(" ({}) > UserService | UsernameValidation -> Kullanici dogrulandi, kafkaya success mesaji atiliyor. Dto: {}", currentTime.get(), gson.toJson(dto));
             kafkaSender.sendUsernameValidationSuccess(dto.getEventUUID(), dto);
         } catch (Exception e) {
+            log.error(" ({}) > UserService | UsernameValidation -> Success mesaji atilamadi! Hata: {}", currentTime.get(), e.getMessage());
             kafkaSender.sendUsernameValidationError(dto.getEventUUID(), dto);
             throw new UserNameOrSurnameNotFoundException(
                     "User Name Or Surname Not Found " + dto.getReceiverName() + " " + dto.getReceiverSurname());
@@ -191,7 +199,6 @@ public class UserService {
         return UserRepository.count();
     }
 
-    // 2. Kullanıcı Aktif/Pasif Yapma
     @Transactional
     public void updateUserStatus(String id, Boolean active) {
         Users user = UserRepository.findById(id)
@@ -200,13 +207,12 @@ public class UserService {
         try {
             user.setActive(active);
             UserRepository.save(user);
-            log.info("User status updated. ID: {}, Active: {}", id, active);
+            log.info(" ({}) > UserService | updateUserStatus -> User status updated. ID: {}, Active: {}", currentTime.get(), id, active);
         } catch (Exception e) {
             throw new UserUpdateException("Failed to update user status: " + id);
         }
     }
 
-    // Email ile Kullanıcı Arama
     public List<Users> searchUsersByEmail(String email) {
         List<Users> results = UserRepository.findByMailContainingIgnoreCase(email);
         if (results.isEmpty()) {
@@ -215,7 +221,6 @@ public class UserService {
         return results;
     }
 
-    // Kullanıcı Şifre Sıfırlama (Admin)
     @Transactional
     public void resetUserPassword(String id, String newPassword) {
         Users user = UserRepository.findById(id)
@@ -224,25 +229,22 @@ public class UserService {
         try {
             user.setPassword(newPassword);
             UserRepository.save(user);
-            log.warn("Admin password reset for user ID: {}", id);
+            log.warn(" ({}) > UserService | resetUserPassword -> Admin password reset for user ID: {}", currentTime.get(), id);
         } catch (Exception e) {
             throw new UserUpdateException("Failed to reset password for user: " + id);
         }
     }
 
-    // Kullanıcı Şifre Değiştirme (Kendisi)
     @Transactional
     public void changePassword(String userId, String currentPassword, String newPassword) {
         Users user = UserRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundById("User Not Found: " + userId));
 
-        // Mevcut şifreyi doğrula
         if (!user.getPassword().equals(currentPassword)) {
-            log.warn("Password change failed for user ID: {} - incorrect current password", userId);
+            log.warn(" ({}) > UserService | changePassword -> Password change failed for user ID: {} - incorrect current password", currentTime.get(), userId);
             throw new InvalidPasswordException("Current password is incorrect");
         }
 
-        // Yeni şifre eski şifre ile aynı olamaz
         if (currentPassword.equals(newPassword)) {
             throw new InvalidPasswordException("New password cannot be the same as current password");
         }
@@ -250,31 +252,27 @@ public class UserService {
         try {
             user.setPassword(newPassword);
             UserRepository.save(user);
-            log.info("Password changed successfully for user ID: {}", userId);
+            log.info(" ({}) > UserService | changePassword -> Password changed successfully for user ID: {}", currentTime.get(), userId);
         } catch (Exception e) {
             throw new UserUpdateException("Failed to change password for user: " + userId);
         }
     }
 
-    // Kullanıcı Email Değiştirme
     @Transactional
     public void changeEmail(String userId, String newEmail, String password) {
         Users user = UserRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundById("User Not Found: " + userId));
 
-        // Şifreyi doğrula
         if (!user.getPassword().equals(password)) {
-            log.warn("Email change failed for user ID: {} - incorrect password", userId);
+            log.warn(" ({}) > UserService | changeEmail -> Email change failed for user ID: {} - incorrect password", currentTime.get(), userId);
             throw new InvalidPasswordException("Password is incorrect");
         }
 
-        // Yeni email zaten kullanılıyor mu kontrol et
         if (UserRepository.existsBymail(newEmail)) {
-            log.warn("Email change failed for user ID: {} - email already exists: {}", userId, newEmail);
+            log.warn(" ({}) > UserService | changeEmail -> Email change failed for user ID: {} - email already exists: {}", currentTime.get(), userId, newEmail);
             throw new UserAlreadyExistsException("Email already in use: " + newEmail);
         }
 
-        // Yeni email eski email ile aynı olamaz
         if (user.getMail().equals(newEmail)) {
             throw new EmailChangeException("New email cannot be the same as current email");
         }
@@ -283,7 +281,7 @@ public class UserService {
             String oldEmail = user.getMail();
             user.setMail(newEmail);
             UserRepository.save(user);
-            log.info("Email changed successfully for user ID: {} from {} to {}", userId, oldEmail, newEmail);
+            log.info(" ({}) > UserService | changeEmail -> Email changed successfully for user ID: {} from {} to {}", currentTime.get(), userId, oldEmail, newEmail);
         } catch (Exception e) {
             throw new EmailChangeException("Failed to change email for user: " + userId);
         }

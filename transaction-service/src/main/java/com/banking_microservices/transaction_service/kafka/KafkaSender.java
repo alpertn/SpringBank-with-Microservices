@@ -9,13 +9,23 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
 @Slf4j
 @Service
 public class KafkaSender {
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final Gson gson = new GsonBuilder()
             .serializeNulls()
+            .registerTypeAdapter(java.time.LocalDateTime.class,
+                    (com.google.gson.JsonSerializer<java.time.LocalDateTime>) (src, type, ctx) ->
+                            new com.google.gson.JsonPrimitive(src.toString()))
+            .registerTypeAdapter(java.time.LocalDateTime.class,
+                    (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
+                            java.time.LocalDateTime.parse(json.getAsString()))
             .create();
+    private final java.util.function.Supplier<String> currentTime;
 
     @Value("${kafka.topics.transaction.sender}")
     private String transactionCreateTopic;
@@ -26,46 +36,40 @@ public class KafkaSender {
     @Value("${kafka.topics.transaction.withdraw.sender}")
     private String transactionWithdrawTopic;
 
-    public KafkaSender(KafkaTemplate<String, Object> kafkaTemplate) {
+    public KafkaSender(KafkaTemplate<String, Object> kafkaTemplate, java.util.function.Supplier<String> currentTime) {
         this.kafkaTemplate = kafkaTemplate;
+        this.currentTime = currentTime;
     }
 
-    // public class TopicConstants {
-    // public static final String TRANSFER_CREATED =
-    // "banking.transaction.transfer-created.v1";
-    // public static final String BALANCE_CHANGED =
-    // "banking.account.balance-changed.v1";
-    // public static final String USER_VERIFIED =
-    // "banking.user.identity-verified.v1";
-    // }
     public void sendTransaction(String key, KafkaTransactionTopicMessageDto kafkaTransactionTopicMessageDto) {
         try {
-            // DUZELTME: jsonMessageForKafka degiskeni olusturulup hic kullanilmiyordu (dead code).
-            // Kaldirildi. KafkaTemplate zaten GsonSerializer ile serialize ediyor.
+            log.info(" ({}) > KafkaSender | sendTransaction -> Kafkaya mesaj gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(kafkaTransactionTopicMessageDto));
             kafkaTemplate.send(transactionCreateTopic, key, kafkaTransactionTopicMessageDto);
-            log.info("Kafkaya mesaj gonderildi {} {}", key, kafkaTransactionTopicMessageDto);
+            log.info(" ({}) > KafkaSender | sendTransaction -> Kafkaya mesaj gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(kafkaTransactionTopicMessageDto));
         } catch (Exception e) {
-            log.warn("Kafkaya mesaj godnerilirken hata olustu {} {}", key, kafkaTransactionTopicMessageDto);
+            log.warn(" ({}) > KafkaSender | sendTransaction -> Kafkaya mesaj gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
             throw new KafkaSendException("Kafka Send Exception. " + key + " " + kafkaTransactionTopicMessageDto);
         }
     }
 
     public void sendDeposit(String key, KafkaTransactionTopicMessageDto kafkaTransactionTopicMessageDto) {
         try {
+            log.info(" ({}) > KafkaSender | sendDeposit -> Kafkaya deposit mesaji gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(kafkaTransactionTopicMessageDto));
             kafkaTemplate.send(transactionDepositTopic, key, kafkaTransactionTopicMessageDto);
-            log.info("Kafkaya deposit mesaji gonderildi {} {}", key, kafkaTransactionTopicMessageDto);
+            log.info(" ({}) > KafkaSender | sendDeposit -> Kafkaya deposit mesaji gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(kafkaTransactionTopicMessageDto));
         } catch (Exception e) {
-            log.warn("Kafkaya deposit mesaji godnerilirken hata olustu {} {}", key, kafkaTransactionTopicMessageDto);
+            log.warn(" ({}) > KafkaSender | sendDeposit -> Kafkaya deposit mesaji gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
             throw new KafkaSendException("Kafka Send Exception. " + key + " " + kafkaTransactionTopicMessageDto);
         }
     }
 
     public void sendWithdraw(String key, KafkaTransactionTopicMessageDto kafkaTransactionTopicMessageDto) {
         try {
+            log.info(" ({}) > KafkaSender | sendWithdraw -> Kafkaya withdraw mesaji gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(kafkaTransactionTopicMessageDto));
             kafkaTemplate.send(transactionWithdrawTopic, key, kafkaTransactionTopicMessageDto);
-            log.info("Kafkaya withdraw mesaji gonderildi {} {}", key, kafkaTransactionTopicMessageDto);
+            log.info(" ({}) > KafkaSender | sendWithdraw -> Kafkaya withdraw mesaji gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(kafkaTransactionTopicMessageDto));
         } catch (Exception e) {
-            log.warn("Kafkaya withdraw mesaji godnerilirken hata olustu {} {}", key, kafkaTransactionTopicMessageDto);
+            log.warn(" ({}) > KafkaSender | sendWithdraw -> Kafkaya withdraw mesaji gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
             throw new KafkaSendException("Kafka Send Exception. " + key + " " + kafkaTransactionTopicMessageDto);
         }
     }

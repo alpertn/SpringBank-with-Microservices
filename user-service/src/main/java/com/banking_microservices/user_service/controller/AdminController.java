@@ -4,6 +4,8 @@ import com.banking_microservices.user_service.dto.RoleEnum.RoleEnum;
 import com.banking_microservices.user_service.dto.admin.AdminPasswordResetDto;
 import com.banking_microservices.user_service.models.Users;
 import com.banking_microservices.user_service.service.UserService;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -16,76 +18,86 @@ import java.util.List;
 @RequestMapping("/api/user-service/v1/admin")
 public class AdminController {
 
+    private final Gson gson = new GsonBuilder()
+            .serializeNulls()
+            .registerTypeAdapter(java.time.LocalDateTime.class,
+                    (com.google.gson.JsonSerializer<java.time.LocalDateTime>) (src, type, ctx) ->
+                            new com.google.gson.JsonPrimitive(src.toString()))
+            .registerTypeAdapter(java.time.LocalDateTime.class,
+                    (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
+                            java.time.LocalDateTime.parse(json.getAsString()))
+            .create();
     private final UserService userService;
+    private final java.util.function.Supplier<String> currentTime;
 
-    public AdminController(UserService userService) {
+    public AdminController(UserService userService, java.util.function.Supplier<String> currentTime) {
         this.userService = userService;
+        this.currentTime = currentTime;
     }
 
-    // DUZELTME: @PostMapping ve body'den String almak yanlis - ID icin GET + @PathVariable kullanilmali.
     @GetMapping("/finduserbyid/{id}")
     public ResponseEntity<Users> findUserById(@PathVariable String id) {
-        log.info("AdminController findUserById Modulu Istegi aldi. id : {}", id);
+        log.info(" ({}) > AdminController | findUserById -> Istek alindi. Id : {}", currentTime.get(), id);
         return ResponseEntity.ok(userService.findUserById(id));
     }
 
     @GetMapping("/search")
     public ResponseEntity<List<Users>> searchUsers(@RequestParam String query) {
+        log.info(" ({}) > AdminController | searchUsers -> Istek alindi. Query : {}", currentTime.get(), query);
         return ResponseEntity.ok(userService.searchUsersByName(query));
     }
 
     @PatchMapping("/updaterole/{id}")
     public ResponseEntity<?> changeRole(@PathVariable String id, @RequestParam String role) {
+        log.info(" ({}) > AdminController | changeRole -> Istek alindi. Id: {}, Role: {}", currentTime.get(), id, role);
         userService.updateUserRole(id, RoleEnum.Role.valueOf(role.toUpperCase()));
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/stats/total")
     public ResponseEntity<Long> getTotalUsers() {
+        log.info(" ({}) > AdminController | getTotalUsers -> Istek alindi.", currentTime.get());
         return ResponseEntity.ok(userService.getTotalUserCount());
     }
 
     @GetMapping("/findbyemail")
     public ResponseEntity<List<Users>> searchByEmail(@RequestParam String email) {
-        log.info("Admin search by email request. Email: {}", email);
+        log.info(" ({}) > AdminController | searchByEmail -> Istek alindi. Email: {}", currentTime.get(), email);
         return ResponseEntity.ok(userService.searchUsersByEmail(email));
     }
 
-    // DUZELTME: resetPassword ve activate/deactivate endpointleri yoruma alinmisti.
-    // UserService'de tam implemente var. Aktif edildi.
     @PostMapping("/users/{id}/reset-password")
     public ResponseEntity<?> resetPassword(@PathVariable String id,
                                            @Valid @RequestBody AdminPasswordResetDto passwordDto) {
-        log.warn("Admin password reset request for user ID: {}", id);
+        log.warn(" ({}) > AdminController | resetPassword -> Istek alindi. ID: {}, Dto: {}", currentTime.get(), id, gson.toJson(passwordDto));
         userService.resetUserPassword(id, passwordDto.getNewPassword());
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/users/{id}/activate")
     public ResponseEntity<?> activateUser(@PathVariable String id) {
-        log.info("Admin activate user request. ID: {}", id);
+        log.info(" ({}) > AdminController | activateUser -> Istek alindi. ID: {}", currentTime.get(), id);
         userService.updateUserStatus(id, true);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/users/{id}/deactivate")
     public ResponseEntity<?> deactivateUser(@PathVariable String id) {
-        log.info("Admin deactivate user request. ID: {}", id);
+        log.info(" ({}) > AdminController | deactivateUser -> Istek alindi. ID: {}", currentTime.get(), id);
         userService.updateUserStatus(id, false);
         return ResponseEntity.ok().build();
     }
 
-    // DUZELTME: deleteUser ve updateUser endpointleri yoruma alinmisti ama UserService'de implemente var.
     @PutMapping("/updateuser")
     public ResponseEntity<?> updateUserWithId(@RequestBody Users user) {
-        log.info("Admin updateUser istegi alindi.");
+        log.info(" ({}) > AdminController | updateUserWithId -> Istek alindi. UserDto: {}", currentTime.get(), gson.toJson(user));
         userService.updateUser(user);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/deleteuser/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable String id) {
-        log.info("Admin deleteUser istegi alindi. Silinecek ID: {}", id);
+        log.info(" ({}) > AdminController | deleteUser -> Istek alindi. ID: {}", currentTime.get(), id);
         userService.deleteUserById(id);
         return ResponseEntity.ok().build();
     }
