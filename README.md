@@ -40,4 +40,7 @@
     <h4>14 - Jpa</h4>
     <h4>15 - PostgreSql</h4>
     <h4>16 - Endpoint Kullanimi</h4>
-</div>
+    <h4>17 - Spring WebFlux</h4>
+    <h4>18 - Spring Security</h4>
+    <h4>19 - Spring Gateway</h4>
+  </div>

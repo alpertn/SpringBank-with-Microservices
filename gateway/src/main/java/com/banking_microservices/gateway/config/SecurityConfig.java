@@ -18,10 +18,25 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Gateway uzerindeki tum Spring Security ve WebFlux guvenlik yapilandirmalarinin
+ * yapildigi siniftir.
+ * 
+ * Hangi yollarin (path) public, hangilerinin authentication gerektirdigini,
+ * JWT token kontrolunu ve rollerin nasil cikarilacagini belirler.
+ *
+ */
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
+    /**
+     * Gelen Spring WebFlux istekleri icin guvenlik filtre zincirini olusturur.
+     * Statik sayfalar ve bazi API'ler public yapilmistir.
+     * 
+     * @param httpSecurity {@link ServerHttpSecurity} guvenlik yapilandirmasi
+     * @return {@link SecurityWebFilterChain} secilen kurallara gore filtre zinciri dondurur.
+     */
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity httpSecurity) {
         return httpSecurity
@@ -47,6 +62,12 @@ public class SecurityConfig {
                 .build();
     }
 
+    /**
+     * Keycloaktan gelen JWT tokenini Spring Security'nin anlayacagi formata cevirir.
+     * İcindeki rolleri ayiklayip Authority listesine ekler.
+     *
+     * @return {@link Converter} JWT'yi {@link AbstractAuthenticationToken} objesine dondurur.
+     */
     // Keycloak JWT  Spring Security Authority donusum
     private Converter<Jwt, Mono<AbstractAuthenticationToken>> jwtConverter() {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();

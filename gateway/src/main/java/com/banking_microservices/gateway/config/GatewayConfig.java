@@ -5,6 +5,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
 
+/**
+ * Gateway servisi icin genel configleri barindiran sinif.
+ *
+ */
 @Configuration
 public class GatewayConfig {
 
