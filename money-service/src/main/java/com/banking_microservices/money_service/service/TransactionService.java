@@ -1,251 +1,135 @@
 package com.banking_microservices.money_service.service;
 
 import com.banking_microservices.money_service.dto.KafkaTransactionTopicMessageDto;
-import com.banking_microservices.money_service.dto.enums.TransactionStatus;
-import com.banking_microservices.money_service.exception.*;
-import com.banking_microservices.money_service.kafka.KafkaListenerService;
+import com.banking_microservices.money_service.dto.enums.KafkaEventType;
+import com.banking_microservices.money_service.exception.EventUUIDAlreadyExists;
 import com.banking_microservices.money_service.kafka.KafkaSender;
-import org.springframework.context.annotation.Lazy;
-import com.banking_microservices.money_service.models.KafkaLastActivity;
-import com.banking_microservices.money_service.repository.KafkaLastActivityRepository;
-import com.banking_microservices.money_service.repository.UserMoneyRepository;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.banking_microservices.money_service.service.helper.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.function.Supplier;
 
+/**
+ * Bu sinif {@link IbanResolver}, {@link TransactionValidator}, {@link IdempotencyGuard},
+ * {@link BlockMoneyService}, {@link MoneyTransferExecutor} ve {@link KafkaSender} siniflarini cagirir.
+ *
+ * Para transfer surecleri icin ana orkestrasyon servisidir.
+ * Bu sinif yalnizca koordinasyon yapar. Validasyon, IBAN cozumleme,
+ * bloke etme, transfer ve idempotency islemleri helper classlara delege edilir.
+ *
+ * Orijinal method imzalari korundugu icin Kafka listenerlar ve diger cagiran taraflar bozulmaz.
+ */
 @Slf4j
 @Service
 public class TransactionService {
-    private final Gson gson = new GsonBuilder()
-            .serializeNulls()
-            .registerTypeAdapter(java.time.LocalDateTime.class,
-                    (com.google.gson.JsonSerializer<java.time.LocalDateTime>) (src, type, ctx) ->
-                            new com.google.gson.JsonPrimitive(src.toString()))
-            .registerTypeAdapter(java.time.LocalDateTime.class,
-                    (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
-                            java.time.LocalDateTime.parse(json.getAsString()))
-            .create();
 
-    private final Supplier<String> currentTime;
-    private final UserMoneyService service;
-    private final UserMoneyRepository repository;
+    private final IbanResolver ibanResolver;
+    private final TransactionValidator validator;
+    private final IdempotencyGuard idempotencyGuard;
+    private final BlockMoneyService blockMoneyService;
+    private final MoneyTransferExecutor moneyTransferExecutor;
     private final KafkaSender kafkaSender;
-    private final KafkaListenerService kafkaListenerService;
-    private final KafkaLastActivityRepository kafkaLastActivityRepository;
+    private final Supplier<String> currentTime;
 
-    public TransactionService(UserMoneyService service, UserMoneyRepository repository, KafkaSender kafkaSender,
-            @Lazy KafkaListenerService kafkaListenerService, KafkaLastActivityRepository kafkaLastActivityRepository, Supplier<String> currentTime) {
-        this.service = service;
-        this.repository = repository;
+    public TransactionService(IbanResolver ibanResolver,
+                              TransactionValidator validator,
+                              IdempotencyGuard idempotencyGuard,
+                              BlockMoneyService blockMoneyService,
+                              MoneyTransferExecutor moneyTransferExecutor,
+                              KafkaSender kafkaSender,
+                              Supplier<String> currentTime) {
+        this.ibanResolver = ibanResolver;
+        this.validator = validator;
+        this.idempotencyGuard = idempotencyGuard;
+        this.blockMoneyService = blockMoneyService;
+        this.moneyTransferExecutor = moneyTransferExecutor;
         this.kafkaSender = kafkaSender;
-        this.kafkaListenerService = kafkaListenerService;
-        this.kafkaLastActivityRepository = kafkaLastActivityRepository;
         this.currentTime = currentTime;
     }
 
+    /**
+     * Kafkadan gelen para bloke etme istegini isler.
+     *
+     * 1 - Sender IBAN cozumlenir. gerekirse userId uzerinden
+     * 2 - Sender IBAN varligi dogrulanir
+     * 3 - Receiver IBAN userId cozumlenir ve dtoya set edilir
+     * 4 - DBde para bloke edilir ve Kafkaya BLOCK_MONEY gonderilir
+     *
+     * @param dto Kafkadan gelen islem DTOsu
+     */
     public void KafkaTransactionTopicBlockMoney(KafkaTransactionTopicMessageDto dto) {
-        log.info(" ({}) > TransactionService | KafkaTransactionTopicBlockMoney -> Metoda veri geldi. {}", currentTime.get(), gson.toJson(dto));
+        log.info(" ({}) > TransactionService | KafkaTransactionTopicBlockMoney -> Metoda veri geldi. {}", currentTime.get(), dto);
 
-        // kafka exception sending eklenelecek
+        ibanResolver.resolveSenderIban(dto);
+        ibanResolver.assertSenderIbanExists(dto);
 
-        if ((dto.getSenderIban() == null || dto.getSenderIban().isEmpty()) && dto.getSenderUserId() != null) {
-            dto.setSenderIban(repository.findIbanByUserId(dto.getSenderUserId()).orElse(null));
-        }
+        String receiverUserId = ibanResolver.resolveReceiverUserIdOrThrow(dto);
+        dto.setReceiverUserId(receiverUserId);
 
-        if (dto.getSenderIban() == null || dto.getSenderIban().isEmpty()) {
-            log.warn(" ({}) > TransactionService | KafkaTransactionTopicBlockMoney -> Sender Iban bulunamadi! {}", currentTime.get(), gson.toJson(dto));
-            dto.setError(true);
-            dto.setErrorDescription("Sender Iban Not Found");
-            kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
-            throw new IbanNotFoundException("Iban value is empty");
-        }
+        blockMoneyService.blockFunds(dto);
 
-        String receiverId = repository.findUserIdByIban(dto.getReceiverIban()).orElse(null);
-
-        if (receiverId == null) {
-            log.warn(" ({}) > TransactionService | KafkaTransactionTopicBlockMoney -> Receiver Iban bulunamadi! {}", currentTime.get(), dto.getReceiverIban());
-            dto.setError(true);
-            dto.setErrorDescription("Receiver Iban Not Found: " + dto.getReceiverIban());
-
-            kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
-
-            throw new IbanNotFoundException(
-                    "KafkaTransactionTopicBlockMoney Hesap bulunamadi." + gson.toJson(dto));
-        }
-
-        dto.setReceiverUserId(receiverId);
-
-        try {
-            repository.decrementAndBlockByIban(dto.getSenderIban(), dto.getMoney());
-            dto.setIsMoneyBlocked(true);
-            dto.setStatus(TransactionStatus.FUNDS_BLOCKED);
-            dto.setStatusDescription(TransactionStatus.FUNDS_BLOCKED.getDescription());
-            log.info(" ({}) > TransactionService | KafkaTransactionTopicBlockMoney -> Para bloke edildi ve Kafkaya gonderiliyor. {}", currentTime.get(), gson.toJson(dto));
-            kafkaSender.sendBlockedMoneyTopic(dto.getEventUUID(), dto);
-        } catch (Exception e) {
-            log.error(" ({}) > TransactionService | KafkaTransactionTopicBlockMoney -> Para bloke edilirken hata olustu! Hata: {}", currentTime.get(), e.getMessage());
-            dto.setError(true);
-            dto.setErrorDescription("An Exception with decrement money and block money with iban.");
-            kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
-            throw new DecramentAndBlockMoneyException(
-                    "An exception with Decrement Money And Block money with Iban number. Iban = "
-                            + dto.getSenderIban());
-        }
-
+        log.info(" ({}) > TransactionService | KafkaTransactionTopicBlockMoney -> Islem tamamlandi. EventUUID: {}", currentTime.get(), dto.getEventUUID());
     }
 
+    /**
+     * Kafkadan gelen on validasyon ve bakiye kontrol istegini isler.
+     * Yeterli bakiye varsa islemi user-service'e iletir.
+     *
+     * 1 - Idempotency kontrolu. duplicate UUID reject
+     * 2 - Sender IBAN cozumlenir. gerekirse userId uzerinden
+     * 3 - Sender IBAN varligi dogrulanir
+     * 4 - Sender bakiyesi sorgulanir
+     * 5 - Receiver hesabi varligi dogrulanir
+     * 6 - Bakiye yeterliligi kontrol edilir. bakiye miktardan buyuk olmali
+     * 7 - Kafkaya sendTransactionToUserService gonderilir
+     *
+     * @param dto Kafkadan gelen islem DTOsu
+     * @throws EventUUIDAlreadyExists ayni UUID daha once islendiyse firlatir
+     */
     public void KafkaTransactionTopicService(KafkaTransactionTopicMessageDto dto) {
-        log.info(" ({}) > TransactionService | KafkaTransactionTopicService -> Metoda veri geldi. {}", currentTime.get(), gson.toJson(dto));
+        log.info(" ({}) > TransactionService | KafkaTransactionTopicService -> Metoda veri geldi. {}", currentTime.get(), dto);
 
-        if (kafkaLastActivityRepository.existsByEventUUID(dto.getEventUUID())) {
-            log.warn(" ({}) > TransactionService | KafkaTransactionTopicService -> Event UUID zaten mevcut! {}", currentTime.get(), dto.getEventUUID());
-            throw new EventUUIDAlreadyExists(
-                    "Event UUID Already exists KafkaTransactionTopicService " + dto.getEventUUID());
-        } else {
-            // varsa hata yoksa save ve continue
-            // backtrack two sum gibi.
-            try {
-                kafkaLastActivityRepository.save(
-                        KafkaLastActivity
-                                .builder()
-                                .eventUUID(dto.getEventUUID())
-                                .build());
-            } catch (Exception e) {
-                log.error(" ({}) > TransactionService | KafkaTransactionTopicService -> Event kayit edilemedi! {}", currentTime.get(), dto.getEventUUID());
-                throw new EventSaveException("Event Save exception " + dto.getEventUUID());
-            }
+        if (idempotencyGuard.isDuplicateOrRegister(dto.getEventUUID(), KafkaEventType.TRANSACTION_TOPIC_SERVICE.name())) {
+            throw new EventUUIDAlreadyExists("Event UUID Already exists KafkaTransactionTopicService " + dto.getEventUUID());
         }
 
-        if ((dto.getSenderIban() == null || dto.getSenderIban().isEmpty()) && dto.getSenderUserId() != null) {
-            dto.setSenderIban(repository.findIbanByUserId(dto.getSenderUserId()).orElse(null));
-        }
+        ibanResolver.resolveSenderIban(dto);
+        ibanResolver.assertSenderIbanExists(dto);
 
-        if (dto.getSenderIban() == null || dto.getSenderIban().isEmpty()) {
-            log.warn(" ({}) > TransactionService | KafkaTransactionTopicService -> Sender Iban bulunamadi! {}", currentTime.get(), gson.toJson(dto));
-            dto.setError(true);
-            dto.setErrorDescription("Sender Iban Not Found");
-            kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
-            throw new IbanNotFoundException("Iban value is empty");
-        }
+        BigDecimal balance = ibanResolver.getBalanceOrThrow(dto.getSenderIban(), "Sender", dto);
+        ibanResolver.assertAccountExists(dto.getReceiverIban(), "Receiver", dto);
 
-        BigDecimal balance = repository.findBalanceByIban(dto.getSenderIban()) // ORELSEGET
-                .orElseGet(() -> {
-                    log.warn(" ({}) > TransactionService | KafkaTransactionTopicService -> Sender Hesap bulunamadi! {}", currentTime.get(), dto.getSenderIban());
-                    dto.setError(true);
-                    dto.setErrorDescription("Iban Number Not Found: " + dto.getSenderIban());
+        validator.assertSufficientBalance(balance, dto);
 
-                    kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
+        log.info(" ({}) > TransactionService | KafkaTransactionTopicService -> Bakiye yeterli. Kafkaya gonderiliyor. {}", currentTime.get(), dto);
 
-                    throw new IbanNotFoundException(
-                            "KafkaTransactionTopicService Hesap bulunamadi." + gson.toJson(dto));
-                });
-
-        repository.findBalanceByIban(dto.getReceiverIban()) // ORELSEGET
-                .orElseGet(() -> {
-                    log.warn(" ({}) > TransactionService | KafkaTransactionTopicService -> Receiver Hesap bulunamadi! {}", currentTime.get(), dto.getReceiverIban());
-                    dto.setError(true);
-                    dto.setErrorDescription("Receiver Iban Number Not Found: " + dto.getReceiverIban());
-
-                    kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
-
-                    throw new IbanNotFoundException(
-                            "KafkaTransactionTopicService Receiver Hesap bulunamadi." + gson.toJson(dto));
-                });
-
-        if (balance.compareTo(dto.getMoney()) > 0) { // bigdecimal oldugu icin boyle yazmam lazim.
-            log.info(" ({}) > TransactionService | KafkaTransactionTopicService -> Bakiye yeterli. Kafkaya gonderiliyor. {}", currentTime.get(), gson.toJson(dto));
-            kafkaSender.sendTransactionToUserService(dto.getEventUUID(), dto);
-
-        } else {
-            log.warn(" ({}) > TransactionService | KafkaTransactionTopicService -> Bakiye yetersiz! Bankadaki miktar: {} | Istenilen miktar: {}", currentTime.get(), balance, dto.getMoney());
-            throw new MoneyNotAvaibleException("Money not avaible KafkaTransactionTopicService");
-        }
-
+        kafkaSender.sendTransactionToUserService(dto.getEventUUID(), dto);
     }
 
-    // Rollback Icin Transactional Onemli
-    // 200 cekildi 300 cekilirken hata aldi 500 yatiriyo hesaba
+    /**
+     * Fiili para transferini gerceklestirir. withdraw ve deposit.
+     *
+     * 1 - Is kurali validasyonu. miktar sifirdan buyuk olmali ve sender receiver farkli olmali
+     * 2 - Sender ve Receiver hesaplari dogrulanir
+     * 3 - Para cekilir, yatirilir ve Kafkaya COMPLETED gonderilir
+     *
+     * @Transactional withdraw ve deposit ayni DB transactioninda. biri basarisiz olursa rollback.
+     *
+     * @param dto Kafkadan gelen islem DTOsu
+     */
     @Transactional
     public void createTransaction(KafkaTransactionTopicMessageDto dto) {
+        log.info(" ({}) > TransactionService | createTransaction -> Metoda veri geldi. Sender Iban: {}, Receiver IBAN: {}, Amount: {}", currentTime.get(), dto.getSenderIban(), dto.getReceiverIban(), dto.getMoney());
 
-        log.info(" ({}) > TransactionService | createTransaction -> Metoda veri geldi. Sender Iban: {}, Receiver IBAN: {}, Amount: {}", currentTime.get(), gson.toJson(dto.getSenderIban()), gson.toJson(dto.getReceiverIban()), gson.toJson(dto.getMoney()));
+        validator.assertAmountIsPositive(dto);
+        validator.assertNotSameAccount(dto);
 
-        if (dto.getMoney().compareTo(BigDecimal.ZERO) <= 0) {
-            log.error(" ({}) > TransactionService | createTransaction -> Transfer miktari pozitif olmalidir! Amount: {}", currentTime.get(), gson.toJson(dto.getMoney()));
-            throw new NegativeNumberException("Transfer amount must be positive");
-        }
+        ibanResolver.assertAccountExists(dto.getSenderIban(), "Sender", dto);
+        ibanResolver.assertAccountExists(dto.getReceiverIban(), "Receiver", dto);
 
-        if (dto.getReceiverIban().equals(dto.getSenderIban())) {
-            log.error(" ({}) > TransactionService | createTransaction -> Gonderen ve Alici Iban ayni olamaz! {}", currentTime.get(), gson.toJson(dto.getSenderIban()));
-            throw new SameAccountException("Cannot transfer to the same account");
-        }
-
-        //
-        // Normalde gerek yok ama tekrardan kontrol ediyoruz her ihtimale karşı
-        //
-        repository.findBalanceByIban(dto.getSenderIban())
-                .orElseGet(() -> {
-                    log.warn(" ({}) > TransactionService | createTransaction -> Sender Hesap bulunamadi! {}", currentTime.get(), dto.getSenderIban());
-                    dto.setError(true);
-                    dto.setErrorDescription("Iban Number Not Found: " + dto.getSenderIban());
-
-                    kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
-
-                    throw new IbanNotFoundException(
-                            "KafkaTransactionTopicService Hesap bulunamadi." + gson.toJson(dto));
-                });
-
-        repository.findBalanceByIban(dto.getReceiverIban())
-                .orElseGet(() -> {
-                    log.warn(" ({}) > TransactionService | createTransaction -> Receiver Hesap bulunamadi! {}", currentTime.get(), dto.getReceiverIban());
-                    dto.setError(true);
-                    dto.setErrorDescription("Iban Number Not Found: " + dto.getSenderIban());
-
-                    kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
-
-                    throw new IbanNotFoundException(
-                            "KafkaTransactionTopicService Hesap bulunamadi." + gson.toJson(dto));
-                });
-
-        //
-        //
-        //
-
-        try {
-            service.withdrawMoneyByIban(dto.getSenderIban(), dto.getMoney());
-
-            service.depositMoneyByIban(dto.getReceiverIban(), dto.getMoney());
-
-            log.info(" ({}) > TransactionService | createTransaction -> Transfer basariyla gerceklesti. Sender: {}, Receiver: {}, Amount: {}", currentTime.get(), gson.toJson(dto.getSenderIban()), gson.toJson(dto.getReceiverIban()), gson.toJson(dto.getMoney()));
-
-            dto.setStatus(TransactionStatus.COMPLETED);
-            dto.setStatusDescription(TransactionStatus.COMPLETED.getDescription());
-            try {
-                log.info(" ({}) > TransactionService | createTransaction -> Transfer complete kafkaya gonderiliyor. {}", currentTime.get(), gson.toJson(dto));
-                kafkaSender.sendTransaction(dto.getEventUUID(), dto);
-            } catch (Exception e) {
-                log.error(" ({}) > TransactionService | createTransaction -> Kafkaya transfer tamamlandi mesaji gonderilemedi! Hata: {}", currentTime.get(), e.getMessage());
-                throw new KafkaSendException("An Error While Send End Of Transaction On Kafka");
-            }
-
-        } catch (Exception e) {
-            log.error(" ({}) > TransactionService | createTransaction -> Para cekme veya yatirma sirasinda hata olustu! {}", currentTime.get(), e.getMessage());
-            dto.setError(true);
-            dto.setErrorDescription("An Error While withdrawing money On Money-service.");
-
-            kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
-
-            log.warn(" ({}) > TransactionService | createTransaction -> An Error While withdraw Money {}", currentTime.get(), gson.toJson(dto));
-            throw new DeposItOrWithdrawFailedException("Deposit or withdraw failed on Money-service createTransaction " + e.getMessage());
-        }
-
+        moneyTransferExecutor.execute(dto);
     }
-
 }

@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "kafkalastactivity")
 @Data
@@ -21,6 +23,8 @@ public class KafkaLastActivity {
     @UuidGenerator
     private String id;
     private String eventUUID;
+    private String eventType;
+    private LocalDateTime createdAt;
 
 }
 
