@@ -8,7 +8,7 @@
      Create User
   <img src="readme/createuser170226.png" alt="Architech" />
      Transfer
-  <img src="readme/240326.png.png" alt="transfer" />
+  <img src="readme/240326.png" alt="transfer" />
 </p>
 
 <div align="center">
