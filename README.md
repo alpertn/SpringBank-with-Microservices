@@ -1,14 +1,14 @@
 # SpringBank-with-Microservices
 
-## Projenin Mimari Çizimi (Transfer Mimari Cizimi guncel degildir en kisa surede guncellenecektir.)
-
+## Projenin Mimari Çizimi 
+### Transfer Mimari cizim Guncellendi CreateUser mimarisi Eski ve yanlis. degistirilecek
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="900">
 
 <p align="center">
      Create User
   <img src="readme/createuser170226.png" alt="Architech" />
      Transfer
-  <img src="readme/transfer.png" alt="transfer" />
+  <img src="readme/240326.png.png" alt="transfer" />
 </p>
 
 <div align="center">
@@ -16,7 +16,7 @@
 <a href="https://app.diagrams.net/?#Uhttps://raw.githubusercontent.com/alpertn/SpringBank-with-Microservices/refs/heads/main/readme/createuser170226.drawio" target="_blank">
   <img src="https://img.shields.io/badge/Open_in-Draw.io-orange?style=for-the-badge&logo=diagrams.net" alt="Draw.io'da Çizimi Aç">
 </a>
-<a href="https://app.diagrams.net/?#Uhttps://raw.githubusercontent.com/alpertn/SpringBank-with-Microservices/refs/heads/main/readme/transfer.drawio" target="_blank">
+<a href="https://app.diagrams.net/?#Uhttps://raw.githubusercontent.com/alpertn/SpringBank-with-Microservices/refs/heads/main/readme/240326.drawio" target="_blank">
   <img src="https://img.shields.io/badge/Open_in-Draw.io-orange?style=for-the-badge&logo=diagrams.net" alt="Draw.io'da Çizimi Aç">
 </a>
 </div>

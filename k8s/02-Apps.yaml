@@ -82,9 +82,6 @@ spec:
               value: banking-microservices.transaction.user-service.username-validation.success.v1
             - name: KAFKA_TRANSACTION_USERNAME-VALIDATION_ERROR
               value: banking-microservices.transaction.user-service.username-validation.error.v1
-            # Username Validation (from application.yaml)
-            - name: KAFKA_USERNAME_VALIDATION_ERROR
-              value: banking-microservices.username-validation.money-service.error.v1
 
 
 ---
@@ -177,19 +174,6 @@ spec:
             # Harici Zorunlu Olmayanlar
             - name: MONEY_SERVICE_PORT_NUMBER
               value: "8082"
-            # Kafka Events Configuration
-            - name: KAFKA_EVENT_EFT_PROCESS
-              value: MONEY_EFT_PROCESS
-            - name: KAFKA_EVENT_DEPOSIT_PROCESS
-              value: MONEY_DEPOSIT_PROCESS
-            - name: KAFKA_EVENT_WITHDRAW_PROCESS
-              value: MONEY_WITHDRAW_PROCESS
-            - name: KAFKA_EVENT_BLOCK_MONEY
-              value: MONEY_BLOCK_MONEY
-            - name: KAFKA_EVENT_USERNAME_VALIDATION
-              value: MONEY_USERNAME_VALIDATION
-            - name: KAFKA_EVENT_TRANSACTION_TOPIC_SERVICE
-              value: TRANSACTION_TOPIC_SERVICE
             # Kafka
             - name: SPRING_APPLICATION_JSON
               value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'

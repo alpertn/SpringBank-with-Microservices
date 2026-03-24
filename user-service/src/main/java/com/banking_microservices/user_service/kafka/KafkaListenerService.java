@@ -12,15 +12,11 @@ import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import com.banking_microservices.user_service.dto.enums.KafkaEventType;
 
 @Service
 @Slf4j
 public class KafkaListenerService {
-
-    private static final String AUTH_CREATE       = "USER_AUTH_CREATE";
-    private static final String CREATE_SUCCESS    = "USER_CREATE_SUCCESS";
-    private static final String TX_VALIDATE       = "USER_TX_VALIDATE";
-    private static final String USERNAME_VALIDATE = "USER_USERNAME_VALIDATE";
 
     private final Gson gson = new GsonBuilder()
             .serializeNulls()
@@ -53,13 +49,13 @@ public class KafkaListenerService {
             log.warn(" ({}) > KafkaListenerService | ListenAuthServiceTopic -> Gecersiz mesaj alindi, atlaniyor. Dto: {}", currentTime.get(), gson.toJson(dto));
             return;
         }
-        if (eventRepository.existsByEventIdAndEventType(dto.getKeycloackUserUUID(), AUTH_CREATE)) {
+        if (eventRepository.existsByEventIdAndEventType(dto.getKeycloackUserUUID(), KafkaEventType.USER_AUTH_CREATE.name())) {
             log.warn(" ({}) > KafkaListenerService | ListenAuthServiceTopic -> Zaten islendi, atlaniyor: {}", currentTime.get(), dto.getKeycloackUserUUID());
             return;
         }
         eventRepository.save(KafkaEvent.builder()
                 .eventId(dto.getKeycloackUserUUID())
-                .eventType(AUTH_CREATE)
+                .eventType(KafkaEventType.USER_AUTH_CREATE.name())
                 .createdAt(LocalDateTime.now())
                 .build());
         log.info(" ({}) > KafkaListenerService | ListenAuthServiceTopic -> Data islenmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
@@ -74,13 +70,13 @@ public class KafkaListenerService {
             log.warn(" ({}) > KafkaListenerService | listenCreateUserTopic -> Gecersiz mesaj alindi, atlaniyor. Dto: {}", currentTime.get(), gson.toJson(dto));
             return;
         }
-        if (eventRepository.existsByEventIdAndEventType(dto.getEventUUID(), CREATE_SUCCESS)) {
+        if (eventRepository.existsByEventIdAndEventType(dto.getEventUUID(), KafkaEventType.USER_CREATE_SUCCESS.name())) {
             log.warn(" ({}) > KafkaListenerService | listenCreateUserTopic -> Zaten islendi, atlaniyor: {}", currentTime.get(), dto.getEventUUID());
             return;
         }
         eventRepository.save(KafkaEvent.builder()
                 .eventId(dto.getEventUUID())
-                .eventType(CREATE_SUCCESS)
+                .eventType(KafkaEventType.USER_CREATE_SUCCESS.name())
                 .createdAt(LocalDateTime.now())
                 .build());
         log.info(" ({}) > KafkaListenerService | listenCreateUserTopic -> Islem basarili, eventi kaydettik. Dto: {}", currentTime.get(), gson.toJson(dto));
@@ -94,13 +90,13 @@ public class KafkaListenerService {
             log.warn(" ({}) > KafkaListenerService | listenTransactionTopic -> Gecersiz mesaj alindi, atlaniyor. Dto: {}", currentTime.get(), gson.toJson(dto));
             return;
         }
-        if (eventRepository.existsByEventIdAndEventType(dto.getEventUUID(), TX_VALIDATE)) {
+        if (eventRepository.existsByEventIdAndEventType(dto.getEventUUID(), KafkaEventType.USER_TX_VALIDATE.name())) {
             log.warn(" ({}) > KafkaListenerService | listenTransactionTopic -> Zaten islendi, atlaniyor: {}", currentTime.get(), dto.getEventUUID());
             return;
         }
         eventRepository.save(KafkaEvent.builder()
                 .eventId(dto.getEventUUID())
-                .eventType(TX_VALIDATE)
+                .eventType(KafkaEventType.USER_TX_VALIDATE.name())
                 .createdAt(LocalDateTime.now())
                 .build());
         log.info(" ({}) > KafkaListenerService | listenTransactionTopic -> Data islenmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
@@ -115,13 +111,13 @@ public class KafkaListenerService {
             log.warn(" ({}) > KafkaListenerService | listenUsernameValidation -> Gecersiz mesaj alindi, atlaniyor. Dto: {}", currentTime.get(), gson.toJson(dto));
             return;
         }
-        if (eventRepository.existsByEventIdAndEventType(dto.getEventUUID(), USERNAME_VALIDATE)) {
+        if (eventRepository.existsByEventIdAndEventType(dto.getEventUUID(), KafkaEventType.USER_USERNAME_VALIDATE.name())) {
             log.warn(" ({}) > KafkaListenerService | listenUsernameValidation -> Zaten islendi, atlaniyor: {}", currentTime.get(), dto.getEventUUID());
             return;
         }
         eventRepository.save(KafkaEvent.builder()
                 .eventId(dto.getEventUUID())
-                .eventType(USERNAME_VALIDATE)
+                .eventType(KafkaEventType.USER_USERNAME_VALIDATE.name())
                 .createdAt(LocalDateTime.now())
                 .build());
         log.info(" ({}) > KafkaListenerService | listenUsernameValidation -> Data islenmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
