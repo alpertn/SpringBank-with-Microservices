@@ -5,6 +5,7 @@ import com.banking_microservices.transaction_service.dto.Transaction;
 import com.banking_microservices.transaction_service.dto.WithdrawDto;
 import com.banking_microservices.transaction_service.dto.KafkaTransactionTopicMessageDto;
 import com.banking_microservices.transaction_service.dto.enums.TransactionStatus;
+import com.banking_microservices.transaction_service.dto.enums.TransferStatus;
 import com.banking_microservices.transaction_service.exception.GetErrorLogsException;
 import com.banking_microservices.transaction_service.exception.KafkaSendExceptionOnService;
 import com.banking_microservices.transaction_service.exception.TransactionNotFoundException;
@@ -71,6 +72,7 @@ public class TransactionService {
                 .errorDescription(topicMessage.getErrorDescription())
                 .userValidation(topicMessage.getUserValidation())
                 .localDateTime(topicMessage.getLocalDateTime())
+                .transferStatus(mapToTransferStatus(topicMessage.getStatus()))
                 .build();
 
         try {
@@ -90,35 +92,17 @@ public class TransactionService {
             newEventUUID = UUID.randomUUID().toString();
         } while (transactionRepository.existsByEventId(newEventUUID));
 
-        KafkaTransactionTopicMessageDto dto = KafkaTransactionTopicMessageDto.builder()
-                .eventUUID(newEventUUID)
-                .senderUserId(senderUserId)
-                .senderEmail(senderMail)
-                .senderName(senderName)
-                .senderSurname(senderSurname)
-                .receiverIban(transactionDto.getReceiverIban())
-                .receiverName(transactionDto.getReceiverName())
-                .receiverSurname(transactionDto.getReceiverSurname())
-                .money(transactionDto.getAmount())
-                .description(transactionDto.getDescription())
-                .status(TransactionStatus.CREATED)
-                .statusDescription(TransactionStatus.CREATED.getDescription())
-                .build();
+        KafkaTransactionTopicMessageDto dto = buildKafkaDto(
+                newEventUUID, senderUserId, senderMail, senderName, senderSurname,
+                null, transactionDto.getReceiverIban(), transactionDto.getReceiverName(), transactionDto.getReceiverSurname(),
+                transactionDto.getAmount(), transactionDto.getDescription(), null
+        );
 
-        TransactionEntity transactionModel = TransactionEntity.builder()
-                .eventId(newEventUUID)
-                .senderUserId(senderUserId)
-                .senderName(senderName)
-                .senderSurname(senderSurname)
-                .senderEmail(senderMail)
-                .receiverIban(transactionDto.getReceiverIban())
-                .receiverName(transactionDto.getReceiverName())
-                .receiverSurname(transactionDto.getReceiverSurname())
-                .money(transactionDto.getAmount())
-                .description(transactionDto.getDescription())
-                .status(TransactionStatus.CREATED)
-                .statusDescription(TransactionStatus.CREATED.getDescription())
-                .build();
+        TransactionEntity transactionModel = buildTransactionEntity(
+                newEventUUID, senderUserId, senderMail, senderName, senderSurname,
+                null, transactionDto.getReceiverIban(), transactionDto.getReceiverName(), transactionDto.getReceiverSurname(),
+                transactionDto.getAmount(), transactionDto.getDescription(), null
+        );
 
         try {
             transactionRepository.save(transactionModel);
@@ -151,39 +135,17 @@ public class TransactionService {
             newEventUUID = UUID.randomUUID().toString();
         } while (transactionRepository.existsByEventId(newEventUUID));
 
-        KafkaTransactionTopicMessageDto dto = KafkaTransactionTopicMessageDto.builder()
-                .eventUUID(newEventUUID)
-                .senderUserId(senderUserId)
-                .senderEmail(senderMail)
-                .senderName(senderName)
-                .senderSurname(senderSurname)
-                .senderIban(transactionDto.getAccountIban())
-                .receiverIban(transactionDto.getAccountIban())
-                .receiverName(senderName)
-                .receiverSurname(senderSurname)
-                .money(transactionDto.getAmount())
-                .description(transactionDto.getDescription())
-                .transactionType("DEPOSIT")
-                .status(TransactionStatus.CREATED)
-                .statusDescription(TransactionStatus.CREATED.getDescription())
-                .build();
+        KafkaTransactionTopicMessageDto dto = buildKafkaDto(
+                newEventUUID, senderUserId, senderMail, senderName, senderSurname,
+                transactionDto.getAccountIban(), transactionDto.getAccountIban(), senderName, senderSurname,
+                transactionDto.getAmount(), transactionDto.getDescription(), "DEPOSIT"
+        );
 
-        TransactionEntity transactionModel = TransactionEntity.builder()
-                .eventId(newEventUUID)
-                .senderUserId(senderUserId)
-                .senderName(senderName)
-                .senderSurname(senderSurname)
-                .senderEmail(senderMail)
-                .senderIban(transactionDto.getAccountIban())
-                .receiverIban(transactionDto.getAccountIban())
-                .receiverName(senderName)
-                .receiverSurname(senderSurname)
-                .money(transactionDto.getAmount())
-                .description(transactionDto.getDescription())
-                .transactionType("DEPOSIT")
-                .status(TransactionStatus.CREATED)
-                .statusDescription(TransactionStatus.CREATED.getDescription())
-                .build();
+        TransactionEntity transactionModel = buildTransactionEntity(
+                newEventUUID, senderUserId, senderMail, senderName, senderSurname,
+                transactionDto.getAccountIban(), transactionDto.getAccountIban(), senderName, senderSurname,
+                transactionDto.getAmount(), transactionDto.getDescription(), "DEPOSIT"
+        );
 
         try {
             transactionRepository.save(transactionModel);
@@ -216,33 +178,17 @@ public class TransactionService {
             newEventUUID = UUID.randomUUID().toString();
         } while (transactionRepository.existsByEventId(newEventUUID));
 
-        KafkaTransactionTopicMessageDto dto = KafkaTransactionTopicMessageDto.builder()
-                .eventUUID(newEventUUID)
-                .senderUserId(senderUserId)
-                .senderEmail(senderMail)
-                .senderName(senderName)
-                .senderSurname(senderSurname)
-                .senderIban(transactionDto.getAccountIban())
-                .money(transactionDto.getAmount())
-                .description(transactionDto.getDescription())
-                .transactionType("WITHDRAW")
-                .status(TransactionStatus.CREATED)
-                .statusDescription(TransactionStatus.CREATED.getDescription())
-                .build();
+        KafkaTransactionTopicMessageDto dto = buildKafkaDto(
+                newEventUUID, senderUserId, senderMail, senderName, senderSurname,
+                transactionDto.getAccountIban(), null, null, null,
+                transactionDto.getAmount(), transactionDto.getDescription(), "WITHDRAW"
+        );
 
-        TransactionEntity transactionModel = TransactionEntity.builder()
-                .eventId(newEventUUID)
-                .senderUserId(senderUserId)
-                .senderName(senderName)
-                .senderSurname(senderSurname)
-                .senderEmail(senderMail)
-                .senderIban(transactionDto.getAccountIban())
-                .money(transactionDto.getAmount())
-                .description(transactionDto.getDescription())
-                .transactionType("WITHDRAW")
-                .status(TransactionStatus.CREATED)
-                .statusDescription(TransactionStatus.CREATED.getDescription())
-                .build();
+        TransactionEntity transactionModel = buildTransactionEntity(
+                newEventUUID, senderUserId, senderMail, senderName, senderSurname,
+                transactionDto.getAccountIban(), null, null, null,
+                transactionDto.getAmount(), transactionDto.getDescription(), "WITHDRAW"
+        );
 
         try {
             transactionRepository.save(transactionModel);
@@ -310,6 +256,7 @@ public class TransactionService {
             entity.setStatusDescription(dto.getStatusDescription());
             entity.setError(dto.getError());
             entity.setErrorDescription(dto.getErrorDescription());
+            entity.setTransferStatus(mapToTransferStatus(dto.getStatus()));
             try {
                 transactionRepository.save(entity);
                 log.info(" ({}) > TransactionService | updateTransactionStatus -> Transaction status guncellendi: {} → {}", currentTime.get(), dto.getEventUUID(), dto.getStatus());
@@ -318,5 +265,72 @@ public class TransactionService {
                 throw new TransactionSaveException("Status guncellenemedi: " + e.getMessage());
             }
         });
+    }
+
+    private KafkaTransactionTopicMessageDto buildKafkaDto(
+            String eventUUID, String senderUserId, String senderEmail, String senderName, String senderSurname,
+            String senderIban, String receiverIban, String receiverName, String receiverSurname,
+            java.math.BigDecimal money, String description, String transactionType) {
+        return KafkaTransactionTopicMessageDto.builder()
+                .eventUUID(eventUUID)
+                .senderUserId(senderUserId)
+                .senderEmail(senderEmail)
+                .senderName(senderName)
+                .senderSurname(senderSurname)
+                .senderIban(senderIban)
+                .receiverIban(receiverIban)
+                .receiverName(receiverName)
+                .receiverSurname(receiverSurname)
+                .money(money)
+                .description(description)
+                .transactionType(transactionType)
+                .status(TransactionStatus.CREATED)
+                .statusDescription(TransactionStatus.CREATED.getDescription())
+                .build();
+    }
+
+    private TransactionEntity buildTransactionEntity(
+            String eventId, String senderUserId, String senderEmail, String senderName, String senderSurname,
+            String senderIban, String receiverIban, String receiverName, String receiverSurname,
+            java.math.BigDecimal money, String description, String transactionType) {
+        return TransactionEntity.builder()
+                .eventId(eventId)
+                .senderUserId(senderUserId)
+                .senderName(senderName)
+                .senderSurname(senderSurname)
+                .senderEmail(senderEmail)
+                .senderIban(senderIban)
+                .receiverIban(receiverIban)
+                .receiverName(receiverName)
+                .receiverSurname(receiverSurname)
+                .money(money)
+                .description(description)
+                .transactionType(transactionType)
+                .status(TransactionStatus.CREATED)
+                .statusDescription(TransactionStatus.CREATED.getDescription())
+                .transferStatus(TransferStatus.CREATED)
+                .build();
+    }
+
+    private TransferStatus mapToTransferStatus(TransactionStatus status) {
+        if (status == null) return TransferStatus.CREATED;
+        switch (status) {
+            case CREATED:
+                return TransferStatus.CREATED;
+            case VALIDATION_PENDING:
+            case FRAUD_REVIEW:
+                return TransferStatus.SENT_TO_FRAUD;
+            case BLOCK_MONEY:
+                return TransferStatus.SENT_TO_MONEY;
+            case COMPLETED:
+                return TransferStatus.COMPLETED;
+            case BLOCK_MONEY_FAILED:
+            case DEPOSIT_FAILED:
+            case WITHDRAW_FAILED:
+            case FAILED:
+                return TransferStatus.FAILED;
+            default:
+                return TransferStatus.CREATED;
+        }
     }
 }

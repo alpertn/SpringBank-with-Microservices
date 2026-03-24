@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
+import com.banking_microservices.money_service.dto.enums.TransactionStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -75,12 +76,18 @@ public class KafkaSender {
     public void sendDepositSuccess(String key, KafkaTransactionTopicMessageDto dto) {
         try {
             log.info(" ({}) > KafkaSender | sendDepositSuccess -> Deposit success gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
-
             kafkaTemplate.send(depositSenderTopic, key, dto);
-
             log.info(" ({}) > KafkaSender | sendDepositSuccess -> Deposit success gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(dto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendDepositSuccess -> Deposit success gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
+            dto.setStatus(TransactionStatus.DEPOSIT_FAILED);
+            dto.setError(true);
+            dto.setErrorDescription("Deposit send failed: " + e.getMessage());
+            try {
+                sendTransactionError(key, dto);
+            } catch (Exception ex) {
+                log.error("Failed to send transaction error fallback: {}", ex.getMessage());
+            }
             throw new KafkaSendException("Kafka Deposit Success Exception. " + key);
         }
     }
@@ -88,12 +95,18 @@ public class KafkaSender {
     public void sendWithdrawSuccess(String key, KafkaTransactionTopicMessageDto dto) {
         try {
             log.info(" ({}) > KafkaSender | sendWithdrawSuccess -> Withdraw success gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
-
             kafkaTemplate.send(withdrawSenderTopic, key, dto);
-
             log.info(" ({}) > KafkaSender | sendWithdrawSuccess -> Withdraw success gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(dto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendWithdrawSuccess -> Withdraw success gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
+            dto.setStatus(TransactionStatus.WITHDRAW_FAILED);
+            dto.setError(true);
+            dto.setErrorDescription("Withdraw send failed: " + e.getMessage());
+            try {
+                sendTransactionError(key, dto);
+            } catch (Exception ex) {
+                log.error("Failed to send transaction error fallback: {}", ex.getMessage());
+            }
             throw new KafkaSendException("Kafka Withdraw Success Exception. " + key);
         }
     }
@@ -101,12 +114,18 @@ public class KafkaSender {
     public void sendBlockedMoneyTopic(String key, KafkaTransactionTopicMessageDto dto) {
         try {
             log.info(" ({}) > KafkaSender | sendBlockedMoneyTopic -> Blockmoney mesaji gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
-
             kafkaTemplate.send(blockMoneyTopicSender, key, dto);
-
             log.info(" ({}) > KafkaSender | sendBlockedMoneyTopic -> Kafkaya blockmoney mesaji gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(dto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendBlockedMoneyTopic -> Kafkaya blockmoney mesaji gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
+            dto.setStatus(TransactionStatus.BLOCK_MONEY_FAILED);
+            dto.setError(true);
+            dto.setErrorDescription("Block money send failed: " + e.getMessage());
+            try {
+                sendTransactionError(key, dto);
+            } catch (Exception ex) {
+                log.error("Failed to send transaction error fallback: {}", ex.getMessage());
+            }
             throw new KafkaSendException("Kafka Send Exception. " + key + " " + dto);
         }
     }

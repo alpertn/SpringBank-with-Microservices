@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
+import com.banking_microservices.transaction_service.dto.enums.TransactionStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -48,6 +49,9 @@ public class KafkaSender {
             log.info(" ({}) > KafkaSender | sendTransaction -> Kafkaya mesaj gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(kafkaTransactionTopicMessageDto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendTransaction -> Kafkaya mesaj gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
+            kafkaTransactionTopicMessageDto.setStatus(TransactionStatus.FAILED);
+            kafkaTransactionTopicMessageDto.setError(true);
+            kafkaTransactionTopicMessageDto.setErrorDescription("Transfer request send failed: " + e.getMessage());
             throw new KafkaSendException("Kafka Send Exception. " + key + " " + kafkaTransactionTopicMessageDto);
         }
     }
@@ -59,6 +63,9 @@ public class KafkaSender {
             log.info(" ({}) > KafkaSender | sendDeposit -> Kafkaya deposit mesaji gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(kafkaTransactionTopicMessageDto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendDeposit -> Kafkaya deposit mesaji gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
+            kafkaTransactionTopicMessageDto.setStatus(TransactionStatus.DEPOSIT_FAILED);
+            kafkaTransactionTopicMessageDto.setError(true);
+            kafkaTransactionTopicMessageDto.setErrorDescription("Deposit send failed: " + e.getMessage());
             throw new KafkaSendException("Kafka Send Exception. " + key + " " + kafkaTransactionTopicMessageDto);
         }
     }
@@ -70,6 +77,9 @@ public class KafkaSender {
             log.info(" ({}) > KafkaSender | sendWithdraw -> Kafkaya withdraw mesaji gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(kafkaTransactionTopicMessageDto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendWithdraw -> Kafkaya withdraw mesaji gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
+            kafkaTransactionTopicMessageDto.setStatus(TransactionStatus.WITHDRAW_FAILED);
+            kafkaTransactionTopicMessageDto.setError(true);
+            kafkaTransactionTopicMessageDto.setErrorDescription("Withdraw send failed: " + e.getMessage());
             throw new KafkaSendException("Kafka Send Exception. " + key + " " + kafkaTransactionTopicMessageDto);
         }
     }

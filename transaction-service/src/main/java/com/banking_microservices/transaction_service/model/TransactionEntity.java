@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import com.banking_microservices.transaction_service.dto.enums.TransactionStatus;
+import com.banking_microservices.transaction_service.dto.enums.TransferStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,7 +32,7 @@ public class TransactionEntity {
 
     private String eventId;
 
-    private String receiverName = null;
+    private String receiverName;
 
     @Builder.Default
     private String senderName = null;
@@ -45,15 +46,15 @@ public class TransactionEntity {
     @Builder.Default
     private String receiverEmail = null;
 
-    private String receiverSurname = null;
+    private String receiverSurname;
 
-    private String senderUserId = null;
+    private String senderUserId;
 
-    private String receiverUserId = null;
+    private String receiverUserId;
 
-    private String senderIban = null;
+    private String senderIban;
 
-    private String receiverIban = null;
+    private String receiverIban;
 
     @Column(precision = 19, scale = 2)
     @com.fasterxml.jackson.annotation.JsonProperty("money")
@@ -61,7 +62,7 @@ public class TransactionEntity {
 
     private String transactionType;
 
-    private String description = null;
+    private String description;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime localDateTime;
@@ -75,11 +76,18 @@ public class TransactionEntity {
     private Boolean userValidation = false;
 
     @Builder.Default
+    private Boolean isMoneyBlocked = false;
+
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     private TransactionStatus status = TransactionStatus.CREATED;
 
     @Builder.Default
     private String statusDescription = TransactionStatus.CREATED.getDescription();
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private TransferStatus transferStatus = TransferStatus.CREATED;
 
     @PrePersist
     protected void onCreate() {

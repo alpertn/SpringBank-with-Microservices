@@ -72,6 +72,9 @@ public class TransactionEntity {
     private Boolean userValidation = false;
 
     @Builder.Default
+    private Boolean isMoneyBlocked = false;
+
+    @Builder.Default
     private String status = "PROGRESS";
 
     @PrePersist

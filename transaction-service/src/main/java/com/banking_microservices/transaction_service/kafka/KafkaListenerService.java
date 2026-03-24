@@ -1,9 +1,7 @@
 package com.banking_microservices.transaction_service.kafka;
 
 import com.banking_microservices.transaction_service.dto.KafkaTransactionTopicMessageDto;
-import com.banking_microservices.transaction_service.dto.enums.KafkaEventType;
-import com.banking_microservices.transaction_service.model.KafkaEvent;
-import com.banking_microservices.transaction_service.repository.KafkaEventRepository;
+import com.banking_microservices.transaction_service.model.TransactionEntity;
 import com.banking_microservices.transaction_service.repository.TransactionRepository;
 import com.banking_microservices.transaction_service.service.TransactionService;
 import com.google.gson.Gson;
@@ -30,16 +28,13 @@ public class KafkaListenerService {
             .create();
 
     private final TransactionService transactionService;
-    private final KafkaEventRepository eventRepository;
     private final TransactionRepository transactionRepository;
     private final Supplier<String> currentTime;
 
     public KafkaListenerService(TransactionService transactionService,
-                                KafkaEventRepository eventRepository,
                                 TransactionRepository transactionRepository,
                                 Supplier<String> currentTime) {
         this.transactionService = transactionService;
-        this.eventRepository = eventRepository;
         this.transactionRepository = transactionRepository;
         this.currentTime = currentTime;
     }
@@ -53,13 +48,10 @@ public class KafkaListenerService {
         KafkaTransactionTopicMessageDto dto = parseMessage(topicData, "listenTransactionTopic");
         if (dto == null) return;
 
-        if (isDuplicateOrClaim(dto.getEventUUID(), KafkaEventType.TX_EFT_RECEIVED, KafkaEventType.TX_EFT_DONE, "listenTransactionTopic")) return;
+        if (isDuplicate(dto, true, "listenTransactionTopic")) return;
 
         log.info(" ({}) > KafkaListenerService | listenTransactionTopic -> Data islenmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
-
         transactionService.saveTransaction(dto);
-
-        markAsDone(dto.getEventUUID(), KafkaEventType.TX_EFT_DONE);
     }
 
     @KafkaListener(topics = "${kafka.topics.transaction.error}")
@@ -69,13 +61,10 @@ public class KafkaListenerService {
         KafkaTransactionTopicMessageDto dto = parseMessage(topicData, "listenErrorTopic");
         if (dto == null) return;
 
-        if (isDuplicateOrClaim(dto.getEventUUID(), KafkaEventType.TX_ERROR_RECEIVED, KafkaEventType.TX_ERROR_DONE, "listenErrorTopic")) return;
+        if (isDuplicate(dto, false, "listenErrorTopic")) return;
 
         log.info(" ({}) > KafkaListenerService | listenErrorTopic -> Data islenmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
-
         transactionService.saveTransaction(dto);
-
-        markAsDone(dto.getEventUUID(), KafkaEventType.TX_ERROR_DONE);
     }
 
     @KafkaListener(topicPattern = "${kafka.topics.transaction.logger.listener}")
@@ -101,7 +90,7 @@ public class KafkaListenerService {
         KafkaTransactionTopicMessageDto dto = parseMessage(topicData, "listenDepositSuccessTopic");
         if (dto == null) return;
 
-        if (isDuplicateOrClaim(dto.getEventUUID(), KafkaEventType.TX_DEPOSIT_RECEIVED, KafkaEventType.TX_DEPOSIT_DONE, "listenDepositSuccessTopic")) return;
+        if (isDuplicate(dto, false, "listenDepositSuccessTopic")) return;
 
         log.info(" ({}) > KafkaListenerService | listenDepositSuccessTopic -> Data islenmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
 
@@ -110,10 +99,7 @@ public class KafkaListenerService {
             log.info(" ({}) > KafkaListenerService | listenDepositSuccessTopic -> Deposit status guncellendi: {} -> {}", currentTime.get(), dto.getEventUUID(), dto.getStatus());
         } catch (Exception e) {
             log.error(" ({}) > KafkaListenerService | listenDepositSuccessTopic -> updateTransactionStatus hatasi: {}", currentTime.get(), e.getMessage(), e);
-            return;
         }
-
-        markAsDone(dto.getEventUUID(), KafkaEventType.TX_DEPOSIT_DONE);
     }
 
     @KafkaListener(topics = "${kafka.topics.transaction.withdraw.listener}")
@@ -123,7 +109,7 @@ public class KafkaListenerService {
         KafkaTransactionTopicMessageDto dto = parseMessage(topicData, "listenWithdrawSuccessTopic");
         if (dto == null) return;
 
-        if (isDuplicateOrClaim(dto.getEventUUID(), KafkaEventType.TX_WITHDRAW_RECEIVED, KafkaEventType.TX_WITHDRAW_DONE, "listenWithdrawSuccessTopic")) return;
+        if (isDuplicate(dto, false, "listenWithdrawSuccessTopic")) return;
 
         log.info(" ({}) > KafkaListenerService | listenWithdrawSuccessTopic -> Data islenmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
 
@@ -132,10 +118,7 @@ public class KafkaListenerService {
             log.info(" ({}) > KafkaListenerService | listenWithdrawSuccessTopic -> Withdraw status guncellendi: {} -> {}", currentTime.get(), dto.getEventUUID(), dto.getStatus());
         } catch (Exception e) {
             log.error(" ({}) > KafkaListenerService | listenWithdrawSuccessTopic -> updateTransactionStatus hatasi: {}", currentTime.get(), e.getMessage(), e);
-            return;
         }
-
-        markAsDone(dto.getEventUUID(), KafkaEventType.TX_WITHDRAW_DONE);
     }
 
     // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -149,29 +132,18 @@ public class KafkaListenerService {
         return dto;
     }
 
-    private boolean isDuplicateOrClaim(String eventUUID, KafkaEventType received, KafkaEventType done, String method) {
-        boolean alreadyReceived = eventRepository.existsByEventIdAndEventType(eventUUID, received.name());
-        boolean alreadyDone     = eventRepository.existsByEventIdAndEventType(eventUUID, done.name());
-
-        if (alreadyReceived || alreadyDone) {
-            log.warn(" ({}) > KafkaListenerService | {} -> Zaten islendi veya isleniyor, atlaniyor: {}", currentTime.get(), method, eventUUID);
-            return true;
+    private boolean isDuplicate(KafkaTransactionTopicMessageDto dto, boolean isCreation, String method) {
+        if (isCreation) {
+            boolean exists = transactionRepository.existsByEventId(dto.getEventUUID());
+            if (exists) log.warn(" ({}) > KafkaListenerService | {} -> Zaten islendi (Created), atlaniyor: {}", currentTime.get(), method, dto.getEventUUID());
+            return exists;
+        } else {
+            java.util.Optional<TransactionEntity> opt = transactionRepository.findByEventId(dto.getEventUUID());
+            if (opt.isPresent() && opt.get().getStatus() == dto.getStatus()) {
+                log.warn(" ({}) > KafkaListenerService | {} -> Zaten bu statüde güncellendi ({}), atlaniyor: {}", currentTime.get(), method, dto.getStatus(), dto.getEventUUID());
+                return true;
+            }
+            return false;
         }
-
-        eventRepository.save(KafkaEvent.builder()
-                .eventId(eventUUID)
-                .eventType(received.name())
-                .createdAt(LocalDateTime.now())
-                .build());
-
-        return false;
-    }
-
-    private void markAsDone(String eventUUID, KafkaEventType done) {
-        eventRepository.save(KafkaEvent.builder()
-                .eventId(eventUUID)
-                .eventType(done.name())
-                .createdAt(LocalDateTime.now())
-                .build());
     }
 }
