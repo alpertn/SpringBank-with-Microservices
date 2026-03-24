@@ -11,10 +11,6 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.function.Supplier;
 
-/**
- * Transfer islemlerine ait is kurali dogrulamalarini icerir.
- * Repository veya Kafka bagimliligı yoktur. Sadece domain kurallarini uygular.
- */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -22,12 +18,6 @@ public class TransactionValidator {
 
     private final Supplier<String> currentTime;
 
-    /**
-     * Transfer miktarinin sifirdan buyuk oldugunu dogrular.
-     *
-     * @param dto islem DTOsu
-     * @throws NegativeNumberException sifir veya negatifse firlatir
-     */
     public void assertAmountIsPositive(KafkaTransactionTopicMessageDto dto) {
         if (dto.getMoney().compareTo(BigDecimal.ZERO) <= 0) {
             log.error(" ({}) > TransactionValidator | assertAmountIsPositive -> Transfer miktari pozitif olmalidir! Amount: {}", currentTime.get(), dto.getMoney());
@@ -35,12 +25,6 @@ public class TransactionValidator {
         }
     }
 
-    /**
-     * Sender ve Receiver IBANlarinin farkli oldugunu dogrular.
-     *
-     * @param dto islem DTOsu
-     * @throws SameAccountException ayni IBANa transfer deneniyorsa firlatir
-     */
     public void assertNotSameAccount(KafkaTransactionTopicMessageDto dto) {
         if (dto.getReceiverIban().equals(dto.getSenderIban())) {
             log.error(" ({}) > TransactionValidator | assertNotSameAccount -> Gonderen ve Alici Iban ayni olamaz! {}", currentTime.get(), dto.getSenderIban());
@@ -48,14 +32,6 @@ public class TransactionValidator {
         }
     }
 
-    /**
-     * Sender bakiyesinin transfer miktarindan BUYUK oldugunu dogrular.
-     * Esit bakiye de reddedilir cunku transfer sonrasi bakiye sifir olur.
-     *
-     * @param balance senderin mevcut bakiyesi
-     * @param dto     islem DTOsu
-     * @throws MoneyNotAvaibleException bakiye yetersizse veya esitse firlatir
-     */
     public void assertSufficientBalance(BigDecimal balance, KafkaTransactionTopicMessageDto dto) {
         if (balance.compareTo(dto.getMoney()) <= 0) {
             log.warn(" ({}) > TransactionValidator | assertSufficientBalance -> Bakiye yetersiz! Bankadaki miktar: {} | Istenilen miktar: {}", currentTime.get(), balance, dto.getMoney());

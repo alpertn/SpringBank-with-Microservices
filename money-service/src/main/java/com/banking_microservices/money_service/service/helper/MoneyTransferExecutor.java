@@ -11,18 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.function.Supplier;
 
-/**
- * Bu class {@link BalanceOperationService}, {@link KafkaSender} ve {@link TransactionErrorHandler} classlarini cagirir.
- *
- * Para transferinin fiili olarak calistirilmasindan sorumludur.
- * 1 - Senderdan para cek
- * 2 - Receivera para yatir
- * 3 - Kafkaya COMPLETED gonder
- *
- * withdraw deposit hatasi olursa Kafkaya error gonderilir ve exception firlatilir.
- * Kafka COMPLETED gonderimi basarisizsa sadece KafkaSendException firlatilir, error gonderilmez.
- * Para zaten transfer edildi error gondermek yanlis rollback izlenimi yaratir.
- */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -33,13 +21,6 @@ public class MoneyTransferExecutor {
     private final TransactionErrorHandler errorHandler;
     private final Supplier<String> currentTime;
 
-    /**
-     * Para transferini gerceklestirir ve tamamlandiginda Kafkaya bildirir.
-     *
-     * @param dto islem DTOsu
-     * @throws DeposItOrWithdrawFailedException withdraw veya deposit basarisizsa firlatir
-     * @throws KafkaSendException transfer basarili ama Kafka bildirimi basarisizsa firlatir
-     */
     public void execute(KafkaTransactionTopicMessageDto dto) {
         // para transferi. basarisizsa Kafkaya error gonderilir.
         try {

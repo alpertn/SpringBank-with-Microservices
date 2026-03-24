@@ -17,21 +17,6 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 
-/**
- * Money-Service Controller Classı
- * 
- * Aldigi veriler ile {@link UserMoneyService} ve {@link UserMoneyRepository}
- * classlarini cagirir.
- * 
- * 
- * Endpointler
- * 1 - /api/money-service/v1/accounts/createusermoney
- * 2 - /api/money-service/v1/accounts/getUserIbanWithUserId
- * 3 - /api/money-service/v1/accounts/balance-info
- * 4 - /api/money-service/v1/accounts/depositByUserId
- * 5 - /api/money-service/v1/accounts/withdrawByUserId
- * 
- */
 @RestController
 @RequestMapping("/api/money-service/v1/accounts")
 @Slf4j
@@ -64,28 +49,12 @@ public class MoneyController {
         return ResponseEntity.ok("UserMoney UserMoneyService is healthy");
     }
 
-    /**
-     * 
-     * Bu method userId kullanarak user money hesabı olusturur.
-     * {@link UserMoneyService} createUser isteği icin service'ye gider. service de keycloak a istek atar.
-     *
-     * @param userId RequestBody'den gelen userId {@link IdDto} verisidir.
-     * @return Request Response olarak olusturdugu user money modelını dondurur.
-     *         iban userid ve money degerlerini icerir.
-     */
     @PostMapping("/createusermoney")
     public ResponseEntity<?> userOlustur(@Valid @RequestBody IdDto userId) {
         log.info(" ({}) > MoneyController | userOlustur -> User Id Parametresi geldi. {}", currentTime.get(), gson.toJson(userId));
         return ResponseEntity.ok(userMoneyService.generateUser(userId.getId()));
     }
 
-    /**
-     * 
-     * id ile IBAN sorgu. {@link UserMoneyService} ye istek gonderir.
-     * 
-     * @param body jsondan gelen userId s
-     * @return MoneyDto kullanıcının tum bılgılerı.
-     */
     @PostMapping("/getUserIbanWithUserId")
     public ResponseEntity<?> getUserIbanWithUserId(@RequestBody Map<String, String> body) {
         String userId = body.get("userId");
@@ -93,29 +62,12 @@ public class MoneyController {
         return ResponseEntity.ok(userMoneyService.getAccountByUserId(userId));
     }
 
-    /**
-     *
-     * {@link UserMoneyService} class ina istek gonderir aldigi id ile ve kullanicinin bilgilerini dondurur.
-     *
-     * @param userId @RequestHeader("X-User-KeyloackId") Headerdeki veriyi alir.
-     * @return
-     */
     @GetMapping("/balance-info")
     public ResponseEntity<?> getBalanceAndIban(@RequestHeader("X-User-KeyloackId") String userId) {
         log.info(" ({}) > MoneyController | getBalanceAndIban -> Money Service MoneyController getBalanceAndIban Modulu Istegi aldi. id : {}", currentTime.get(), gson.toJson(userId));
         return ResponseEntity.ok(userMoneyService.getAccountByUserId(userId));
     }
 
-    /**
-     * 
-     * Kullanici idsi ile deposit islemi. hesaba para ekleme.
-     *
-     * Aklıma gelen guvenlık acıgı : adam kendi idsini deiglde istedigi idyi gonderebilir jwtden gelen headerdeki idyi kullansak daha iyi
-     * Admin panel uses this endpoint to deposit into user accounts, so we strictly type the body as TransactionRequestDto.
-     *
-     * @param body request bodyden gelen userId ve amount degeri.
-     * @return Response 200
-     */
     @PostMapping("/depositByUserId")
     public ResponseEntity<?> depositByUserId(@RequestBody TransactionRequestDto body) {
         String userId = body.getUserId();
@@ -125,13 +77,6 @@ public class MoneyController {
         return ResponseEntity.ok(java.util.Map.of("status", "success", "message", "Para yatırma başarılı"));
     }
 
-    /**
-     * 
-     * Kullanici id ile withdraw.
-     *
-     * @param body request bodyden gelen userId ve amount degeri
-     * @return response 200 veya exception donuyo
-     */
     @PostMapping("/withdrawByUserId")
     public ResponseEntity<?> withdrawByUserId(@RequestBody TransactionRequestDto body) {
         String userId = body.getUserId();

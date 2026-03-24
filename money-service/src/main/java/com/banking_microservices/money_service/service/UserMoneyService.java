@@ -13,15 +13,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.function.Supplier;
 
-/**
- * Bu class {@link IbanGeneratorService}, {@link AccountQueryService} ve {@link BalanceOperationService} classlarini cagirir.
- *
- * Kullanici para hesabi islemleri icin ana orkestrasyon servisidir.
- * IBAN uretimi, hesap sorgulama ve bakiye islemleri ilgili helper classlara delege edilir.
- *
- * Controller ve Kafka listenerlar bu classi cagirir.
- * Orijinal method imzalari korundugu icin cagiran taraflar bozulmaz.
- */
 @Slf4j
 @Service
 public class UserMoneyService {
@@ -44,13 +35,6 @@ public class UserMoneyService {
         this.currentTime = currentTime;
     }
 
-    /**
-     * userId ile yeni bir {@link UserMoney} hesabi olusturur ve kaydeder.
-     *
-     * @param userId keycloak uuid ve veritabanindaki userId degeri
-     * @return olusturulan {@link UserMoney} nesnesi
-     * @throws SaveUserException kayit basarisizsa firlatir
-     */
     public UserMoney generateUser(String userId) {
         log.info(" ({}) > UserMoneyService | generateUser -> generateUser istegi alindi. UserId: {}", currentTime.get(), userId);
 
@@ -70,12 +54,6 @@ public class UserMoneyService {
         }
     }
 
-    /**
-     * Benzersiz Turkiye IBANi uretir.
-     * Geriye donuk uyumluluk icin korundu.
-     *
-     * @return yeni ve benzersiz IBAN string
-     */
     public String generateRandomTurkishIban() {
         return ibanGeneratorService.generateUniqueTurkishIban();
     }

@@ -15,13 +15,6 @@ import org.apache.kafka.common.serialization.Serializer;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Kafka Icin Producer Config. Bu olmazsa kafkaya veriler gonderilemez. kafkaya veriler raw 
- * olarak gonderilemedigi icin serializer yazmak zorundayiz. Bu defaulttur degisebilir.
- * mesela ben verileri gson ile donusturdugum gibin gsonserializer ekledim.
- * 
- * Kafka icin {@link ProducerFactory} ve {@link KafkaTemplate} Beanlarini tanimlar.
- */
 @Configuration
 public class KafkaProducerConfig {
 

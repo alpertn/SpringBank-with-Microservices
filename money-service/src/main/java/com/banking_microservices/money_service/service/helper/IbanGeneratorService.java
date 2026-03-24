@@ -9,12 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.function.Supplier;
 
-/**
- * Bu class {@link UserMoneyRepository} classini cagirir.
- *
- * Benzersiz Turkiye IBAN uretimini yonetir.
- * Veritabaninda mevcut olmayan bir IBAN bulunana kadar uretim tekrarlar.
- */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -23,11 +17,6 @@ public class IbanGeneratorService {
     private final UserMoneyRepository userMoneyRepository;
     private final Supplier<String> currentTime;
 
-    /**
-     * Rastgele, veritabaninda benzersiz bir Turkiye IBANi uretir.
-     *
-     * @return veritabaninda bulunmayan yeni IBAN string
-     */
     public String generateUniqueTurkishIban() {
         String iban;
         do {

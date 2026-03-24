@@ -140,10 +140,6 @@ public class KafkaListenerService {
 
     // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-    /**
-     * Kafka'dan gelen raw JSON'u {@link KafkaTransactionTopicMessageDto}'ya ceviri ve bos UUID kontrolu yapar.
-     * Gecersiz veri gelirse null doner, cagiran listener hemen return etmelidir.
-     */
     private KafkaTransactionTopicMessageDto parseMessage(String topicData, String method) {
         KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
         if (dto == null || dto.getEventUUID() == null) {
@@ -153,13 +149,6 @@ public class KafkaListenerService {
         return dto;
     }
 
-    /**
-     * Iki adimli idempotency kontrolu:
-     * 1. eventUUID icin RECEIVED veya DONE kaydi varsa duplicate kabul eder, true doner.
-     * 2. Yoksa RECEIVED kaydini hemen olusturur (isleniyor olarak isaretler) ve false doner.
-     * Bu sayede ayni anda iki mesaj gelirse birincisi RECEIVED'i kaydeder,
-     * ikincisi gorur ve islememek icin return eder.
-     */
     private boolean isDuplicateOrClaim(String eventUUID, KafkaEventType received, KafkaEventType done, String method) {
         boolean alreadyReceived = eventRepository.existsByEventIdAndEventType(eventUUID, received.name());
         boolean alreadyDone     = eventRepository.existsByEventIdAndEventType(eventUUID, done.name());
@@ -178,10 +167,6 @@ public class KafkaListenerService {
         return false;
     }
 
-    /**
-     * Islem basariyla tamamlandiginda DONE kaydini olusturur.
-     * {@link #isDuplicateOrClaim} ile birlikte kullanilir.
-     */
     private void markAsDone(String eventUUID, KafkaEventType done) {
         eventRepository.save(KafkaEvent.builder()
                 .eventId(eventUUID)

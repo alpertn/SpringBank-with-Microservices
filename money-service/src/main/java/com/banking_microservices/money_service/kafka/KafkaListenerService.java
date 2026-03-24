@@ -15,19 +15,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.function.Supplier;
 
-/**
- * Bu class {@link TransactionService}, {@link UserMoneyService} ve {@link KafkaSender} classlarini cagirir.
- *
- * Kafka topiclerini dinler ve gelen mesajlari ilgili servislere yonlendirir.
- *
- * Sorumluluklar:
- * Mesaji JSONdan DTOya donusturme
- * Temel validasyon. null UUID ve zorunlu alan kontrolu
- * Idempotency kontrolu. {@link IdempotencyGuard} uzerinden. Manuel repository cagrisi yok.
- * Ilgili service metoduna yonlendirme
- *
- * Dinlenen topicler: transaction, deposit, withdraw, block-money, username-validation
- */
 @Slf4j
 @Service
 public class KafkaListenerService {
@@ -38,10 +25,6 @@ public class KafkaListenerService {
     private final IdempotencyGuard idempotencyGuard;
     private final Supplier<String> currentTime;
 
-    /**
-     * Gson LocalDateTime serialize deserialize destegi.
-     * Kafka mesajlarinda LocalDateTime alanlari icin gerekli.
-     */
     private final Gson gson = new GsonBuilder()
             .serializeNulls()
             .registerTypeAdapter(LocalDateTime.class,
@@ -62,13 +45,6 @@ public class KafkaListenerService {
         this.currentTime = currentTime;
     }
 
-    /**
-     * Fraud service tarafindan onaylanan EFT topicini dinler.
-     * Fraud check sonrasi {@link TransactionService#createTransaction(KafkaTransactionTopicMessageDto)} cagirarak
-     * para transferini gerceklestirir ve success topicine bildirim gonderir.
-     *
-     * @param topicData Producer tarafindan yollanan kafka verisi. DTOya cevrilip diger classlara iletilir.
-     */
     @KafkaListener(topics = "${kafka.topics.transaction.transactionmoney.listener}")
     public void listenFraudCheckedTopic(String topicData) {
         log.info(" ({}) > KafkaListenerService | listenFraudCheckedTopic -> Metoda veri geldi. RawData: {}", currentTime.get(), topicData);
@@ -76,20 +52,13 @@ public class KafkaListenerService {
         KafkaTransactionTopicMessageDto dto = parseMessage(topicData);
         if (dto == null) return;
 
-        if (idempotencyGuard.isDuplicateOrRegister(dto.getEventUUID(), KafkaEventType.FRAUD_CHECKED_EFT.name())) return;
+        if (idempotencyGuard.isDuplicateOrRegister(dto.getEventUUID(), KafkaEventType.TRANSFER_CREATED.name())) return;
 
         log.info(" ({}) > KafkaListenerService | listenFraudCheckedTopic -> Data islenmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
 
         transactionService.createTransaction(dto);
     }
 
-    /**
-     * Transaction Deposit topicini dinler.
-     * Gelen veriyi okuyup {@link UserMoneyService#depositMoneyByIban(String, java.math.BigDecimal)} cagirarak para yatirir.
-     * Sonucu Kafkaya bildirir.
-     *
-     * @param topicData Producer tarafindan yollanan string formatindaki veridir. DTOya cevrilip baska classlara gonderilir.
-     */
     @KafkaListener(topics = "${kafka.topics.transaction.deposit.listener}")
     public void listenDepositTopic(String topicData) {
         log.info(" ({}) > KafkaListenerService | listenDepositTopic -> Metoda veri geldi. RawData: {}", currentTime.get(), topicData);
@@ -122,13 +91,6 @@ public class KafkaListenerService {
         }
     }
 
-    /**
-     * Transaction Withdraw topicini dinler.
-     * {@link UserMoneyService#withdrawMoneyByIban(String, java.math.BigDecimal)} cagirarak para ceker. Sonucu Kafkaya bildirir.
-     * senderIban bossa receiverIban ile fallback denenir. Bazi servisler withdrawu receiverIban olarak set edebilir.
-     *
-     * @param topicData Producer tarafindan yollanan string formatindaki veridir. DTOya cevrilip baska classlara gonderilir.
-     */
     @KafkaListener(topics = "${kafka.topics.transaction.withdraw.listener}")
     public void listenWithdrawTopic(String topicData) {
         log.info(" ({}) > KafkaListenerService | listenWithdrawTopic -> Metoda veri geldi. RawData: {}", currentTime.get(), topicData);
@@ -168,13 +130,6 @@ public class KafkaListenerService {
         }
     }
 
-    /**
-     * Transaction Service tarafindan olusturulan EFT icin para bloke etme topicini dinler.
-     * {@link TransactionService#KafkaTransactionTopicBlockMoney(KafkaTransactionTopicMessageDto)} idaresine birakir.
-     * Yeni akis: TX-Service → Block Money → Fraud → Transfer
-     *
-     * @param topicData Producer tarafindan yollanan string formatindaki veridir. DTOya cevrilip baska classlara gonderilir.
-     */
     @KafkaListener(topics = "${kafka.topics.transaction.blockmoney.listener}")
     public void listenBlockMoneyFromTxService(String topicData) {
         log.info(" ({}) > KafkaListenerService | listenBlockMoneyFromTxService -> Metoda veri geldi. RawData: {}", currentTime.get(), topicData);
@@ -189,12 +144,6 @@ public class KafkaListenerService {
         transactionService.KafkaTransactionTopicBlockMoney(dto);
     }
 
-    /**
-     * Username validation topicini dinler.
-     * Su an yalnizca idempotency kaydi yapilir. Is mantigi ilerleyen sureclerde eklenecek.
-     *
-     * @param topicData Producer tarafindan yollanan string formatindaki veridir.
-     */
     @KafkaListener(topics = "${kafka.topics.username-validation.listener}")
     public void listenUserValidationTopicOnUserService(String topicData) {
         log.info(" ({}) > KafkaListenerService | listenUserValidationTopicOnUserService -> Metoda veri geldi. RawData: {}", currentTime.get(), topicData);
@@ -209,13 +158,6 @@ public class KafkaListenerService {
         // TODO: username validation is mantigi buraya eklenecek
     }
 
-    /**
-     * Ham JSON stringi DTOya donusturur.
-     * Donusum basarisiz olursa veya eventUUID null gelirse null doner. Cagiran taraf atlar.
-     *
-     * @param topicData Kafkadan gelen ham json string
-     * @return {@link KafkaTransactionTopicMessageDto} veya null
-     */
     private KafkaTransactionTopicMessageDto parseMessage(String topicData) {
         try {
             KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);

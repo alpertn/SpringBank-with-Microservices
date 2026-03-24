@@ -11,12 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.function.Supplier;
 
-/**
- * Bu class {@link UserMoneyRepository}, {@link KafkaSender} ve {@link TransactionErrorHandler} classlarini cagirir.
- *
- * Sender hesabındaki paranın bloke edilmesini yonetir.
- * DB basarliysa Kafkaya BLOCK_MONEY gonderilir basarisizsa error gonderılır ve exception firlatilir.
- */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -27,12 +21,6 @@ public class BlockMoneyService {
     private final TransactionErrorHandler errorHandler;
     private final Supplier<String> currentTime;
 
-    /**
-     * Sender IBAN uzerinde para bloke eder ve Kafkaya bildirir.
-     *
-     * @param dto islem DTOsu
-     * @throws DecramentAndBlockMoneyException DB islemi basarisizsa firlatir
-     */
     public void blockFunds(KafkaTransactionTopicMessageDto dto) {
         // sadece DB islemi try icerisinde. Kafka gonderimi disarida.
         try {

@@ -9,13 +9,6 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.function.Supplier;
 
-/**
- * Bu class {@link KafkaLastActivityRepository} classini cagirir.
- *
- * Kafka mesajlarinin tekrar islenmemesini saglar yani idempotency.
- * Ayni eventUUID ve eventType cifti daha once islendiyse true doner.
- * Ilk kez geliyorsa veritabanina kaydeder ve false doner.
- */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -24,15 +17,6 @@ public class IdempotencyGuard {
     private final KafkaLastActivityRepository kafkaLastActivityRepository;
     private final Supplier<String> currentTime;
 
-    /**
-     * eventUUID ve eventType cifti daha once islendiyse true doner, kayit yapilmaz.
-     * Ilk kez geliyorsa kaydeder ve false doner.
-     * Cagiran taraf donus degerine gore devam edip etmeyecegine karar verir.
-     *
-     * @param eventUUID uuid string
-     * @param eventType hangi topic icin kontrol yapilacagi. ornegin EFT_PROCESS
-     * @return true ise zaten islendi yani duplicate. false ise ilk kez geldi kayit yapildi.
-     */
     public boolean isDuplicateOrRegister(String eventUUID, String eventType) {
         if (kafkaLastActivityRepository.existsByEventUUIDAndEventType(eventUUID, eventType)) {
             log.warn(" ({}) > IdempotencyGuard | isDuplicateOrRegister -> Event zaten islendi, atlaniyor. EventUUID: {}, EventType: {}", currentTime.get(), eventUUID, eventType);

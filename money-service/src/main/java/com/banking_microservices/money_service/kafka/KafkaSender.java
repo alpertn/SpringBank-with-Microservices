@@ -13,10 +13,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Supplier;
 
-/**
- * Bu class money service Kafka Sender ıcın yazılmıstır. classlar tarafından cagırılır. ve kafkaya verı gonderır..
-
- */
 @Slf4j
 @Service
 public class KafkaSender {
@@ -63,13 +59,6 @@ public class KafkaSender {
         this.currentTime = currentTime;
     }
 
-    /**
-     * Transaction topicine veri gonderır..
-     * 
-     * @param key Kafka ıcın Key Value (eventUUID).
-     * @param kafkaTransactionTopicMessageDto gonderılecek asıl veri.
-     * @throws KafkaSendException exception.
-     */
     public void sendTransaction(String key, KafkaTransactionTopicMessageDto kafkaTransactionTopicMessageDto) {
         try {
             log.info(" ({}) > KafkaSender | sendTransaction -> Kafkaya mesaj gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(kafkaTransactionTopicMessageDto));
@@ -83,12 +72,6 @@ public class KafkaSender {
         }
     }
 
-    /**
-     * deposit basarili olunca kafka topicine mesaj gonderir.
-     * 
-     * @param key eventUUID
-     * @param dto gonderılen veri
-     */
     public void sendDepositSuccess(String key, KafkaTransactionTopicMessageDto dto) {
         try {
             log.info(" ({}) > KafkaSender | sendDepositSuccess -> Deposit success gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
@@ -102,12 +85,6 @@ public class KafkaSender {
         }
     }
 
-    /**
-     * withdraw basarili olunca kafka topicine msaj  gonderir.
-     * 
-     * @param key eventUUID
-     * @param dto gonderılen veri
-     */
     public void sendWithdrawSuccess(String key, KafkaTransactionTopicMessageDto dto) {
         try {
             log.info(" ({}) > KafkaSender | sendWithdrawSuccess -> Withdraw success gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
@@ -121,12 +98,6 @@ public class KafkaSender {
         }
     }
 
-    /**
-     * blockmoney islemi tammalandıgında topice mesaj gonderir.
-     * 
-     * @param key eventUUID
-     * @param dto Data
-     */
     public void sendBlockedMoneyTopic(String key, KafkaTransactionTopicMessageDto dto) {
         try {
             log.info(" ({}) > KafkaSender | sendBlockedMoneyTopic -> Blockmoney mesaji gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
@@ -192,14 +163,6 @@ public class KafkaSender {
         }
     }
 
-    /**
-     * EFT transfer tamamlandiginda transaction-service success topicine mesaj gonderir.
-     * {@link com.banking_microservices.money_service.service.helper.MoneyTransferExecutor}
-     * tarafindan cagrilir.
-     *
-     * @param key eventUUID
-     * @param dto gonderilen veri
-     */
     public void sendTransactionSuccess(String key, KafkaTransactionTopicMessageDto dto) {
         try {
             log.info(" ({}) > KafkaSender | sendTransactionSuccess -> EFT transfer success gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));

@@ -14,16 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.function.Supplier;
 
-/**
- * Bu class {@link UserMoneyRepository} classini cagirir.
- *
- * Bakiye uzerindeki deposit ve withdraw islemlerini yonetir.
- * Controller veya Kafka eventlerinden cagrilabilir.
- *
- * NOT: Bakiye sorgulamak icin bu class kullanilmaz {@link AccountQueryService} kullan.
- * AccountQueryService UserNotFoundException firlatir ama bazi withdraw metodlari
- * IbanNotFoundException firlatmali oldugu icin repository direkt kullanilir.
- */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -32,13 +22,6 @@ public class BalanceOperationService {
     private final UserMoneyRepository userMoneyRepository;
     private final Supplier<String> currentTime;
 
-    /**
-     * Document ID ile para yatirir.
-     *
-     * @param id     document id
-     * @param amount yatirilacak miktar
-     * @throws DepositFailedException ID bulunamazsa firlatir
-     */
     @Transactional
     public void depositMoneyById(String id, BigDecimal amount) {
         log.info(" ({}) > BalanceOperationService | depositMoneyById -> Para yatirma istegi. ID: {}, Miktar: {}", currentTime.get(), id, amount);
@@ -52,14 +35,6 @@ public class BalanceOperationService {
         log.info(" ({}) > BalanceOperationService | depositMoneyById -> Para yatirma basarili. ID: {}", currentTime.get(), id);
     }
 
-    /**
-     * IBAN ile para yatirir.
-     *
-     * @param iban   alici iban kodu
-     * @param amount yatirilacak miktar
-     * @throws NegativeNumberException miktar sifir veya negatifse firlatir
-     * @throws IbanNotFoundException   IBAN bulunamazsa firlatir
-     */
     @Transactional
     public void depositMoneyByIban(String iban, BigDecimal amount) {
         log.info(" ({}) > BalanceOperationService | depositMoneyByIban -> Para yatirma istegi. IBAN: {}, Miktar: {}", currentTime.get(), iban, amount);
@@ -77,14 +52,6 @@ public class BalanceOperationService {
         log.info(" ({}) > BalanceOperationService | depositMoneyByIban -> Para yatirma basarili. IBAN: {}", currentTime.get(), iban);
     }
 
-    /**
-     * userId ile para yatirir.
-     *
-     * @param userId keycloak uuid
-     * @param amount yatirilacak miktar
-     * @throws NegativeNumberException miktar sifir veya negatifse firlatir
-     * @throws UserNotFoundException   userId bulunamazsa firlatir
-     */
     @Transactional
     public void depositMoneyByUserId(String userId, BigDecimal amount) {
         log.info(" ({}) > BalanceOperationService | depositMoneyByUserId -> Para yatirma istegi. UserId: {}, Miktar: {}", currentTime.get(), userId, amount);
@@ -102,14 +69,6 @@ public class BalanceOperationService {
         log.info(" ({}) > BalanceOperationService | depositMoneyByUserId -> Para yatirma basarili. UserId: {}", currentTime.get(), userId);
     }
 
-    /**
-     * Document ID ile para ceker. Once bakiye kontrolu yapar.
-     *
-     * @param id     document id
-     * @param amount cekilecek miktar
-     * @throws UserNotFoundException    ID bulunamazsa firlatir
-     * @throws MoneyNotAvaibleException bakiye yetersizse firlatir
-     */
     @Transactional
     public void withdrawMoneyById(String id, BigDecimal amount) {
         log.info(" ({}) > BalanceOperationService | withdrawMoneyById -> Para cekme istegi. ID: {}, Miktar: {}", currentTime.get(), id, amount);
@@ -133,14 +92,6 @@ public class BalanceOperationService {
         log.info(" ({}) > BalanceOperationService | withdrawMoneyById -> Para cekme basarili. ID: {}", currentTime.get(), id);
     }
 
-    /**
-     * IBAN ile para ceker. Once bakiye kontrolu yapar.
-     *
-     * @param iban   kullanici iban kodu
-     * @param amount cekilecek miktar
-     * @throws IbanNotFoundException    IBAN bulunamazsa firlatir
-     * @throws MoneyNotAvaibleException bakiye yetersizse firlatir
-     */
     @Transactional
     public void withdrawMoneyByIban(String iban, BigDecimal amount) {
         log.info(" ({}) > BalanceOperationService | withdrawMoneyByIban -> Para cekme istegi. IBAN: {}, Miktar: {}", currentTime.get(), iban, amount);
@@ -164,14 +115,6 @@ public class BalanceOperationService {
         log.info(" ({}) > BalanceOperationService | withdrawMoneyByIban -> Para cekme basarili. IBAN: {}", currentTime.get(), iban);
     }
 
-    /**
-     * userId ile para ceker. Once bakiye kontrolu yapar.
-     *
-     * @param userId keycloak uuid
-     * @param amount cekilecek miktar
-     * @throws MoneyNotAvaibleException userId bulunamazsa veya bakiye yetersizse firlatir
-     * @throws UserNotFoundException    decrement basarisizsa firlatir
-     */
     @Transactional
     public void withdrawMoneyByUserId(String userId, BigDecimal amount) {
         log.info(" ({}) > BalanceOperationService | withdrawMoneyByUserId -> Para cekme istegi. UserId: {}, Miktar: {}", currentTime.get(), userId, amount);
