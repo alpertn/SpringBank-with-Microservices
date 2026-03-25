@@ -34,11 +34,11 @@ spec:
             - containerPort: 8081
           resources: # Podun calisacagi cpu ve memory scaling
             requests: # Pod minimum ozellikleri
-              memory: "256Mi" # min 256mb ram.
-              cpu: "250m" # Minimum 250 milicore cpu
+              memory: "128Mi" # min 128mb ram.
+              cpu: "100m" # Minimum 100 milicore cpu
             limits: # Pod'un kullanabilecegi maksimum kaynak. Bu limiti asarsa pod restart olur veya throttle edilir (yavaslatilir).
-              memory: "512Mi" # Maksimum 512MB RAM kullanabilir. Asarsa pod kill edilir (OOMKilled).
-              cpu: "500m" # Maksimum 0.5 CPU core kullanabilir. Asarsa CPU throttle edilir (yavaslatilir ama kill edilmez).
+              memory: "256Mi" # Maksimum 256MB RAM kullanabilir. Asarsa pod kill edilir (OOMKilled).
+              cpu: "250m" # Maksimum 0.25 CPU core kullanabilir. Asarsa CPU throttle edilir (yavaslatilir ama kill edilmez).
           env:
             # Postgres
             - name: SPRING_DATASOURCE_URL
@@ -110,8 +110,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: user-service # user-service nin pod sayisini degistiricek
-  minReplicas: 2 # Minimum pod
-  maxReplicas: 6 # Max pods
+  minReplicas: 1 # Minimum pod
+  maxReplicas: 3 # Max pods
   metrics: # Hangi metriklere gore scaling yapacak.
     - type: Resource # resource tip metrics ornek cpu ram
       resource:
@@ -155,11 +155,11 @@ spec:
             - containerPort: 8082
           resources:
             requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
               memory: "256Mi"
               cpu: "250m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
           env:
             # Postgres
             - name: SPRING_DATASOURCE_URL
@@ -241,21 +241,21 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: money-service
-  minReplicas: 2
-  maxReplicas: 6
+  minReplicas: 1
+  maxReplicas: 3
   metrics:
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 70
+          averageUtilization: 50
     - type: Resource
       resource:
         name: memory
         target:
           type: Utilization
-          averageUtilization: 80
+          averageUtilization: 60
 
 ---
 
@@ -286,11 +286,11 @@ spec:
             - containerPort: 8083
           resources:
             requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
               memory: "256Mi"
               cpu: "250m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
           env:
             # Postgres Ayarlari
             - name: SPRING_DATASOURCE_URL
@@ -356,21 +356,21 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: transaction-service
-  minReplicas: 2
-  maxReplicas: 6
+  minReplicas: 1
+  maxReplicas: 3
   metrics:
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 70
+          averageUtilization: 50
     - type: Resource
       resource:
         name: memory
         target:
           type: Utilization
-          averageUtilization: 80
+          averageUtilization: 60
 
 ---
 
@@ -401,11 +401,11 @@ spec:
             - containerPort: 8084
           resources:
             requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
               memory: "256Mi"
               cpu: "250m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
           env:
             # Postgres
             - name: USER_SERVICE_URL
@@ -472,21 +472,21 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: auth-service
-  minReplicas: 2
-  maxReplicas: 6
+  minReplicas: 1
+  maxReplicas: 3
   metrics:
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 70
+          averageUtilization: 50
     - type: Resource
       resource:
         name: memory
         target:
           type: Utilization
-          averageUtilization: 80
+          averageUtilization: 60
 
 ---
 
@@ -517,11 +517,11 @@ spec:
             - containerPort: 8095
           resources:
             requests:
-              memory: "512Mi" # min
-              cpu: "500m" # min
+              memory: "256Mi" # min
+              cpu: "200m" # min
             limits:
-              memory: "1Gi" # max 1 gb ram
-              cpu: "1000m" # max cpu core
+              memory: "512Mi" # max 512 mb ram
+              cpu: "500m" # max cpu core
           env:
             - name: USER_SERVICE_URL # SERVICE DISCOVERY ICIN
               value: http://user-service:8081
@@ -576,21 +576,21 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: gateway
-  minReplicas: 2
-  maxReplicas: 6
+  minReplicas: 1
+  maxReplicas: 3
   metrics:
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 70
+          averageUtilization: 50
     - type: Resource
       resource:
         name: memory
         target:
           type: Utilization
-          averageUtilization: 80
+          averageUtilization: 60
 
 ---
 
@@ -621,11 +621,11 @@ spec:
             - containerPort: 8085
           resources:
             requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
               memory: "256Mi"
               cpu: "250m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
           env:
             # Postgres
             - name: SPRING_DATASOURCE_URL
@@ -688,20 +688,20 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: fraud-service
-  minReplicas: 2
-  maxReplicas: 6
+  minReplicas: 1
+  maxReplicas: 3
   metrics:
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 70
+          averageUtilization: 50
     - type: Resource
       resource:
         name: memory
         target:
           type: Utilization
-          averageUtilization: 80
+          averageUtilization: 60
 
 ---
