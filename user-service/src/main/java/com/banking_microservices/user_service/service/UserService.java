@@ -1,6 +1,5 @@
 package com.banking_microservices.user_service.service;
 
-import com.banking_microservices.user_service.client.MoneyServiceClient;
 import com.banking_microservices.user_service.dto.RoleEnum.RoleEnum.Role;
 import com.banking_microservices.user_service.dto.user.AuthServiceCreateUserTopicDto;
 import com.banking_microservices.user_service.dto.user.KafkaTransactionTopicMessageDto;
@@ -32,14 +31,12 @@ public class UserService {
             .create();
 
     private UserRepository UserRepository;
-    private MoneyServiceClient moneyServiceClient;
     private final KafkaSender kafkaSender;
 
     private final java.util.function.Supplier<String> currentTime;
 
-    public UserService(UserRepository UserRepository, MoneyServiceClient moneyServiceClient, KafkaSender kafkaSender, java.util.function.Supplier<String> currentTime) {
+    public UserService(UserRepository UserRepository, KafkaSender kafkaSender, java.util.function.Supplier<String> currentTime) {
         this.UserRepository = UserRepository;
-        this.moneyServiceClient = moneyServiceClient;
         this.kafkaSender = kafkaSender;
         this.currentTime = currentTime;
     }

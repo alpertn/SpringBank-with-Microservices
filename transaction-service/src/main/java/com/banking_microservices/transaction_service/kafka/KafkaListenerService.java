@@ -77,9 +77,29 @@ public class KafkaListenerService {
         log.info(" ({}) > KafkaListenerService | listenAllTransactionTopics -> event: {} status: {}, Dto: {}", currentTime.get(), dto.getEventUUID(), dto.getStatus(), gson.toJson(dto));
 
         try {
-            transactionService.updateTransactionStatus(dto);
+            // Log only, prevent double execution
+            // transactionService.updateTransactionStatus(dto);
         } catch (Exception e) {
             log.error(" ({}) > KafkaListenerService | listenAllTransactionTopics -> updateTransactionStatus hatasi: {}", currentTime.get(), e.getMessage());
+        }
+    }
+
+    @KafkaListener(topics = "${kafka.topics.transaction.user-validation.listener}")
+    public void listenUserValidationSuccessTopic(String topicData) {
+        log.info(" ({}) > KafkaListenerService | listenUserValidationSuccessTopic -> Metoda veri geldi. RawData: {}", currentTime.get(), topicData);
+
+        KafkaTransactionTopicMessageDto dto = parseMessage(topicData, "listenUserValidationSuccessTopic");
+        if (dto == null) return;
+
+        if (isDuplicate(dto, false, "listenUserValidationSuccessTopic")) return;
+
+        log.info(" ({}) > KafkaListenerService | listenUserValidationSuccessTopic -> Data islenmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+
+        try {
+            transactionService.updateTransactionStatus(dto);
+            log.info(" ({}) > KafkaListenerService | listenUserValidationSuccessTopic -> Validation status guncellendi: {} -> {}", currentTime.get(), dto.getEventUUID(), dto.getStatus());
+        } catch (Exception e) {
+            log.error(" ({}) > KafkaListenerService | listenUserValidationSuccessTopic -> updateTransactionStatus hatasi: {}", currentTime.get(), e.getMessage(), e);
         }
     }
 

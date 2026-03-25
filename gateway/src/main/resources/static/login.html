@@ -104,6 +104,24 @@
         SpringBank personeli dahil hiç kimse sizden şifrenizi e-posta veya SMS yoluyla talep etmez. Resmi adresimizin <code>localhost:8095</code> olduğundan emin olun.
       </div>
     </div>
+
+    <!-- Dev helper: default admin credentials -->
+    <div style="margin-top:16px; padding:14px 16px; background:var(--info-light);
+                border:1px solid rgba(2,108,182,0.25); border-radius:8px;
+                display:flex; gap:12px; align-items:flex-start;">
+      <i class="ph-fill ph-user-gear" style="color:var(--primary); font-size:22px; flex-shrink:0; margin-top:1px;"></i>
+      <div style="font-size:13px; color:var(--primary-dark); line-height:1.6;">
+        <strong style="display:block; margin-bottom:2px;">Varsayılan Admin Hesabı</strong>
+        <span style="font-family:monospace;">admin@gmail.com</span> &nbsp;/&nbsp;
+        <span style="font-family:monospace;">admin123</span>
+        <button onclick="document.getElementById('email').value='admin@gmail.com';document.getElementById('password').value='admin123';"
+          style="margin-left:10px; padding:3px 10px; font-size:11px; font-weight:600;
+                 background:var(--primary); color:#fff; border:none; border-radius:4px;
+                 cursor:pointer; font-family:Inter; vertical-align:middle;">
+          Doldur
+        </button>
+      </div>
+    </div>
   </div>
 
   <div class="auth-image">

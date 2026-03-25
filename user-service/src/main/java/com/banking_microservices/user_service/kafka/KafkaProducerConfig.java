@@ -46,11 +46,14 @@ public class KafkaProducerConfig {
 
     public static class GsonSerializer implements Serializer<Object> {
         private final Gson gson = new GsonBuilder()
-                .serializeNulls()
-                .registerTypeAdapter(java.time.LocalDateTime.class,
-                        (com.google.gson.JsonSerializer<java.time.LocalDateTime>) (src, type, ctx) ->
-                                new com.google.gson.JsonPrimitive(src.toString()))
-                .create();
+            .serializeNulls()
+            .registerTypeAdapter(java.time.LocalDateTime.class,
+                (com.google.gson.JsonSerializer<java.time.LocalDateTime>) (src, type, ctx) ->
+                    new com.google.gson.JsonPrimitive(src.toString()))
+            .registerTypeAdapter(java.time.LocalDateTime.class,
+                (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
+                    java.time.LocalDateTime.parse(json.getAsString()))
+            .create();
 
         @Override
         public byte[] serialize(String topic, Object data) {

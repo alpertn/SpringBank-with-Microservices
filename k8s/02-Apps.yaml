@@ -76,12 +76,12 @@ spec:
             - name: KAFKA_USERNAME_VALIDATION_ERROR
               value: banking-microservices.username-validation.money-service.error.v1
             # Transaction Validation
-            - name: KAFKA_TRANSACTION_USERNAME-VALIDATION_LISTENER
+            - name: KAFKA_TRANSACTION_USERNAME_VALIDATION_LISTENER
               value: banking-microservices.transaction.money-service.block-money.success.v1
-            - name: KAFKA_TRANSACTION_USERNAME-VALIDATION_SENDER
-              value: banking-microservices.transaction.user-service.username-validation.success.v1
-            - name: KAFKA_TRANSACTION_USERNAME-VALIDATION_ERROR
-              value: banking-microservices.transaction.user-service.username-validation.error.v1
+            - name: KAFKA_TRANSACTION_USERNAME_VALIDATION_SENDER
+              value: banking-microservices.transaction.user-service.user-validation.success.v1
+            - name: KAFKA_TRANSACTION_USERNAME_VALIDATION_ERROR
+              value: banking-microservices.transaction.user-service.user-validation.error.v1
 
 
 ---
@@ -198,9 +198,9 @@ spec:
               value: banking-microservices.username-validation.user-service.success.v1
             - name: KAFKA_USERNAME_VALIDATION_ERROR
               value: banking-microservices.username-validation.money-service.error.v1
-            - name: KAFKA_TRANSACTION_USERNAME-VALIDATION_SENDER
+            - name: KAFKA_TRANSACTION_USERNAME_VALIDATION_SENDER
               value: banking-microservices.transaction.money-service.block-money.success.v1
-            - name: KAFKA_TRANSACTION_USERNAME-VALIDATION_LISTENER
+            - name: KAFKA_TRANSACTION_USERNAME_VALIDATION_LISTENER
               value: banking-microservices.transaction.user-service.username-validation.success.v1
             - name: KAFKA_TRANSACTION_BLOCKUSER_LISTENER
               value: banking-microservices.transaction.transaction-service.created.v1
@@ -311,11 +311,13 @@ spec:
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
               value: kafka:9092
             - name: KAFKA_TRANSACTION_TOPIC_LISTENER
-              value: banking-microservices.transaction.transaction-service.success.v1
+              value: banking-microservices.transaction.fraud-service.checked.v1
             - name: KAFKA_TRANSACTION_TOPIC_SENDER
               value: banking-microservices.transaction.transaction-service.created.v1
             - name: KAFKA_TRANSACTION_TOPIC_ERROR
               value: banking-microservices.transaction.transaction-service.error.v1
+            - name: KAFKA_TRANSACTION_USERVALIDATION_LISTENER
+              value: banking-microservices.transaction.user-service.user-validation.success.v1
             - name: KAFKA_TRANSACTION_TOPIC_DEPOSIT_SENDER
               value: banking-microservices.transaction.deposit.created.v1
             - name: KAFKA_TRANSACTION_TOPIC_DEPOSIT_LISTENER
@@ -644,9 +646,9 @@ spec:
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
               value: kafka:9092
             # Kafka Topic
-            # Eski: username-validation.success → Yeni akis: block-money.success'i dinle
+            # Yeni akis: user-validation.success'i dinle
             - name: KAFKA_TRANSACTION_TOPIC_LISTENER
-              value: banking-microservices.transaction.money-service.block-money.success.v1
+              value: banking-microservices.transaction.user-service.user-validation.success.v1
             - name: KAFKA_TRANSACTION_TOPIC_SENDER
               value: banking-microservices.transaction.fraud-service.checked.v1
             - name: KAFKA_TRANSACTION_TOPIC_ERROR

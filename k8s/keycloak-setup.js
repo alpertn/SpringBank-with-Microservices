@@ -33,7 +33,7 @@ async function request(path, options, body) {
 }
 
 async function getAdminToken() {
-    console.log('[1/8] Getting Admin Token...');
+    console.log('[1/10] Getting Admin Token...');
     const body = new URLSearchParams({
         client_id: 'admin-cli',
         username: ADMIN_USER,
@@ -53,7 +53,7 @@ async function getAdminToken() {
 }
 
 async function createRealm(token) {
-    console.log(`[2/8] Creating realm '${REALM_NAME}'...`);
+    console.log(`[2/10] Creating realm '${REALM_NAME}'...`);
     try {
         await request('/admin/realms', {
             method: 'POST',
@@ -70,7 +70,7 @@ async function createRealm(token) {
 }
 
 async function createRole(token, roleName) {
-    console.log(`[3/8] Creating role '${roleName}'...`);
+    console.log(`[3/10] Creating role '${roleName}'...`);
     try {
         await request(`/admin/realms/${REALM_NAME}/roles`, {
             method: 'POST',
@@ -94,7 +94,7 @@ async function getRoleConfig(token, roleName) {
 }
 
 async function createClient(token) {
-    console.log(`[4/8] Creating client '${CLIENT_ID}'...`);
+    console.log(`[4/10] Creating client '${CLIENT_ID}'...`);
     try {
         await request(`/admin/realms/${REALM_NAME}/clients`, {
             method: 'POST',
@@ -119,7 +119,7 @@ async function createClient(token) {
 }
 
 async function createUser(token) {
-    console.log(`[5/8] Creating test user...`);
+    console.log(`[5/10] Creating test user...`);
     try {
         await request(`/admin/realms/${REALM_NAME}/users`, {
             method: 'POST',
@@ -152,7 +152,7 @@ async function getUser(token, username) {
 }
 
 async function assignRole(token, userId, roleConfig) {
-    console.log(`[6/8] Assigning role '${roleConfig.name}' to user...`);
+    console.log(`[8/10] Assigning role '${roleConfig.name}' to user...`);
     try {
         await request(`/admin/realms/${REALM_NAME}/users/${userId}/role-mappings/realm`, {
             method: 'POST',
@@ -167,6 +167,31 @@ async function assignRole(token, userId, roleConfig) {
     }
 }
 
+async function createAdminUser(token) {
+    console.log('[6/10] Creating default admin user (admin@gmail.com)...');
+    try {
+        await request(`/admin/realms/${REALM_NAME}/users`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        }, {
+            username: 'admin@gmail.com',
+            email: 'admin@gmail.com',
+            firstName: 'Admin',
+            lastName: 'User',
+            enabled: true,
+            emailVerified: true,
+            credentials: [{ type: 'password', value: 'admin123', temporary: false }]
+        });
+        console.log('      Admin user created.');
+    } catch (e) {
+        if (e.message.includes('409')) console.log('      Admin user already exists. Moving on.');
+        else throw e;
+    }
+}
+
 async function run() {
     try {
         console.log('Starting automated Keycloak setup via Node.js...');
@@ -176,20 +201,33 @@ async function run() {
         await createRole(token, 'ADMIN');
         await createClient(token);
         await createUser(token);
-        
-        console.log('[7/8] Fetching full role/user references for mapping...');
-        const user = await getUser(token, 'testuser@bank.com');
-        const role = await getRoleConfig(token, 'USER');
-        
-        if (user && role) {
-            await assignRole(token, user.id, role);
+        await createAdminUser(token);
+
+        console.log('[7/10] Fetching full role/user references for mapping...');
+        const user      = await getUser(token, 'testuser@bank.com');
+        const userRole  = await getRoleConfig(token, 'USER');
+        const adminUser = await getUser(token, 'admin@gmail.com');
+        const adminRole = await getRoleConfig(token, 'ADMIN');
+
+        if (user && userRole) {
+            await assignRole(token, user.id, userRole);
         } else {
-             console.log('      Could not fetch User/Role for assignment.');
+            console.log('      Could not fetch test user/role for assignment.');
         }
 
-        console.log('[8/8] Done!');
+        console.log('[9/10] Assigning ADMIN role to admin user...');
+        if (adminUser && adminRole) {
+            await assignRole(token, adminUser.id, adminRole);
+            console.log('      ADMIN role assigned to admin@gmail.com.');
+        } else {
+            console.log('      Could not fetch admin user/role for assignment.');
+        }
+
+        console.log('[10/10] Done!');
         console.log('============================================');
         console.log('  Keycloak Successfully Configured!');
+        console.log('  Default admin: admin@gmail.com / admin123');
+        console.log('  Test user:     testuser@bank.com / pass123');
         console.log('============================================');
     } catch (e) {
         console.error('An error occurred during Keycloak setup:', e);

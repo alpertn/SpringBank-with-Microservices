@@ -1,16 +1,11 @@
 
-Kubernet Icin Metrics server (Önce kurulmalı)
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 
-Duz Kubernet Ayarlari
 kubectl apply -f k8s/01-Base.yaml
-# Altyapının (zookeeper, postgres vb.) ayağa kalkması için ~60sn bekleyin. Sonra:
 kubectl apply -f k8s/02-Apps.yaml
 
-Podlari getir.
 kubectl get pods -n banking-microservices
 
-Ekstra ->
 Podlari ve Deploymentleri Sil
 kubectl delete -f k8s/02-Apps.yaml
 kubectl delete -f k8s/01-Base.yaml
