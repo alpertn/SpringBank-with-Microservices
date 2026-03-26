@@ -1,0 +1,1 @@
+1 - usernsme validation icin money servicede olması gerek iban + name + surname
