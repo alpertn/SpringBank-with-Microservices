@@ -1,1 +1,7 @@
 1 - usernsme validation icin money servicede olması gerek iban + name + surname
+
+
+2 - transfer topici veri akışına deposit ve withdraw eklenecek hepsi ttek bir akışdan gidecek. deposit ve withdraw icin de transfer icin de user serviceye gidince -
+    name surname cekecek ıd dogrulaması yapacak
+    tum mıkroservıslede enumlar olucak wıthdraw transfer gıbı . transactionType wıthdraw olunca karsının ıbanını aramayacak ve transferde zorunl uolupda withdraw depositte -
+    zorunlu olmayan işlemleri kaldıracak if(transactionType == KafkaEventType.WITHDRAW) gibi if else eklenecek. String yerine enum olacak transactionType. Gereksiz topicler de kaldirilacak.
