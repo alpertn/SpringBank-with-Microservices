@@ -23,6 +23,7 @@ public class FraudService {
             .registerTypeAdapter(java.time.LocalDateTime.class,
                     (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
                             java.time.LocalDateTime.parse(json.getAsString()))
+            .setPrettyPrinting()
             .create();
 
     private final KafkaSenderService kafkaSender;
@@ -34,8 +35,8 @@ public class FraudService {
     }
 
     public void send(KafkaTransactionTopicMessageDto requestDto) {
-        log.info(" ({}) > FraudService | send -> Metoda veri geldi. {}", currentTime.get(), gson.toJson(requestDto));
+        log.info(" ({}) > FraudService | send -> Metoda veri geldi.\n{}", currentTime.get(), gson.toJson(requestDto));
         kafkaSender.sendTransaction(requestDto.getEventUUID(), requestDto);
-        log.info(" ({}) > FraudService | send -> Kafkaya gonderildi. {}", currentTime.get(), gson.toJson(requestDto));
+        log.info(" ({}) > FraudService | send -> Kafkaya gonderildi.\n{}", currentTime.get(), gson.toJson(requestDto));
     }
 }

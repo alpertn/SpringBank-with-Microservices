@@ -1,6 +1,8 @@
 package com.banking_microservices.transaction_service.controller;
 
 import com.banking_microservices.transaction_service.dto.Transaction;
+import com.banking_microservices.transaction_service.dto.DepositDto;
+import com.banking_microservices.transaction_service.dto.WithdrawDto;
 import com.banking_microservices.transaction_service.model.TransactionEntity;
 import com.banking_microservices.transaction_service.service.TransactionService;
 import com.google.gson.Gson;
@@ -22,6 +24,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 @RestController
 @RequestMapping("/api/transaction-service/v1/transactions")
@@ -38,16 +41,16 @@ public class TransactionController {
                             java.time.LocalDateTime.parse(json.getAsString()))
             .create();
     private final TransactionService transactionService;
-    private final java.util.function.Supplier<String> currentTime;
+    private final Supplier<String> currentTime;
 
-    public TransactionController(TransactionService transactionService, java.util.function.Supplier<String> currentTime) {
+    public TransactionController(TransactionService transactionService, Supplier<String> currentTime) {
         this.transactionService = transactionService;
         this.currentTime = currentTime;
     }
 
     @PostMapping("/create")
     public ResponseEntity<?> transactionEntity(
-            @RequestHeader(value = "X-User-KeyloackId", required = false) String userId,
+            @RequestHeader(value = "X-User-KeycloakUUID", required = false) String userId,
             @RequestHeader(value = "X-User-Username", required = false) String userUsername,
             @RequestHeader(value = "X-User-Roles", required = false) String userRoles,
             @RequestHeader(value = "X-User-Email", required = false) String userEmail,
@@ -64,11 +67,11 @@ public class TransactionController {
 
     @PostMapping("/deposit")
     public ResponseEntity<?> deposit(
-            @RequestHeader(value = "X-User-KeyloackId", required = false) String userId,
+            @RequestHeader(value = "X-User-KeycloakUUID", required = false) String userId,
             @RequestHeader(value = "X-User-Email", required = false) String userEmail,
             @RequestHeader(value = "X-User-Name", required = false) String userName,
             @RequestHeader(value = "X-User-Surname", required = false) String userSurname,
-            @Valid @RequestBody com.banking_microservices.transaction_service.dto.DepositDto data) {
+            @Valid @RequestBody DepositDto data) {
 
         log.info(" ({}) > TransactionController | deposit -> Istek alindi. UserId : {}, Dto: {}", currentTime.get(), userId, gson.toJson(data));
 
@@ -78,11 +81,11 @@ public class TransactionController {
 
     @PostMapping("/withdraw")
     public ResponseEntity<?> withdraw(
-            @RequestHeader(value = "X-User-KeyloackId", required = false) String userId,
+            @RequestHeader(value = "X-User-KeycloakUUID", required = false) String userId,
             @RequestHeader(value = "X-User-Email", required = false) String userEmail,
             @RequestHeader(value = "X-User-Name", required = false) String userName,
             @RequestHeader(value = "X-User-Surname", required = false) String userSurname,
-            @Valid @RequestBody com.banking_microservices.transaction_service.dto.WithdrawDto data) {
+            @Valid @RequestBody WithdrawDto data) {
 
         log.info(" ({}) > TransactionController | withdraw -> Istek alindi. UserId : {}, Dto: {}", currentTime.get(), userId, gson.toJson(data));
 

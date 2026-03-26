@@ -26,6 +26,7 @@ public class KafkaListenerService {
             .registerTypeAdapter(java.time.LocalDateTime.class,
                     (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
                             java.time.LocalDateTime.parse(json.getAsString()))
+            .setPrettyPrinting()
             .create();
 
     private final UserService service;
@@ -43,10 +44,10 @@ public class KafkaListenerService {
 
     @KafkaListener(topics = "${kafka.topics.create-user.authservicelistener}")
     public void ListenAuthServiceTopic(String topicData) {
-        log.info(" ({}) > KafkaListenerService | ListenAuthServiceTopic -> Metoda veri geldi. RawData: {}", currentTime.get(), topicData);
+        log.info(" ({}) > KafkaListenerService | ListenAuthServiceTopic -> Metoda veri geldi. RawData:\n{}", currentTime.get(), topicData);
         AuthServiceCreateUserTopicDto dto = gson.fromJson(topicData, AuthServiceCreateUserTopicDto.class);
         if (dto == null || dto.getKeycloackUserUUID() == null) {
-            log.warn(" ({}) > KafkaListenerService | ListenAuthServiceTopic -> Gecersiz mesaj alindi, atlaniyor. Dto: {}", currentTime.get(), gson.toJson(dto));
+            log.warn(" ({}) > KafkaListenerService | ListenAuthServiceTopic -> Gecersiz mesaj alindi, atlaniyor. Dto:\n{}", currentTime.get(), gson.toJson(dto));
             return;
         }
         if (eventRepository.existsByEventIdAndEventType(dto.getKeycloackUserUUID(), KafkaEventType.USER_AUTH_CREATE.name())) {
@@ -58,16 +59,16 @@ public class KafkaListenerService {
                 .eventType(KafkaEventType.USER_AUTH_CREATE.name())
                 .createdAt(LocalDateTime.now())
                 .build());
-        log.info(" ({}) > KafkaListenerService | ListenAuthServiceTopic -> Data islenmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+        log.info(" ({}) > KafkaListenerService | ListenAuthServiceTopic -> Data islenmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
         service.saveUser(dto);
     }
 
     @KafkaListener(topics = "${kafka.topics.create-user.listener}")
     public void listenCreateUserTopic(String topicData) {
-        log.info(" ({}) > KafkaListenerService | listenCreateUserTopic -> Metoda veri geldi. RawData: {}", currentTime.get(), topicData);
+        log.info(" ({}) > KafkaListenerService | listenCreateUserTopic -> Metoda veri geldi. RawData:\n{}", currentTime.get(), topicData);
         KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
         if (dto == null || dto.getEventUUID() == null) {
-            log.warn(" ({}) > KafkaListenerService | listenCreateUserTopic -> Gecersiz mesaj alindi, atlaniyor. Dto: {}", currentTime.get(), gson.toJson(dto));
+            log.warn(" ({}) > KafkaListenerService | listenCreateUserTopic -> Gecersiz mesaj alindi, atlaniyor. Dto:\n{}", currentTime.get(), gson.toJson(dto));
             return;
         }
         if (eventRepository.existsByEventIdAndEventType(dto.getEventUUID(), KafkaEventType.USER_CREATE_SUCCESS.name())) {
@@ -79,15 +80,15 @@ public class KafkaListenerService {
                 .eventType(KafkaEventType.USER_CREATE_SUCCESS.name())
                 .createdAt(LocalDateTime.now())
                 .build());
-        log.info(" ({}) > KafkaListenerService | listenCreateUserTopic -> Islem basarili, eventi kaydettik. Dto: {}", currentTime.get(), gson.toJson(dto));
+        log.info(" ({}) > KafkaListenerService | listenCreateUserTopic -> Islem basarili, eventi kaydettik. Dto:\n{}", currentTime.get(), gson.toJson(dto));
     }
 
     @KafkaListener(topics = "${kafka.topics.transaction.listener}")
     public void listenTransactionTopic(String topicData) {
-        log.info(" ({}) > KafkaListenerService | listenTransactionTopic -> Metoda veri geldi. RawData: {}", currentTime.get(), topicData);
+        log.info(" ({}) > KafkaListenerService | listenTransactionTopic -> Metoda veri geldi. RawData:\n{}", currentTime.get(), topicData);
         KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
         if (dto == null || dto.getEventUUID() == null) {
-            log.warn(" ({}) > KafkaListenerService | listenTransactionTopic -> Gecersiz mesaj alindi, atlaniyor. Dto: {}", currentTime.get(), gson.toJson(dto));
+            log.warn(" ({}) > KafkaListenerService | listenTransactionTopic -> Gecersiz mesaj alindi, atlaniyor. Dto:\n{}", currentTime.get(), gson.toJson(dto));
             return;
         }
         if (eventRepository.existsByEventIdAndEventType(dto.getEventUUID(), KafkaEventType.USER_TX_VALIDATE.name())) {
@@ -99,16 +100,16 @@ public class KafkaListenerService {
                 .eventType(KafkaEventType.USER_TX_VALIDATE.name())
                 .createdAt(LocalDateTime.now())
                 .build());
-        log.info(" ({}) > KafkaListenerService | listenTransactionTopic -> Data islenmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+        log.info(" ({}) > KafkaListenerService | listenTransactionTopic -> Data islenmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
         service.transactionTopicMessageVerify(dto);
     }
 
     @KafkaListener(topics = "${kafka.topics.username-validation.listener}")
     public void listenUsernameValidation(String topicData) {
-        log.info(" ({}) > KafkaListenerService | listenUsernameValidation -> Metoda veri geldi. RawData: {}", currentTime.get(), topicData);
+        log.info(" ({}) > KafkaListenerService | listenUsernameValidation -> Metoda veri geldi. RawData:\n{}", currentTime.get(), topicData);
         KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
         if (dto == null || dto.getEventUUID() == null) {
-            log.warn(" ({}) > KafkaListenerService | listenUsernameValidation -> Gecersiz mesaj alindi, atlaniyor. Dto: {}", currentTime.get(), gson.toJson(dto));
+            log.warn(" ({}) > KafkaListenerService | listenUsernameValidation -> Gecersiz mesaj alindi, atlaniyor. Dto:\n{}", currentTime.get(), gson.toJson(dto));
             return;
         }
         if (eventRepository.existsByEventIdAndEventType(dto.getEventUUID(), KafkaEventType.USER_USERNAME_VALIDATE.name())) {
@@ -120,7 +121,7 @@ public class KafkaListenerService {
                 .eventType(KafkaEventType.USER_USERNAME_VALIDATE.name())
                 .createdAt(LocalDateTime.now())
                 .build());
-        log.info(" ({}) > KafkaListenerService | listenUsernameValidation -> Data islenmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+        log.info(" ({}) > KafkaListenerService | listenUsernameValidation -> Data islenmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
         service.UsernameValidation(dto);
     }
 }

@@ -25,6 +25,7 @@ public class KafkaListenerService {
             .registerTypeAdapter(LocalDateTime.class,
                     (com.google.gson.JsonDeserializer<LocalDateTime>) (json, type, ctx) ->
                             LocalDateTime.parse(json.getAsString()))
+            .setPrettyPrinting()
             .create();
 
     private final TransactionService transactionService;
@@ -43,38 +44,38 @@ public class KafkaListenerService {
 
     @KafkaListener(topics = "${kafka.topics.transaction.listener}")
     public void listenTransactionTopic(String topicData) {
-        log.info(" ({}) > KafkaListenerService | listenTransactionTopic -> Metoda veri geldi. RawData: {}", currentTime.get(), topicData);
+        log.info(" ({}) > KafkaListenerService | listenTransactionTopic -> Metoda veri geldi. RawData:\n{}", currentTime.get(), topicData);
 
         KafkaTransactionTopicMessageDto dto = parseMessage(topicData, "listenTransactionTopic");
         if (dto == null) return;
 
         if (isDuplicate(dto, true, "listenTransactionTopic")) return;
 
-        log.info(" ({}) > KafkaListenerService | listenTransactionTopic -> Data islenmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+        log.info(" ({}) > KafkaListenerService | listenTransactionTopic -> Data islenmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
         transactionService.saveTransaction(dto);
     }
 
     @KafkaListener(topics = "${kafka.topics.transaction.error}")
     public void listenErrorTopic(String topicData) {
-        log.info(" ({}) > KafkaListenerService | listenErrorTopic -> Metoda veri geldi. RawData: {}", currentTime.get(), topicData);
+        log.info(" ({}) > KafkaListenerService | listenErrorTopic -> Metoda veri geldi. RawData:\n{}", currentTime.get(), topicData);
 
         KafkaTransactionTopicMessageDto dto = parseMessage(topicData, "listenErrorTopic");
         if (dto == null) return;
 
         if (isDuplicate(dto, false, "listenErrorTopic")) return;
 
-        log.info(" ({}) > KafkaListenerService | listenErrorTopic -> Data islenmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+        log.info(" ({}) > KafkaListenerService | listenErrorTopic -> Data islenmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
         transactionService.saveTransaction(dto);
     }
 
     @KafkaListener(topicPattern = "${kafka.topics.transaction.logger.listener}")
     public void listenAllTransactionTopics(String topicData) {
-        log.info(" ({}) > KafkaListenerService | listenAllTransactionTopics -> Metoda veri geldi. RawData: {}", currentTime.get(), topicData);
+        log.info(" ({}) > KafkaListenerService | listenAllTransactionTopics -> Metoda veri geldi. RawData:\n{}", currentTime.get(), topicData);
 
         KafkaTransactionTopicMessageDto dto = parseMessage(topicData, "listenAllTransactionTopics");
         if (dto == null) return;
 
-        log.info(" ({}) > KafkaListenerService | listenAllTransactionTopics -> event: {} status: {}, Dto: {}", currentTime.get(), dto.getEventUUID(), dto.getStatus(), gson.toJson(dto));
+        log.info(" ({}) > KafkaListenerService | listenAllTransactionTopics -> event: {} status: {}, Dto:\n{}", currentTime.get(), dto.getEventUUID(), dto.getStatus(), gson.toJson(dto));
 
         try {
             // Log only, prevent double execution
@@ -86,14 +87,14 @@ public class KafkaListenerService {
 
     @KafkaListener(topics = "${kafka.topics.transaction.user-validation.listener}")
     public void listenUserValidationSuccessTopic(String topicData) {
-        log.info(" ({}) > KafkaListenerService | listenUserValidationSuccessTopic -> Metoda veri geldi. RawData: {}", currentTime.get(), topicData);
+        log.info(" ({}) > KafkaListenerService | listenUserValidationSuccessTopic -> Metoda veri geldi. RawData:\n{}", currentTime.get(), topicData);
 
         KafkaTransactionTopicMessageDto dto = parseMessage(topicData, "listenUserValidationSuccessTopic");
         if (dto == null) return;
 
         if (isDuplicate(dto, false, "listenUserValidationSuccessTopic")) return;
 
-        log.info(" ({}) > KafkaListenerService | listenUserValidationSuccessTopic -> Data islenmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+        log.info(" ({}) > KafkaListenerService | listenUserValidationSuccessTopic -> Data islenmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
 
         try {
             transactionService.updateTransactionStatus(dto);
@@ -105,14 +106,14 @@ public class KafkaListenerService {
 
     @KafkaListener(topics = "${kafka.topics.transaction.deposit.listener}")
     public void listenDepositSuccessTopic(String topicData) {
-        log.info(" ({}) > KafkaListenerService | listenDepositSuccessTopic -> Metoda veri geldi. RawData: {}", currentTime.get(), topicData);
+        log.info(" ({}) > KafkaListenerService | listenDepositSuccessTopic -> Metoda veri geldi. RawData:\n{}", currentTime.get(), topicData);
 
         KafkaTransactionTopicMessageDto dto = parseMessage(topicData, "listenDepositSuccessTopic");
         if (dto == null) return;
 
         if (isDuplicate(dto, false, "listenDepositSuccessTopic")) return;
 
-        log.info(" ({}) > KafkaListenerService | listenDepositSuccessTopic -> Data islenmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+        log.info(" ({}) > KafkaListenerService | listenDepositSuccessTopic -> Data islenmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
 
         try {
             transactionService.updateTransactionStatus(dto);
@@ -124,14 +125,14 @@ public class KafkaListenerService {
 
     @KafkaListener(topics = "${kafka.topics.transaction.withdraw.listener}")
     public void listenWithdrawSuccessTopic(String topicData) {
-        log.info(" ({}) > KafkaListenerService | listenWithdrawSuccessTopic -> Metoda veri geldi. RawData: {}", currentTime.get(), topicData);
+        log.info(" ({}) > KafkaListenerService | listenWithdrawSuccessTopic -> Metoda veri geldi. RawData:\n{}", currentTime.get(), topicData);
 
         KafkaTransactionTopicMessageDto dto = parseMessage(topicData, "listenWithdrawSuccessTopic");
         if (dto == null) return;
 
         if (isDuplicate(dto, false, "listenWithdrawSuccessTopic")) return;
 
-        log.info(" ({}) > KafkaListenerService | listenWithdrawSuccessTopic -> Data islenmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+        log.info(" ({}) > KafkaListenerService | listenWithdrawSuccessTopic -> Data islenmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
 
         try {
             transactionService.updateTransactionStatus(dto);

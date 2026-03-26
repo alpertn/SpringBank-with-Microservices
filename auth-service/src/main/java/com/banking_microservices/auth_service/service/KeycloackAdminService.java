@@ -59,6 +59,7 @@ public class KeycloackAdminService {
             .registerTypeAdapter(java.time.LocalDateTime.class,
                     (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
                             java.time.LocalDateTime.parse(json.getAsString()))
+            .setPrettyPrinting()
             .create();
 
     private final Supplier<String> currentTime;
@@ -102,10 +103,10 @@ public class KeycloackAdminService {
      * @return UserId Dondurur.
      */
     public String createKeycloakUser(RegisterDto register, Role role) {
-        log.info(" ({}) > KeycloackAdminService | createKeycloakUser -> Metoda veri geldi. DTO: {}, Role: {}", currentTime.get(), gson.toJson(register), role.name());
+        log.info(" ({}) > KeycloackAdminService | createKeycloakUser -> Metoda veri geldi. DTO:\n{}, Role: {}", currentTime.get(), gson.toJson(register), role.name());
 
         if (existsByEmail(register.getEmail())) {
-            log.warn(" ({}) > KeycloackAdminService | createKeycloakUser -> Kullanici zaten var! DTO: {}", currentTime.get(), gson.toJson(register));
+            log.warn(" ({}) > KeycloackAdminService | createKeycloakUser -> Kullanici zaten var! DTO:\n{}", currentTime.get(), gson.toJson(register));
             throw new KeycloakUserAlreadyExists("Email Already Exists");
         }
         // Ceredential passwrod bilgileri icin keycloak standartdi bu burdan gondermemiz lazim.

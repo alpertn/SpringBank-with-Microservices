@@ -27,6 +27,7 @@ public class KafkaSenderService {
             .registerTypeAdapter(java.time.LocalDateTime.class,
                     (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
                             java.time.LocalDateTime.parse(json.getAsString()))
+            .setPrettyPrinting()
             .create();
 
     private final Supplier<String> currentTime;
@@ -47,9 +48,9 @@ public class KafkaSenderService {
 
     public void sendTransaction(String key, KafkaTransactionTopicMessageDto dto) {
         try {
-            log.info(" ({}) > KafkaSenderService | sendTransaction -> EFT fraud check oncesi kafkaya gonderilmek uzere alindi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(dto));
+            log.info(" ({}) > KafkaSenderService | sendTransaction -> EFT fraud check oncesi kafkaya gonderilmek uzere alindi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(dto));
             kafkaTemplate.send(transactionSenderTopic, key, dto);
-            log.info(" ({}) > KafkaSenderService | sendTransaction -> EFT fraud checked kafkaya gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(dto));
+            log.info(" ({}) > KafkaSenderService | sendTransaction -> EFT fraud checked kafkaya gonderildi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(dto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSenderService | sendTransaction -> EFT fraud send hatasi! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
             dto.setStatus(TransactionStatus.FAILED);
@@ -61,9 +62,9 @@ public class KafkaSenderService {
 
     public void sendDeposit(String key, KafkaTransactionTopicMessageDto dto) {
         try {
-            log.info(" ({}) > KafkaSenderService | sendDeposit -> Deposit fraud check oncesi kafkaya gonderilmek uzere alindi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(dto));
+            log.info(" ({}) > KafkaSenderService | sendDeposit -> Deposit fraud check oncesi kafkaya gonderilmek uzere alindi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(dto));
             kafkaTemplate.send(depositSenderTopic, key, dto);
-            log.info(" ({}) > KafkaSenderService | sendDeposit -> Deposit fraud checked kafkaya gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(dto));
+            log.info(" ({}) > KafkaSenderService | sendDeposit -> Deposit fraud checked kafkaya gonderildi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(dto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSenderService | sendDeposit -> Deposit fraud send hatasi! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
             dto.setStatus(TransactionStatus.DEPOSIT_FAILED);
@@ -75,9 +76,9 @@ public class KafkaSenderService {
 
     public void sendWithdraw(String key, KafkaTransactionTopicMessageDto dto) {
         try {
-            log.info(" ({}) > KafkaSenderService | sendWithdraw -> Withdraw fraud check oncesi kafkaya gonderilmek uzere alindi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(dto));
+            log.info(" ({}) > KafkaSenderService | sendWithdraw -> Withdraw fraud check oncesi kafkaya gonderilmek uzere alindi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(dto));
             kafkaTemplate.send(withdrawSenderTopic, key, dto);
-            log.info(" ({}) > KafkaSenderService | sendWithdraw -> Withdraw fraud checked kafkaya gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(dto));
+            log.info(" ({}) > KafkaSenderService | sendWithdraw -> Withdraw fraud checked kafkaya gonderildi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(dto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSenderService | sendWithdraw -> Withdraw fraud send hatasi! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
             dto.setStatus(TransactionStatus.WITHDRAW_FAILED);

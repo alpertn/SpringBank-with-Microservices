@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-// DUZELTME: @UuidGenerator JPA anotasyonu, DTO'da anlamsiz. Import kaldirildi.
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,8 +16,10 @@ import com.banking_microservices.user_service.dto.enums.TransactionStatus;
 @AllArgsConstructor
 public class KafkaTransactionTopicMessageDto {
 
-    // DUZELTME: @UuidGenerator kaldirildi.
     private String eventUUID;
+
+    @Builder.Default
+    private String keycloakUserUUID = null;
 
     @Builder.Default
     private String senderName = null;
@@ -52,8 +53,6 @@ public class KafkaTransactionTopicMessageDto {
 
     private BigDecimal money;
 
-    // DUZELTME: transactionType degerinde sondaki tek tirnak hataliydi: "TRANSACTION'"
-    // Diger servislerle tutarsiz ve bozuk veri gonderiyor. Duzeltildi.
     @Builder.Default
     private String transactionType = "TRANSACTION";
 

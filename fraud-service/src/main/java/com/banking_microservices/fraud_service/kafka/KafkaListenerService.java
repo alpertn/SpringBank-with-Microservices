@@ -25,6 +25,7 @@ public class KafkaListenerService {
             .registerTypeAdapter(LocalDateTime.class,
                     (com.google.gson.JsonDeserializer<LocalDateTime>) (json, type, ctx) ->
                             LocalDateTime.parse(json.getAsString()))
+            .setPrettyPrinting()
             .create();
 
     private final KafkaEventRepository eventRepository;

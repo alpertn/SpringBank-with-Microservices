@@ -60,7 +60,7 @@ public class JwtPropertiesFilter implements GlobalFilter {
 
                     // requesti degistiriyoruz ve kendi eski requestten aldigimiz veirleri koyuyoruz
                     ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
-                            .header("X-User-KeyloackId", id != null ? id : "") // buna id yoksa direkt hata verme
+                            .header("X-User-KeyloackId", id != null ? id : "") // buna id yoksa direkt hata verme //
                                                                                // eklenilebilir
                             .header("X-User-Email", keycloakEmail != null ? keycloakEmail : "") // != olmasina ragmen
                                                                                                 // neden calisiyor

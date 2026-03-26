@@ -17,8 +17,10 @@ import com.banking_microservices.fraud_service.dto.enums.TransactionStatus;
 @AllArgsConstructor
 public class KafkaTransactionTopicMessageDto {
 
-    // DUZELTME: @UuidGenerator kaldirildi - DTO'da kullanilmaz.
     private String eventUUID;
+
+    @Builder.Default
+    private String keycloakUserUUID = null;
 
     @Builder.Default
     private String senderName = null;

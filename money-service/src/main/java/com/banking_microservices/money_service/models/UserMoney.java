@@ -26,6 +26,9 @@ public class UserMoney {
 
     private String userId;
 
+    @Column(name = "keycloak_user_uuid")
+    private String keycloakUserUUID;
+
     private String userIban;
 
     @Column(precision = 19, scale = 2)

@@ -25,8 +25,8 @@ public class KafkaSender {
                     (com.google.gson.JsonSerializer<java.time.LocalDateTime>) (src, type, ctx) ->
                             new com.google.gson.JsonPrimitive(src.toString()))
             .registerTypeAdapter(java.time.LocalDateTime.class,
-                    (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
                             java.time.LocalDateTime.parse(json.getAsString()))
+            .setPrettyPrinting()
             .create();
 
     private final Supplier<String> currentTime;
@@ -62,11 +62,11 @@ public class KafkaSender {
 
     public void sendTransaction(String key, KafkaTransactionTopicMessageDto kafkaTransactionTopicMessageDto) {
         try {
-            log.info(" ({}) > KafkaSender | sendTransaction -> Kafkaya mesaj gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(kafkaTransactionTopicMessageDto));
+            log.info(" ({}) > KafkaSender | sendTransaction -> Kafkaya mesaj gonderilmek uzere alindi. Dto: \n{}", currentTime.get(), gson.toJson(kafkaTransactionTopicMessageDto));
 
             kafkaTemplate.send(transactionSenderTopic, key, kafkaTransactionTopicMessageDto);
 
-            log.info(" ({}) > KafkaSender | sendTransaction -> Kafkaya mesaj gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(kafkaTransactionTopicMessageDto));
+            log.info(" ({}) > KafkaSender | sendTransaction -> Kafkaya mesaj gonderildi. Key: {}, Dto: \n{}", currentTime.get(), key, gson.toJson(kafkaTransactionTopicMessageDto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendTransaction -> Kafkaya mesaj gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
             throw new KafkaSendException("Kafka Send Exception. " + key + " " + kafkaTransactionTopicMessageDto);
@@ -75,9 +75,9 @@ public class KafkaSender {
 
     public void sendDepositSuccess(String key, KafkaTransactionTopicMessageDto dto) {
         try {
-            log.info(" ({}) > KafkaSender | sendDepositSuccess -> Deposit success gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendDepositSuccess -> Deposit success gonderilmek uzere alindi. Dto: \n{}", currentTime.get(), gson.toJson(dto));
             kafkaTemplate.send(depositSenderTopic, key, dto);
-            log.info(" ({}) > KafkaSender | sendDepositSuccess -> Deposit success gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendDepositSuccess -> Deposit success gonderildi. Key: {}, Dto: \n{}", currentTime.get(), key, gson.toJson(dto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendDepositSuccess -> Deposit success gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
             dto.setStatus(TransactionStatus.DEPOSIT_FAILED);
@@ -94,9 +94,9 @@ public class KafkaSender {
 
     public void sendWithdrawSuccess(String key, KafkaTransactionTopicMessageDto dto) {
         try {
-            log.info(" ({}) > KafkaSender | sendWithdrawSuccess -> Withdraw success gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendWithdrawSuccess -> Withdraw success gonderilmek uzere alindi. Dto: \n{}", currentTime.get(), gson.toJson(dto));
             kafkaTemplate.send(withdrawSenderTopic, key, dto);
-            log.info(" ({}) > KafkaSender | sendWithdrawSuccess -> Withdraw success gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendWithdrawSuccess -> Withdraw success gonderildi. Key: {}, Dto: \n{}", currentTime.get(), key, gson.toJson(dto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendWithdrawSuccess -> Withdraw success gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
             dto.setStatus(TransactionStatus.WITHDRAW_FAILED);
@@ -113,9 +113,9 @@ public class KafkaSender {
 
     public void sendBlockedMoneyTopic(String key, KafkaTransactionTopicMessageDto dto) {
         try {
-            log.info(" ({}) > KafkaSender | sendBlockedMoneyTopic -> Blockmoney mesaji gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendBlockedMoneyTopic -> Blockmoney mesaji gonderilmek uzere alindi. Dto: \n{}", currentTime.get(), gson.toJson(dto));
             kafkaTemplate.send(blockMoneyTopicSender, key, dto);
-            log.info(" ({}) > KafkaSender | sendBlockedMoneyTopic -> Kafkaya blockmoney mesaji gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendBlockedMoneyTopic -> Kafkaya blockmoney mesaji gonderildi. Key: {}, Dto: \n{}", currentTime.get(), key, gson.toJson(dto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendBlockedMoneyTopic -> Kafkaya blockmoney mesaji gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
             dto.setStatus(TransactionStatus.BLOCK_MONEY_FAILED);
@@ -132,11 +132,11 @@ public class KafkaSender {
 
     public void sendTransactionToUserService(String key, KafkaTransactionTopicMessageDto dto) {
         try {
-            log.info(" ({}) > KafkaSender | sendTransactionToUserService -> Kafkaya mesaj gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendTransactionToUserService -> Kafkaya mesaj gonderilmek uzere alindi. Dto: \n{}", currentTime.get(), gson.toJson(dto));
 
             kafkaTemplate.send(usernameValidationSenderTopic, key, dto);
 
-            log.info(" ({}) > KafkaSender | sendTransactionToUserService -> Kafkaya mesaj gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendTransactionToUserService -> Kafkaya mesaj gonderildi. Key: {}, Dto: \n{}", currentTime.get(), key, gson.toJson(dto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendTransactionToUserService -> Kafkaya mesaj gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
             throw new KafkaSendException("Kafka Send Exception. " + key + " " + dto);
@@ -145,11 +145,11 @@ public class KafkaSender {
 
     public void sendTransactionError(String key, KafkaTransactionTopicMessageDto dto) {
         try {
-            log.info(" ({}) > KafkaSender | sendTransactionError -> Kafkaya error mesaji gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendTransactionError -> Kafkaya error mesaji gonderilmek uzere alindi. Dto: \n{}", currentTime.get(), gson.toJson(dto));
 
             kafkaTemplate.send(transactionErrorTopic, key, dto);
 
-            log.info(" ({}) > KafkaSender | sendTransactionError -> Kafkaya error mesaji gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendTransactionError -> Kafkaya error mesaji gonderildi. Key: {}, Dto: \n{}", currentTime.get(), key, gson.toJson(dto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendTransactionError -> Kafkaya error mesaji gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
             throw new KafkaSendException("Kafka Send Exception. " + key + " " + dto);
@@ -158,11 +158,11 @@ public class KafkaSender {
 
     public void sendCreateUserError(String key, KafkaTransactionTopicMessageDto dto) {
         try {
-            log.info(" ({}) > KafkaSender | sendCreateUserError -> Kafkaya user error mesaji gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendCreateUserError -> Kafkaya user error mesaji gonderilmek uzere alindi. Dto: \n{}", currentTime.get(), gson.toJson(dto));
 
             kafkaTemplate.send(createUserErrorTopic, key, dto);
 
-            log.info(" ({}) > KafkaSender | sendCreateUserError -> Kafkaya user error mesaji gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendCreateUserError -> Kafkaya user error mesaji gonderildi. Key: {}, Dto: \n{}", currentTime.get(), key, gson.toJson(dto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendCreateUserError -> Kafkaya user error mesaji gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
             throw new KafkaSendException("Kafka Send Exception. " + key + " " + dto);
@@ -171,11 +171,11 @@ public class KafkaSender {
 
     public void sendCreateUserSuccess(String key, KafkaTransactionTopicMessageDto dto) {
         try {
-            log.info(" ({}) > KafkaSender | sendCreateUserSuccess -> Kafkaya user success mesaji gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendCreateUserSuccess -> Kafkaya user success mesaji gonderilmek uzere alindi. Dto: \n{}", currentTime.get(), gson.toJson(dto));
 
             kafkaTemplate.send(createUserSenderTopic, key, dto);
 
-            log.info(" ({}) > KafkaSender | sendCreateUserSuccess -> Kafkaya user success mesaji gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendCreateUserSuccess -> Kafkaya user success mesaji gonderildi. Key: {}, Dto: \n{}", currentTime.get(), key, gson.toJson(dto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendCreateUserSuccess -> Kafkaya user success mesaji gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
             throw new KafkaSendException("Kafka Send Exception. " + key + " " + dto);
@@ -184,11 +184,11 @@ public class KafkaSender {
 
     public void sendTransactionSuccess(String key, KafkaTransactionTopicMessageDto dto) {
         try {
-            log.info(" ({}) > KafkaSender | sendTransactionSuccess -> EFT transfer success gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendTransactionSuccess -> EFT transfer success gonderilmek uzere alindi. Dto: \n{}", currentTime.get(), gson.toJson(dto));
 
             kafkaTemplate.send(transactionSenderTopic, key, dto);
 
-            log.info(" ({}) > KafkaSender | sendTransactionSuccess -> EFT transfer success gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendTransactionSuccess -> EFT transfer success gonderildi. Key: {}, Dto: \n{}", currentTime.get(), key, gson.toJson(dto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendTransactionSuccess -> EFT transfer success gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
             throw new KafkaSendException("Kafka Transaction Success Send Exception. " + key + " " + dto);

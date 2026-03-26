@@ -1,10 +1,8 @@
 package com.banking_microservices.money_service.controller;
 
-import com.banking_microservices.money_service.dto.IdDto;
 import com.banking_microservices.money_service.dto.TransactionRequestDto;
 import com.banking_microservices.money_service.repository.UserMoneyRepository;
 import com.banking_microservices.money_service.service.UserMoneyService;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +30,7 @@ public class MoneyController {
             .registerTypeAdapter(java.time.LocalDateTime.class,
                     (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type,
                             ctx) -> java.time.LocalDateTime.parse(json.getAsString()))
+            .setPrettyPrinting()
             .create();
     private final UserMoneyRepository userMoneyRepository;
     private final UserMoneyService userMoneyService;
@@ -50,21 +49,21 @@ public class MoneyController {
     }
 
     @PostMapping("/createusermoney")
-    public ResponseEntity<?> userOlustur(@Valid @RequestBody IdDto userId) {
-        log.info(" ({}) > MoneyController | userOlustur -> User Id Parametresi geldi. {}", currentTime.get(), gson.toJson(userId));
-        return ResponseEntity.ok(userMoneyService.generateUser(userId.getId()));
+    public ResponseEntity<?> userOlustur(@RequestHeader("X-User-KeycloakUUID") String keycloakUserUUID) {
+        log.info(" ({}) > MoneyController | userOlustur -> User Id Parametresi Headerdan geldi.\n{}", currentTime.get(), gson.toJson(keycloakUserUUID));
+        return ResponseEntity.ok(userMoneyService.generateUser(keycloakUserUUID));
     }
 
     @PostMapping("/getUserIbanWithUserId")
     public ResponseEntity<?> getUserIbanWithUserId(@RequestBody Map<String, String> body) {
         String userId = body.get("userId");
-        log.info(" ({}) > MoneyController | getUserIbanWithUserId -> getUserIbanWithUserId istegi geldi. UserId: {}", currentTime.get(), gson.toJson(userId));
+        log.info(" ({}) > MoneyController | getUserIbanWithUserId -> getUserIbanWithUserId istegi geldi. UserId:\n{}", currentTime.get(), gson.toJson(userId));
         return ResponseEntity.ok(userMoneyService.getAccountByUserId(userId));
     }
 
     @GetMapping("/balance-info")
-    public ResponseEntity<?> getBalanceAndIban(@RequestHeader("X-User-KeyloackId") String userId) {
-        log.info(" ({}) > MoneyController | getBalanceAndIban -> Money Service MoneyController getBalanceAndIban Modulu Istegi aldi. id : {}", currentTime.get(), gson.toJson(userId));
+    public ResponseEntity<?> getBalanceAndIban(@RequestHeader("X-User-KeycloakUUID") String userId) {
+        log.info(" ({}) > MoneyController | getBalanceAndIban -> Money Service MoneyController getBalanceAndIban Modulu Istegi aldi. id :\n{}", currentTime.get(), gson.toJson(userId));
         return ResponseEntity.ok(userMoneyService.getAccountByUserId(userId));
     }
 
@@ -72,7 +71,7 @@ public class MoneyController {
     public ResponseEntity<?> depositByUserId(@RequestBody TransactionRequestDto body) {
         String userId = body.getUserId();
         java.math.BigDecimal amount = body.getAmount();
-        log.info(" ({}) > MoneyController | depositByUserId -> Deposit istegi. UserId: {}, Miktar: {}", currentTime.get(), gson.toJson(userId), gson.toJson(amount));
+        log.info(" ({}) > MoneyController | depositByUserId -> Deposit istegi. UserId:\n{}, Miktar:\n{}", currentTime.get(), gson.toJson(userId), gson.toJson(amount));
         userMoneyService.depositMoneyByUserId(userId, amount);
         return ResponseEntity.ok(java.util.Map.of("status", "success", "message", "Para yatırma başarılı"));
     }
@@ -81,7 +80,7 @@ public class MoneyController {
     public ResponseEntity<?> withdrawByUserId(@RequestBody TransactionRequestDto body) {
         String userId = body.getUserId();
         java.math.BigDecimal amount = body.getAmount();
-        log.info(" ({}) > MoneyController | withdrawByUserId -> Withdraw istegi. UserId: {}, Miktar: {}", currentTime.get(), gson.toJson(userId), gson.toJson(amount));
+        log.info(" ({}) > MoneyController | withdrawByUserId -> Withdraw istegi. UserId:\n{}, Miktar:\n{}", currentTime.get(), gson.toJson(userId), gson.toJson(amount));
         userMoneyService.withdrawMoneyByUserId(userId, amount);
         return ResponseEntity.ok(java.util.Map.of("status", "success", "message", "Para çekme başarılı"));
     }

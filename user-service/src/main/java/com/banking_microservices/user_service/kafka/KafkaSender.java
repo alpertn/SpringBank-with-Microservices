@@ -23,6 +23,7 @@ public class KafkaSender {
             .registerTypeAdapter(java.time.LocalDateTime.class,
                     (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
                             java.time.LocalDateTime.parse(json.getAsString()))
+            .setPrettyPrinting()
             .create();
 
     private final java.util.function.Supplier<String> currentTime;
@@ -60,9 +61,9 @@ public class KafkaSender {
 
     public void sendTransactionUserValidationSuccess(String key, KafkaTransactionTopicMessageDto dto) {
         try {
-            log.info(" ({}) > KafkaSender | sendTransactionUserValidationSuccess -> Kafkaya mesaj gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendTransactionUserValidationSuccess -> Kafkaya mesaj gonderilmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
             kafkaTemplate.send(transactionSenderTopic, key, dto);
-            log.info(" ({}) > KafkaSender | sendTransactionUserValidationSuccess -> Transaction success kafkaya mesaj gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendTransactionUserValidationSuccess -> Transaction success kafkaya mesaj gonderildi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(dto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendTransactionUserValidationSuccess -> Transaction kafkaya mesaj gonderilirken hata olustu. Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
             throw new KafkaSendException("Kafka Send Exception. " + key + " " + dto);
@@ -71,9 +72,9 @@ public class KafkaSender {
 
     public void sendTransactionUsernameValidationError(String key, KafkaTransactionTopicMessageDto dto) {
         try {
-            log.info(" ({}) > KafkaSender | sendTransactionUsernameValidationError -> Kafkaya mesaj gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendTransactionUsernameValidationError -> Kafkaya mesaj gonderilmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
             kafkaTemplate.send(transactionErrorTopic, key, dto);
-            log.info(" ({}) > KafkaSender | sendTransactionUsernameValidationError -> Transaction error kafkaya mesaj gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendTransactionUsernameValidationError -> Transaction error kafkaya mesaj gonderildi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(dto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendTransactionUsernameValidationError -> Transaction error kafkaya mesaj gonderilirken hata olustu. Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
             throw new KafkaSendException("Kafka Send Exception. " + key + " " + dto);
@@ -82,9 +83,9 @@ public class KafkaSender {
 
     public void sendUsernameValidationSuccess(String key, KafkaTransactionTopicMessageDto dto) {
         try {
-            log.info(" ({}) > KafkaSender | sendUsernameValidationSuccess -> Kafkaya mesaj gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendUsernameValidationSuccess -> Kafkaya mesaj gonderilmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
             kafkaTemplate.send(usernameValidationSuccessTopic, key, dto);
-            log.info(" ({}) > KafkaSender | sendUsernameValidationSuccess -> Kafkaya mesaj gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendUsernameValidationSuccess -> Kafkaya mesaj gonderildi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(dto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendUsernameValidationSuccess -> Kafkaya mesaj gonderilirken hata olustu. Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
             throw new KafkaSendException("Kafka Send Exception. " + key + " " + dto);
@@ -93,9 +94,9 @@ public class KafkaSender {
 
     public void sendUsernameValidationError(String key, KafkaTransactionTopicMessageDto dto) {
         try {
-            log.info(" ({}) > KafkaSender | sendUsernameValidationError -> Kafkaya mesaj gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendUsernameValidationError -> Kafkaya mesaj gonderilmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
             kafkaTemplate.send(usernameValidationErrorTopic, key, dto);
-            log.info(" ({}) > KafkaSender | sendUsernameValidationError -> Kafkaya mesaj gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendUsernameValidationError -> Kafkaya mesaj gonderildi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(dto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendUsernameValidationError -> Kafkaya mesaj gonderilirken hata olustu. Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
             throw new KafkaSendException("Kafka Send Exception. " + key + " " + dto);

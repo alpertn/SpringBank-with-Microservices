@@ -36,6 +36,7 @@ public class AuthService {
             .registerTypeAdapter(java.time.LocalDateTime.class,
                     (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
                             java.time.LocalDateTime.parse(json.getAsString()))
+            .setPrettyPrinting()
             .create();
 
     private final Supplier<String> currentTime;
@@ -52,7 +53,7 @@ public class AuthService {
      *
      */
     public void createUser(RegisterDto dto) {
-        log.info(" ({}) > AuthService | createUser -> Metoda veri geldi. {}", currentTime.get(), gson.toJson(dto));
+        log.info(" ({}) > AuthService | createUser -> Metoda veri geldi.\n{}", currentTime.get(), gson.toJson(dto));
 
         try {
 
@@ -66,7 +67,7 @@ public class AuthService {
                     .password(dto.getPassword())
                     .email(dto.getEmail()).build();
 
-            log.info(" ({}) > AuthService | createUser -> Kafkaya veri gonderiliyor. {}", currentTime.get(), gson.toJson(userTopicDto));
+            log.info(" ({}) > AuthService | createUser -> Kafkaya veri gonderiliyor.\n{}", currentTime.get(), gson.toJson(userTopicDto));
             kafkaSender.sendCreateUserToUserTopic(userTopicDto);
 
         } catch (Exception e) {

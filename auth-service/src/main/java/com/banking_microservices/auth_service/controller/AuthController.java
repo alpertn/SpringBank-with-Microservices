@@ -30,6 +30,7 @@ public class AuthController {
             .registerTypeAdapter(java.time.LocalDateTime.class,
                     (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
                             java.time.LocalDateTime.parse(json.getAsString()))
+            .setPrettyPrinting()
             .create();
 
     private final Supplier<String> currentTime;
@@ -44,26 +45,26 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<TokenResponseDto> loginEndpoint(@Valid @RequestBody LoginRequestDto loginRequestDto) {
-        log.info(" ({}) > AuthController | loginEndpoint -> Login istegi alindi. Dto: {}", currentTime.get(), gson.toJson(loginRequestDto));
+        log.info(" ({}) > AuthController | loginEndpoint -> Login istegi alindi. Dto:\n{}", currentTime.get(), gson.toJson(loginRequestDto));
         return ResponseEntity.ok(keycloackUserService.login(loginRequestDto));
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<RefleshTokenRequestDto> refreshTokenEndpoint(@Valid @RequestBody RefleshTokenRequestDto refleshTokenRequestDto) {
-        log.info(" ({}) > AuthController | refreshTokenEndpoint -> Refresh token istegi alindi. Dto: {}", currentTime.get(), gson.toJson(refleshTokenRequestDto));
+        log.info(" ({}) > AuthController | refreshTokenEndpoint -> Refresh token istegi alindi. Dto:\n{}", currentTime.get(), gson.toJson(refleshTokenRequestDto));
         return ResponseEntity.ok(keycloackUserService.refleshTokenWithRefleshToken(refleshTokenRequestDto.getRefreshToken()));
     }
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logoutEndpoint(@Valid @RequestBody LogOutRequestDto logoutRequest) {
-        log.info(" ({}) > AuthController | logoutEndpoint -> Logout istegi alindi. Dto: {}", currentTime.get(), gson.toJson(logoutRequest));
+        log.info(" ({}) > AuthController | logoutEndpoint -> Logout istegi alindi. Dto:\n{}", currentTime.get(), gson.toJson(logoutRequest));
         keycloackUserService.logOut(logoutRequest.getRefreshToken());
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> registerEndpoint(@Valid @RequestBody RegisterDto requestdto) {
-        log.info(" ({}) > AuthController | registerEndpoint -> Register istegi alindi. Dto: {}", currentTime.get(), gson.toJson(requestdto));
+        log.info(" ({}) > AuthController | registerEndpoint -> Register istegi alindi. Dto:\n{}", currentTime.get(), gson.toJson(requestdto));
         authService.createUser(requestdto);
         return ResponseEntity.ok().build();
     }

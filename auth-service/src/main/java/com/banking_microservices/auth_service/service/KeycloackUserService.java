@@ -48,6 +48,7 @@ public class KeycloackUserService {
             .registerTypeAdapter(java.time.LocalDateTime.class,
                     (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
                             java.time.LocalDateTime.parse(json.getAsString()))
+            .setPrettyPrinting()
             .create();
 
     private final Supplier<String> currentTime;
@@ -85,7 +86,7 @@ public class KeycloackUserService {
      */
 
     public TokenResponseDto login(LoginRequestDto loginRequest) {
-        log.info(" ({}) > KeycloackUserService | login -> Login islemi basladi. Request: {}", currentTime.get(), gson.toJson(loginRequest));
+        log.info(" ({}) > KeycloackUserService | login -> Login islemi basladi. Request:\n{}", currentTime.get(), gson.toJson(loginRequest));
         var params = new HashMap<String, String>();
         params.put("client_id", clientId);
         params.put("client_secret", clientSecret);
@@ -101,7 +102,7 @@ public class KeycloackUserService {
                     .body(toMultiValueMap(params)) // keycloack icin uyumlu hale getir
                     .retrieve() // response
                     .body(TokenResponseDto.class); // body'ı tokenresponsedto ya donustur
-            log.info(" ({}) > KeycloackUserService | login -> Login basarili. Token alindi. {}", currentTime.get(), gson.toJson(response));
+            log.info(" ({}) > KeycloackUserService | login -> Login basarili. Token alindi. \n{}", currentTime.get(), gson.toJson(response));
             return response;
         } catch (HttpClientErrorException.Unauthorized e) {
             log.warn(" ({}) > KeycloackUserService | login -> Login basarisiz! Gecersiz mail veya sifre. Email: {}", currentTime.get(), loginRequest.getEmail());
@@ -154,7 +155,7 @@ public class KeycloackUserService {
                     .body(toMultiValueMap(params))
                     .retrieve()
                     .body(RefleshTokenRequestDto.class);
-            log.info(" ({}) > KeycloackUserService | refleshTokenWithRefleshToken -> Refresh token basarili. {}", currentTime.get(), gson.toJson(response));
+            log.info(" ({}) > KeycloackUserService | refleshTokenWithRefleshToken -> Refresh token basarili. \n{}", currentTime.get(), gson.toJson(response));
             return response;
         } catch (HttpClientErrorException.Unauthorized e) {
             log.warn(" ({}) > KeycloackUserService | refleshTokenWithRefleshToken -> Refresh token suresi bitti.", currentTime.get());

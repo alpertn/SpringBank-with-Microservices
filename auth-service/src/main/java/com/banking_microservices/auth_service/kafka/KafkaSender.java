@@ -33,6 +33,7 @@ public class KafkaSender {
             .registerTypeAdapter(java.time.LocalDateTime.class,
                     (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
                             java.time.LocalDateTime.parse(json.getAsString()))
+            .setPrettyPrinting()
             .create();
 
     private final Supplier<String> currentTime;
@@ -54,9 +55,9 @@ public class KafkaSender {
      */
     public void sendCreateUserToUserTopic(CreateUserTopicDto dto) {
         try {
-            log.info(" ({}) > KafkaSender | sendCreateUserToUserTopic -> Kafkaya veri gonderilmek uzere alindi. {}", currentTime.get(), gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendCreateUserToUserTopic -> Kafkaya veri gonderilmek uzere alindi. \n{}", currentTime.get(), gson.toJson(dto));
             kafkaTemplate.send(createUserSenderTopic, dto.getKeycloackUserUUID(), dto);
-            log.info(" ({}) > KafkaSender | sendCreateUserToUserTopic -> Kafka Topicine veri gonderildi. {}", currentTime.get(), gson.toJson(dto));
+            log.info(" ({}) > KafkaSender | sendCreateUserToUserTopic -> Kafka Topicine veri gonderildi. \n{}", currentTime.get(), gson.toJson(dto));
 
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendCreateUserToUserTopic -> Kafka Topicine veri gonderilemedi! Hata: {}", currentTime.get(), e);

@@ -17,7 +17,7 @@ import com.google.gson.Gson;
 @RequestMapping("/api/user-service/v1/user")
 public class UserController {
 
-    private final Gson gson = new GsonBuilder().serializeNulls().create();
+    private final Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
     private final UserService userService;
 
     public UserController(UserService userService) {

@@ -25,6 +25,7 @@ public class KafkaSender {
             .registerTypeAdapter(java.time.LocalDateTime.class,
                     (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
                             java.time.LocalDateTime.parse(json.getAsString()))
+            .setPrettyPrinting()
             .create();
     private final java.util.function.Supplier<String> currentTime;
 
@@ -44,9 +45,9 @@ public class KafkaSender {
 
     public void sendTransaction(String key, KafkaTransactionTopicMessageDto kafkaTransactionTopicMessageDto) {
         try {
-            log.info(" ({}) > KafkaSender | sendTransaction -> Kafkaya mesaj gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(kafkaTransactionTopicMessageDto));
+            log.info(" ({}) > KafkaSender | sendTransaction -> Kafkaya mesaj gonderilmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(kafkaTransactionTopicMessageDto));
             kafkaTemplate.send(transactionCreateTopic, key, kafkaTransactionTopicMessageDto);
-            log.info(" ({}) > KafkaSender | sendTransaction -> Kafkaya mesaj gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(kafkaTransactionTopicMessageDto));
+            log.info(" ({}) > KafkaSender | sendTransaction -> Kafkaya mesaj gonderildi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(kafkaTransactionTopicMessageDto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendTransaction -> Kafkaya mesaj gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
             kafkaTransactionTopicMessageDto.setStatus(TransactionStatus.FAILED);
@@ -58,9 +59,9 @@ public class KafkaSender {
 
     public void sendDeposit(String key, KafkaTransactionTopicMessageDto kafkaTransactionTopicMessageDto) {
         try {
-            log.info(" ({}) > KafkaSender | sendDeposit -> Kafkaya deposit mesaji gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(kafkaTransactionTopicMessageDto));
+            log.info(" ({}) > KafkaSender | sendDeposit -> Kafkaya deposit mesaji gonderilmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(kafkaTransactionTopicMessageDto));
             kafkaTemplate.send(transactionDepositTopic, key, kafkaTransactionTopicMessageDto);
-            log.info(" ({}) > KafkaSender | sendDeposit -> Kafkaya deposit mesaji gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(kafkaTransactionTopicMessageDto));
+            log.info(" ({}) > KafkaSender | sendDeposit -> Kafkaya deposit mesaji gonderildi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(kafkaTransactionTopicMessageDto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendDeposit -> Kafkaya deposit mesaji gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
             kafkaTransactionTopicMessageDto.setStatus(TransactionStatus.DEPOSIT_FAILED);
@@ -72,9 +73,9 @@ public class KafkaSender {
 
     public void sendWithdraw(String key, KafkaTransactionTopicMessageDto kafkaTransactionTopicMessageDto) {
         try {
-            log.info(" ({}) > KafkaSender | sendWithdraw -> Kafkaya withdraw mesaji gonderilmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(kafkaTransactionTopicMessageDto));
+            log.info(" ({}) > KafkaSender | sendWithdraw -> Kafkaya withdraw mesaji gonderilmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(kafkaTransactionTopicMessageDto));
             kafkaTemplate.send(transactionWithdrawTopic, key, kafkaTransactionTopicMessageDto);
-            log.info(" ({}) > KafkaSender | sendWithdraw -> Kafkaya withdraw mesaji gonderildi. Key: {}, Dto: {}", currentTime.get(), key, gson.toJson(kafkaTransactionTopicMessageDto));
+            log.info(" ({}) > KafkaSender | sendWithdraw -> Kafkaya withdraw mesaji gonderildi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(kafkaTransactionTopicMessageDto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendWithdraw -> Kafkaya withdraw mesaji gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
             kafkaTransactionTopicMessageDto.setStatus(TransactionStatus.WITHDRAW_FAILED);

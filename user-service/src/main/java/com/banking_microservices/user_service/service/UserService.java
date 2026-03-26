@@ -28,6 +28,7 @@ public class UserService {
             .registerTypeAdapter(java.time.LocalDateTime.class,
                     (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
                             java.time.LocalDateTime.parse(json.getAsString()))
+            .setPrettyPrinting()
             .create();
 
     private UserRepository UserRepository;
@@ -70,7 +71,7 @@ public class UserService {
                     .build();
             try {
                 Users user = UserRepository.save(newUsers);
-                log.info(" ({}) > UserService | saveUser -> User Olusturuldu! Dto: {}", currentTime.get(), gson.toJson(user));
+                log.info(" ({}) > UserService | saveUser -> User Olusturuldu! Dto:\n{}", currentTime.get(), gson.toJson(user));
                 try {
                     kafkaSender.sendCreateUser(user.getKeycloackUUID());
                     return newUsers;
@@ -92,7 +93,7 @@ public class UserService {
 
     public void transactionTopicMessageVerify(KafkaTransactionTopicMessageDto dto) {
         try {
-            log.info(" ({}) > UserService | transactionTopicMessageVerify -> Metoda veri geldi. Dto: {}", currentTime.get(), gson.toJson(dto));
+            log.info(" ({}) > UserService | transactionTopicMessageVerify -> Metoda veri geldi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
             Users senderUser = UserRepository.findUsersBykeycloackUUID(dto.getSenderUserId())
                     .orElseThrow(() -> new UserNotFoundById("Sender Not Found: " + dto.getSenderUserId()));
 
@@ -111,7 +112,7 @@ public class UserService {
             dto.setUserValidation(true);
             dto.setStatus(TransactionStatus.VALIDATION_PENDING);
             dto.setStatusDescription(TransactionStatus.VALIDATION_PENDING.getDescription());
-            log.info(" ({}) > UserService | transactionTopicMessageVerify -> Validation basarili. Kafkaya mesaj atiliyor. Dto: {}", currentTime.get(), gson.toJson(dto));
+            log.info(" ({}) > UserService | transactionTopicMessageVerify -> Validation basarili. Kafkaya mesaj atiliyor. Dto:\n{}", currentTime.get(), gson.toJson(dto));
             kafkaSender.sendTransactionUserValidationSuccess(dto.getEventUUID(), dto);
 
         } catch (Exception e) {
@@ -125,16 +126,16 @@ public class UserService {
     }
 
     public void UsernameValidation(KafkaTransactionTopicMessageDto dto) {
-        log.info(" ({}) > UserService | UsernameValidation -> Metoda veri geldi. Dto: {}", currentTime.get(), gson.toJson(dto));
+        log.info(" ({}) > UserService | UsernameValidation -> Metoda veri geldi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
         boolean exists = UserRepository.existsByNameAndSurname(dto.getReceiverName(), dto.getReceiverSurname());
         if (!exists) {
-            log.warn(" ({}) > UserService | UsernameValidation -> Kullanici bulunamadi! Dto: {}", currentTime.get(), gson.toJson(dto));
+            log.warn(" ({}) > UserService | UsernameValidation -> Kullanici bulunamadi! Dto:\n{}", currentTime.get(), gson.toJson(dto));
             kafkaSender.sendUsernameValidationError(dto.getEventUUID(), dto);
             throw new UserNameOrSurnameNotFoundException(
                     "User Name Or Surname Not Found " + dto.getReceiverName() + " " + dto.getReceiverSurname());
         }
         try {
-            log.info(" ({}) > UserService | UsernameValidation -> Kullanici dogrulandi, kafkaya success mesaji atiliyor. Dto: {}", currentTime.get(), gson.toJson(dto));
+            log.info(" ({}) > UserService | UsernameValidation -> Kullanici dogrulandi, kafkaya success mesaji atiliyor. Dto:\n{}", currentTime.get(), gson.toJson(dto));
             kafkaSender.sendUsernameValidationSuccess(dto.getEventUUID(), dto);
         } catch (Exception e) {
             log.error(" ({}) > UserService | UsernameValidation -> Success mesaji atilamadi! Hata: {}", currentTime.get(), e.getMessage());
@@ -153,7 +154,7 @@ public class UserService {
         try {
             UserRepository.save(user);
         } catch (Exception e) {
-            throw new UserUpdateException("An Error With Update User. User : {}" + gson.toJson(user));
+            throw new UserUpdateException("An Error With Update User. User : \n{}" + gson.toJson(user));
         }
     }
 

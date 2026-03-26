@@ -31,6 +31,7 @@ public class KafkaListenerService {
                     (com.google.gson.JsonSerializer<LocalDateTime>) (src, type, ctx) -> new com.google.gson.JsonPrimitive(src.toString()))
             .registerTypeAdapter(LocalDateTime.class,
                     (com.google.gson.JsonDeserializer<LocalDateTime>) (json, type, ctx) -> LocalDateTime.parse(json.getAsString()))
+            .setPrettyPrinting()
             .create();
 
     public KafkaListenerService(TransactionService transactionService,
@@ -54,7 +55,7 @@ public class KafkaListenerService {
 
         if (idempotencyGuard.isDuplicateOrRegister(dto.getEventUUID(), KafkaEventType.TRANSFER_CREATED.name())) return;
 
-        log.info(" ({}) > KafkaListenerService | listenFraudCheckedTopic -> Data islenmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+        log.info(" ({}) > KafkaListenerService | listenFraudCheckedTopic -> Data islenmek uzere alindi. Dto: \n{}", currentTime.get(), gson.toJson(dto));
 
         transactionService.createTransaction(dto);
     }
@@ -66,17 +67,24 @@ public class KafkaListenerService {
         KafkaTransactionTopicMessageDto dto = parseMessage(topicData);
         if (dto == null) return;
 
-        if (dto.getReceiverIban() == null) {
-            log.warn(" ({}) > KafkaListenerService | listenDepositTopic -> receiverIban null, atlaniyor. Dto: {}", currentTime.get(), gson.toJson(dto));
+        boolean noIban = isMissing(dto.getReceiverIban()) && isMissing(dto.getSenderIban());
+
+        if (noIban && isMissing(dto.getSenderUserId())) {
+            log.warn(" ({}) > KafkaListenerService | listenDepositTopic -> Iban ve UserId null, atlaniyor. Dto: {}", currentTime.get(), gson.toJson(dto));
             return;
         }
 
         if (idempotencyGuard.isDuplicateOrRegister(dto.getEventUUID(), KafkaEventType.DEPOSIT_PROCESS.name())) return;
 
-        log.info(" ({}) > KafkaListenerService | listenDepositTopic -> Data islenmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+        log.info(" ({}) > KafkaListenerService | listenDepositTopic -> Data islenmek uzere alindi. Dto: \n{}", currentTime.get(), gson.toJson(dto));
 
         try {
-            userMoneyService.depositMoneyByIban(dto.getReceiverIban(), dto.getMoney());
+            if (!noIban) {
+                String targetIban = !isMissing(dto.getReceiverIban()) ? dto.getReceiverIban() : dto.getSenderIban();
+                userMoneyService.depositMoneyByIban(targetIban, dto.getMoney());
+            } else {
+                userMoneyService.depositMoneyByUserId(dto.getSenderUserId(), dto.getMoney());
+            }
 
             dto.setStatus(TransactionStatus.COMPLETED);
             dto.setStatusDescription(TransactionStatus.COMPLETED.getDescription());
@@ -98,24 +106,24 @@ public class KafkaListenerService {
         KafkaTransactionTopicMessageDto dto = parseMessage(topicData);
         if (dto == null) return;
 
-        if (isMissing(dto.getSenderIban())) {
-            log.warn(" ({}) > KafkaListenerService | listenWithdrawTopic -> senderIban bos/null, atlaniyor. Dto: {}", currentTime.get(), gson.toJson(dto));
+        boolean noIban = isMissing(dto.getSenderIban()) && isMissing(dto.getReceiverIban());
 
-            // fallback receiverIban dene. bazi servislerde withdraw de receiverIban olarak set ediliyor.
-            if (!isMissing(dto.getReceiverIban())) {
-                log.info(" ({}) > KafkaListenerService | listenWithdrawTopic -> receiverIban kullanilarak devam ediliyor: {}", currentTime.get(), dto.getReceiverIban());
-                dto.setSenderIban(dto.getReceiverIban());
-            } else {
-                return;
-            }
+        if (noIban && isMissing(dto.getSenderUserId())) {
+            log.warn(" ({}) > KafkaListenerService | listenWithdrawTopic -> Iban ve UserId null, atlaniyor. Dto: {}", currentTime.get(), gson.toJson(dto));
+            return;
         }
 
         if (idempotencyGuard.isDuplicateOrRegister(dto.getEventUUID(), KafkaEventType.WITHDRAW_PROCESS.name())) return;
 
-        log.info(" ({}) > KafkaListenerService | listenWithdrawTopic -> Data islenmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+        log.info(" ({}) > KafkaListenerService | listenWithdrawTopic -> Data islenmek uzere alindi. Dto: \n{}", currentTime.get(), gson.toJson(dto));
 
         try {
-            userMoneyService.withdrawMoneyByIban(dto.getSenderIban(), dto.getMoney());
+            if (!noIban) {
+                String targetIban = !isMissing(dto.getSenderIban()) ? dto.getSenderIban() : dto.getReceiverIban();
+                userMoneyService.withdrawMoneyByIban(targetIban, dto.getMoney());
+            } else {
+                userMoneyService.withdrawMoneyByUserId(dto.getSenderUserId(), dto.getMoney());
+            }
 
             dto.setStatus(TransactionStatus.COMPLETED);
             dto.setStatusDescription(TransactionStatus.COMPLETED.getDescription());
@@ -139,7 +147,7 @@ public class KafkaListenerService {
 
         if (idempotencyGuard.isDuplicateOrRegister(dto.getEventUUID(), KafkaEventType.BLOCK_MONEY.name())) return;
 
-        log.info(" ({}) > KafkaListenerService | listenBlockMoneyFromTxService -> Data islenmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+        log.info(" ({}) > KafkaListenerService | listenBlockMoneyFromTxService -> Data islenmek uzere alindi. Dto: \n{}", currentTime.get(), gson.toJson(dto));
 
         transactionService.KafkaTransactionTopicBlockMoney(dto);
     }
@@ -153,7 +161,7 @@ public class KafkaListenerService {
 
         if (idempotencyGuard.isDuplicateOrRegister(dto.getEventUUID(), KafkaEventType.USERNAME_VALIDATION.name())) return;
 
-        log.info(" ({}) > KafkaListenerService | listenUserValidationTopicOnUserService -> Data islenmek uzere alindi. Dto: {}", currentTime.get(), gson.toJson(dto));
+        log.info(" ({}) > KafkaListenerService | listenUserValidationTopicOnUserService -> Data islenmek uzere alindi. Dto: \n{}", currentTime.get(), gson.toJson(dto));
 
         // TODO: username validation is mantigi buraya eklenecek
     }

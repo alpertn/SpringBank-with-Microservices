@@ -17,8 +17,10 @@ import com.banking_microservices.money_service.dto.enums.TransactionStatus;
 @AllArgsConstructor
 public class KafkaTransactionTopicMessageDto {
 
-    // DUZELTME: @UuidGenerator kaldirildi.
     private String eventUUID;
+
+    @Builder.Default
+    private String keycloakUserUUID = null;
 
     @Builder.Default
     private String senderName = null;
