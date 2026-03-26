@@ -4,6 +4,7 @@ import com.banking_microservices.user_service.dto.RoleEnum.RoleEnum.Role;
 import com.banking_microservices.user_service.dto.user.AuthServiceCreateUserTopicDto;
 import com.banking_microservices.user_service.dto.user.KafkaTransactionTopicMessageDto;
 import com.banking_microservices.user_service.dto.enums.TransactionStatus;
+import com.banking_microservices.user_service.dto.enums.TransactionType;
 import com.banking_microservices.user_service.exception.*;
 import com.banking_microservices.user_service.kafka.KafkaSender;
 import com.banking_microservices.user_service.models.Users;
@@ -31,13 +32,13 @@ public class UserService {
             .setPrettyPrinting()
             .create();
 
-    private UserRepository UserRepository;
+    private final UserRepository userRepository;
     private final KafkaSender kafkaSender;
 
     private final java.util.function.Supplier<String> currentTime;
 
-    public UserService(UserRepository UserRepository, KafkaSender kafkaSender, java.util.function.Supplier<String> currentTime) {
-        this.UserRepository = UserRepository;
+    public UserService(UserRepository userRepository, KafkaSender kafkaSender, java.util.function.Supplier<String> currentTime) {
+        this.userRepository = userRepository;
         this.kafkaSender = kafkaSender;
         this.currentTime = currentTime;
     }
@@ -101,8 +102,8 @@ public class UserService {
             dto.setSenderSurname(senderUser.getSurname());
             dto.setSenderEmail(senderUser.getMail());
 
-            if (dto.getReceiverName() != null && dto.getReceiverSurname() != null) {
-                Users receiverUser = UserRepository.getUsersByNameAndSurname(dto.getReceiverName(), dto.getReceiverSurname())
+            if (dto.getTransactionType() == TransactionType.TRANSFER) {
+                Users receiverUser = userRepository.getUsersByNameAndSurname(dto.getReceiverName(), dto.getReceiverSurname())
                         .orElseThrow(() -> new UserNameOrSurnameNotFoundException("Receiver Name/Surname Not Found"));
 
                 dto.setReceiverUserId(receiverUser.getKeycloackUUID());

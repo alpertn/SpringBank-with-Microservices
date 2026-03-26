@@ -10,8 +10,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 import com.banking_microservices.fraud_service.dto.enums.TransactionStatus;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.function.Supplier;
 
 @Slf4j
@@ -35,12 +33,6 @@ public class KafkaSenderService {
     @Value("${kafka.topics.transaction.sender}")
     private String transactionSenderTopic;
 
-    @Value("${kafka.topics.transaction.deposit.sender}")
-    private String depositSenderTopic;
-
-    @Value("${kafka.topics.transaction.withdraw.sender}")
-    private String withdrawSenderTopic;
-
     public KafkaSenderService(KafkaTemplate<String, Object> kafkaTemplate, Supplier<String> currentTime) {
         this.kafkaTemplate = kafkaTemplate;
         this.currentTime = currentTime;
@@ -48,43 +40,15 @@ public class KafkaSenderService {
 
     public void sendTransaction(String key, KafkaTransactionTopicMessageDto dto) {
         try {
-            log.info(" ({}) > KafkaSenderService | sendTransaction -> EFT fraud check oncesi kafkaya gonderilmek uzere alindi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(dto));
+            log.info(" ({}) > KafkaSenderService | sendTransaction -> Fraud check oncesi kafkaya gonderilmek uzere alindi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(dto));
             kafkaTemplate.send(transactionSenderTopic, key, dto);
-            log.info(" ({}) > KafkaSenderService | sendTransaction -> EFT fraud checked kafkaya gonderildi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(dto));
+            log.info(" ({}) > KafkaSenderService | sendTransaction -> Fraud checked kafkaya gonderildi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(dto));
         } catch (Exception e) {
-            log.warn(" ({}) > KafkaSenderService | sendTransaction -> EFT fraud send hatasi! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
+            log.warn(" ({}) > KafkaSenderService | sendTransaction -> Fraud send hatasi! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
             dto.setStatus(TransactionStatus.FAILED);
             dto.setError(true);
             dto.setErrorDescription("Fraud transaction send failed: " + e.getMessage());
             throw new KafkaSendException("Kafka Send Exception. " + key + " " + dto);
-        }
-    }
-
-    public void sendDeposit(String key, KafkaTransactionTopicMessageDto dto) {
-        try {
-            log.info(" ({}) > KafkaSenderService | sendDeposit -> Deposit fraud check oncesi kafkaya gonderilmek uzere alindi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(dto));
-            kafkaTemplate.send(depositSenderTopic, key, dto);
-            log.info(" ({}) > KafkaSenderService | sendDeposit -> Deposit fraud checked kafkaya gonderildi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(dto));
-        } catch (Exception e) {
-            log.warn(" ({}) > KafkaSenderService | sendDeposit -> Deposit fraud send hatasi! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
-            dto.setStatus(TransactionStatus.DEPOSIT_FAILED);
-            dto.setError(true);
-            dto.setErrorDescription("Deposit fraud check send failed: " + e.getMessage());
-            throw new KafkaSendException("Kafka Deposit Send Exception. " + key);
-        }
-    }
-
-    public void sendWithdraw(String key, KafkaTransactionTopicMessageDto dto) {
-        try {
-            log.info(" ({}) > KafkaSenderService | sendWithdraw -> Withdraw fraud check oncesi kafkaya gonderilmek uzere alindi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(dto));
-            kafkaTemplate.send(withdrawSenderTopic, key, dto);
-            log.info(" ({}) > KafkaSenderService | sendWithdraw -> Withdraw fraud checked kafkaya gonderildi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(dto));
-        } catch (Exception e) {
-            log.warn(" ({}) > KafkaSenderService | sendWithdraw -> Withdraw fraud send hatasi! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
-            dto.setStatus(TransactionStatus.WITHDRAW_FAILED);
-            dto.setError(true);
-            dto.setErrorDescription("Withdraw fraud check send failed: " + e.getMessage());
-            throw new KafkaSendException("Kafka Withdraw Send Exception. " + key);
         }
     }
 }

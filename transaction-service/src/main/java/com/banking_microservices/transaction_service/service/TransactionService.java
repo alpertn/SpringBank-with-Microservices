@@ -1,10 +1,9 @@
 package com.banking_microservices.transaction_service.service;
 
-import com.banking_microservices.transaction_service.dto.DepositDto;
-import com.banking_microservices.transaction_service.dto.Transaction;
-import com.banking_microservices.transaction_service.dto.WithdrawDto;
+import com.banking_microservices.transaction_service.dto.TransactionRequestDto;
 import com.banking_microservices.transaction_service.dto.KafkaTransactionTopicMessageDto;
 import com.banking_microservices.transaction_service.dto.enums.TransactionStatus;
+import com.banking_microservices.transaction_service.dto.enums.TransactionType;
 import com.banking_microservices.transaction_service.dto.enums.TransferStatus;
 import com.banking_microservices.transaction_service.exception.GetErrorLogsException;
 import com.banking_microservices.transaction_service.exception.KafkaSendExceptionOnService;
@@ -19,11 +18,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 @Service
 @Slf4j
@@ -38,12 +37,13 @@ public class TransactionService {
             .registerTypeAdapter(java.time.LocalDateTime.class,
                     (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type,
                             ctx) -> java.time.LocalDateTime.parse(json.getAsString()))
+            .setPrettyPrinting()
             .create();
     private final KafkaSender kafkaSender;
-    private final java.util.function.Supplier<String> currentTime;
+    private final Supplier<String> currentTime;
 
     public TransactionService(TransactionRepository transactionRepository, KafkaSender kafkaSender,
-            java.util.function.Supplier<String> currentTime) {
+            Supplier<String> currentTime) {
         this.transactionRepository = transactionRepository;
         this.kafkaSender = kafkaSender;
         this.currentTime = currentTime;
@@ -90,26 +90,51 @@ public class TransactionService {
     }
 
     @Transactional
-    public void createTransaction(Transaction transactionDto, String senderUserId, String senderMail, String senderName,
-            String senderSurname) {
+    public void createTransaction(TransactionRequestDto transactionDto, String senderUserId, String senderMail,
+            String senderName, String senderSurname) {
         log.info(" ({}) > TransactionService | createTransaction -> Metoda veri geldi. Dto:\n{}, UserId: {}",
                 currentTime.get(), gson.toJson(transactionDto), senderUserId);
+
+        TransactionType txType = transactionDto.getTransactionType() != null
+                ? transactionDto.getTransactionType()
+                : TransactionType.TRANSFER;
+
         String newEventUUID;
         do {
             newEventUUID = UUID.randomUUID().toString();
         } while (transactionRepository.existsByEventId(newEventUUID));
 
+        // Determine IBAN values based on transaction type
+        String senderIban = null;
+        String receiverIban = null;
+        String receiverName = null;
+        String receiverSurname = null;
+
+        if (txType == TransactionType.DEPOSIT) {
+            // Deposit: senderIban is the target account IBAN, receiverIban same
+            senderIban = transactionDto.getSenderIban();
+            receiverIban = transactionDto.getSenderIban();
+        } else if (txType == TransactionType.WITHDRAW) {
+            // Withdraw: only senderIban needed
+            senderIban = transactionDto.getSenderIban();
+        } else {
+            // TRANSFER: both IBans and receiver name/surname required
+            senderIban = transactionDto.getSenderIban();
+            receiverIban = transactionDto.getReceiverIban();
+            receiverName = transactionDto.getReceiverName();
+            receiverSurname = transactionDto.getReceiverSurname();
+        }
+
         KafkaTransactionTopicMessageDto dto = buildKafkaDto(
                 newEventUUID, senderUserId, senderMail, senderName, senderSurname,
-                null, transactionDto.getReceiverIban(), transactionDto.getReceiverName(),
-                transactionDto.getReceiverSurname(),
-                transactionDto.getAmount(), transactionDto.getDescription(), null);
+                senderIban, receiverIban, receiverName, receiverSurname,
+                transactionDto.getAmount(), transactionDto.getDescription(), txType,
+                senderUserId);
 
         TransactionEntity transactionModel = buildTransactionEntity(
                 newEventUUID, senderUserId, senderMail, senderName, senderSurname,
-                null, transactionDto.getReceiverIban(), transactionDto.getReceiverName(),
-                transactionDto.getReceiverSurname(),
-                transactionDto.getAmount(), transactionDto.getDescription(), null);
+                senderIban, receiverIban, receiverName, receiverSurname,
+                transactionDto.getAmount(), transactionDto.getDescription(), txType);
 
         try {
             transactionRepository.save(transactionModel);
@@ -121,7 +146,11 @@ public class TransactionService {
             throw new TransactionSaveException("An Error With Save TransactionEntity " + e.getMessage());
         }
         try {
-            if (dto.getReceiverIban() != null) {
+            if (txType == TransactionType.WITHDRAW && dto.getSenderIban() != null) {
+                dto.setSenderTransactionHistory(
+                        transactionRepository.findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc(
+                                dto.getSenderIban(), dto.getSenderIban()));
+            } else if (dto.getReceiverIban() != null) {
                 dto.setReceiverTransactionHistory(
                         transactionRepository.findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc(
                                 dto.getReceiverIban(), dto.getReceiverIban()));
@@ -137,106 +166,6 @@ public class TransactionService {
             kafkaSender.sendTransaction(dto.getEventUUID(), dto);
         } catch (Exception e) {
             log.error(" ({}) > TransactionService | createTransaction -> Kafkaya mesaj atilamadi! Hata: {}",
-                    currentTime.get(), e.getMessage());
-            throw new KafkaSendExceptionOnService("An Error With Send Kafka" + e.getMessage());
-        }
-    }
-
-    @Transactional
-    public void createDeposit(DepositDto transactionDto, String senderUserId, String senderMail, String senderName,
-            String senderSurname) {
-        log.info(" ({}) > TransactionService | createDeposit -> Metoda veri geldi. Dto:\n{}, UserId: {}",
-                currentTime.get(), gson.toJson(transactionDto), senderUserId);
-        String newEventUUID;
-        do {
-            newEventUUID = UUID.randomUUID().toString();
-        } while (transactionRepository.existsByEventId(newEventUUID));
-
-        KafkaTransactionTopicMessageDto dto = buildKafkaDto(
-                newEventUUID, senderUserId, senderMail, senderName, senderSurname,
-                transactionDto.getAccountIban(), transactionDto.getAccountIban(), senderName, senderSurname,
-                transactionDto.getAmount(), transactionDto.getDescription(), "DEPOSIT");
-
-        TransactionEntity transactionModel = buildTransactionEntity(
-                newEventUUID, senderUserId, senderMail, senderName, senderSurname,
-                transactionDto.getAccountIban(), transactionDto.getAccountIban(), senderName, senderSurname,
-                transactionDto.getAmount(), transactionDto.getDescription(), "DEPOSIT");
-
-        try {
-            transactionRepository.save(transactionModel);
-            log.info(" ({}) > TransactionService | createDeposit -> Model kaydedildi. Dto:\n{}", currentTime.get(),
-                    gson.toJson(transactionModel));
-        } catch (Exception e) {
-            log.warn(" ({}) > TransactionService | createDeposit -> Model kaydedilemedi! Hata: {}", currentTime.get(),
-                    e.getMessage());
-            throw new TransactionSaveException("An Error With Save TransactionEntity " + e.getMessage());
-        }
-        try {
-            if (dto.getReceiverIban() != null) {
-                dto.setReceiverTransactionHistory(
-                        transactionRepository.findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc(
-                                dto.getReceiverIban(), dto.getReceiverIban()));
-            }
-        } catch (Exception e) {
-            log.warn(" ({}) > TransactionService | createDeposit -> Transaction history alinamadi, devam ediliyor: {}",
-                    currentTime.get(), e.getMessage());
-        }
-        try {
-            log.info(" ({}) > TransactionService | createDeposit -> Kafkaya mesaj atiliyor. Dto:\n{}", currentTime.get(),
-                    gson.toJson(dto));
-            kafkaSender.sendDeposit(dto.getEventUUID(), dto);
-        } catch (Exception e) {
-            log.error(" ({}) > TransactionService | createDeposit -> Kafkaya mesaj atilamadi! Hata: {}",
-                    currentTime.get(), e.getMessage());
-            throw new KafkaSendExceptionOnService("An Error With Send Kafka" + e.getMessage());
-        }
-    }
-
-    @Transactional
-    public void createWithdraw(WithdrawDto transactionDto, String senderUserId, String senderMail, String senderName,
-            String senderSurname) {
-        log.info(" ({}) > TransactionService | createWithdraw -> Metoda veri geldi. Dto:\n{}, UserId: {}",
-                currentTime.get(), gson.toJson(transactionDto), senderUserId);
-        String newEventUUID;
-        do {
-            newEventUUID = UUID.randomUUID().toString();
-        } while (transactionRepository.existsByEventId(newEventUUID));
-
-        KafkaTransactionTopicMessageDto dto = buildKafkaDto(
-                newEventUUID, senderUserId, senderMail, senderName, senderSurname,
-                transactionDto.getAccountIban(), null, null, null,
-                transactionDto.getAmount(), transactionDto.getDescription(), "WITHDRAW");
-
-        TransactionEntity transactionModel = buildTransactionEntity(
-                newEventUUID, senderUserId, senderMail, senderName, senderSurname,
-                transactionDto.getAccountIban(), null, null, null,
-                transactionDto.getAmount(), transactionDto.getDescription(), "WITHDRAW");
-
-        try {
-            transactionRepository.save(transactionModel);
-            log.info(" ({}) > TransactionService | createWithdraw -> Model kaydedildi. Dto:\n{}", currentTime.get(),
-                    gson.toJson(transactionModel));
-        } catch (Exception e) {
-            log.warn(" ({}) > TransactionService | createWithdraw -> Model kaydedilemedi! Hata: {}", currentTime.get(),
-                    e.getMessage());
-            throw new TransactionSaveException("An Error With Save TransactionEntity " + e.getMessage());
-        }
-        try {
-            if (dto.getSenderIban() != null) {
-                dto.setSenderTransactionHistory(
-                        transactionRepository.findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc(
-                                dto.getSenderIban(), dto.getSenderIban()));
-            }
-        } catch (Exception e) {
-            log.warn(" ({}) > TransactionService | createWithdraw -> Transaction history alinamadi, devam ediliyor: {}",
-                    currentTime.get(), e.getMessage());
-        }
-        try {
-            log.info(" ({}) > TransactionService | createWithdraw -> Kafkaya mesaj atiliyor. Dto: {}",
-                    currentTime.get(), gson.toJson(dto));
-            kafkaSender.sendWithdraw(dto.getEventUUID(), dto);
-        } catch (Exception e) {
-            log.error(" ({}) > TransactionService | createWithdraw -> Kafkaya mesaj atilamadi! Hata: {}",
                     currentTime.get(), e.getMessage());
             throw new KafkaSendExceptionOnService("An Error With Send Kafka" + e.getMessage());
         }
@@ -309,7 +238,7 @@ public class TransactionService {
     private KafkaTransactionTopicMessageDto buildKafkaDto(
             String eventUUID, String senderUserId, String senderEmail, String senderName, String senderSurname,
             String senderIban, String receiverIban, String receiverName, String receiverSurname,
-            java.math.BigDecimal money, String description, String transactionType) {
+            BigDecimal money, String description, TransactionType transactionType, String keycloakUUID) {
         return KafkaTransactionTopicMessageDto.builder()
                 .eventUUID(eventUUID)
                 .senderUserId(senderUserId)
@@ -323,6 +252,7 @@ public class TransactionService {
                 .money(money)
                 .description(description)
                 .transactionType(transactionType)
+                .keycloakUserUUID(keycloakUUID)
                 .status(TransactionStatus.CREATED)
                 .statusDescription(TransactionStatus.CREATED.getDescription())
                 .build();
@@ -331,7 +261,7 @@ public class TransactionService {
     private TransactionEntity buildTransactionEntity(
             String eventId, String senderUserId, String senderEmail, String senderName, String senderSurname,
             String senderIban, String receiverIban, String receiverName, String receiverSurname,
-            java.math.BigDecimal money, String description, String transactionType) {
+            BigDecimal money, String description, TransactionType transactionType) {
         return TransactionEntity.builder()
                 .eventId(eventId)
                 .senderUserId(senderUserId)
@@ -351,20 +281,22 @@ public class TransactionService {
                 .build();
     }
 
-private TransferStatus mapToTransferStatus(TransactionStatus status) {
-    if (status == null) {
-        return TransferStatus.CREATED;
-    } else if (status == TransactionStatus.CREATED) {
-        return TransferStatus.CREATED;
-    } else if (status == TransactionStatus.VALIDATION_PENDING || status == TransactionStatus.FRAUD_REVIEW) {
-        return TransferStatus.SENT_TO_FRAUD;
-    } else if (status == TransactionStatus.BLOCK_MONEY) {
-        return TransferStatus.SENT_TO_MONEY;
-    } else if (status == TransactionStatus.COMPLETED) {
-        return TransferStatus.COMPLETED;
-    } else if (status == TransactionStatus.BLOCK_MONEY_FAILED ||status == TransactionStatus.DEPOSIT_FAILED ||status == TransactionStatus.WITHDRAW_FAILED || status == TransactionStatus.FAILED) {
-        return TransferStatus.FAILED;
-    } else {
-        return TransferStatus.CREATED;
+    private TransferStatus mapToTransferStatus(TransactionStatus status) {
+        if (status == null) {
+            return TransferStatus.CREATED;
+        } else if (status == TransactionStatus.CREATED) {
+            return TransferStatus.CREATED;
+        } else if (status == TransactionStatus.VALIDATION_PENDING || status == TransactionStatus.FRAUD_REVIEW) {
+            return TransferStatus.SENT_TO_FRAUD;
+        } else if (status == TransactionStatus.BLOCK_MONEY) {
+            return TransferStatus.SENT_TO_MONEY;
+        } else if (status == TransactionStatus.COMPLETED) {
+            return TransferStatus.COMPLETED;
+        } else if (status == TransactionStatus.BLOCK_MONEY_FAILED || status == TransactionStatus.DEPOSIT_FAILED
+                || status == TransactionStatus.WITHDRAW_FAILED || status == TransactionStatus.FAILED) {
+            return TransferStatus.FAILED;
+        } else {
+            return TransferStatus.CREATED;
+        }
     }
 }

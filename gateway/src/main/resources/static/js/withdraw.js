@@ -43,13 +43,14 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // 1. Transaction Service'e Withdraw Ekle (Audit Logs + Kafka trigger for money-service)
         const dtData = {
-          accountIban: window.userIbanStr || '',
+          senderIban: window.userIbanStr || '',
           amount: amount,
+          transactionType: 'WITHDRAW',
           description: description || 'Şubeden/ATMden Para Çekme'
         };
   
         // Sadece Transaction Service'e istek atılır.
-        const res = await API.call('/api/transaction-service/v1/transactions/withdraw', 'POST', dtData);
+        const res = await API.call('/api/transaction-service/v1/transactions/create', 'POST', dtData);
   
         if (res && res.ok) {
             form.reset();

@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import com.banking_microservices.fraud_service.dto.TransactionEntity;
 import com.banking_microservices.fraud_service.dto.enums.TransactionStatus;
+import com.banking_microservices.fraud_service.dto.enums.TransactionType;
 
 @Data
 @Builder
@@ -55,7 +56,7 @@ public class KafkaTransactionTopicMessageDto {
     private BigDecimal money;
 
     @Builder.Default
-    private String transactionType = "TRANSACTION";
+    private TransactionType transactionType = TransactionType.TRANSFER;
 
     @Builder.Default
     private String description = null;

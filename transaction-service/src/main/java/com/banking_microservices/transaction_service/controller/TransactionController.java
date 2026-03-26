@@ -1,8 +1,6 @@
 package com.banking_microservices.transaction_service.controller;
 
-import com.banking_microservices.transaction_service.dto.Transaction;
-import com.banking_microservices.transaction_service.dto.DepositDto;
-import com.banking_microservices.transaction_service.dto.WithdrawDto;
+import com.banking_microservices.transaction_service.dto.TransactionRequestDto;
 import com.banking_microservices.transaction_service.model.TransactionEntity;
 import com.banking_microservices.transaction_service.service.TransactionService;
 import com.google.gson.Gson;
@@ -20,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -39,6 +35,7 @@ public class TransactionController {
             .registerTypeAdapter(java.time.LocalDateTime.class,
                     (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
                             java.time.LocalDateTime.parse(json.getAsString()))
+            .setPrettyPrinting()
             .create();
     private final TransactionService transactionService;
     private final Supplier<String> currentTime;
@@ -49,47 +46,16 @@ public class TransactionController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> transactionEntity(
-            @RequestHeader(value = "X-User-KeycloakUUID", required = false) String userId,
-            @RequestHeader(value = "X-User-Username", required = false) String userUsername,
-            @RequestHeader(value = "X-User-Roles", required = false) String userRoles,
+    public ResponseEntity<?> createTransaction(
+            @RequestHeader(value = "X-User-KeycloakUUID", required = false) String keycloakUUID,
             @RequestHeader(value = "X-User-Email", required = false) String userEmail,
             @RequestHeader(value = "X-User-Name", required = false) String userName,
             @RequestHeader(value = "X-User-Surname", required = false) String userSurname,
+            @Valid @RequestBody TransactionRequestDto data) {
 
-            @Valid @RequestBody Transaction data) {
+        log.info(" ({}) > TransactionController | createTransaction -> Istek alindi. KeycloakUUID: {}, Dto:\n{}", currentTime.get(), keycloakUUID, gson.toJson(data));
 
-        log.info(" ({}) > TransactionController | transactionEntity -> Istek alindi. UserId : {}, Dto: {}", currentTime.get(), userId, gson.toJson(data));
-
-        transactionService.createTransaction(data, userId, userEmail, userName, userSurname);
-        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("Status", 1));
-    }
-
-    @PostMapping("/deposit")
-    public ResponseEntity<?> deposit(
-            @RequestHeader(value = "X-User-KeycloakUUID", required = false) String userId,
-            @RequestHeader(value = "X-User-Email", required = false) String userEmail,
-            @RequestHeader(value = "X-User-Name", required = false) String userName,
-            @RequestHeader(value = "X-User-Surname", required = false) String userSurname,
-            @Valid @RequestBody DepositDto data) {
-
-        log.info(" ({}) > TransactionController | deposit -> Istek alindi. UserId : {}, Dto: {}", currentTime.get(), userId, gson.toJson(data));
-
-        transactionService.createDeposit(data, userId, userEmail, userName, userSurname);
-        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("Status", 1));
-    }
-
-    @PostMapping("/withdraw")
-    public ResponseEntity<?> withdraw(
-            @RequestHeader(value = "X-User-KeycloakUUID", required = false) String userId,
-            @RequestHeader(value = "X-User-Email", required = false) String userEmail,
-            @RequestHeader(value = "X-User-Name", required = false) String userName,
-            @RequestHeader(value = "X-User-Surname", required = false) String userSurname,
-            @Valid @RequestBody WithdrawDto data) {
-
-        log.info(" ({}) > TransactionController | withdraw -> Istek alindi. UserId : {}, Dto: {}", currentTime.get(), userId, gson.toJson(data));
-
-        transactionService.createWithdraw(data, userId, userEmail, userName, userSurname);
+        transactionService.createTransaction(data, keycloakUUID, userEmail, userName, userSurname);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("Status", 1));
     }
 

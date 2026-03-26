@@ -46,10 +46,12 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // 1. Transaction Service'e İstek At (Saga veya Event Driven Kafka Süreci)
         const dtData = {
+          senderIban: window.userIbanStr || '',
           receiverIban: receiverIban,
           receiverName: receiverName,
           receiverSurname: receiverSurname,
           amount: amount,
+          transactionType: 'TRANSFER',
           description: description || 'Para Transferi'
         };
   
@@ -85,6 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await res.json();
         document.getElementById('balance-display').innerText = API.formatMoney(data.money);
         document.getElementById('iban-display').innerText = 'IBAN: ' + data.userIban;
+        window.userIbanStr = data.userIban;
       }
     } catch(e) {}
   }

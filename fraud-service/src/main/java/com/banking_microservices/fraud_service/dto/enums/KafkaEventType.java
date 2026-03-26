@@ -8,9 +8,5 @@ package com.banking_microservices.fraud_service.dto.enums;
  */
 public enum KafkaEventType {
     EFT_CHECK_RECEIVED,
-    EFT_CHECK_DONE,
-    DEPOSIT_CHECK_RECEIVED,
-    DEPOSIT_CHECK_DONE,
-    WITHDRAW_CHECK_RECEIVED,
-    WITHDRAW_CHECK_DONE
+    EFT_CHECK_DONE
 }

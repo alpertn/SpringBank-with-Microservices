@@ -43,14 +43,15 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // 1. Transaction Service'e Deposit Ekle (Audit Logs + Kafka trigger for money-service)
         const dtData = {
-          accountIban: document.getElementById('iban-display').innerText.replace('IBAN: ','').trim(),
+          senderIban: document.getElementById('iban-display').innerText.replace('IBAN: ','').trim(),
           amount: amount,
+          transactionType: 'DEPOSIT',
           description: description || 'Şubeden/ATMden Para Yatırma'
         };
   
         // Sadece Transaction Service'e istek atılır.
         // Backend'de bu servis Kafka event'i gönderir, Money Service bu event'i dinleyip bakiyeyi günceller.
-        const res = await API.call('/api/transaction-service/v1/transactions/deposit', 'POST', dtData);
+        const res = await API.call('/api/transaction-service/v1/transactions/create', 'POST', dtData);
   
         if (res && res.ok) {
           form.reset();

@@ -3,6 +3,7 @@ package com.banking_microservices.money_service.kafka;
 import com.banking_microservices.money_service.dto.KafkaTransactionTopicMessageDto;
 import com.banking_microservices.money_service.dto.enums.KafkaEventType;
 import com.banking_microservices.money_service.dto.enums.TransactionStatus;
+import com.banking_microservices.money_service.dto.enums.TransactionType;
 import com.banking_microservices.money_service.service.TransactionService;
 import com.banking_microservices.money_service.service.UserMoneyService;
 import com.banking_microservices.money_service.service.helper.IdempotencyGuard;
@@ -53,88 +54,61 @@ public class KafkaListenerService {
         KafkaTransactionTopicMessageDto dto = parseMessage(topicData);
         if (dto == null) return;
 
-        if (idempotencyGuard.isDuplicateOrRegister(dto.getEventUUID(), KafkaEventType.TRANSFER_CREATED.name())) return;
+        if (idempotencyGuard.isDuplicateOrRegister(dto.getEventUUID(), KafkaEventType.TRANSACTION_PROCESS.name())) return;
 
-        log.info(" ({}) > KafkaListenerService | listenFraudCheckedTopic -> Data islenmek uzere alindi. Dto: \n{}", currentTime.get(), gson.toJson(dto));
+        log.info(" ({}) > KafkaListenerService | listenFraudCheckedTopic -> Data islenmek uzere alindi. Type: {}, Dto: \n{}", currentTime.get(), dto.getTransactionType(), gson.toJson(dto));
 
-        transactionService.createTransaction(dto);
-    }
+        TransactionType txType = dto.getTransactionType();
 
-    @KafkaListener(topics = "${kafka.topics.transaction.deposit.listener}")
-    public void listenDepositTopic(String topicData) {
-        log.info(" ({}) > KafkaListenerService | listenDepositTopic -> Metoda veri geldi. RawData: {}", currentTime.get(), topicData);
-
-        KafkaTransactionTopicMessageDto dto = parseMessage(topicData);
-        if (dto == null) return;
-
-        boolean noIban = isMissing(dto.getReceiverIban()) && isMissing(dto.getSenderIban());
-
-        if (noIban && isMissing(dto.getSenderUserId())) {
-            log.warn(" ({}) > KafkaListenerService | listenDepositTopic -> Iban ve UserId null, atlaniyor. Dto: {}", currentTime.get(), gson.toJson(dto));
-            return;
-        }
-
-        if (idempotencyGuard.isDuplicateOrRegister(dto.getEventUUID(), KafkaEventType.DEPOSIT_PROCESS.name())) return;
-
-        log.info(" ({}) > KafkaListenerService | listenDepositTopic -> Data islenmek uzere alindi. Dto: \n{}", currentTime.get(), gson.toJson(dto));
-
-        try {
-            if (!noIban) {
-                String targetIban = !isMissing(dto.getReceiverIban()) ? dto.getReceiverIban() : dto.getSenderIban();
-                userMoneyService.depositMoneyByIban(targetIban, dto.getMoney());
-            } else {
-                userMoneyService.depositMoneyByUserId(dto.getSenderUserId(), dto.getMoney());
+        if (txType == TransactionType.DEPOSIT) {
+            try {
+                boolean noIban = isMissing(dto.getReceiverIban()) && isMissing(dto.getSenderIban());
+                if (noIban && isMissing(dto.getSenderUserId())) {
+                    log.warn(" ({}) > KafkaListenerService | listenFraudCheckedTopic | DEPOSIT -> Iban ve UserId null, atlaniyor.", currentTime.get());
+                    return;
+                }
+                if (!noIban) {
+                    String targetIban = !isMissing(dto.getReceiverIban()) ? dto.getReceiverIban() : dto.getSenderIban();
+                    userMoneyService.depositMoneyByIban(targetIban, dto.getMoney());
+                } else {
+                    userMoneyService.depositMoneyByUserId(dto.getSenderUserId(), dto.getMoney());
+                }
+                dto.setStatus(TransactionStatus.COMPLETED);
+                dto.setStatusDescription(TransactionStatus.COMPLETED.getDescription());
+                kafkaSender.sendResult(dto.getEventUUID(), dto);
+                log.info(" ({}) > KafkaListenerService | listenFraudCheckedTopic | DEPOSIT -> Tamamlandi: {}", currentTime.get(), dto.getEventUUID());
+            } catch (Exception e) {
+                log.error(" ({}) > KafkaListenerService | listenFraudCheckedTopic | DEPOSIT -> Basarisiz: {}", currentTime.get(), e.getMessage());
+                dto.setError(true);
+                dto.setErrorDescription("Deposit islemi basarisiz: " + e.getMessage());
+                kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
             }
-
-            dto.setStatus(TransactionStatus.COMPLETED);
-            dto.setStatusDescription(TransactionStatus.COMPLETED.getDescription());
-
-            kafkaSender.sendDepositSuccess(dto.getEventUUID(), dto);
-            log.info(" ({}) > KafkaListenerService | listenDepositTopic -> Deposit tamamlandi ve transaction-service bilgilendirildi: {}", currentTime.get(), dto.getEventUUID());
-        } catch (Exception e) {
-            log.error(" ({}) > KafkaListenerService | listenDepositTopic -> Deposit basarisiz: {}", currentTime.get(), e.getMessage());
-            dto.setError(true);
-            dto.setErrorDescription("Deposit islemi basarisiz: " + e.getMessage());
-            kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
-        }
-    }
-
-    @KafkaListener(topics = "${kafka.topics.transaction.withdraw.listener}")
-    public void listenWithdrawTopic(String topicData) {
-        log.info(" ({}) > KafkaListenerService | listenWithdrawTopic -> Metoda veri geldi. RawData: {}", currentTime.get(), topicData);
-
-        KafkaTransactionTopicMessageDto dto = parseMessage(topicData);
-        if (dto == null) return;
-
-        boolean noIban = isMissing(dto.getSenderIban()) && isMissing(dto.getReceiverIban());
-
-        if (noIban && isMissing(dto.getSenderUserId())) {
-            log.warn(" ({}) > KafkaListenerService | listenWithdrawTopic -> Iban ve UserId null, atlaniyor. Dto: {}", currentTime.get(), gson.toJson(dto));
-            return;
-        }
-
-        if (idempotencyGuard.isDuplicateOrRegister(dto.getEventUUID(), KafkaEventType.WITHDRAW_PROCESS.name())) return;
-
-        log.info(" ({}) > KafkaListenerService | listenWithdrawTopic -> Data islenmek uzere alindi. Dto: \n{}", currentTime.get(), gson.toJson(dto));
-
-        try {
-            if (!noIban) {
-                String targetIban = !isMissing(dto.getSenderIban()) ? dto.getSenderIban() : dto.getReceiverIban();
-                userMoneyService.withdrawMoneyByIban(targetIban, dto.getMoney());
-            } else {
-                userMoneyService.withdrawMoneyByUserId(dto.getSenderUserId(), dto.getMoney());
+        } else if (txType == TransactionType.WITHDRAW) {
+            try {
+                boolean noIban = isMissing(dto.getSenderIban()) && isMissing(dto.getReceiverIban());
+                if (noIban && isMissing(dto.getSenderUserId())) {
+                    log.warn(" ({}) > KafkaListenerService | listenFraudCheckedTopic | WITHDRAW -> Iban ve UserId null, atlaniyor.", currentTime.get());
+                    return;
+                }
+                if (!noIban) {
+                    String targetIban = !isMissing(dto.getSenderIban()) ? dto.getSenderIban() : dto.getReceiverIban();
+                    userMoneyService.withdrawMoneyByIban(targetIban, dto.getMoney());
+                } else {
+                    userMoneyService.withdrawMoneyByUserId(dto.getSenderUserId(), dto.getMoney());
+                }
+                dto.setStatus(TransactionStatus.COMPLETED);
+                dto.setStatusDescription(TransactionStatus.COMPLETED.getDescription());
+                kafkaSender.sendResult(dto.getEventUUID(), dto);
+                log.info(" ({}) > KafkaListenerService | listenFraudCheckedTopic | WITHDRAW -> Tamamlandi: {}", currentTime.get(), dto.getEventUUID());
+            } catch (Exception e) {
+                log.error(" ({}) > KafkaListenerService | listenFraudCheckedTopic | WITHDRAW -> Basarisiz: {}", currentTime.get(), e.getMessage());
+                dto.setError(true);
+                dto.setErrorDescription("Withdraw islemi basarisiz: " + e.getMessage());
+                kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
             }
-
-            dto.setStatus(TransactionStatus.COMPLETED);
-            dto.setStatusDescription(TransactionStatus.COMPLETED.getDescription());
-
-            kafkaSender.sendWithdrawSuccess(dto.getEventUUID(), dto);
-            log.info(" ({}) > KafkaListenerService | listenWithdrawTopic -> Withdraw tamamlandi ve transaction-service bilgilendirildi: {}", currentTime.get(), dto.getEventUUID());
-        } catch (Exception e) {
-            log.error(" ({}) > KafkaListenerService | listenWithdrawTopic -> Withdraw basarisiz: {}", currentTime.get(), e.getMessage());
-            dto.setError(true);
-            dto.setErrorDescription("Withdraw islemi basarisiz: " + e.getMessage());
-            kafkaSender.sendTransactionError(dto.getEventUUID(), dto);
+        } else {
+            // TRANSFER (default)
+            transactionService.createTransaction(dto);
         }
     }
 

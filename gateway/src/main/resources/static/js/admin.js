@@ -405,7 +405,7 @@ async function loadUserTx() {
   if (!uid) return;
 
   API.showLoading();
-  const res = await API.call('/api/transaction-service/v1/transactions/gettransactionhistorywithid', 'POST', uid);
+  const res = await API.call('/api/transaction-service/v1/transactions/gettransactionhistorywithid?id=' + uid, 'GET');
   API.hideLoading();
 
   if (res && res.ok) {

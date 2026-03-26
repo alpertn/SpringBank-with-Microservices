@@ -40,6 +40,7 @@ public class UserMoneyService {
 
         UserMoney userMoney = UserMoney.builder()
                 .userId(userId)
+                .keycloakUserUUID(userId)
                 .userIban(ibanGeneratorService.generateUniqueTurkishIban())
                 .build();
 

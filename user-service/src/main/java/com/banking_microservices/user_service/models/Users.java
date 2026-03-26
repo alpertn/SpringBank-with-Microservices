@@ -25,10 +25,8 @@ public class Users {
     private String keycloackUUID;
     private String mail;
     private String password;
-    @Builder.Default
-    private String name = "Ahmet";
-    @Builder.Default
-    private String surname = "Kar";
+    private String name;
+    private String surname;
     @Builder.Default
     private Role role = Role.USER;
     @Builder.Default

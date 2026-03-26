@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import com.banking_microservices.transaction_service.dto.enums.TransactionStatus;
+import com.banking_microservices.transaction_service.dto.enums.TransactionType;
 import com.banking_microservices.transaction_service.dto.enums.TransferStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -60,7 +61,8 @@ public class TransactionEntity {
     @com.fasterxml.jackson.annotation.JsonProperty("money")
     private BigDecimal money;
 
-    private String transactionType;
+    @Enumerated(EnumType.STRING)
+    private TransactionType transactionType;
 
     private String description;
 

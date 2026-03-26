@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import com.banking_microservices.transaction_service.model.TransactionEntity;
 import com.banking_microservices.transaction_service.dto.enums.TransactionStatus;
+import com.banking_microservices.transaction_service.dto.enums.TransactionType;
 
 @Data
 @Builder
@@ -56,7 +57,7 @@ public class KafkaTransactionTopicMessageDto {
     private BigDecimal money;
 
     @Builder.Default
-    private String transactionType = "TRANSACTION";
+    private TransactionType transactionType = TransactionType.TRANSFER;
 
     @Builder.Default
     private String description = null;
