@@ -41,6 +41,7 @@ spring:
 management:
   endpoints:
     web:
+      base-path: /api/fraud-service/actuator
       exposure:
         include: health,info
 

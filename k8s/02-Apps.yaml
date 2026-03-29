@@ -34,11 +34,11 @@ spec:
             - containerPort: 8081
           resources: # Podun calisacagi cpu ve memory scaling
             requests: # Pod minimum ozellikleri
-              memory: "128Mi" # min 128mb ram.
-              cpu: "100m" # Minimum 100 milicore cpu
-            limits: # Pod'un kullanabilecegi maksimum kaynak. Bu limiti asarsa pod restart olur veya throttle edilir (yavaslatilir).
-              memory: "256Mi" # Maksimum 256MB RAM kullanabilir. Asarsa pod kill edilir (OOMKilled).
-              cpu: "250m" # Maksimum 0.25 CPU core kullanabilir. Asarsa CPU throttle edilir (yavaslatilir ama kill edilmez).
+              memory: "256Mi" # min 256mb ram.
+              cpu: "250m" # Minimum 250 milicore cpu
+            limits: # Pod'un kullanabilecegi maksimum kaynak.
+              memory: "512Mi" # Maksimum 512MB RAM kullanabilir.
+              cpu: "500m" # Maksimum 0.5 CPU core kullanabilir.
           env:
             # Postgres
             - name: SPRING_DATASOURCE_URL
@@ -155,11 +155,11 @@ spec:
             - containerPort: 8082
           resources:
             requests:
-              memory: "128Mi"
-              cpu: "100m"
-            limits:
               memory: "256Mi"
               cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           env:
             # Postgres
             - name: SPRING_DATASOURCE_URL
@@ -206,6 +206,8 @@ spec:
               value: banking-microservices.transaction.transaction-service.created.v1
             - name: KAFKA_TRANSACTION_BLOCKUSER_SENDER
               value: banking-microservices.transaction.money-service.block-money.success.v1
+            - name: KAFKA_TRANSACTION_RESULT_SENDER
+              value: banking-microservices.transaction.result.success.v1
 
 ---
 
@@ -278,11 +280,11 @@ spec:
             - containerPort: 8083
           resources:
             requests:
-              memory: "128Mi"
-              cpu: "100m"
-            limits:
               memory: "256Mi"
               cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           env:
             # Postgres Ayarlari
             - name: SPRING_DATASOURCE_URL
@@ -312,6 +314,8 @@ spec:
               value: banking-microservices.transaction.user-service.user-validation.success.v1
             - name: KAFKA_TRANSACTION_LOGGER_LISTENER
               value: 'banking-microservices.transaction.*'
+            - name: KAFKA_TRANSACTION_RESULT_LISTENER
+              value: banking-microservices.transaction.result.success.v1
 
 
 ---
@@ -385,11 +389,11 @@ spec:
             - containerPort: 8084
           resources:
             requests:
-              memory: "128Mi"
-              cpu: "100m"
-            limits:
               memory: "256Mi"
               cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           env:
             # Postgres
             - name: USER_SERVICE_URL
@@ -605,11 +609,11 @@ spec:
             - containerPort: 8085
           resources:
             requests:
-              memory: "128Mi"
-              cpu: "100m"
-            limits:
               memory: "256Mi"
               cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           env:
             # Postgres
             - name: SPRING_DATASOURCE_URL

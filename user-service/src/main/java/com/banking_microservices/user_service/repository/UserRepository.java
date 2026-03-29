@@ -1,6 +1,7 @@
 package com.banking_microservices.user_service.repository;
 
 import com.banking_microservices.user_service.models.Users;
+import com.banking_microservices.user_service.dto.RoleEnum.RoleEnum.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -34,6 +35,9 @@ public interface UserRepository extends JpaRepository<Users, String> {
     List<Users> findByNameContainingIgnoreCaseOrSurnameContainingIgnoreCase(String name, String surname);
 
     long countByRole(String role);
+    long countByRole(Role role);
+    long countByActive(boolean active);
+    List<Users> findAll();
 
     List<Users> findByRole(String role);
 

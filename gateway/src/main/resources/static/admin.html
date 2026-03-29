@@ -1,476 +1,1019 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SpringBank – Yönetici Paneli</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <title>SpringBank Enterprise Admin Panel</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Phosphor Icons -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="css/style.css"> <!-- Existing styles if any -->
+
   <style>
-    /* ── Admin Tab Bar ── */
-    .admin-tabs {
-      display: flex; gap: 6px; margin-bottom: 24px;
-      overflow-x: auto; padding-bottom: 4px;
-      scrollbar-width: thin;
+    /* Enterprise Styling Overrides */
+    :root {
+      --bg-dark: #0a1628;
+      --bg-card: #11223c;
+      --bg-hover: #172d4e;
+      --text-primary: #ffffff;
+      --text-secondary: #94a3b8;
+      --accent-gold: #f59e0b;
+      --accent-gold-hover: #d97706;
+      --border-color: #1e3a63;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --info: #3b82f6;
     }
-    .admin-tab {
-      padding: 9px 16px; border-radius: 6px; background: var(--surface);
-      border: 1px solid var(--border); font-size: 13px; font-weight: 600;
-      color: var(--text-muted); cursor: pointer; transition: var(--transition);
-      white-space: nowrap; display: flex; align-items: center; gap: 7px;
-      flex-shrink: 0;
-    }
-    .admin-tab:hover { background: var(--bg); color: var(--primary-dark); }
-    .admin-tab.active { background: var(--primary-dark); color: #fff; border-color: var(--primary-dark); }
-    .admin-panel { display: none; }
-    .admin-panel.active { display: block; animation: fadeIn 0.3s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* ── Health Grid ── */
-    .health-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px; margin-bottom: 0;
-    }
-    .health-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 20px 18px;
-      display: flex; align-items: center; gap: 14px;
-      box-shadow: var(--shadow); transition: var(--transition);
-      position: relative; overflow: hidden;
-    }
-    .health-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
-    .health-card::before {
-      content: ''; position: absolute;
-      top: 0; left: 0; width: 4px; height: 100%;
-      background: var(--border); border-radius: 12px 0 0 12px;
-    }
-    .health-card.UP::before    { background: var(--success); }
-    .health-card.DOWN::before  { background: var(--danger); }
-    .health-card.LOADING::before { background: var(--warning); }
-    .health-icon {
-      width: 44px; height: 44px; border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px; flex-shrink: 0;
-      background: var(--bg2);
-    }
-    .health-icon.UP   { background: var(--success-light); color: var(--success); }
-    .health-icon.DOWN { background: var(--danger-light); color: var(--danger); }
-    .health-icon.LOADING { background: var(--warning-light); color: var(--warning); }
-    .health-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
-    .health-status { font-size: 11px; font-weight: 600; letter-spacing: 0.5px; }
-    .health-status.UP   { color: var(--success); }
-    .health-status.DOWN { color: var(--danger); }
-    .health-status.LOADING { color: var(--warning); }
-
-    /* ── Log Viewer ── */
-    .log-controls {
-      display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; align-items: center;
-    }
-    .log-service-btn {
-      padding: 7px 14px; border-radius: 20px; border: 1.5px solid var(--border);
-      background: var(--surface); font-size: 12px; font-weight: 600;
-      color: var(--text-muted); cursor: pointer; transition: var(--transition);
+    body {
+      margin: 0;
+      padding: 0;
       font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      min-width: 1200px;
+      /* Desktop first expectation */
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
     }
-    .log-service-btn:hover { border-color: var(--primary); color: var(--primary); }
-    .log-service-btn.active { background: var(--primary-dark); color: #fff; border-color: var(--primary-dark); }
-    .log-terminal {
-      background: #0d1117; border-radius: var(--radius); padding: 20px;
-      min-height: 380px; max-height: 480px; overflow-y: auto;
-      font-family: 'Courier New', 'Consolas', monospace; font-size: 12.5px;
-      line-height: 1.75; color: #c9d1d9; border: 1px solid #30363d;
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background-color: var(--bg-card);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .sidebar-header i {
+      color: var(--accent-gold);
+      font-size: 28px;
+    }
+
+    .sidebar-header h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--accent-gold);
+    }
+
+    .nav-menu {
+      flex: 1;
+      padding: 24px 0;
+      list-style: none;
+      margin: 0;
+    }
+
+    .nav-item {
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      background-color: var(--bg-hover);
+      color: var(--accent-gold);
+      border-right: 4px solid var(--accent-gold);
+    }
+
+    .nav-item i {
+      font-size: 20px;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    /* Top Bar */
+    .topbar {
+      height: 70px;
+      min-height: 70px;
+      background-color: var(--bg-card);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 0 32px;
+      gap: 20px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 500;
+    }
+
+    .btn-logout {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--danger);
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: inherit;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+
+    .btn-logout:hover {
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    /* Page Container */
+    .page-container {
+      padding: 32px;
+      display: none;
+    }
+
+    .page-container.active {
+      display: block;
+    }
+
+    .page-title {
+      margin: 0 0 24px 0;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    /* KPI Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .kpi-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .kpi-title {
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* Charts Section */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .chart-container {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 24px;
+      aspect-ratio: 2 / 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chart-title {
+      margin: 0 0 16px 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .chart-body {
+      flex: 1;
       position: relative;
     }
-    .log-terminal::-webkit-scrollbar { width: 6px; }
-    .log-terminal::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
-    .log-line { white-space: pre-wrap; word-break: break-all; }
-    .log-line.INFO  { color: #58d68d; }
-    .log-line.WARN  { color: #f0e68c; }
-    .log-line.ERROR { color: #ff6b6b; }
-    .log-line.DEBUG { color: #7fb3d3; }
-    .log-line.DEFAULT { color: #c9d1d9; }
-    .log-empty {
-      display: flex; flex-direction: column; align-items: center;
-      justify-content: center; height: 340px; gap: 12px;
-      color: #484f58;
-    }
-    .log-empty i { font-size: 48px; }
 
-    /* ── Chart ── */
-    .chart-wrapper {
-      position: relative; height: 300px;
+    /* Tables */
+    .table-container {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 24px;
     }
 
-    /* ── Notification Bell ── */
-    .notif-bell-wrapper {
-      position: relative; display: inline-flex;
-    }
-    .notif-badge {
-      position: absolute; top: -5px; right: -5px;
-      background: var(--danger); color: #fff;
-      font-size: 10px; font-weight: 700;
-      width: 18px; height: 18px;
-      border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      border: 2px solid var(--surface);
-    }
-    .notif-list { display: flex; flex-direction: column; gap: 10px; }
-    .notif-item {
-      display: flex; align-items: flex-start; gap: 12px;
-      padding: 14px 16px; border-radius: 8px;
-      background: var(--bg); border: 1px solid var(--border);
-      transition: var(--transition);
-    }
-    .notif-item:hover { border-color: var(--primary-xlight); }
-    .notif-item-icon {
-      width: 36px; height: 36px; border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px; flex-shrink: 0;
-    }
-    .notif-item-icon.danger  { background: var(--danger-light); color: var(--danger); }
-    .notif-item-icon.warning { background: var(--warning-light); color: var(--warning); }
-    .notif-item-icon.success { background: var(--success-light); color: var(--success); }
-    .notif-item-icon.info    { background: var(--info-light); color: var(--info); }
-    .notif-item-text { flex: 1; }
-    .notif-item-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
-    .notif-item-desc  { font-size: 12px; color: var(--text-muted); }
-    .notif-item-time  { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
-
-    /* ── Sidebar Notif ── */
-    .sidebar-notif-btn {
-      width: 100%; display: flex; align-items: center; gap: 10px;
-      padding: 10px 14px; border-radius: 6px; border: none;
-      background: none; cursor: pointer; font-family: 'Inter', sans-serif;
-      font-size: 14px; font-weight: 500; color: var(--text);
-      transition: var(--transition); margin-bottom: 2px; position: relative;
-    }
-    .sidebar-notif-btn:hover { background: var(--bg); color: var(--primary-dark); }
-
-    /* Auto-refresh line */
-    .refresh-bar {
-      display: flex; align-items: center; gap: 10px;
-      font-size: 12px; color: var(--text-muted); margin-bottom: 16px;
-    }
-    .refresh-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: var(--success); animation: pulse 2s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50%       { transform: scale(1.4); opacity: 0.6; }
+    .table-header-panel {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    /* ── Compact form rows ── */
-    .form-row-4 {
-      display: grid; grid-template-columns: 1fr 1fr auto auto; gap: 12px; align-items: flex-end;
+    .table-tools {
+      display: flex;
+      gap: 16px;
     }
-    @media (max-width: 768px) {
-      .form-row-4 { grid-template-columns: 1fr; }
+
+    .search-input {
+      background-color: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-family: inherit;
+      width: 250px;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent-gold);
+    }
+
+    .btn-primary {
+      background-color: var(--accent-gold);
+      color: var(--bg-dark);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--accent-gold-hover);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--bg-dark);
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 13px;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    td {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 14px;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    tbody tr:hover {
+      background-color: var(--bg-hover);
+    }
+
+    .error-row {
+      border-left: 4px solid var(--danger);
+    }
+
+    /* Chips / Badges */
+    .chip {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .chip-success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+    }
+
+    .chip-danger {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger);
+    }
+
+    .chip-warning {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning);
+    }
+
+    .chip-info {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--info);
+    }
+
+    .chip-neutral {
+      background: rgba(148, 163, 184, 0.1);
+      color: var(--text-secondary);
+    }
+
+    /* Actions Dropdown */
+    .action-select {
+      background-color: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 13px;
+    }
+
+    .action-link {
+      color: var(--info);
+      text-decoration: none;
+      cursor: pointer;
+      margin-right: 12px;
+    }
+
+    .action-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Pagination */
+    .pagination {
+      padding: 16px 24px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(10, 22, 40, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      width: 500px;
+      max-width: 90vw;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 20px;
+    }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      max-height: 70vh;
+    }
+
+    .modal-footer {
+      padding: 20px 24px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    /* Key-Value Pair Display in Modals */
+    .kv-pair {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .kv-key {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .kv-val {
+      font-weight: 500;
+      font-size: 14px;
+      text-align: right;
+      word-break: break-all;
+      max-width: 60%;
+    }
+
+    /* Split Panels (Account Ops) */
+    .split-panels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .form-control {
+      width: 100%;
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+
+    /* Grid Cards (System Health) */
+    .health-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .health-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .health-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .health-title {
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .health-meta {
+      font-size: 13px;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Toasts */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 9999;
+    }
+
+    .toast {
+      background: var(--bg-card);
+      border-left: 4px solid var(--accent-gold);
+      padding: 16px 20px;
+      border-radius: 4px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 300px;
+      animation: slideIn 0.3s forwards;
+      color: var(--text-primary);
+    }
+
+    .toast.success {
+      border-left-color: var(--success);
+    }
+
+    .toast.error {
+      border-left-color: var(--danger);
+    }
+
+    .toast.warning {
+      border-left-color: var(--warning);
+    }
+
+    .toast.info {
+      border-left-color: var(--info);
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Loader */
+    .loader {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(245, 158, 11, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--accent-gold);
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    .loader-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-secondary);
+      font-style: italic;
     }
   </style>
 </head>
+
 <body>
-<div class="app-layout">
+
   <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="sidebar-logo-icon"><i class="ph ph-bank"></i></div>
-      <div class="sidebar-logo-text">Spring<span>Bank</span></div>
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <i class="ph-fill ph-bank"></i>
+      <h2>Enterprise Admin</h2>
     </div>
-    <div class="sidebar-user">
-      <div class="sidebar-user-avatar" id="user-avatar" style="background:var(--danger-light); color:var(--danger)"><i class="ph ph-shield-check"></i></div>
-      <div class="sidebar-user-info">
-        <div class="sidebar-user-name" id="user-name">...</div>
-        <div class="sidebar-user-role" id="user-role" style="color:var(--danger)">Yönetici</div>
-      </div>
-    </div>
-    <nav class="sidebar-nav">
-      <div class="nav-section-title">ANA MENÜ</div>
-      <a href="/dashboard.html" class="nav-item"><span class="nav-item-icon"><i class="ph ph-squares-four"></i></span> Özet</a>
-      <a href="/transfer.html"  class="nav-item"><span class="nav-item-icon"><i class="ph ph-arrows-left-right"></i></span> Transfer</a>
-      <a href="/deposit.html"   class="nav-item"><span class="nav-item-icon"><i class="ph ph-arrow-down-left"></i></span> Para Yatır</a>
-      <a href="/withdraw.html"  class="nav-item"><span class="nav-item-icon"><i class="ph ph-arrow-up-right"></i></span> Para Çek</a>
-      <div class="nav-section-title">HESAP</div>
-      <a href="/transactions.html" class="nav-item"><span class="nav-item-icon"><i class="ph ph-list-dashes"></i></span> İşlem Geçmişi</a>
-      <div class="nav-section-title">YÖNETİM</div>
-      <a href="/admin.html" class="nav-item active"><span class="nav-item-icon"><i class="ph ph-shield-gear"></i></span> Yönetim Paneli</a>
-    </nav>
-    <div class="sidebar-footer">
-      <button class="logout-btn" id="logout-btn"><i class="ph ph-sign-out"></i> Çıkış Yap</button>
-    </div>
-  </aside>
+    <ul class="nav-menu">
+      <li class="nav-item active" data-target="dashboard"><i class="ph ph-squares-four"></i> Dashboard</li>
+      <li class="nav-item" data-target="users"><i class="ph ph-users"></i> User Management</li>
+      <li class="nav-item" data-target="transactions"><i class="ph ph-arrows-left-right"></i> Transaction Monitor</li>
+      <li class="nav-item" data-target="accounts"><i class="ph ph-wallet"></i> Account Operations</li>
+      <li class="nav-item" data-target="fraud"><i class="ph ph-shield-warning"></i> Fraud & Errors</li>
+      <li class="nav-item" data-target="health"><i class="ph ph-activity"></i> System Health</li>
+      <li class="nav-item" data-target="logs"><i class="ph ph-terminal-window"></i> Live Logs</li>
+    </ul>
+  </div>
 
-  <main class="main-content">
-    <div class="page-header" style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:20px;">
-      <div>
-        <h1 class="page-title" style="color:var(--danger)">Sistem Yönetimi</h1>
-        <p class="page-subtitle">Tüm kullanıcı, servis ve işlem kontrollerine yüksek yetkili erişim</p>
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="user-info">
+        <i class="ph-fill ph-user-circle" style="font-size: 32px; color: var(--text-secondary);"></i>
+        <span id="adminUsername">Admin User</span>
       </div>
-      <!-- Notification Bell -->
-      <div class="notif-bell-wrapper" style="margin-top:6px;">
-        <button id="notif-bell-btn" onclick="switchTab('panel-notif')"
-          style="background:var(--surface); border:1px solid var(--border); border-radius:8px; 
-                 padding:10px 14px; cursor:pointer; font-size:20px; color:var(--text-muted);
-                 transition:var(--transition); display:flex; align-items:center; gap:8px; font-family:Inter;">
-          <i class="ph ph-bell"></i>
-          <span style="font-size:12px; font-weight:600;">Uyarılar</span>
-        </button>
-        <span class="notif-badge" id="notif-count" style="display:none">0</span>
-      </div>
+      <button class="btn-logout" id="btnLogout"><i class="ph ph-sign-out"></i> Logout</button>
     </div>
 
-    <!-- TABS -->
-    <div class="admin-tabs" id="admin-tabs">
-      <button class="admin-tab active" data-target="panel-stats">   <i class="ph ph-chart-line-up"></i>  Sistem Özeti</button>
-      <button class="admin-tab"        data-target="panel-health">  <i class="ph ph-heartbeat"></i>       Servis Durumu</button>
-      <button class="admin-tab"        data-target="panel-logs">    <i class="ph ph-terminal"></i>        Log İzleme</button>
-      <button class="admin-tab"        data-target="panel-charts">  <i class="ph ph-chart-bar"></i>       İşlem Grafikleri</button>
-      <button class="admin-tab"        data-target="panel-notif">   <i class="ph ph-bell-ringing"></i>   Uyarılar</button>
-      <button class="admin-tab"        data-target="panel-users">   <i class="ph ph-users"></i>           Kullanıcı Yönetimi</button>
-      <button class="admin-tab"        data-target="panel-money">   <i class="ph ph-wallet"></i>          Bakiye Yönetimi</button>
-      <button class="admin-tab"        data-target="panel-tx">      <i class="ph ph-receipt"></i>         İşlem Kayıtları</button>
-    </div>
+    <!-- 1. Dashboard -->
+    <div class="page-container active" id="dashboard">
+      <h1 class="page-title">Dashboard</h1>
 
-    <!-- ═══════════════════════════ PANEL: SİSTEM ÖZETİ ═══════════════════════════ -->
-    <div class="admin-panel active" id="panel-stats">
-      <div class="stats-grid" id="stats-grid">
-        <div class="stat-card info">
-          <div class="stat-icon"><i class="ph ph-users-three"></i></div>
-          <div class="stat-info">
-            <div class="stat-label">Toplam Kullanıcı</div>
-            <div class="stat-value" id="stat-users">...</div>
-          </div>
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-title">Total Users</div>
+          <div class="kpi-value" id="dashTotalUsers">-</div>
         </div>
-        <div class="stat-card success">
-          <div class="stat-icon"><i class="ph ph-check-circle"></i></div>
-          <div class="stat-info">
-            <div class="stat-label">Aktif Servisler</div>
-            <div class="stat-value" id="stat-services-up">—</div>
-          </div>
+        <div class="kpi-card">
+          <div class="kpi-title">Active Users</div>
+          <div class="kpi-value" id="dashActiveUsers">-</div>
         </div>
-        <div class="stat-card danger">
-          <div class="stat-icon"><i class="ph ph-warning-circle"></i></div>
-          <div class="stat-info">
-            <div class="stat-label">Çevrimdışı Servisler</div>
-            <div class="stat-value" id="stat-services-down">—</div>
-          </div>
+        <div class="kpi-card">
+          <div class="kpi-title">Today's Transactions</div>
+          <div class="kpi-value" id="dashTotalTx">-</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-title">Error Transactions</div>
+          <div class="kpi-value" id="dashErrorTx">-</div>
         </div>
       </div>
 
-      <div class="card" style="margin-top:0">
-        <div class="card-header">
-          <div>
-            <div class="card-title">Hızlı Genel Bakış</div>
-            <div class="card-subtitle">Sistemdeki son durum özeti</div>
-          </div>
+      <div class="charts-grid">
+        <div class="chart-container">
+          <h3 class="chart-title">Role Distribution</h3>
+          <div class="chart-body"><canvas id="roleChart"></canvas></div>
         </div>
-        <div id="stats-summary" style="color:var(--text-muted); font-size:14px;">Yükleniyor...</div>
-      </div>
-    </div>
-
-    <!-- ═══════════════════════════ PANEL: SERVİS DURUMU ═══════════════════════════ -->
-    <div class="admin-panel" id="panel-health">
-      <div class="refresh-bar">
-        <div class="refresh-dot"></div>
-        <span>Her 30 saniyede otomatik yenilenir</span>
-        <button class="btn btn-secondary btn-sm" onclick="loadHealth()"><i class="ph ph-arrows-clockwise"></i> Şimdi Yenile</button>
-      </div>
-      <div class="health-grid" id="health-grid">
-        <!-- JS ile doldurulur -->
-        <div class="health-card LOADING"><div class="health-icon LOADING"><i class="ph ph-spinner"></i></div><div><div class="health-name">Yükleniyor...</div></div></div>
-      </div>
-    </div>
-
-    <!-- ═══════════════════════════ PANEL: LOG İZLEME ═══════════════════════════ -->
-    <div class="admin-panel" id="panel-logs">
-      <div class="card" style="margin-bottom:16px;">
-        <div class="card-header" style="margin-bottom:12px;">
-          <div>
-            <div class="card-title">Servis Log İzleyici</div>
-            <div class="card-subtitle">Bir servisi seçip log akışını başlatın — actuator üzerinden alınır</div>
-          </div>
-          <div style="display:flex; gap:8px;">
-            <button class="btn btn-secondary btn-sm" onclick="clearLogs()"><i class="ph ph-trash"></i> Temizle</button>
-            <button class="btn btn-danger btn-sm"    id="log-stop-btn" onclick="stopLogs()" style="display:none"><i class="ph ph-stop-circle"></i> Durdur</button>
-          </div>
-        </div>
-        <div class="log-controls" id="log-services">
-          <button class="log-service-btn" onclick="startLogs('user-service',this)">user-service</button>
-          <button class="log-service-btn" onclick="startLogs('money-service',this)">money-service</button>
-          <button class="log-service-btn" onclick="startLogs('transaction-service',this)">transaction-service</button>
-          <button class="log-service-btn" onclick="startLogs('auth-service',this)">auth-service</button>
-          <button class="log-service-btn" onclick="startLogs('fraud-service',this)">fraud-service</button>
-        </div>
-      </div>
-      <div id="log-terminal" class="log-terminal">
-        <div class="log-empty">
-          <i class="ph ph-terminal"></i>
-          <span>Yukarıdan bir servis seçerek log akışını başlatın</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══════════════════════════ PANEL: GRAFİKLER ═══════════════════════════ -->
-    <div class="admin-panel" id="panel-charts">
-      <div class="grid-2" style="gap:24px;">
-        <div class="card">
-          <div class="card-header">
-            <div>
-              <div class="card-title">Son 7 Günlük İşlem Hacmi</div>
-              <div class="card-subtitle">Tüm tür işlemlerin günlük sayısı</div>
-            </div>
-          </div>
-          <div class="chart-wrapper"><canvas id="chart-weekly"></canvas></div>
-        </div>
-        <div class="card">
-          <div class="card-header">
-            <div>
-              <div class="card-title">İşlem Türü Dağılımı</div>
-              <div class="card-subtitle">Transfer / Yatırma / Çekme oranları</div>
-            </div>
-          </div>
-          <div class="chart-wrapper" style="height:260px;"><canvas id="chart-types"></canvas></div>
-        </div>
-      </div>
-      <div class="card" style="margin-top:24px;">
-        <div class="card-header">
-          <div class="card-title">Haftalık Durum Özeti</div>
-        </div>
-        <div id="chart-summary" style="font-size:13px; color:var(--text-muted);">Grafik yüklenirken hesaplanıyor...</div>
-      </div>
-    </div>
-
-    <!-- ═══════════════════════════ PANEL: UYARILAR ═══════════════════════════ -->
-    <div class="admin-panel" id="panel-notif">
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">Sistem Uyarıları</div>
-            <div class="card-subtitle">Başarısız işlemler, çevrimdışı servisler ve anomaliler</div>
-          </div>
-          <button class="btn btn-secondary btn-sm" onclick="loadNotifications()"><i class="ph ph-arrows-clockwise"></i> Yenile</button>
-        </div>
-        <div class="notif-list" id="notif-list">
-          <div style="text-align:center; color:var(--text-muted); padding:24px;">Yükleniyor...</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══════════════════════════ PANEL: KULLANICI YÖNETİMİ ═══════════════════════════ -->
-    <div class="admin-panel" id="panel-users">
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-header">
-            <div>
-              <div class="card-title">Kullanıcı Arama</div>
-              <div class="card-subtitle">İsim, soyisim veya e-mail ile arayın</div>
-            </div>
-          </div>
-          <div class="form-row">
-            <input type="text" id="search-query" class="form-control" placeholder="Örn: test@mail.com veya Ali">
-            <button class="btn btn-primary" onclick="searchUser()"><i class="ph ph-magnifying-glass"></i> Ara</button>
-          </div>
-          <div id="user-search-res" style="margin-top:20px; font-size:13px;"></div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <div>
-              <div class="card-title">Rol Güncelle</div>
-              <div class="card-subtitle">Kullanıcı kimliği üzerinden rolü değiştirin</div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Kullanıcı ID</label>
-            <input type="text" id="role-uid" class="form-control" placeholder="UID (ör: a1b2...)">
-          </div>
-          <div class="form-row">
-            <select id="role-sel" class="form-control">
-              <option value="USER">Standart Müşteri (USER)</option>
-              <option value="ADMIN">Yönetici (ADMIN)</option>
-            </select>
-            <button class="btn btn-danger" onclick="updateRole()"><i class="ph ph-shield-check"></i> Yetki Ver</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══════════════════════════ PANEL: BAKİYE YÖNETİMİ ═══════════════════════════ -->
-    <div class="admin-panel" id="panel-money">
-      <div class="card" style="margin-bottom:24px;">
-        <div class="card-header">
-          <div class="card-title">Admin Para İşlemleri</div>
-        </div>
-        <div class="form-row-4">
-          <div class="form-group" style="margin:0;">
-            <label class="form-label">Hedef Kullanıcı ID</label>
-            <input type="text" id="money-uid" class="form-control" placeholder="İşlem yapılacak UID">
-          </div>
-          <div class="form-group" style="margin:0;">
-            <label class="form-label">Tutar</label>
-            <input type="number" id="money-amt" class="form-control" placeholder="0.00">
-          </div>
-          <button class="btn btn-success" onclick="adminDeposit()"><i class="ph ph-plus"></i> Zorunlu Yatır</button>
-          <button class="btn btn-danger"  onclick="adminWithdraw()"><i class="ph ph-minus"></i> Zorunlu Çek</button>
+        <div class="chart-container">
+          <h3 class="chart-title">Transaction Volume (Last 7 Days)</h3>
+          <div class="chart-body"><canvas id="volumeChart"></canvas></div>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-title" style="margin-bottom:12px;">Cüzdan Sorgulama</div>
-        <div class="form-row">
-          <input type="text" id="wallet-uid" class="form-control" placeholder="Kullanıcı ID (Bakiyesi Sorulacak)">
-          <button class="btn btn-secondary" onclick="checkWallet()"><i class="ph ph-magnifying-glass"></i> Sorgula</button>
+      <div class="table-container">
+        <div class="table-header-panel">
+          <h3 style="margin:0; font-size:16px;">Recent Transactions</h3>
         </div>
-        <div id="wallet-res" style="margin-top:20px; font-size:14px;"></div>
-      </div>
-    </div>
-
-    <!-- ═══════════════════════════ PANEL: İŞLEM KAYITLARI ═══════════════════════════ -->
-    <div class="admin-panel" id="panel-tx">
-      <div class="card" style="margin-bottom:24px;">
-        <div class="card-header">
-          <div class="card-title">Herhangi Bir Kullanıcının Hesap Dökümü</div>
-        </div>
-        <div class="form-row">
-          <input type="text" id="tx-uid" class="form-control" placeholder="Sorgulanacak Kullanıcı ID">
-          <button class="btn btn-primary" onclick="loadUserTx()"><i class="ph ph-file-text"></i> Dökümü Getir</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="table-wrapper">
-          <table id="adm-tx-table">
+        <div style="overflow-x: auto;">
+          <table>
             <thead>
               <tr>
-                <th>Tarih</th>
-                <th>Tür</th>
-                <th>Gönderen</th>
-                <th>Alıcı</th>
-                <th>Tutar</th>
-                <th>Durum</th>
-                <th>Transfer Durumu</th>
-                <th>Açıklama</th>
+                <th>Date</th>
+                <th>ID</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Status</th>
               </tr>
             </thead>
-            <tbody id="adm-tx-tbody">
-              <tr><td colspan="8" style="text-align:center;color:var(--text-muted)">Arama yapınız</td></tr>
+            <tbody id="dashTxTableBody">
+              <!-- populated by js -->
             </tbody>
           </table>
         </div>
       </div>
     </div>
 
-  </main>
-</div>
+    <!-- 2. User Management -->
+    <div class="page-container" id="users">
+      <h1 class="page-title">User Management</h1>
 
-<!-- Grid helper -->
-<style>
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-  @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
-</style>
+      <div class="table-container">
+        <div class="table-header-panel">
+          <div class="table-tools">
+            <input type="text" class="search-input" id="searchName" placeholder="Search by name, surname">
+            <input type="text" class="search-input" id="searchEmail" placeholder="Search by email">
+            <input type="text" class="search-input" id="searchId" placeholder="Search by ID">
+            <button class="btn-primary" id="btnSearchUser">Search</button>
+          </div>
+        </div>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Created At</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody">
+              <!-- populated by js -->
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <button class="btn-primary" id="btnPrevPage" style="padding: 6px 12px; font-size: 13px;">Previous</button>
+          <span id="pageInfo" style="font-size: 14px;">Page 1</span>
+          <button class="btn-primary" id="btnNextPage" style="padding: 6px 12px; font-size: 13px;">Next</button>
+        </div>
+      </div>
+    </div>
 
-<script src="/js/api.js"></script>
-<script src="/js/admin.js"></script>
+    <!-- 3. Transaction Monitor -->
+    <div class="page-container" id="transactions">
+      <h1 class="page-title">Transaction Monitor</h1>
+
+      <div class="kpi-grid" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="kpi-card">
+          <div class="kpi-title">Filtered Transactions</div>
+          <div class="kpi-value" id="txCount">-</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-title">Filtered Volume</div>
+          <div class="kpi-value" id="txVolume">-</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-title">Errors in Period</div>
+          <div class="kpi-value" id="txErrors">-</div>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <div class="table-header-panel">
+          <div class="table-tools">
+            <label style="align-self:center; font-size: 14px;">Start Date:</label>
+            <input type="datetime-local" class="form-control" id="txStartDate" style="width:auto;">
+            <label style="align-self:center; font-size: 14px;">End Date:</label>
+            <input type="datetime-local" class="form-control" id="txEndDate" style="width:auto;">
+            <button class="btn-primary" id="btnFilterTx">Filter</button>
+          </div>
+        </div>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Tx ID</th>
+                <th>Event ID</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Sender</th>
+                <th>Receiver</th>
+                <th>Status</th>
+                <th>Transfer Status</th>
+                <th>Error</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="txTableBody">
+              <!-- populated by js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Account Operations -->
+    <div class="page-container" id="accounts">
+      <h1 class="page-title">Account Operations</h1>
+
+      <div class="split-panels">
+        <div class="panel">
+          <h3>Account Lookup & Management</h3>
+          <div class="form-group">
+            <label>User ID</label>
+            <div style="display:flex; gap:12px;">
+              <input type="text" class="form-control" id="opUserId" placeholder="Enter User ID">
+              <button class="btn-primary" id="btnLookupAccount">Lookup</button>
+            </div>
+          </div>
+
+          <div id="opAccountDetails" style="display:none; margin-top:24px;">
+            <div class="kv-pair"><span class="kv-key">IBAN</span><span class="kv-val" id="opIban"></span></div>
+            <div class="kv-pair"><span class="kv-key">Balance</span><span class="kv-val" id="opBalance"></span></div>
+            <div class="kv-pair"><span class="kv-key">Blocked Balance</span><span class="kv-val" id="opBlocked"></span>
+            </div>
+            <div class="kv-pair"><span class="kv-key">Keycloak UUID</span><span class="kv-val" id="opUuid"></span></div>
+
+            <div style="margin-top:24px; display:flex; gap:16px;">
+              <input type="number" class="form-control" id="opAmount" placeholder="Amount (TRY)">
+              <button class="btn-primary" style="background:var(--success);" id="btnDeposit">Deposit</button>
+              <button class="btn-primary" style="background:var(--warning); color:#fff;"
+                id="btnWithdraw">Withdraw</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>IBAN Lookup</h3>
+          <div class="form-group">
+            <label>User ID</label>
+            <div style="display:flex; gap:12px;">
+              <input type="text" class="form-control" id="opIbanLookupId" placeholder="Enter User ID">
+              <button class="btn-primary" id="btnLookupIbanOnly">Lookup</button>
+            </div>
+          </div>
+          <div id="opIbanResultPanel"
+            style="display:none; margin-top:24px; padding:16px; background:var(--bg-dark); border-radius:6px; border:1px solid var(--border-color);">
+            <strong style="color:var(--text-secondary);">IBAN:</strong> <span id="opIbanOnlyResult"
+              style="font-family:monospace; font-size:16px; margin-left:8px;"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Fraud & Errors -->
+    <div class="page-container" id="fraud">
+      <h1 class="page-title">Fraud & Errors Monitor</h1>
+
+      <div class="kpi-grid" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="kpi-card">
+          <div class="kpi-title">Total Errors</div>
+          <div class="kpi-value" id="errTotal">-</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-title">Error Rate</div>
+          <div class="kpi-value" id="errRate">-</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-title">Most Common Error</div>
+          <div class="kpi-value" id="errCommon">-</div>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <div class="table-header-panel">
+          <h3 style="margin:0; font-size:16px;">Error Transactions</h3>
+        </div>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Error Description</th>
+                <th>Sender</th>
+                <th>Receiver</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="errorTableBody">
+              <!-- populated by js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. System Health -->
+    <div class="page-container" id="health">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px;">
+        <h1 class="page-title" style="margin:0;">System Health</h1>
+        <button class="btn-primary" id="btnRefreshHealth"><i class="ph ph-arrows-clockwise"></i> Refresh All</button>
+      </div>
+
+      <div class="health-grid" id="healthGrid">
+        <!-- populated by js -->
+      </div>
+    </div>
+
+    <!-- 7. Live Logs -->
+    <div class="page-container" id="logs">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+        <h1 class="page-title" style="margin:0;">Service Live Logs</h1>
+        <button class="btn-primary" style="display:none; background:var(--danger);" id="log-stop-btn"><i class="ph ph-stop"></i> Monitorü Durdur</button>
+      </div>
+      
+      <div style="display:flex; gap:12px; margin-bottom: 24px;">
+        <button class="btn-primary log-service-btn" data-service="user-service">User Auth</button>
+        <button class="btn-primary log-service-btn" data-service="money-service">Money</button>
+        <button class="btn-primary log-service-btn" data-service="transaction-service">Transaction</button>
+        <button class="btn-primary log-service-btn" data-service="fraud-service">Fraud</button>
+        <button class="btn-primary" style="margin-left:auto; background:var(--bg-card); color:var(--text-secondary);" onclick="clearLogs()"><i class="ph ph-trash"></i> Temizle</button>
+      </div>
+
+      <div id="log-terminal" style="background:#050b14; color:#33ff33; font-family:monospace; font-size:13px; padding:16px; border-radius:8px; height:450px; overflow-y:auto; border:1px solid var(--border-color);">
+        <div style="color:var(--text-secondary);"><i class="ph ph-terminal" style="font-size:20px; vertical-align:middle; margin-right:8px;"></i>Terminal hazır. Bir servis seçip monitorlemeye başlayın.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Modals -->
+
+  <!-- User Detail Modal -->
+  <div class="modal-overlay" id="userDetailModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span>User Details</span>
+        <button class="modal-close" onclick="closeModal('userDetailModal')"><i class="ph ph-x"></i></button>
+      </div>
+      <div class="modal-body" id="userDetailBody">
+        <div class="loader-container" id="userDetailLoader" style="display:none;">
+          <div class="loader"></div>
+        </div>
+        <div id="userDetailContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transaction Detail Modal -->
+  <div class="modal-overlay" id="txDetailModal">
+    <div class="modal-content" style="width: 700px;">
+      <div class="modal-header">
+        <span>Transaction Details</span>
+        <button class="modal-close" onclick="closeModal('txDetailModal')"><i class="ph ph-x"></i></button>
+      </div>
+      <div class="modal-body" id="txDetailBody">
+        <div id="txDetailContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Password Reset Modal -->
+  <div class="modal-overlay" id="resetPasswordModal">
+    <div class="modal-content" style="width: 400px;">
+      <div class="modal-header">
+        <span>Reset Password</span>
+        <button class="modal-close" onclick="closeModal('resetPasswordModal')"><i class="ph ph-x"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>New Password</label>
+          <input type="password" class="form-control" id="newPasswordInput">
+          <input type="hidden" id="resetPasswordUserId">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary"
+          style="background:var(--bg-dark); color:var(--text-primary); border:1px solid var(--border-color);"
+          onclick="closeModal('resetPasswordModal')">Cancel</button>
+        <button class="btn-primary" onclick="confirmResetPassword()">Save Password</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirm Modal -->
+  <div class="modal-overlay" id="deleteConfirmModal">
+    <div class="modal-content" style="width: 400px;">
+      <div class="modal-header" style="border-bottom:none;">
+        <span><i class="ph-fill ph-warning-circle"
+            style="color:var(--danger); font-size:24px; vertical-align:middle; margin-right:8px;"></i>Confirm
+          Deletion</span>
+        <button class="modal-close" onclick="closeModal('deleteConfirmModal')"><i class="ph ph-x"></i></button>
+      </div>
+      <div class="modal-body" style="padding-top:0;">
+        <p>Are you sure you want to delete this user? This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer" style="border-top:none; padding-top:0;">
+        <button class="btn-primary"
+          style="background:var(--bg-dark); color:var(--text-primary); border:1px solid var(--border-color);"
+          onclick="closeModal('deleteConfirmModal')">Cancel</button>
+        <button class="btn-primary" style="background:var(--danger);" id="btnConfirmDelete">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/admin.js"></script>
 </body>
+
 </html>

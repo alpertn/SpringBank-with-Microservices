@@ -11,6 +11,8 @@ kafka:
       transactionmoney:
         listener: ${KAFKA_TRANSACTION_TOPIC_LISTENER:banking-microservices.transaction.fraud-service.checked.v1}
         sender: ${KAFKA_TRANSACTION_TOPIC_SENDER:banking-microservices.transaction.transaction-service.success.v1}
+      result:
+        sender: ${KAFKA_TRANSACTION_RESULT_SENDER:banking-microservices.transaction.result.success.v1}
       error: ${KAFKA_TRANSACTION_TOPIC_ERROR:banking-microservices.transaction.transaction-service.error.v1}
     username-validation:
       sender: ${KAFKA_USERNAME_VALIDATION_SENDER:banking-microservices.username-validation.money-service.progress.v1}
@@ -52,6 +54,7 @@ spring:
 management:
   endpoints:
     web:
+      base-path: /api/money-service/actuator
       exposure:
         include: health,info
 

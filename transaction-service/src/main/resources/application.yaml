@@ -8,6 +8,7 @@ kafka:
       sender: ${KAFKA_TRANSACTION_TOPIC_SENDER:banking-microservices.transaction.transaction-service.created.v1}
       error: ${KAFKA_TRANSACTION_TOPIC_ERROR:banking-microservices.transaction.transaction-service.error.v1}
       user-validation:
+        listener: ${KAFKA_TRANSACTION_USERVALIDATION_LISTENER:banking-microservices.transaction.user-service.user-validation.success.v1}
       logger:
         listener: ${KAFKA_TRANSACTION_LOGGER_LISTENER:banking-microservices.transaction.*}
       result:
@@ -42,6 +43,13 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+management:
+  endpoints:
+    web:
+      base-path: /api/transaction-service/actuator
+      exposure:
+        include: health,info
 
 logging:
   pattern:

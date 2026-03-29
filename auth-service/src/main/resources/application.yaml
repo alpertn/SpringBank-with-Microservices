@@ -33,6 +33,7 @@ keycloak:
 management:
   endpoints:
     web:
+      base-path: /api/auth-service/actuator
       exposure:
         include: health,info
   endpoint:

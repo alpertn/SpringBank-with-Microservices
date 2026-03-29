@@ -60,6 +60,30 @@ public class AdminController {
         return ResponseEntity.ok(userService.getTotalUserCount());
     }
 
+    @GetMapping("/allusers")
+    public ResponseEntity<List<Users>> getAllUsers() {
+        log.info(" ({}) > AdminController | getAllUsers -> Istek alindi.", currentTime.get());
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @GetMapping("/stats/roles")
+    public ResponseEntity<java.util.Map<String, Long>> getRoleStats() {
+        log.info(" ({}) > AdminController | getRoleStats -> Istek alindi.", currentTime.get());
+        java.util.Map<String, Long> stats = new java.util.HashMap<>();
+        stats.put("USER", userService.countByRole(RoleEnum.Role.USER));
+        stats.put("ADMIN", userService.countByRole(RoleEnum.Role.ADMIN));
+        return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping("/stats/active")
+    public ResponseEntity<java.util.Map<String, Long>> getActiveStats() {
+        log.info(" ({}) > AdminController | getActiveStats -> Istek alindi.", currentTime.get());
+        java.util.Map<String, Long> stats = new java.util.HashMap<>();
+        stats.put("active", userService.countByActive(true));
+        stats.put("inactive", userService.countByActive(false));
+        return ResponseEntity.ok(stats);
+    }
+
     @GetMapping("/findbyemail")
     public ResponseEntity<List<Users>> searchByEmail(@RequestParam String email) {
         log.info(" ({}) > AdminController | searchByEmail -> Istek alindi. Email: {}", currentTime.get(), email);

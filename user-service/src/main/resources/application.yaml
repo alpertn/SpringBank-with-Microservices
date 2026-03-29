@@ -54,6 +54,7 @@ spring:
 management:
   endpoints:
     web:
+      base-path: /api/user-service/actuator
       exposure:
         include: health,info
 

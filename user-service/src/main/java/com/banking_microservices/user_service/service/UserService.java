@@ -45,18 +45,26 @@ public class UserService {
 
     @Transactional
     public List<Users> getAllUsers() {
-        return UserRepository.findAll();
+        return userRepository.findAll();
+    }
+
+    public long countByRole(Role role) {
+        return userRepository.countByRole(role);
+    }
+
+    public long countByActive(boolean active) {
+        return userRepository.countByActive(active);
     }
 
     @Transactional
     public Users findUserByMail(String mail) {
-        return UserRepository.findUsersByMail(mail)
+        return userRepository.findUsersByMail(mail)
                 .orElseThrow(() -> new MailNotFoundException("Mail Not Found: {}" + mail));
     }
 
     public Users saveUser(AuthServiceCreateUserTopicDto authServiceCreateUserTopicDto) {
 
-        if (UserRepository.existsBymail(authServiceCreateUserTopicDto.getEmail())) {
+        if (userRepository.existsBymail(authServiceCreateUserTopicDto.getEmail())) {
             throw new UserAlreadyExistsException("Mail Already Exists " + authServiceCreateUserTopicDto.getEmail());
         }
         try {
@@ -71,7 +79,7 @@ public class UserService {
                     .role(Role.valueOf(role.name()))
                     .build();
             try {
-                Users user = UserRepository.save(newUsers);
+                Users user = userRepository.save(newUsers);
                 log.info(" ({}) > UserService | saveUser -> User Olusturuldu! Dto:\n{}", currentTime.get(), gson.toJson(user));
                 try {
                     kafkaSender.sendCreateUser(user.getKeycloackUUID());
@@ -95,7 +103,7 @@ public class UserService {
     public void transactionTopicMessageVerify(KafkaTransactionTopicMessageDto dto) {
         try {
             log.info(" ({}) > UserService | transactionTopicMessageVerify -> Metoda veri geldi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
-            Users senderUser = UserRepository.findUsersBykeycloackUUID(dto.getSenderUserId())
+            Users senderUser = userRepository.findUsersBykeycloackUUID(dto.getSenderUserId())
                     .orElseThrow(() -> new UserNotFoundById("Sender Not Found: " + dto.getSenderUserId()));
 
             dto.setSenderName(senderUser.getName());
@@ -128,7 +136,7 @@ public class UserService {
 
     public void UsernameValidation(KafkaTransactionTopicMessageDto dto) {
         log.info(" ({}) > UserService | UsernameValidation -> Metoda veri geldi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
-        boolean exists = UserRepository.existsByNameAndSurname(dto.getReceiverName(), dto.getReceiverSurname());
+        boolean exists = userRepository.existsByNameAndSurname(dto.getReceiverName(), dto.getReceiverSurname());
         if (!exists) {
             log.warn(" ({}) > UserService | UsernameValidation -> Kullanici bulunamadi! Dto:\n{}", currentTime.get(), gson.toJson(dto));
             kafkaSender.sendUsernameValidationError(dto.getEventUUID(), dto);
@@ -147,13 +155,13 @@ public class UserService {
     }
 
     public Users findUserById(String id) {
-        return UserRepository.findUsersById(String.valueOf(id))
+        return userRepository.findUsersById(String.valueOf(id))
                 .orElseThrow(() -> new UserNotFoundById("User Not Found By Id: {}" + id));
     }
 
     public void updateUser(Users user) {
         try {
-            UserRepository.save(user);
+            userRepository.save(user);
         } catch (Exception e) {
             throw new UserUpdateException("An Error With Update User. User : \n{}" + gson.toJson(user));
         }
@@ -161,12 +169,12 @@ public class UserService {
 
     @Transactional
     public void deleteUserById(String id) {
-        if (!UserRepository.existsById(String.valueOf(id))) {
+        if (!userRepository.existsById(String.valueOf(id))) {
             throw new UserNotFoundById("User Not Found for delete: " + id);
         }
 
         try {
-            UserRepository.deleteUsersById(id);
+            userRepository.deleteUsersById(id);
         } catch (Exception e) {
             throw new DeleteUserException("An Error With delete user. id: " + id);
         }
@@ -174,19 +182,19 @@ public class UserService {
 
     @Transactional
     public void updateUserRole(String id, Role newRole) {
-        Users user = UserRepository.findById(id)
+        Users user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundById("User Not Found: " + id));
 
         try {
             user.setRole(Role.valueOf(newRole.name()));
-            UserRepository.save(user);
+            userRepository.save(user);
         } catch (Exception e) {
             throw new UserRoleUpdateException("Kullanici rolu guncellenemedi: " + id);
         }
     }
 
     public List<Users> searchUsersByName(String name) {
-        List<Users> results = UserRepository.findByNameContainingIgnoreCaseOrSurnameContainingIgnoreCase(name, name);
+        List<Users> results = userRepository.findByNameContainingIgnoreCaseOrSurnameContainingIgnoreCase(name, name);
 
         if (results.isEmpty()) {
             throw new UserNotFoundByName("Not Found By User Name: " + name);
@@ -195,17 +203,17 @@ public class UserService {
     }
 
     public long getTotalUserCount() {
-        return UserRepository.count();
+        return userRepository.count();
     }
 
     @Transactional
     public void updateUserStatus(String id, Boolean active) {
-        Users user = UserRepository.findById(id)
+        Users user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundById("User Not Found: " + id));
 
         try {
             user.setActive(active);
-            UserRepository.save(user);
+            userRepository.save(user);
             log.info(" ({}) > UserService | updateUserStatus -> User status updated. ID: {}, Active: {}", currentTime.get(), id, active);
         } catch (Exception e) {
             throw new UserUpdateException("Failed to update user status: " + id);
@@ -213,7 +221,7 @@ public class UserService {
     }
 
     public List<Users> searchUsersByEmail(String email) {
-        List<Users> results = UserRepository.findByMailContainingIgnoreCase(email);
+        List<Users> results = userRepository.findByMailContainingIgnoreCase(email);
         if (results.isEmpty()) {
             throw new UserNotFoundByName("No users found with email containing: " + email);
         }
@@ -222,12 +230,12 @@ public class UserService {
 
     @Transactional
     public void resetUserPassword(String id, String newPassword) {
-        Users user = UserRepository.findById(id)
+        Users user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundById("User Not Found: " + id));
 
         try {
             user.setPassword(newPassword);
-            UserRepository.save(user);
+            userRepository.save(user);
             log.warn(" ({}) > UserService | resetUserPassword -> Admin password reset for user ID: {}", currentTime.get(), id);
         } catch (Exception e) {
             throw new UserUpdateException("Failed to reset password for user: " + id);
@@ -236,7 +244,7 @@ public class UserService {
 
     @Transactional
     public void changePassword(String userId, String currentPassword, String newPassword) {
-        Users user = UserRepository.findById(userId)
+        Users user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundById("User Not Found: " + userId));
 
         if (!user.getPassword().equals(currentPassword)) {
@@ -250,7 +258,7 @@ public class UserService {
 
         try {
             user.setPassword(newPassword);
-            UserRepository.save(user);
+            userRepository.save(user);
             log.info(" ({}) > UserService | changePassword -> Password changed successfully for user ID: {}", currentTime.get(), userId);
         } catch (Exception e) {
             throw new UserUpdateException("Failed to change password for user: " + userId);
@@ -259,7 +267,7 @@ public class UserService {
 
     @Transactional
     public void changeEmail(String userId, String newEmail, String password) {
-        Users user = UserRepository.findById(userId)
+        Users user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundById("User Not Found: " + userId));
 
         if (!user.getPassword().equals(password)) {
@@ -267,7 +275,7 @@ public class UserService {
             throw new InvalidPasswordException("Password is incorrect");
         }
 
-        if (UserRepository.existsBymail(newEmail)) {
+        if (userRepository.existsBymail(newEmail)) {
             log.warn(" ({}) > UserService | changeEmail -> Email change failed for user ID: {} - email already exists: {}", currentTime.get(), userId, newEmail);
             throw new UserAlreadyExistsException("Email already in use: " + newEmail);
         }
@@ -279,7 +287,7 @@ public class UserService {
         try {
             String oldEmail = user.getMail();
             user.setMail(newEmail);
-            UserRepository.save(user);
+            userRepository.save(user);
             log.info(" ({}) > UserService | changeEmail -> Email changed successfully for user ID: {} from {} to {}", currentTime.get(), userId, oldEmail, newEmail);
         } catch (Exception e) {
             throw new EmailChangeException("Failed to change email for user: " + userId);
