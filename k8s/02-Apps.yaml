@@ -634,9 +634,9 @@ spec:
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
               value: kafka:9092
             # Kafka Topic
-            # Yeni akis: user-validation.success'i dinle
+            # blockmoney basarili olduktan sonra fraud service dinler
             - name: KAFKA_TRANSACTION_TOPIC_LISTENER
-              value: banking-microservices.transaction.user-service.user-validation.success.v1
+              value: banking-microservices.transaction.money-service.block-money.success.v1
             - name: KAFKA_TRANSACTION_TOPIC_SENDER
               value: banking-microservices.transaction.fraud-service.checked.v1
             - name: KAFKA_TRANSACTION_TOPIC_ERROR

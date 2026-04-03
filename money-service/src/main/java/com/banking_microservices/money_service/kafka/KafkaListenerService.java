@@ -121,8 +121,22 @@ public class KafkaListenerService {
 
         if (idempotencyGuard.isDuplicateOrRegister(dto.getEventUUID(), KafkaEventType.BLOCK_MONEY.name())) return;
 
-        log.info(" ({}) > KafkaListenerService | listenBlockMoneyFromTxService -> Data islenmek uzere alindi. Dto: \n{}", currentTime.get(), gson.toJson(dto));
+        log.info(" ({}) > KafkaListenerService | listenBlockMoneyFromTxService -> Data islenmek uzere alindi. Type: {}, Dto: \n{}", currentTime.get(), dto.getTransactionType(), gson.toJson(dto));
 
+        TransactionType txType = dto.getTransactionType();
+
+        // DEPOSIT ve WITHDRAW icin para bloke edilmez, direkt BLOCK_MONEY statusune gecilir
+        if (txType == TransactionType.DEPOSIT || txType == TransactionType.WITHDRAW) {
+            log.info(" ({}) > KafkaListenerService | listenBlockMoneyFromTxService -> {} işlemi icin bloke atlanıyor, direkt iletiliyor.", currentTime.get(), txType);
+            dto.setIsMoneyBlocked(true);
+            dto.setStatus(com.banking_microservices.money_service.dto.enums.TransactionStatus.BLOCK_MONEY);
+            dto.setStatusDescription(com.banking_microservices.money_service.dto.enums.TransactionStatus.BLOCK_MONEY.getDescription());
+            kafkaSender.sendBlockedMoneyTopic(dto.getEventUUID(), dto);
+            log.info(" ({}) > KafkaListenerService | listenBlockMoneyFromTxService -> {} icin bloke mesaji iletildi. EventUUID: {}", currentTime.get(), txType, dto.getEventUUID());
+            return;
+        }
+
+        // Yalnizca TRANSFER icin gercek bloke islemi yapilir
         transactionService.KafkaTransactionTopicBlockMoney(dto);
     }
 
