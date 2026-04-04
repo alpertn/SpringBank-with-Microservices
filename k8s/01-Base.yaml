@@ -301,3 +301,69 @@ spec:
 
 ---
 
+# =============================================================================================
+# GATEWAY RBAC — Log Streaming için kubectl Erişim Yetkilendirmesi
+# =============================================================================================
+#
+# NEDEN GEREKLİ?
+#   Gateway servisi, admin panelindeki "canlı log" özelliğini çalıştırabilmek için
+#   Kubernetes API'sine "kubectl logs" komutuyla bağlanmak zorundadır.
+#   Bir pod, varsayılan olarak Kubernetes API'sine erişemez — bunun için:
+#     1) ServiceAccount (kimlik belgesi)
+#     2) ClusterRole (hangi kaynaklara ne yapabilir)
+#     3) ClusterRoleBinding (kimliği role bağlar)
+#   üçlüsünün tanımlanması gerekir.
+#
+# AKIŞ:
+#   gateway pod başlar
+#     → gateway-log-reader ServiceAccount kullanır
+#       → ClusterRoleBinding bu hesabı pod-log-reader rolüyle eşleştirir
+#         → ClusterRole sayesinde tüm namespace'lerde pod/log okuma yetkisi kazanır
+#           → kubectl logs komutu başarıyla çalışır
+#           → LogStreamController log satırlarını SSE ile admin paneline iletir
+# =============================================================================================
+
+# 1) ServiceAccount — Gateway pod'unun Kubernetes içindeki kimliği
+#    Her pod bir ServiceAccount ile çalışır. Belirtilmezse "default" hesap kullanılır
+#    ve bu hesabın hiçbir yetkisi yoktur. Burada "gateway-log-reader" adında özel
+#    bir kimlik oluşturulur; gateway Deployment'ında bu hesap atanır.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gateway-log-reader       # Deployment spec.serviceAccountName ile eşleşmeli
+  namespace: banking-microservices
+
+---
+
+# 2) ClusterRole — "Ne yapabilir?" kurallarını tanımlar
+#    Role sadece bir namespace'e etkiyken ClusterRole tüm cluster'a etkir.
+#    Burada sadece pod'ları listeleme ve log okuma izni verilmiştir;
+#    oluşturma, silme, düzenleme gibi tehlikeli işlemler verilmemiştir.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pod-log-reader           # ClusterRoleBinding'de roleRef.name ile eşleşmeli
+rules:
+  - apiGroups: [""]              # "" = core API grubu (Pod, Service, ConfigMap vb.)
+    resources: ["pods", "pods/log"]  # pods: listeleme | pods/log: log stream okuma
+    verbs: ["get", "list", "watch"]  # get: tekil okuma | list: listeleme | watch: canlı izleme
+
+---
+
+# 3) ClusterRoleBinding — Kimliği role bağlar
+#    "gateway-log-reader" ServiceAccount'ına "pod-log-reader" yetkisini verir.
+#    Bu olmadan ServiceAccount tanımlanmış olsa bile hiçbir işlem yapamaz.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: gateway-pod-log-reader
+subjects:
+  - kind: ServiceAccount
+    name: gateway-log-reader     # Yukarıda tanımlanan ServiceAccount
+    namespace: banking-microservices
+roleRef:
+  kind: ClusterRole
+  name: pod-log-reader           # Yukarıda tanımlanan ClusterRole
+  apiGroup: rbac.authorization.k8s.io
+
+---

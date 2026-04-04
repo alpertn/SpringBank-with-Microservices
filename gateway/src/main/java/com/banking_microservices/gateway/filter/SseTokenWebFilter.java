@@ -1,5 +1,7 @@
 package com.banking_microservices.gateway.filter;
 
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -19,7 +21,11 @@ import reactor.core.publisher.Mono;
  * Boylece Spring Security JWT dogrulamasi normal calisir.
  *
  * Guvenlik: sadece /api/gateway/admin/logs/ path'ine uygulaniyor.
+ *
+ * @Order(Ordered.HIGHEST_PRECEDENCE) Spring Security'den once calismasini saglar.
+ * Aksi halde token inject edilmeden JWT kontrolu yapilir ve 401 donulur.
  */
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @Component
 public class SseTokenWebFilter implements WebFilter {
 

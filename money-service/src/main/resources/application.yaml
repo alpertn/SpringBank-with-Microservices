@@ -9,7 +9,7 @@ kafka:
         listener: ${KAFKA_TRANSACTION_BLOCKUSER_LISTENER:banking-microservices.transaction.transaction-service.created.v1}
         sender: ${KAFKA_TRANSACTION_BLOCKUSER_SENDER:banking-microservices.transaction.money-service.block-money.success.v1}
       transactionmoney:
-        listener: ${KAFKA_TRANSACTION_TOPIC_LISTENER:banking-microservices.transaction.fraud-service.checked.v1}
+        listener: ${KAFKA_TRANSACTION_TOPIC_LISTENER:banking-microservices.transaction.user-service.user-validation.success.v1}
         sender: ${KAFKA_TRANSACTION_TOPIC_SENDER:banking-microservices.transaction.transaction-service.success.v1}
       result:
         sender: ${KAFKA_TRANSACTION_RESULT_SENDER:banking-microservices.transaction.result.success.v1}
@@ -50,6 +50,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
 
 management:
   endpoints:
@@ -57,6 +61,11 @@ management:
       base-path: /api/money-service/actuator
       exposure:
         include: health,info
+  endpoint:
+    health:
+      show-details: always
+  security:
+    enabled: false
 
 logging:
   pattern:

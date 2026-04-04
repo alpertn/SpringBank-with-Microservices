@@ -130,13 +130,26 @@ public class KafkaListenerService {
         KafkaTransactionTopicMessageDto dto = parseMessage(topicData, "listenTransactionResultTopic");
         if (dto == null) return;
 
-        if (isDuplicate(dto, false, "listenTransactionResultTopic")) return;
+        // COMPLETED/FAILED sonuçları için güçlendirilmiş kontrolü:
+        // isDuplicate yerine direkt entity kontrolü yapıyoruz — entity yoksa WARN, varsa status güncelle.
+        if (dto.getStatus() != null) {
+            java.util.Optional<com.banking_microservices.transaction_service.model.TransactionEntity> opt =
+                transactionRepository.findByEventId(dto.getEventUUID());
+            if (opt.isEmpty()) {
+                log.warn(" ({}) > KafkaListenerService | listenTransactionResultTopic -> Entity bulunamadi! EventUUID: {}. Status guncelleme atlanacak.", currentTime.get(), dto.getEventUUID());
+                return;
+            }
+            if (opt.get().getStatus() == dto.getStatus()) {
+                log.info(" ({}) > KafkaListenerService | listenTransactionResultTopic -> Zaten bu statude, atlaniyor: {} -> {}", currentTime.get(), dto.getEventUUID(), dto.getStatus());
+                return;
+            }
+        }
 
-        log.info(" ({}) > KafkaListenerService | listenTransactionResultTopic -> Data islenmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
+        log.info(" ({}) > KafkaListenerService | listenTransactionResultTopic -> Status guncelleniyor: {} -> {}", currentTime.get(), dto.getEventUUID(), dto.getStatus());
 
         try {
             transactionService.updateTransactionStatus(dto);
-            log.info(" ({}) > KafkaListenerService | listenTransactionResultTopic -> Transaction result status guncellendi: {} -> {}", currentTime.get(), dto.getEventUUID(), dto.getStatus());
+            log.info(" ({}) > KafkaListenerService | listenTransactionResultTopic -> Transaction result status GUNCELLENDI: {} -> {}", currentTime.get(), dto.getEventUUID(), dto.getStatus());
         } catch (Exception e) {
             log.error(" ({}) > KafkaListenerService | listenTransactionResultTopic -> updateTransactionStatus hatasi: {}", currentTime.get(), e.getMessage(), e);
         }

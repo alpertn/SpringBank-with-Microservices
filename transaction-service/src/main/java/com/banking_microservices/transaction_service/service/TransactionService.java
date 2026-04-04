@@ -216,23 +216,29 @@ public class TransactionService {
 
     @Transactional
     public void updateTransactionStatus(KafkaTransactionTopicMessageDto dto) {
-        transactionRepository.findByEventId(dto.getEventUUID()).ifPresent(entity -> {
-            entity.setStatus(dto.getStatus());
-            entity.setStatusDescription(dto.getStatusDescription());
-            entity.setError(dto.getError());
-            entity.setErrorDescription(dto.getErrorDescription());
-            entity.setTransferStatus(mapToTransferStatus(dto.getStatus()));
-            try {
-                transactionRepository.save(entity);
-                log.info(
-                        " ({}) > TransactionService | updateTransactionStatus -> Transaction status guncellendi: {} → {}",
-                        currentTime.get(), dto.getEventUUID(), dto.getStatus());
-            } catch (Exception e) {
-                log.error(" ({}) > TransactionService | updateTransactionStatus -> Status guncellenemedi: {}",
-                        currentTime.get(), e.getMessage());
-                throw new TransactionSaveException("Status guncellenemedi: " + e.getMessage());
-            }
-        });
+        var entityOpt = transactionRepository.findByEventId(dto.getEventUUID());
+        if (entityOpt.isEmpty()) {
+            log.warn(" ({}) > TransactionService | updateTransactionStatus -> Entity bulunamadi! EventUUID: {} Status: {}. DB'de kayit yok, guncelleme atlanacak.",
+                    currentTime.get(), dto.getEventUUID(), dto.getStatus());
+            return;
+        }
+        var entity = entityOpt.get();
+        log.info(" ({}) > TransactionService | updateTransactionStatus -> Onceki status: {} -> Yeni status: {} EventUUID: {}",
+                currentTime.get(), entity.getStatus(), dto.getStatus(), dto.getEventUUID());
+        entity.setStatus(dto.getStatus());
+        entity.setStatusDescription(dto.getStatusDescription());
+        entity.setError(dto.getError());
+        entity.setErrorDescription(dto.getErrorDescription());
+        entity.setTransferStatus(mapToTransferStatus(dto.getStatus()));
+        try {
+            transactionRepository.save(entity);
+            log.info(" ({}) > TransactionService | updateTransactionStatus -> Transaction status GUNCELLENDI: {} -> {}",
+                    currentTime.get(), dto.getEventUUID(), dto.getStatus());
+        } catch (Exception e) {
+            log.error(" ({}) > TransactionService | updateTransactionStatus -> Status guncellenemedi! EventUUID: {}, Hata: {}",
+                    currentTime.get(), dto.getEventUUID(), e.getMessage());
+            throw new TransactionSaveException("Status guncellenemedi: " + e.getMessage());
+        }
     }
 
     private KafkaTransactionTopicMessageDto buildKafkaDto(

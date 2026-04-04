@@ -44,6 +44,11 @@ management:
       base-path: /api/fraud-service/actuator
       exposure:
         include: health,info
+  endpoint:
+    health:
+      show-details: always
+  security:
+    enabled: false
 
 logging:
   pattern:

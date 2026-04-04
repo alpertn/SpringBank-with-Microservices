@@ -2,7 +2,6 @@ package com.banking_microservices.gateway.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
 
 /**

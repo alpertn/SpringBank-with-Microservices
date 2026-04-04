@@ -37,10 +37,12 @@ public class MoneyTransferExecutor {
         dto.setStatus(TransactionStatus.COMPLETED);
         dto.setStatusDescription(TransactionStatus.COMPLETED.getDescription());
 
-        // Kafkaya COMPLETED bildir. basarisizsa sadece KafkaSendException firlatilir. error gonderilmez.
+        // Kafkaya COMPLETED bildir. result topic'e gonderilir — transaction-service bu topic'i dinliyor.
+        // NOT: sendTransactionSuccess() → transaction-service.success.v1 topic'ine gider ama
+        //      transaction-service bu topic'i DINLEMIYOR! sendResult() → result.success.v1 kullanilmali.
         try {
-            log.info(" ({}) > MoneyTransferExecutor | execute -> Transfer complete kafkaya gonderiliyor. {}", currentTime.get(), dto);
-            kafkaSender.sendTransactionSuccess(dto.getEventUUID(), dto);
+            log.info(" ({}) > MoneyTransferExecutor | execute -> Transfer complete RESULT topic'e gonderiliyor. EventUUID: {}", currentTime.get(), dto.getEventUUID());
+            kafkaSender.sendResult(dto.getEventUUID(), dto);
         } catch (Exception e) {
             log.error(" ({}) > MoneyTransferExecutor | execute -> Kafkaya transfer tamamlandi mesaji gonderilemedi! Hata: {}", currentTime.get(), e.getMessage());
             throw new KafkaSendException("An Error While Send End Of Transaction On Kafka");
