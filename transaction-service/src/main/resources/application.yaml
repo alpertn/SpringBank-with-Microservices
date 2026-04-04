@@ -7,6 +7,8 @@ kafka:
       listener: ${KAFKA_TRANSACTION_TOPIC_LISTENER:banking-microservices.transaction.fraud-service.checked.v1}
       sender: ${KAFKA_TRANSACTION_TOPIC_SENDER:banking-microservices.transaction.transaction-service.created.v1}
       error: ${KAFKA_TRANSACTION_TOPIC_ERROR:banking-microservices.transaction.transaction-service.error.v1}
+      blockmoney:
+        listener: ${KAFKA_TRANSACTION_BLOCKMONEY_LISTENER:banking-microservices.transaction.money-service.block-money.success.v1}
       user-validation:
         listener: ${KAFKA_TRANSACTION_USERVALIDATION_LISTENER:banking-microservices.transaction.user-service.user-validation.success.v1}
       logger:

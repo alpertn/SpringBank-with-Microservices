@@ -48,7 +48,12 @@ public class SecurityConfig {
                                 "/css/**", "/js/**", "/favicon.ico", "/images/**", "/fonts/**")
                         .permitAll() // Tüm statik HTML sayfaları public — auth, API katmanında yapılır.
                         .pathMatchers("/api/auth-service/**").permitAll() // login register public
+                        .pathMatchers("/actuator/health", "/actuator/info").permitAll() // gateway health check public
                         .pathMatchers("/api/user-service/v1/admin/**").hasRole("ADMIN")
+                        .pathMatchers("/api/money-service/v1/admin/**").hasRole("ADMIN")
+                        .pathMatchers("/api/transaction-service/v1/admin/**").hasRole("ADMIN")
+                        .pathMatchers("/api/fraud-service/v1/admin/**").hasRole("ADMIN")
+                        .pathMatchers("/api/gateway/admin/**").hasRole("ADMIN")
                         .anyExchange().authenticated()) // geri kalani icin login yeterli olsun demek bu.
                 .oauth2ResourceServer(oauth -> oauth
                         .authenticationEntryPoint((exchange, ex) -> {

@@ -27,6 +27,11 @@ spring:
           predicates:
             - Path=/api/transaction-service/**
 
+        - id: fraud-service
+          uri: ${FRAUD_SERVICE_URL:http://fraud-service:8085}
+          predicates:
+            - Path=/api/fraud-service/**
+
   security:
     oauth2:
       resourceserver:

@@ -85,6 +85,25 @@ public class KafkaListenerService {
         }
     }
 
+    @KafkaListener(topics = "${kafka.topics.transaction.blockmoney.listener}")
+    public void listenBlockMoneyTopic(String topicData) {
+        log.info(" ({}) > KafkaListenerService | listenBlockMoneyTopic -> Metoda veri geldi. RawData:\n{}", currentTime.get(), topicData);
+
+        KafkaTransactionTopicMessageDto dto = parseMessage(topicData, "listenBlockMoneyTopic");
+        if (dto == null) return;
+
+        if (isDuplicate(dto, false, "listenBlockMoneyTopic")) return;
+
+        log.info(" ({}) > KafkaListenerService | listenBlockMoneyTopic -> Data islenmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
+
+        try {
+            transactionService.updateTransactionStatus(dto);
+            log.info(" ({}) > KafkaListenerService | listenBlockMoneyTopic -> BLOCK_MONEY status guncellendi: {} -> {}", currentTime.get(), dto.getEventUUID(), dto.getStatus());
+        } catch (Exception e) {
+            log.error(" ({}) > KafkaListenerService | listenBlockMoneyTopic -> updateTransactionStatus hatasi: {}", currentTime.get(), e.getMessage(), e);
+        }
+    }
+
     @KafkaListener(topics = "${kafka.topics.transaction.user-validation.listener}")
     public void listenUserValidationSuccessTopic(String topicData) {
         log.info(" ({}) > KafkaListenerService | listenUserValidationSuccessTopic -> Metoda veri geldi. RawData:\n{}", currentTime.get(), topicData);

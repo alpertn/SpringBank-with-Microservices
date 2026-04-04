@@ -26,7 +26,7 @@ public class TransactionValidator {
     }
 
     public void assertNotSameAccount(KafkaTransactionTopicMessageDto dto) {
-        if (dto.getReceiverIban().equals(dto.getSenderIban())) {
+        if (dto.getReceiverIban() != null && dto.getReceiverIban().equals(dto.getSenderIban())) {
             log.error(" ({}) > TransactionValidator | assertNotSameAccount -> Gonderen ve Alici Iban ayni olamaz! {}", currentTime.get(), dto.getSenderIban());
             throw new SameAccountException("Cannot transfer to the same account");
         }

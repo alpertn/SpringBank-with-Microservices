@@ -48,6 +48,7 @@ public class KafkaSender {
     @Value("${kafka.topics.transaction.blockmoney.sender}")
     private String blockMoneyTopicSender;
 
+
     @Value("${kafka.topics.transaction.result.sender}")
     private String transactionResultSenderTopic;
 
@@ -66,6 +67,7 @@ public class KafkaSender {
             throw new KafkaSendException("Kafka Send Exception. " + key + " " + kafkaTransactionTopicMessageDto);
         }
     }
+
 
     /**
      * Unified result sender: replaces sendDepositSuccess() and sendWithdrawSuccess().

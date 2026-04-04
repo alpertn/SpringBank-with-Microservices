@@ -4,7 +4,6 @@ kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/late
 
 Duz Kubernet Ayarlari
 kubectl apply -f k8s/01-Base.yaml
-# Altyapının (zookeeper, postgres vb.) ayağa kalkması için ~60sn bekleyin. Sonra:
 kubectl apply -f k8s/02-Apps.yaml
 
 Podlari getir.
