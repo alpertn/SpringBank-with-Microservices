@@ -34,35 +34,47 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
   
+      // IBAN kontrolü — senderIban IBAN display'den alınıyor
+      const ibanText = document.getElementById('iban-display').innerText.replace('IBAN: ','').trim();
+      if (!ibanText || ibanText === '-') {
+        API.showMsg(msg, '❌ Hesap IBAN bilgisi yüklenemedi. Lütfen sayfayı yenileyiniz.', 'danger');
+        await loadBalance();
+        return;
+      }
+  
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span> İşleniyor...';
       API.hideMsg(msg);
   
       try {
-        const userId = API.getUserId();
-        
         // 1. Transaction Service'e Deposit Ekle (Audit Logs + Kafka trigger for money-service)
         const dtData = {
-          senderIban: document.getElementById('iban-display').innerText.replace('IBAN: ','').trim(),
+          senderIban: ibanText,
           amount: amount,
           transactionType: 'DEPOSIT',
           description: description || 'Şubeden/ATMden Para Yatırma'
         };
   
-        // Sadece Transaction Service'e istek atılır.
-        // Backend'de bu servis Kafka event'i gönderir, Money Service bu event'i dinleyip bakiyeyi günceller.
+        // API.call → ham Response objesi döner
         const res = await API.call('/api/transaction-service/v1/transactions/create', 'POST', dtData);
   
         if (res && res.ok) {
           form.reset();
           API.showMsg(msg, `✅ ${API.formatMoney(amount)} başarıyla işleme alındı.`, 'success');
           API.toast(`${API.formatMoney(amount)} yatırıldı`, 'success');
-          
-          // Biraz bekleyip bakiyeyi yenile (Kafka'nın işlemesi için)
-          setTimeout(loadBalance, 1000);
+          setTimeout(loadBalance, 3000); // Kafka işlemesi için bekle
+        } else if (res) {
+          const errBody = await res.text().catch(() => '');
+          const statusCode = res.status;
+          if (statusCode === 400) {
+            API.showMsg(msg, '❌ Geçersiz istek: IBAN veya tutar hatalı olabilir.', 'danger');
+          } else if (statusCode === 500) {
+            API.showMsg(msg, `❌ Sunucu hatası: ${errBody || 'İşlem gerçekleştirilemedi.'}`, 'danger');
+          } else {
+            API.showMsg(msg, `❌ Para yatırma işlemi başarısız oldu. (${statusCode})`, 'danger');
+          }
         } else {
-            const errBody = await res.text().catch(()=>'');
-            API.showMsg(msg, `❌ Para yatırma işlemi başarısız oldu. ${errBody}`, 'danger');
+          API.showMsg(msg, '❌ Oturum süresi doldu. Lütfen tekrar giriş yapın.', 'danger');
         }
       } catch (err) {
         console.error(err);
@@ -82,5 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('balance-display').innerText = API.formatMoney(data.money);
         document.getElementById('iban-display').innerText = 'IBAN: ' + (data.userIban || '-');
       }
-    } catch(e) {}
+    } catch(e) {
+      console.warn('[deposit] Balance yüklenemedi:', e?.message);
+    }
   }

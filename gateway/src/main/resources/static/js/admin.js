@@ -958,20 +958,26 @@ function startLogs(svc) {
     stopLogs();
   });
 
+  // Sunucudan gelen özel 'error' event — sadece log kaydeder, bağlantıyı kesmez
   logEventSource.addEventListener('error', e => {
     if (e.data) logLine(term, 'error', e.data);
-    else logLine(term, 'warn', `[${svc}] Bağlantı kesildi.`);
-    if (dot) dot.style.background = 'var(--danger)';
-    if (txt) txt.textContent = 'Hata';
-    stopLogs();
   });
 
+  // Native SSE bağlantı hatası — sadece kalıcı kapanmada durdur
   logEventSource.onerror = () => {
-    if (logEventSource && logEventSource.readyState === EventSource.CLOSED) {
-      logLine(term, 'warn', `[${svc}] SSE bağlantısı kapandı.`);
-      if (dot) dot.style.background = 'var(--text-muted)';
-      if (txt) txt.textContent = 'Bağlı değil';
+    if (!logEventSource) return;
+    const state = logEventSource.readyState;
+    if (state === EventSource.CLOSED) {
+      // Kalıcı kapanma
+      logLine(term, 'warn', `[${svc}] SSE bağlantısı kalıcı olarak kapandı.`);
+      if (dot) dot.style.background = 'var(--danger)';
+      if (txt) txt.textContent = 'Bağlantı kesildi';
       stopLogs();
+    } else if (state === EventSource.CONNECTING) {
+      // Browser otomatik yeniden bağlanma deniyor — bekle
+      if (dot) dot.style.background = 'var(--warning)';
+      if (txt) txt.textContent = `${svc} yeniden bağlanıyor...`;
+      logLine(term, 'warn', `[${svc}] Bağlantı kesildi, yeniden bağlanılıyor...`);
     }
   };
 }

@@ -24,7 +24,7 @@ public class MoneyTransferExecutor {
     public void execute(KafkaTransactionTopicMessageDto dto) {
         // para transferi. basarisizsa Kafkaya error gonderilir.
         try {
-            balanceOperationService.withdrawMoneyByIban(dto.getSenderIban(), dto.getMoney());
+            balanceOperationService.withdrawBlockedMoneyByIban(dto.getSenderIban(), dto.getMoney());
             balanceOperationService.depositMoneyByIban(dto.getReceiverIban(), dto.getMoney());
         } catch (Exception e) {
             log.error(" ({}) > MoneyTransferExecutor | execute -> Para cekme veya yatirma sirasinda hata olustu! {}", currentTime.get(), e.getMessage());

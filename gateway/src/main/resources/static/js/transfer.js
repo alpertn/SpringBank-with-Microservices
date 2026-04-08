@@ -36,17 +36,29 @@ document.addEventListener('DOMContentLoaded', () => {
         API.showMsg(msg, '❌ Lütfen tüm zorunlu alanları eksiksiz giriniz.', 'danger');
         return;
       }
+
+      // IBAN kontrolü — bakiye yüklenmediyse işlem başlatılmaz
+      const senderIban = window.userIbanStr || '';
+      if (!senderIban) {
+        API.showMsg(msg, '❌ Hesap bilgisi yüklenemedi. Lütfen sayfayı yenileyip tekrar deneyiniz.', 'danger');
+        await loadBalance();
+        return;
+      }
+
+      // Kendi IBAN'ına transfer engeli
+      if (senderIban === receiverIban) {
+        API.showMsg(msg, '❌ Kendi hesabınıza transfer yapamazsınız.', 'danger');
+        return;
+      }
   
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span> İşleniyor...';
       API.hideMsg(msg);
   
       try {
-        const userId = API.getUserId();
-        
-        // 1. Transaction Service'e İstek At (Saga veya Event Driven Kafka Süreci)
+        // Transaction Service'e Transfer İsteği At
         const dtData = {
-          senderIban: window.userIbanStr || '',
+          senderIban: senderIban,
           receiverIban: receiverIban,
           receiverName: receiverName,
           receiverSurname: receiverSurname,
@@ -55,20 +67,26 @@ document.addEventListener('DOMContentLoaded', () => {
           description: description || 'Para Transferi'
         };
   
+        // API.call → ham Response objesi döner
         const res = await API.call('/api/transaction-service/v1/transactions/create', 'POST', dtData);
   
         if (res && res.ok) {
-            form.reset();
-            API.showMsg(msg, `✅ ${API.formatMoney(amount)} transfer talebi başarıyla alındı.`, 'success');
-            API.toast(`Transfer talebi gönderildi`, 'success');
-            setTimeout(loadBalance, 1000); // Kafka event işlemi sonrası yenile
+          form.reset();
+          API.showMsg(msg, `✅ ${API.formatMoney(amount)} transfer talebi başarıyla alındı.`, 'success');
+          API.toast(`Transfer talebi gönderildi`, 'success');
+          setTimeout(loadBalance, 3000); // Kafka işlemesi için bekle
+        } else if (res) {
+          const errBody = await res.text().catch(() => '');
+          const statusCode = res.status;
+          if (statusCode === 400) {
+            API.showMsg(msg, '❌ Yetersiz bakiye, yanlış IBAN veya geçersiz bilgi.', 'danger');
+          } else if (statusCode === 500) {
+            API.showMsg(msg, `❌ Sunucu hatası: ${errBody || 'Transfer gerçekleştirilemedi.'}`, 'danger');
+          } else {
+            API.showMsg(msg, `❌ Transfer işlemi reddedildi. (${statusCode})`, 'danger');
+          }
         } else {
-            const text = await res.text().catch(()=>'');
-            if(res.status === 400 || res.status === 500) {
-                API.showMsg(msg, '❌ Yetersiz bakiye, yanlış IBAN veya işlem hatası.', 'danger');
-            } else {
-                API.showMsg(msg, '❌ İşlem reddedildi.', 'danger');
-            }
+          API.showMsg(msg, '❌ Oturum süresi doldu. Lütfen tekrar giriş yapın.', 'danger');
         }
       } catch (err) {
         console.error(err);
@@ -89,5 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('iban-display').innerText = 'IBAN: ' + data.userIban;
         window.userIbanStr = data.userIban;
       }
-    } catch(e) {}
+    } catch(e) {
+      console.warn('[transfer] Balance yüklenemedi:', e?.message);
+    }
   }

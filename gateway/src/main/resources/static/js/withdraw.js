@@ -34,37 +34,47 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
   
+      // IBAN kontrolü — bakiye yüklenmediyse işlem başlatılmaz
+      const senderIban = window.userIbanStr || '';
+      if (!senderIban) {
+        API.showMsg(msg, '❌ Hesap bilgisi yüklenemedi. Lütfen sayfayı yenileyip tekrar deneyiniz.', 'danger');
+        await loadBalance();
+        return;
+      }
+  
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span> İşleniyor...';
       API.hideMsg(msg);
   
       try {
-        const userId = API.getUserId();
-        
-        // 1. Transaction Service'e Withdraw Ekle (Audit Logs + Kafka trigger for money-service)
+        // Transaction Service'e Withdraw Ekle
         const dtData = {
-          senderIban: window.userIbanStr || '',
+          senderIban: senderIban,
           amount: amount,
           transactionType: 'WITHDRAW',
           description: description || 'Şubeden/ATMden Para Çekme'
         };
   
-        // Sadece Transaction Service'e istek atılır.
+        // API.call → ham Response objesi döner
         const res = await API.call('/api/transaction-service/v1/transactions/create', 'POST', dtData);
   
         if (res && res.ok) {
-            form.reset();
-            API.showMsg(msg, `✅ ${API.formatMoney(amount)} çekim talebi alındı.`, 'success');
-            API.toast(`${API.formatMoney(amount)} çekildi`, 'success');
-            setTimeout(loadBalance, 1000); // Kafka event işlemi sonrası yenile
+          form.reset();
+          API.showMsg(msg, `✅ ${API.formatMoney(amount)} çekim talebi alındı.`, 'success');
+          API.toast(`${API.formatMoney(amount)} çekildi`, 'success');
+          setTimeout(loadBalance, 3000); // Kafka işlemesi için bekle
+        } else if (res) {
+          const errBody = await res.text().catch(() => '');
+          const statusCode = res.status;
+          if (statusCode === 400) {
+            API.showMsg(msg, '❌ Geçersiz istek: Yetersiz bakiye veya hatalı bilgi.', 'danger');
+          } else if (statusCode === 500) {
+            API.showMsg(msg, `❌ Sunucu hatası: ${errBody || 'İşlem gerçekleştirilemedi.'}`, 'danger');
+          } else {
+            API.showMsg(msg, `❌ Para çekme işlemi başarısız. (${statusCode})`, 'danger');
+          }
         } else {
-            // Hata veya Yetersiz Bakiye
-            const text = await res.text().catch(()=>'');
-            if(res.status === 400 || res.status === 500) {
-                API.showMsg(msg, '❌ Yetersiz bakiye veya işlem hatası.', 'danger');
-            } else {
-                API.showMsg(msg, '❌ İşlem reddedildi.', 'danger');
-            }
+          API.showMsg(msg, '❌ Oturum süresi doldu. Lütfen tekrar giriş yapın.', 'danger');
         }
       } catch (err) {
         console.error(err);
@@ -82,8 +92,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (res && res.ok) {
         const data = await res.json();
         document.getElementById('balance-display').innerText = API.formatMoney(data.money);
-        document.getElementById('blocked-display').innerText = 'Blokeli Bakiye: ' + API.formatMoney(data.blockedmoney);
+        // API'de 'blockedMoney' veya 'blockedmoney' olabilir, her ikisini de dene
+        const blocked = data.blockedMoney ?? data.blockedmoney ?? 0;
+        document.getElementById('blocked-display').innerText = 'Blokeli Bakiye: ' + API.formatMoney(blocked);
         window.userIbanStr = data.userIban;
       }
-    } catch(e) {}
+    } catch(e) {
+      console.warn('[withdraw] Balance yüklenemedi:', e?.message);
+    }
   }

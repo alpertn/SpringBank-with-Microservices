@@ -99,5 +99,15 @@ public interface UserMoneyRepository extends JpaRepository<UserMoney, String> {
     boolean existsByUserIban(String iban);
 
     boolean existsByUserId(String userId);
+
+    /**
+     * TRANSFER tamamlama: blokeli parayı serbest bırakır (blocked money azaltır).
+     * BlockMoney aşamasında free balance'dan düşülerek blocked'a eklenmişti.
+     * Transfer tamamlandığında blocked'dan düşülür (receiver'a ayrıca eklenir).
+     */
+    @Transactional
+    @Modifying
+    @Query("UPDATE UserMoney m SET m.blockedMoney = m.blockedMoney - :amount WHERE m.userIban = :iban AND m.blockedMoney >= :amount")
+    int decrementBlockedByIban(@Param("iban") String iban, @Param("amount") BigDecimal amount);
     
 }

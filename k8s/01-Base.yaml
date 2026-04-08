@@ -86,7 +86,9 @@ spec:
               name: init-script                        # Volume'un ismi (ConfigMap'ten gelir)
       volumes:
         - name: postgres-data
-          emptyDir: {} # Bos olmasini yani yeniden baslatildiginda silinmesini kaydolammasini saglar
+          hostPath:
+            path: /data/banking_postgres
+            type: DirectoryOrCreate
         - name: init-script
           configMap:
             name: postgres-database-init-configmap # Init scriptini alacagi yer.

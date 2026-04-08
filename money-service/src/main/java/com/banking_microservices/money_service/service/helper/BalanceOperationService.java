@@ -137,4 +137,17 @@ public class BalanceOperationService {
 
         log.info(" ({}) > BalanceOperationService | withdrawMoneyByUserId -> Para cekme basarili. UserId: {}", currentTime.get(), userId);
     }
+
+    @Transactional
+    public void withdrawBlockedMoneyByIban(String iban, BigDecimal amount) {
+        log.info(" ({}) > BalanceOperationService | withdrawBlockedMoneyByIban -> Blokeli bakiyeden para cekme istegi. IBAN: {}, Miktar: {}", currentTime.get(), iban, amount);
+
+        int result = userMoneyRepository.decrementBlockedByIban(iban, amount);
+        if (result == 0) {
+            log.error(" ({}) > BalanceOperationService | withdrawBlockedMoneyByIban -> Blokeli bakiyeden para cekme basarisiz (Bakiye yetersiz veya IBAN hatali)! IBAN: {}", currentTime.get(), iban);
+            throw new MoneyNotAvaibleException("Blocked withdraw failed. IBAN not found or insufficient blocked funds: " + iban);
+        }
+
+        log.info(" ({}) > BalanceOperationService | withdrawBlockedMoneyByIban -> Blokeli bakiyeden para cekme basarili. IBAN: {}", currentTime.get(), iban);
+    }
 }
