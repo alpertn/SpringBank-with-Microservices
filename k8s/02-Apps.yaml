@@ -76,8 +76,9 @@ spec:
             - name: KAFKA_USERNAME_VALIDATION_ERROR
               value: banking-microservices.username-validation.money-service.error.v1
             # Transaction Validation
+            # Diyagram Adim 2: block-money.success.v1'i dinle (eski: fraud-checked.v1)
             - name: KAFKA_TRANSACTION_USERNAME_VALIDATION_LISTENER
-              value: banking-microservices.transaction.fraud-service.checked.v1
+              value: banking-microservices.transaction.money-service.block-money.success.v1
             - name: KAFKA_TRANSACTION_USERNAME_VALIDATION_SENDER
               value: banking-microservices.transaction.user-service.user-validation.success.v1
             - name: KAFKA_TRANSACTION_USERNAME_VALIDATION_ERROR
@@ -186,8 +187,9 @@ spec:
               value: banking-microservices.username-validation.user-service.progress.v1
             - name: KAFKA_CREATE_USER_ERROR
               value: banking-microservices.create-user.money-service.error.v1
+            # Diyagram Adim 1: money-service created.v1'i dinler (eski: user-validation.success.v1)
             - name: KAFKA_TRANSACTION_TOPIC_LISTENER
-              value: banking-microservices.transaction.user-service.user-validation.success.v1
+              value: banking-microservices.transaction.transaction-service.created.v1
             - name: KAFKA_TRANSACTION_TOPIC_SENDER
               value: banking-microservices.transaction.transaction-service.success.v1
             - name: KAFKA_TRANSACTION_TOPIC_ERROR
@@ -196,16 +198,13 @@ spec:
               value: banking-microservices.username-validation.money-service.progress.v1
             - name: KAFKA_USERNAME_VALIDATION_LISTENER
               value: banking-microservices.username-validation.user-service.success.v1
-            - name: KAFKA_USERNAME_VALIDATION_ERROR
-              value: banking-microservices.username-validation.money-service.error.v1
-            - name: KAFKA_TRANSACTION_USERNAME_VALIDATION_SENDER
-              value: banking-microservices.transaction.money-service.block-money.success.v1
-            - name: KAFKA_TRANSACTION_USERNAME_VALIDATION_LISTENER
-              value: banking-microservices.transaction.user-service.username-validation.success.v1
             - name: KAFKA_TRANSACTION_BLOCKUSER_LISTENER
               value: banking-microservices.transaction.transaction-service.created.v1
             - name: KAFKA_TRANSACTION_BLOCKUSER_SENDER
               value: banking-microservices.transaction.money-service.block-money.success.v1
+            # Diyagram Adim 4 (YENi): fraud-checked.v1'i dinler - TRANSFER gercek para hareketi
+            - name: KAFKA_TRANSACTION_TRANSFER_EXECUTE_LISTENER
+              value: banking-microservices.transaction.fraud-service.checked.v1
             - name: KAFKA_TRANSACTION_RESULT_SENDER
               value: banking-microservices.transaction.result.success.v1
             # Redis
@@ -309,16 +308,17 @@ spec:
               value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
               value: kafka:9092
-            - name: KAFKA_TRANSACTION_TOPIC_LISTENER
-              value: banking-microservices.transaction.transaction-service.created.v1
             - name: KAFKA_TRANSACTION_TOPIC_SENDER
               value: banking-microservices.transaction.transaction-service.created.v1
             - name: KAFKA_TRANSACTION_TOPIC_ERROR
               value: banking-microservices.transaction.transaction-service.error.v1
             - name: KAFKA_TRANSACTION_USERVALIDATION_LISTENER
+              # Diyagram: user-validation.success.v1 user-service'ten fraud-service'e gider.
+              # transaction-service bu topic'i sadece STATUS LOG icin izler.
               value: banking-microservices.transaction.user-service.user-validation.success.v1
+            # Düzeltme: topicPattern regex syntax - nokta literal için \\.  kullanılmali
             - name: KAFKA_TRANSACTION_LOGGER_LISTENER
-              value: 'banking-microservices.transaction.*'
+              value: 'banking-microservices\.transaction\..*'
             - name: KAFKA_TRANSACTION_RESULT_LISTENER
               value: banking-microservices.transaction.result.success.v1
             # Money-service'den gelen para bloke başarı bildirimi (TRANSFER için)
@@ -645,9 +645,9 @@ spec:
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
               value: kafka:9092
             # Kafka Topic
-            # blockmoney basarili olduktan sonra fraud service dinler
+            # Diyagram Adim 3: user-validation.success.v1'i dinler (eski: created.v1)
             - name: KAFKA_TRANSACTION_TOPIC_LISTENER
-              value: banking-microservices.transaction.transaction-service.created.v1
+              value: banking-microservices.transaction.user-service.user-validation.success.v1
             - name: KAFKA_TRANSACTION_TOPIC_SENDER
               value: banking-microservices.transaction.fraud-service.checked.v1
             - name: KAFKA_TRANSACTION_TOPIC_ERROR

@@ -33,6 +33,8 @@ docker build --no-cache -t SpringBankWithMicroservices/money-service:1.0.0 ./mon
 docker build --no-cache -t SpringBankWithMicroservices/transaction-service:1.0.0 ./transaction-service
 docker build --no-cache -t SpringBankWithMicroservices/gateway:1.0.0 ./gateway
 docker build --no-cache -t SpringBankWithMicroservices/fraud-service:1.0.0 ./fraud-service
+kubectl apply -f k8s/01-Base.yaml
+kubectl apply -f k8s/02-Apps.yaml
 kubectl rollout restart deployment -n banking-microservices
 kubectl get pods -n banking-microservices
 

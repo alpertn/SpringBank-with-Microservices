@@ -4,7 +4,7 @@ server:
 kafka:
   topics:
     transaction:
-      listener: ${KAFKA_TRANSACTION_USERNAME_VALIDATION_LISTENER:banking-microservices.transaction.fraud-service.checked.v1}
+      listener: ${KAFKA_TRANSACTION_USERNAME_VALIDATION_LISTENER:banking-microservices.transaction.money-service.block-money.success.v1}
       sender: ${KAFKA_TRANSACTION_USERNAME_VALIDATION_SENDER:banking-microservices.transaction.user-service.user-validation.success.v1}
       error: ${KAFKA_TRANSACTION_USERNAME_VALIDATION_ERROR:banking-microservices.transaction.user-service.user-validation.error.v1}
     create-user:

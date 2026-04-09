@@ -42,19 +42,6 @@ public class KafkaListenerService {
 
     // ─── Listeners ──────────────────────────────────────────────────────────────
 
-    @KafkaListener(topics = "${kafka.topics.transaction.listener}")
-    public void listenTransactionTopic(String topicData) {
-        log.info(" ({}) > KafkaListenerService | listenTransactionTopic -> Metoda veri geldi. RawData:\n{}", currentTime.get(), topicData);
-
-        KafkaTransactionTopicMessageDto dto = parseMessage(topicData, "listenTransactionTopic");
-        if (dto == null) return;
-
-        if (isDuplicate(dto, true, "listenTransactionTopic")) return;
-
-        log.info(" ({}) > KafkaListenerService | listenTransactionTopic -> Data islenmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
-        transactionService.saveTransaction(dto);
-    }
-
     @KafkaListener(topics = "${kafka.topics.transaction.error}")
     public void listenErrorTopic(String topicData) {
         log.info(" ({}) > KafkaListenerService | listenErrorTopic -> Metoda veri geldi. RawData:\n{}", currentTime.get(), topicData);

@@ -33,7 +33,7 @@ public class TransactionValidator {
     }
 
     public void assertSufficientBalance(BigDecimal balance, KafkaTransactionTopicMessageDto dto) {
-        if (balance.compareTo(dto.getMoney()) <= 0) {
+        if (balance.compareTo(dto.getMoney()) < 0) {
             log.warn(" ({}) > TransactionValidator | assertSufficientBalance -> Bakiye yetersiz! Bankadaki miktar: {} | Istenilen miktar: {}", currentTime.get(), balance, dto.getMoney());
             throw new MoneyNotAvaibleException("Money not avaible KafkaTransactionTopicService");
         }
