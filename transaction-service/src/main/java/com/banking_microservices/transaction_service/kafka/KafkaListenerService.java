@@ -49,18 +49,18 @@ public class KafkaListenerService {
         KafkaTransactionTopicMessageDto dto = parseMessage(topicData, "listenErrorTopic");
         if (dto == null) return;
 
-        if (isDuplicate(dto, false, "listenErrorTopic")) return;
-
         log.info(" ({}) > KafkaListenerService | listenErrorTopic -> Data islenmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
 
-        // DÜZELTME: Mevcut entity varsa status güncelle, yoksa yeni kayıt oluştur.
-        // Önceden her zaman saveTransaction() çağrılıyordu ve yeni entity oluşturuluyordu,
-        // bu yüzden orijinal entity CREATED statüsünde kalıyordu.
+        // DÜZELTME: Error mesajlarını her zaman işle. Önceden isDuplicate kontrolü yapılıyordu
+        // ve status aynıysa (örn. hem entity hem dto BLOCK_MONEY ise) mesaj atlanıyordu.
+        // Bu, başarısız transferlerin sonsuza dek BLOCK_MONEY'de kalmasına neden oluyordu.
         var entityOpt = transactionRepository.findByEventId(dto.getEventUUID());
         if (entityOpt.isPresent()) {
             transactionService.updateTransactionStatus(dto);
+            log.info(" ({}) > KafkaListenerService | listenErrorTopic -> Error status guncellendi: {} -> {}", currentTime.get(), dto.getEventUUID(), dto.getStatus());
         } else {
             transactionService.saveTransaction(dto);
+            log.info(" ({}) > KafkaListenerService | listenErrorTopic -> Yeni error entity kaydedildi: {}", currentTime.get(), dto.getEventUUID());
         }
     }
 

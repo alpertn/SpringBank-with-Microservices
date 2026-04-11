@@ -61,7 +61,7 @@ public class AuthService {
             log.info(" ({}) > AuthService | createUser -> Keycloak kullanicisi olusturuldu. UUID: {}", currentTime.get(), keycloackUserUUID);
 
             CreateUserTopicDto userTopicDto = CreateUserTopicDto.builder()
-                    .keycloackUserUUID(keycloackUserUUID)
+                    .keycloakUserUUID(keycloackUserUUID)
                     .name(dto.getName())
                     .surname(dto.getSurname())
                     .password(dto.getPassword())

@@ -92,6 +92,10 @@ const STATUS_MAP = {
     'FRAUD_REJECTED':    { label: 'Reddedildi',         css: 'badge-danger' },
     'FUNDS_BLOCKED':     { label: 'Bloke Edildi',       css: 'badge-warning' },
     'FUNDS_BLOCK_FAILED':{ label: 'Bloke Hatası',       css: 'badge-danger' },
+    'BLOCK_MONEY':       { label: 'Para Blokede',       css: 'badge-warning' },
+    'BLOCK_MONEY_FAILED':{ label: 'Bloke Hatası',       css: 'badge-danger' },
+    'DEPOSIT_FAILED':    { label: 'Yatırma Hatası',     css: 'badge-danger' },
+    'WITHDRAW_FAILED':   { label: 'Çekme Hatası',       css: 'badge-danger' },
     'PROCESSING':        { label: 'İşleniyor',          css: 'badge-warning' },
     'COMPLETED':         { label: 'Tamamlandı',         css: 'badge-success' },
     'FAILED':            { label: 'Başarısız',          css: 'badge-danger' },
@@ -101,10 +105,11 @@ const STATUS_MAP = {
 };
 
 const TYPE_MAP = {
-    'TRANSACTION': 'Transfer',
+    'TRANSFER':    'Transfer',
     'DEPOSIT':     'Para Yatırma',
     'WITHDRAW':    'Para Çekme',
 };
+
 
 function getStatusBadge(status, statusDescription, small = false) {
     const s = STATUS_MAP[status];

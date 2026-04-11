@@ -4,13 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SpringBank — Admin Panel</title>
+  <meta name="description" content="SpringBank Admin Panel - Mikroservis tabanlı bankacılık yönetim sistemi">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* ── Design Tokens (projeyle birebir aynı) ── */
+    /* ── Design Tokens ── */
     :root {
       --primary:       #026CB6;
       --primary-dark:  #014373;
@@ -39,6 +40,31 @@
       --transition:    all 0.2s cubic-bezier(0.2,0.8,0.2,1);
     }
 
+    /* ── Dark Mode ── */
+    [data-theme="dark"] {
+      --primary:       #4A90E2;
+      --primary-dark:  #6DB3F8;
+      --primary-light: #2A6FC2;
+      --primary-xlight: rgba(74,144,226,0.15);
+      --bg:            #0D1117;
+      --bg2:           #161B22;
+      --surface:       #1C2128;
+      --surface2:      #21262D;
+      --border:        #30363D;
+      --text:          #E6EDF3;
+      --text-muted:    #8B949E;
+      --success:       #3FB950;
+      --success-light: rgba(63,185,80,0.15);
+      --danger:        #F85149;
+      --danger-light:  rgba(248,81,73,0.15);
+      --warning:       #D29922;
+      --warning-light: rgba(210,153,34,0.15);
+      --info:          #4A90E2;
+      --info-light:    rgba(74,144,226,0.15);
+      --shadow:        0 1px 4px rgba(0,0,0,0.2), 0 6px 20px rgba(0,0,0,0.15);
+      --shadow-lg:     0 4px 12px rgba(0,0,0,0.3), 0 20px 40px rgba(0,0,0,0.25);
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
@@ -62,6 +88,15 @@
       height: 100vh;
       z-index: 100;
       box-shadow: 2px 0 12px rgba(2,108,182,0.06);
+      transition: transform 0.3s cubic-bezier(0.2,0.8,0.2,1);
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 99;
+      backdrop-filter: blur(2px);
     }
 
     .sidebar-logo {
@@ -129,7 +164,7 @@
       cursor: pointer; transition: var(--transition);
       margin-bottom: 2px; border: none; background: none;
       width: 100%; text-align: left;
-      position: relative;
+      position: relative; font-family: inherit;
     }
     .nav-item i { font-size: 17px; flex-shrink: 0; }
     .nav-item:hover { background: var(--bg); color: var(--primary-dark); }
@@ -161,6 +196,7 @@
       margin-left: var(--sidebar-w);
       flex: 1; display: flex; flex-direction: column;
       min-height: 100vh;
+      transition: margin-left 0.3s ease;
     }
 
     /* ── Topbar ── */
@@ -169,12 +205,31 @@
       background: var(--surface);
       border-bottom: 1px solid var(--border);
       display: flex; align-items: center;
-      padding: 0 28px; gap: 16px;
+      padding: 0 28px; gap: 12px;
       position: sticky; top: 0; z-index: 90;
     }
+    .topbar-hamburger {
+      display: none;
+      background: none; border: none; cursor: pointer;
+      color: var(--text); font-size: 22px;
+      padding: 4px; border-radius: 6px;
+    }
+    .topbar-hamburger:hover { background: var(--bg); }
     .topbar-title { font-size: 16px; font-weight: 700; color: var(--text); flex: 1; }
+    .topbar-actions { display: flex; align-items: center; gap: 8px; }
     .topbar-meta { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
     .topbar-dot { width: 7px; height: 7px; background: var(--success); border-radius: 50%; display: inline-block; }
+
+    .icon-btn {
+      background: none; border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm); cursor: pointer;
+      color: var(--text-muted); font-size: 16px;
+      width: 34px; height: 34px;
+      display: flex; align-items: center; justify-content: center;
+      transition: var(--transition);
+    }
+    .icon-btn:hover { background: var(--bg); color: var(--primary); border-color: var(--primary-xlight); }
+    .icon-btn.active { background: var(--primary-xlight); color: var(--primary); border-color: var(--primary); }
 
     /* ── Pages ── */
     .page-wrap { padding: 28px; display: none; animation: fadeIn 0.2s ease; }
@@ -183,14 +238,14 @@
 
     .section-header {
       display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 22px;
+      margin-bottom: 22px; flex-wrap: wrap; gap: 12px;
     }
     .section-title { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -0.4px; }
     .section-sub { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+    .section-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 
     /* ── KPI Cards ── */
-    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 24px; }
-    .kpi-grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 18px; margin-bottom: 24px; }
 
     .kpi-card {
       background: var(--surface);
@@ -234,8 +289,9 @@
       border-radius: var(--radius); padding: 22px;
       box-shadow: var(--shadow);
     }
-    .chart-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 16px; }
+    .chart-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
     .chart-body { position: relative; height: 200px; }
+    .chart-empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 13px; }
 
     /* ── Table Card ── */
     .table-card {
@@ -248,7 +304,7 @@
       display: flex; align-items: center; justify-content: space-between; gap: 12px;
       flex-wrap: wrap;
     }
-    .table-toolbar-title { font-size: 14px; font-weight: 700; color: var(--text); }
+    .table-toolbar-title { font-size: 14px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
     .table-tools { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 
     .search-box {
@@ -258,6 +314,14 @@
       width: 200px; transition: var(--transition);
     }
     .search-box:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-xlight); }
+
+    .filter-select {
+      padding: 8px 12px; border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm); font-family: inherit; font-size: 13px;
+      background: var(--surface2); color: var(--text); outline: none;
+      cursor: pointer; transition: var(--transition);
+    }
+    .filter-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-xlight); }
 
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 6px;
@@ -317,7 +381,14 @@
     .badge-muted   { background: var(--bg2); color: var(--text-muted); }
     .badge-teal    { background: #ccfbf1; color: #0d9488; }
 
-    /* ── Panels (Account Ops) ── */
+    [data-theme="dark"] .badge-success { color: var(--success); }
+    [data-theme="dark"] .badge-danger  { color: var(--danger); }
+    [data-theme="dark"] .badge-warning { color: var(--warning); }
+    [data-theme="dark"] .badge-info    { color: var(--primary); }
+    [data-theme="dark"] .badge-purple  { background: rgba(139,92,246,0.15); color: #a78bfa; }
+    [data-theme="dark"] .badge-teal    { background: rgba(20,184,166,0.15); color: #2dd4bf; }
+
+    /* ── Panels ── */
     .split-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     .panel-card {
       background: var(--surface); border: 1px solid var(--border);
@@ -432,10 +503,26 @@
     .toast-item.warning { border-left-color: var(--warning); }
     @keyframes toastIn { from { opacity:0; transform: translateX(30px); } to { opacity:1; transform: none; } }
 
+    /* ── Activity Log ── */
+    .activity-log {
+      max-height: 250px; overflow-y: auto;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      background: var(--surface2);
+    }
+    .activity-item {
+      padding: 10px 14px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 12px;
+    }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-time { color: var(--text-muted); white-space: nowrap; font-family: monospace; font-size: 11px; }
+    .activity-text { color: var(--text); flex: 1; }
+    .activity-type-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
     /* Misc */
     .empty-msg { text-align: center; padding: 36px; color: var(--text-muted); font-size: 13px; }
     .mono { font-family: 'Courier New', monospace; font-size: 12px; }
-    .action-link { color: var(--primary); font-weight: 600; cursor: pointer; font-size: 12px; margin-right: 10px; }
+    .action-link { color: var(--primary); font-weight: 600; cursor: pointer; font-size: 12px; margin-right: 10px; background: none; border: none; font-family: inherit; }
     .action-link:hover { text-decoration: underline; }
     .action-link.red { color: var(--danger); }
     .action-link.orange { color: var(--warning); }
@@ -455,12 +542,32 @@
     .divider { height: 1px; background: var(--border); margin: 14px 0; }
     .sub-heading { font-size: 11px; font-weight: 700; letter-spacing: 0.7px; text-transform: uppercase; color: var(--text-muted); margin: 14px 0 8px; }
     select.form-control { cursor: pointer; }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .charts-row { grid-template-columns: 1fr; }
+      .split-grid  { grid-template-columns: 1fr; }
+      .health-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-overlay.show { display: block; }
+      .main-content { margin-left: 0; }
+      .topbar-hamburger { display: flex; }
+      .health-grid { grid-template-columns: 1fr; }
+      .topbar { padding: 0 16px; }
+      .page-wrap { padding: 16px; }
+    }
   </style>
 </head>
 <body>
 
+<!-- ── Sidebar Overlay (mobile) ── -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
 <!-- ── Sidebar ── -->
-<aside class="sidebar">
+<aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">
     <div class="logo-icon"><i class="ph-fill ph-bank"></i></div>
     <div>
@@ -487,6 +594,7 @@
     <button class="nav-item" data-page="fraud"><i class="ph ph-shield-warning"></i> Hata & Fraud <span class="nav-badge" id="errBadge" style="display:none">!</span></button>
     <button class="nav-item" data-page="health"><i class="ph ph-heartbeat"></i> Sistem Sağlığı</button>
     <button class="nav-item" data-page="logs"><i class="ph ph-terminal-window"></i> Canlı Loglar</button>
+    <button class="nav-item" data-page="activity"><i class="ph ph-clipboard-text"></i> Aktivite Log</button>
   </nav>
 
   <div class="sidebar-footer">
@@ -498,7 +606,12 @@
 <div class="main-content">
   <!-- Topbar -->
   <header class="topbar">
+    <button class="topbar-hamburger" id="btnHamburger"><i class="ph ph-list"></i></button>
     <div class="topbar-title" id="topbarTitle">Dashboard</div>
+    <div class="topbar-actions">
+      <button class="icon-btn" id="btnDarkMode" title="Tema Değiştir"><i class="ph ph-moon"></i></button>
+      <button class="icon-btn" id="btnAutoRefresh" title="Otomatik Yenileme (30s)"><i class="ph ph-arrows-clockwise"></i></button>
+    </div>
     <div class="topbar-meta">
       <span class="topbar-dot"></span>
       <span id="topbarClock">--:--</span>
@@ -514,10 +627,12 @@
         <div class="section-title">Dashboard</div>
         <div class="section-sub">Sistemin genel durumu ve son işlemler</div>
       </div>
-      <button class="btn btn-outline btn-sm" id="btnRefreshDash"><i class="ph ph-arrows-clockwise"></i> Yenile</button>
+      <div class="section-actions">
+        <button class="btn btn-outline btn-sm" id="btnRefreshDash"><i class="ph ph-arrows-clockwise"></i> Yenile</button>
+      </div>
     </div>
 
-    <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+    <div class="kpi-grid">
       <div class="kpi-card">
         <div class="kpi-icon"><i class="ph-fill ph-users"></i></div>
         <div><div class="kpi-label">Toplam Kullanıcı</div><div class="kpi-value" id="kpiTotalUsers">—</div><div class="kpi-change">Kayıtlı kullanıcılar</div></div>
@@ -535,7 +650,7 @@
         <div><div class="kpi-label">Hatalı İşlem</div><div class="kpi-value" id="kpiErrorTx">—</div><div class="kpi-change">Toplam hata</div></div>
       </div>
       <div class="kpi-card success">
-        <div class="kpi-icon"><i class="ph-fill ph-currency-try"></i></div>
+        <div class="kpi-icon"><i class="ph-fill ph-currency-circle-dollar"></i></div>
         <div><div class="kpi-label">Toplam Bakiye</div><div class="kpi-value" id="kpiTotalMoney" style="font-size:18px;">—</div><div class="kpi-change">Sistemdeki toplam para</div></div>
       </div>
       <div class="kpi-card warning">
@@ -546,18 +661,19 @@
 
     <div class="charts-row">
       <div class="chart-card">
-        <div class="chart-title"><i class="ph ph-chart-pie" style="color:var(--primary);margin-right:6px;"></i> Rol Dağılımı</div>
-        <div class="chart-body"><canvas id="roleChart"></canvas></div>
+        <div class="chart-title"><i class="ph ph-chart-pie" style="color:var(--primary);"></i> Rol Dağılımı</div>
+        <div class="chart-body"><canvas id="roleChart"></canvas><div class="chart-empty" id="roleChartEmpty" style="display:none;">Veri yok</div></div>
       </div>
       <div class="chart-card">
-        <div class="chart-title"><i class="ph ph-chart-bar" style="color:var(--primary);margin-right:6px;"></i> Son 7 Gün İşlem Hacmi</div>
-        <div class="chart-body"><canvas id="volChart"></canvas></div>
+        <div class="chart-title"><i class="ph ph-chart-bar" style="color:var(--primary);"></i> Son 7 Gün İşlem Hacmi</div>
+        <div class="chart-body"><canvas id="volChart"></canvas><div class="chart-empty" id="volChartEmpty" style="display:none;">Veri yok</div></div>
       </div>
     </div>
 
     <div class="table-card">
       <div class="table-toolbar">
-        <div class="table-toolbar-title"><i class="ph ph-clock-counter-clockwise" style="color:var(--primary);margin-right:6px;"></i>Son İşlemler</div>
+        <div class="table-toolbar-title"><i class="ph ph-clock-counter-clockwise" style="color:var(--primary);"></i> Son İşlemler</div>
+        <button class="btn btn-outline btn-sm" id="btnExportDashTx"><i class="ph ph-download-simple"></i> CSV</button>
       </div>
       <div class="tbl-wrap">
         <table>
@@ -575,11 +691,14 @@
         <div class="section-title">Kullanıcı Yönetimi</div>
         <div class="section-sub">Tüm kullanıcıları görüntüle, yönet ve rol ata</div>
       </div>
+      <div class="section-actions">
+        <button class="btn btn-outline btn-sm" id="btnExportUsers"><i class="ph ph-download-simple"></i> CSV</button>
+      </div>
     </div>
 
     <div class="table-card">
       <div class="table-toolbar">
-        <div class="table-toolbar-title"><i class="ph ph-users" style="color:var(--primary);margin-right:6px;"></i>Kullanıcılar</div>
+        <div class="table-toolbar-title"><i class="ph ph-users" style="color:var(--primary);"></i> Kullanıcılar</div>
         <div class="table-tools">
           <input type="text" class="search-box" id="searchName" placeholder="Ad / Soyad">
           <input type="text" class="search-box" id="searchEmail" placeholder="E-posta">
@@ -609,15 +728,18 @@
         <div class="section-title">İşlem Monitörü</div>
         <div class="section-sub">Tarih aralığına göre filtrele, detay görüntüle</div>
       </div>
+      <div class="section-actions">
+        <button class="btn btn-outline btn-sm" id="btnExportTx"><i class="ph ph-download-simple"></i> CSV</button>
+      </div>
     </div>
 
-    <div class="kpi-grid kpi-grid-3" style="margin-bottom:20px;">
+    <div class="kpi-grid" style="margin-bottom:20px;">
       <div class="kpi-card">
         <div class="kpi-icon"><i class="ph-fill ph-list-numbers"></i></div>
         <div><div class="kpi-label">Filtrelenen İşlem</div><div class="kpi-value" id="txCount">—</div></div>
       </div>
       <div class="kpi-card warning">
-        <div class="kpi-icon"><i class="ph-fill ph-currency-try"></i></div>
+        <div class="kpi-icon"><i class="ph-fill ph-currency-circle-dollar"></i></div>
         <div><div class="kpi-label">Toplam Hacim</div><div class="kpi-value" id="txVol" style="font-size:18px;">—</div></div>
       </div>
       <div class="kpi-card danger">
@@ -628,12 +750,24 @@
 
     <div class="table-card">
       <div class="table-toolbar">
-        <div class="table-toolbar-title"><i class="ph ph-funnel" style="color:var(--primary);margin-right:6px;"></i>Filtre</div>
+        <div class="table-toolbar-title"><i class="ph ph-funnel" style="color:var(--primary);"></i> Filtre</div>
         <div class="table-tools">
           <label style="font-size:12px;color:var(--text-muted);font-weight:600;">Başlangıç:</label>
           <input type="datetime-local" class="search-box" id="txStart" style="width:190px;">
           <label style="font-size:12px;color:var(--text-muted);font-weight:600;">Bitiş:</label>
           <input type="datetime-local" class="search-box" id="txEnd" style="width:190px;">
+          <select class="filter-select" id="txTypeFilter">
+            <option value="">Tüm Tipler</option>
+            <option value="DEPOSIT">Deposit</option>
+            <option value="WITHDRAW">Withdraw</option>
+            <option value="TRANSFER">Transfer</option>
+          </select>
+          <select class="filter-select" id="txStatusFilter">
+            <option value="">Tüm Durumlar</option>
+            <option value="COMPLETED">Completed</option>
+            <option value="CREATED">Created</option>
+            <option value="FAILED">Failed</option>
+          </select>
           <button class="btn btn-primary btn-sm" id="btnTxFilter"><i class="ph ph-funnel"></i> Filtrele</button>
           <button class="btn btn-warning btn-sm" id="btnShowStuck" title="30+ dk CREATED durumunda takılı kalan işlemler"><i class="ph ph-warning"></i> Takılı</button>
           <button class="btn btn-outline btn-sm" id="btnTopVolume" title="En büyük hacimli 10 işlem"><i class="ph ph-trophy"></i> Top 10</button>
@@ -658,10 +792,28 @@
       <button class="btn btn-outline btn-sm" id="btnLoadAllAccounts"><i class="ph ph-list"></i> Tüm Hesaplar</button>
     </div>
 
+    <!-- Bakiye Dağılım Grafiği -->
+    <div class="charts-row" style="grid-template-columns: 1fr 1fr; margin-bottom: 20px;">
+      <div class="chart-card">
+        <div class="chart-title"><i class="ph ph-chart-donut" style="color:var(--primary);"></i> Bakiye Dağılımı</div>
+        <div class="chart-body"><canvas id="distChart"></canvas><div class="chart-empty" id="distChartEmpty" style="display:none;">Veri yok</div></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title"><i class="ph ph-chart-bar" style="color:var(--success);"></i> Hesap Özeti</div>
+        <div style="padding: 10px 0;">
+          <div class="kv-row"><span class="kv-key">Toplam Hesap</span><span class="kv-val" id="accSummaryTotal">—</span></div>
+          <div class="kv-row"><span class="kv-key">Ortalama Bakiye</span><span class="kv-val" id="accSummaryAvg">—</span></div>
+          <div class="kv-row"><span class="kv-key">Zengin Hesap (>10K)</span><span class="kv-val" id="accSummaryRich">—</span></div>
+          <div class="kv-row"><span class="kv-key">Sıfır Bakiye</span><span class="kv-val" id="accSummaryZero">—</span></div>
+          <div class="kv-row"><span class="kv-key">Blokeli Hesap</span><span class="kv-val" id="accSummaryBlocked">—</span></div>
+        </div>
+      </div>
+    </div>
+
     <!-- Tüm Hesaplar Listesi -->
     <div class="table-card" id="allAccountsCard" style="display:none;margin-bottom:20px;">
       <div class="table-toolbar">
-        <div class="table-toolbar-title"><i class="ph ph-wallet" style="color:var(--primary);margin-right:6px;"></i>Tüm Hesaplar</div>
+        <div class="table-toolbar-title"><i class="ph ph-wallet" style="color:var(--primary);"></i> Tüm Hesaplar</div>
         <div class="table-tools">
           <span id="accountsTotal" style="font-size:12px;color:var(--text-muted);"></span>
           <button class="btn btn-outline btn-sm" onclick="document.getElementById('allAccountsCard').style.display='none'"><i class="ph ph-x"></i> Kapat</button>
@@ -678,7 +830,7 @@
     <!-- Top 10 Hesap -->
     <div class="table-card" style="margin-bottom:20px;">
       <div class="table-toolbar">
-        <div class="table-toolbar-title"><i class="ph ph-trophy" style="color:var(--warning);margin-right:6px;"></i>En Yüksek Bakiyeli 10 Hesap</div>
+        <div class="table-toolbar-title"><i class="ph ph-trophy" style="color:var(--warning);"></i> En Yüksek Bakiyeli 10 Hesap</div>
         <button class="btn btn-outline btn-sm" id="btnRefreshTop"><i class="ph ph-arrows-clockwise"></i></button>
       </div>
       <div class="tbl-wrap">
@@ -771,12 +923,15 @@
     <div class="section-header">
       <div>
         <div class="section-title">Hata & Fraud Monitörü</div>
-        <div class="section-sub">Hatalı işlemleri incele</div>
+        <div class="section-sub">Hatalı işlemleri incele, analiz et</div>
       </div>
-      <button class="btn btn-outline btn-sm" id="btnRefreshFraud"><i class="ph ph-arrows-clockwise"></i> Yenile</button>
+      <div class="section-actions">
+        <button class="btn btn-outline btn-sm" id="btnExportFraud"><i class="ph ph-download-simple"></i> CSV</button>
+        <button class="btn btn-outline btn-sm" id="btnRefreshFraud"><i class="ph ph-arrows-clockwise"></i> Yenile</button>
+      </div>
     </div>
 
-    <div class="kpi-grid kpi-grid-3" style="margin-bottom:20px;">
+    <div class="kpi-grid" style="margin-bottom:20px;">
       <div class="kpi-card danger">
         <div class="kpi-icon"><i class="ph-fill ph-x-circle"></i></div>
         <div><div class="kpi-label">Toplam Hata</div><div class="kpi-value" id="errTotal">—</div></div>
@@ -789,11 +944,21 @@
         <div class="kpi-icon"><i class="ph-fill ph-chart-bar"></i></div>
         <div><div class="kpi-label">En Sık Hata Tipi</div><div class="kpi-value" id="errCommon" style="font-size:16px;">—</div></div>
       </div>
+      <div class="kpi-card danger">
+        <div class="kpi-icon"><i class="ph-fill ph-currency-circle-dollar"></i></div>
+        <div><div class="kpi-label">Kaybedilen Hacim</div><div class="kpi-value" id="errLostVolume" style="font-size:16px;">—</div></div>
+      </div>
+    </div>
+
+    <!-- Error Type Breakdown Chart -->
+    <div class="chart-card" style="margin-bottom: 20px;">
+      <div class="chart-title"><i class="ph ph-chart-bar" style="color:var(--danger);"></i> Hata Tipi Dağılımı</div>
+      <div class="chart-body"><canvas id="errorTypeChart"></canvas><div class="chart-empty" id="errorTypeChartEmpty" style="display:none;">Hata verisi yok</div></div>
     </div>
 
     <div class="table-card">
       <div class="table-toolbar">
-        <div class="table-toolbar-title"><i class="ph ph-warning" style="color:var(--danger);margin-right:6px;"></i>Hatalı İşlemler</div>
+        <div class="table-toolbar-title"><i class="ph ph-warning" style="color:var(--danger);"></i> Hatalı İşlemler</div>
       </div>
       <div class="tbl-wrap">
         <table>
@@ -826,7 +991,7 @@
         <div class="section-sub">Servis durumunu gerçek zamanlı izle</div>
       </div>
       <div style="display:flex;gap:10px;">
-        <button class="btn btn-outline btn-sm" onclick="clearLogs()"><i class="ph ph-trash"></i> Temizle</button>
+        <button class="btn btn-outline btn-sm" id="btnClearLogs"><i class="ph ph-trash"></i> Temizle</button>
         <button class="btn btn-danger btn-sm" id="btnStopLog" style="display:none;"><i class="ph ph-stop-circle"></i> Durdur</button>
       </div>
     </div>
@@ -851,6 +1016,33 @@
     </div>
     <div id="log-terminal"><span class="log-line-system">// Terminal hazır. Bir servis seçin.</span></div>
   </div>
+
+  <!-- ═══════════════ 8. ACTIVITY LOG ═══════════════ -->
+  <div class="page-wrap" id="page-activity">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Aktivite Log</div>
+        <div class="section-sub">Bu oturumdaki admin işlemleri</div>
+      </div>
+      <div class="section-actions">
+        <button class="btn btn-outline btn-sm" id="btnClearActivity"><i class="ph ph-trash"></i> Temizle</button>
+        <button class="btn btn-outline btn-sm" id="btnExportActivity"><i class="ph ph-download-simple"></i> CSV</button>
+      </div>
+    </div>
+    <div class="table-card">
+      <div class="table-toolbar">
+        <div class="table-toolbar-title"><i class="ph ph-clipboard-text" style="color:var(--primary);"></i> Admin Aktiviteleri</div>
+        <span id="activityCount" style="font-size:12px;color:var(--text-muted);"></span>
+      </div>
+      <div class="activity-log" id="activityLog">
+        <div class="activity-item">
+          <span class="activity-type-icon" style="color:var(--text-muted);"><i class="ph ph-info"></i></span>
+          <span class="activity-text">Henüz aktivite kaydı yok.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- ════ Toast Stack ════ -->
@@ -863,6 +1055,10 @@
   <div class="modal-box">
     <div class="modal-head"><span><i class="ph ph-user" style="color:var(--primary);margin-right:8px;"></i>Kullanıcı Detayı</span><button class="modal-close-btn" onclick="closeModal('modalUserDetail')"><i class="ph ph-x"></i></button></div>
     <div class="modal-body" id="modalUserDetailBody"><div class="empty-msg">Yükleniyor...</div></div>
+    <div class="modal-foot" id="modalUserDetailFoot" style="display:none;">
+      <button class="btn btn-outline btn-sm" onclick="closeModal('modalUserDetail')">Kapat</button>
+      <button class="btn btn-primary btn-sm" id="btnSaveUserEdit"><i class="ph ph-floppy-disk"></i> Kaydet</button>
+    </div>
   </div>
 </div>
 

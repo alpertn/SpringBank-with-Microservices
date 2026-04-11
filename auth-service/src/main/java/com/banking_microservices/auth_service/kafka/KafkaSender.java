@@ -56,7 +56,7 @@ public class KafkaSender {
     public void sendCreateUserToUserTopic(CreateUserTopicDto dto) {
         try {
             log.info(" ({}) > KafkaSender | sendCreateUserToUserTopic -> Kafkaya veri gonderilmek uzere alindi. \n{}", currentTime.get(), gson.toJson(dto));
-            kafkaTemplate.send(createUserSenderTopic, dto.getKeycloackUserUUID(), dto);
+            kafkaTemplate.send(createUserSenderTopic, dto.getKeycloakUserUUID(), dto);
             log.info(" ({}) > KafkaSender | sendCreateUserToUserTopic -> Kafka Topicine veri gonderildi. \n{}", currentTime.get(), gson.toJson(dto));
 
         } catch (Exception e) {

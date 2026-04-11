@@ -75,14 +75,14 @@ public class UserService {
                     .password(authServiceCreateUserTopicDto.getPassword())
                     .name(authServiceCreateUserTopicDto.getName())
                     .surname(authServiceCreateUserTopicDto.getSurname())
-                    .keycloackUUID(authServiceCreateUserTopicDto.getKeycloackUserUUID())
+                    .keycloakUUID(authServiceCreateUserTopicDto.getKeycloakUserUUID())
                     .role(Role.valueOf(role.name()))
                     .build();
             try {
                 Users user = userRepository.save(newUsers);
                 log.info(" ({}) > UserService | saveUser -> User Olusturuldu! Dto:\n{}", currentTime.get(), gson.toJson(user));
                 try {
-                    kafkaSender.sendCreateUser(user.getKeycloackUUID());
+                    kafkaSender.sendCreateUser(user.getKeycloakUUID());
                     return newUsers;
                 } catch (Exception e) {
                     throw new KafkaSendException("Kafka ile Create user topicine mesaj gonderilirken hata olustu.");
@@ -103,7 +103,7 @@ public class UserService {
     public void transactionTopicMessageVerify(KafkaTransactionTopicMessageDto dto) {
         try {
             log.info(" ({}) > UserService | transactionTopicMessageVerify -> Metoda veri geldi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
-            Users senderUser = userRepository.findUsersBykeycloackUUID(dto.getSenderUserId())
+            Users senderUser = userRepository.findByKeycloakUUID(dto.getSenderUserId())
                     .orElseThrow(() -> new UserNotFoundById("Sender Not Found: " + dto.getSenderUserId()));
 
             dto.setSenderName(senderUser.getName());
@@ -114,7 +114,7 @@ public class UserService {
                 Users receiverUser = userRepository.getUsersByNameAndSurname(dto.getReceiverName(), dto.getReceiverSurname())
                         .orElseThrow(() -> new UserNameOrSurnameNotFoundException("Receiver Name/Surname Not Found"));
 
-                dto.setReceiverUserId(receiverUser.getKeycloackUUID());
+                dto.setReceiverUserId(receiverUser.getKeycloakUUID());
                 dto.setReceiverEmail(receiverUser.getMail());
             }
 
@@ -128,6 +128,11 @@ public class UserService {
             log.warn(" ({}) > UserService | transactionTopicMessageVerify -> Validation basarisiz! Hata: {}", currentTime.get(), e.getMessage());
             dto.setError(true);
             dto.setErrorDescription("Username not found or ID mismatch. " + e.getMessage());
+            // DÜZELTME: Status'u FAILED olarak set et. Önceden status BLOCK_MONEY olarak kalıyordu
+            // ve transaction-service'in isDuplicate kontrolü (entity.status == dto.status) true
+            // döndüğü için error mesajı atlanıyordu. Transfer sonsuza dek BLOCK_MONEY'de kalıyordu.
+            dto.setStatus(TransactionStatus.FAILED);
+            dto.setStatusDescription(TransactionStatus.FAILED.getDescription());
             kafkaSender.sendTransactionUsernameValidationError(dto.getEventUUID(), dto);
             throw new UserNameOrSurnameNotFoundException(
                     "User Name Or Surname Not Found or ID mismatch " + e.getMessage());

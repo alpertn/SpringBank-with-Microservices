@@ -57,7 +57,7 @@ function getStatusBadge(status, statusDescription) {
 }
 
 window.loadTransactions = async function () {
-    const wrapper = document.getElementById('tx-wrapper');
+    const wrapper = document.getElementById('transactions-wrapper');
     wrapper.innerHTML = `<div class="empty-state"><div class="spinner" style="border-top-color:var(--primary);margin-bottom:10px;"></div><div class="empty-state-text">Hareketler yükleniyor...</div></div>`;
 
     try {

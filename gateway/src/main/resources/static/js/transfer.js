@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
   
-  async function loadBalance() {
+  async function loadBalance(retryCount = 0) {
     const form = document.getElementById('transfer-form');
     const btn = document.getElementById('transfer-btn');
     const msg = document.getElementById('transfer-msg');
@@ -111,6 +111,15 @@ document.addEventListener('DOMContentLoaded', () => {
         window.userIbanStr = data.userIban;
         if (form) form.style.opacity = '1';
         if (btn) btn.disabled = false;
+        if (msg) API.hideMsg(msg);
+      } else if (res && res.status === 404) {
+        console.warn('[transfer] Hesap bulunamadı (404)');
+        if (form) form.style.opacity = '0.5';
+        if (btn) btn.disabled = true;
+        API.showMsg(msg, '⚠️ Hesabınız henüz oluşturulmamış. Lütfen önce Dashboard\'dan hesap oluşturun.', 'danger');
+      } else if (res && res.status === 401) {
+        console.warn('[transfer] Unauthorized (401)');
+        API.showMsg(msg, '⚠️ Oturum süresi doldu. Lütfen tekrar giriş yapın.', 'danger');
       } else {
         console.warn('[transfer] Balance API returned non-ok:', res?.status);
         if (form) form.style.opacity = '0.5';
@@ -121,6 +130,11 @@ document.addEventListener('DOMContentLoaded', () => {
       console.warn('[transfer] Balance yüklenemedi:', e?.message);
       if (form) form.style.opacity = '0.5';
       if (btn) btn.disabled = true;
-      API.showMsg(msg, '⚠️ Hesap bilgileri alınamadı. Lütfen internet bağlantınızı kontrol edin.', 'danger');
+      if (retryCount < 2) {
+        API.showMsg(msg, '⏳ Hesap bilgileri yüklenemiyor, tekrar deneniyor...', 'danger');
+        setTimeout(() => loadBalance(retryCount + 1), 2000);
+      } else {
+        API.showMsg(msg, '⚠️ Hesap bilgileri alınamadı. Sunucu yanıt vermiyor olabilir. Lütfen sayfayı yenileyin.', 'danger');
+      }
     }
   }

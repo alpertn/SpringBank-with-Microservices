@@ -22,7 +22,7 @@ public class Users {
     @Id
     @UuidGenerator
     private String id;
-    private String keycloackUUID;
+    private String keycloakUUID;
     private String mail;
     private String password;
     private String name;

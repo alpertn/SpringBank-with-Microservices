@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
   
-  async function loadBalance() {
+  async function loadBalance(retryCount = 0) {
     const form = document.getElementById('deposit-form');
     const btn = document.getElementById('deposit-btn');
     const msg = document.getElementById('deposit-msg');
@@ -100,6 +100,17 @@ document.addEventListener('DOMContentLoaded', () => {
         window.userIbanStr = data.userIban;
         if (form) form.style.opacity = '1';
         if (btn) btn.disabled = false;
+        if (msg) API.hideMsg(msg);
+      } else if (res && res.status === 404) {
+        // Hesap henüz oluşturulmamış
+        console.warn('[deposit] Hesap bulunamadı (404)');
+        if (form) form.style.opacity = '0.5';
+        if (btn) btn.disabled = true;
+        API.showMsg(msg, '⚠️ Hesabınız henüz oluşturulmamış. Lütfen önce Dashboard\'dan hesap oluşturun.', 'danger');
+      } else if (res && res.status === 401) {
+        // Token süresi dolmuş — API.call zaten refresh denedi
+        console.warn('[deposit] Unauthorized (401)');
+        API.showMsg(msg, '⚠️ Oturum süresi doldu. Lütfen tekrar giriş yapın.', 'danger');
       } else {
         console.warn('[deposit] Balance API returned non-ok:', res?.status);
         if (form) form.style.opacity = '0.5';
@@ -110,6 +121,12 @@ document.addEventListener('DOMContentLoaded', () => {
       console.warn('[deposit] Balance yüklenemedi:', e?.message);
       if (form) form.style.opacity = '0.5';
       if (btn) btn.disabled = true;
-      API.showMsg(msg, '⚠️ Hesap bilgileri alınamadı. Lütfen internet bağlantınızı kontrol edin.', 'danger');
+      // DÜZELTME: Otomatik retry (max 2 kez)
+      if (retryCount < 2) {
+        API.showMsg(msg, '⏳ Hesap bilgileri yüklenemiyor, tekrar deneniyor...', 'danger');
+        setTimeout(() => loadBalance(retryCount + 1), 2000);
+      } else {
+        API.showMsg(msg, '⚠️ Hesap bilgileri alınamadı. Sunucu yanıt vermiyor olabilir. Lütfen sayfayı yenileyin.', 'danger');
+      }
     }
   }

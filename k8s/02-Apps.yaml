@@ -8,8 +8,51 @@
 #kubectl get pods -n banking-microservices
 
 #
+# Gateway Log Reader RBAC — kubectl logs icin gerekli izinler
+# Gateway pod'u, banking-microservices namespace'indeki diger pod'larin
+# loglarini okuyabilmek icin bu ServiceAccount, Role ve RoleBinding'e ihtiyac duyar.
+#
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gateway-log-reader
+  namespace: banking-microservices
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-log-reader
+  namespace: banking-microservices
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "pods/log"]
+    verbs: ["get", "list", "watch"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: gateway-read-pod-logs
+  namespace: banking-microservices
+subjects:
+  - kind: ServiceAccount
+    name: gateway-log-reader
+    namespace: banking-microservices
+roleRef:
+  kind: Role
+  name: pod-log-reader
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+#
 #User-Service --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #
+
 
 apiVersion: apps/v1
 kind: Deployment

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthServiceCreateUserTopicDto {
-    private String keycloackUserUUID;
+    private String keycloakUserUUID;
     private String email;
     @JsonProperty("Name")
     private String name;

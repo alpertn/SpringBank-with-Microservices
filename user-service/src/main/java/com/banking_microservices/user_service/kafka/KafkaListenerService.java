@@ -46,16 +46,16 @@ public class KafkaListenerService {
     public void ListenAuthServiceTopic(String topicData) {
         log.info(" ({}) > KafkaListenerService | ListenAuthServiceTopic -> Metoda veri geldi. RawData:\n{}", currentTime.get(), topicData);
         AuthServiceCreateUserTopicDto dto = gson.fromJson(topicData, AuthServiceCreateUserTopicDto.class);
-        if (dto == null || dto.getKeycloackUserUUID() == null) {
+        if (dto == null || dto.getKeycloakUserUUID() == null) {
             log.warn(" ({}) > KafkaListenerService | ListenAuthServiceTopic -> Gecersiz mesaj alindi, atlaniyor. Dto:\n{}", currentTime.get(), gson.toJson(dto));
             return;
         }
-        if (eventRepository.existsByEventIdAndEventType(dto.getKeycloackUserUUID(), KafkaEventType.USER_AUTH_CREATE.name())) {
-            log.warn(" ({}) > KafkaListenerService | ListenAuthServiceTopic -> Zaten islendi, atlaniyor: {}", currentTime.get(), dto.getKeycloackUserUUID());
+        if (eventRepository.existsByEventIdAndEventType(dto.getKeycloakUserUUID(), KafkaEventType.USER_AUTH_CREATE.name())) {
+            log.warn(" ({}) > KafkaListenerService | ListenAuthServiceTopic -> Zaten islendi, atlaniyor: {}", currentTime.get(), dto.getKeycloakUserUUID());
             return;
         }
         eventRepository.save(KafkaEvent.builder()
-                .eventId(dto.getKeycloackUserUUID())
+                .eventId(dto.getKeycloakUserUUID())
                 .eventType(KafkaEventType.USER_AUTH_CREATE.name())
                 .createdAt(LocalDateTime.now())
                 .build());

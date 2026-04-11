@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateUserTopicDto {
-    private String keycloackUserUUID;
+    private String keycloakUserUUID;
     private String email;
     @JsonProperty("Name")
     private String name;

@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
   
-  async function loadBalance() {
+  async function loadBalance(retryCount = 0) {
     const form = document.getElementById('withdraw-form');
     const btn = document.getElementById('withdraw-btn');
     const msg = document.getElementById('withdraw-msg');
@@ -95,26 +95,38 @@ document.addEventListener('DOMContentLoaded', () => {
       if (res && res.ok) {
         const data = await res.json();
         document.getElementById('balance-display').innerText = API.formatMoney(data.money);
-        // API'de 'blockedMoney' veya 'blockedmoney' olabilir, her ikisini de dene
-        const blocked = data.blockedMoney ?? data.blockedmoney ?? 0;
-        document.getElementById('blocked-display').innerText = 'Blokeli Bakiye: ' + API.formatMoney(blocked);
+        document.getElementById('iban-display').innerText = 'IBAN: ' + (data.userIban || '-');
         window.userIbanStr = data.userIban;
+        window.userBalance = data.money || 0;
         // DÜZELTME: Bakiye başarıyla yüklendi, formu aktif et
         if (form) form.style.opacity = '1';
         if (btn) btn.disabled = false;
         if (msg) API.hideMsg(msg);
+      } else if (res && res.status === 404) {
+        console.warn('[withdraw] Hesap bulunamadı (404)');
+        if (form) form.style.opacity = '0.5';
+        if (btn) btn.disabled = true;
+        API.showMsg(msg, '⚠️ Hesabınız henüz oluşturulmamış. Lütfen önce Dashboard\'dan hesap oluşturun.', 'danger');
+      } else if (res && res.status === 401) {
+        console.warn('[withdraw] Unauthorized (401)');
+        API.showMsg(msg, '⚠️ Oturum süresi doldu. Lütfen tekrar giriş yapın.', 'danger');
       } else {
         // DÜZELTME: API çağrısı başarısız — formu devre dışı bırak ve kullanıcıyı bilgilendir
         console.warn('[withdraw] Balance API returned non-ok:', res?.status);
         if (form) form.style.opacity = '0.5';
         if (btn) btn.disabled = true;
-        API.showMsg(msg, '⚠️ Hesap bilgileri yüklenemedi. Hesabınız henüz oluşturulmamış olabilir veya sunucu hatası oluştu. Sayfayı yenileyip tekrar deneyin.', 'danger');
+        API.showMsg(msg, '⚠️ Hesap bilgileri yüklenemedi. Sayfayı yenileyip tekrar deneyin.', 'danger');
       }
     } catch(e) {
       console.warn('[withdraw] Balance yüklenemedi:', e?.message);
       // DÜZELTME: İstisna durumunda da formu devre dışı bırak
       if (form) form.style.opacity = '0.5';
       if (btn) btn.disabled = true;
-      API.showMsg(msg, '⚠️ Hesap bilgileri alınamadı. Lütfen internet bağlantınızı kontrol edip sayfayı yenileyin.', 'danger');
+      if (retryCount < 2) {
+        API.showMsg(msg, '⏳ Hesap bilgileri yüklenemiyor, tekrar deneniyor...', 'danger');
+        setTimeout(() => loadBalance(retryCount + 1), 2000);
+      } else {
+        API.showMsg(msg, '⚠️ Hesap bilgileri alınamadı. Sunucu yanıt vermiyor olabilir. Lütfen sayfayı yenileyin.', 'danger');
+      }
     }
   }
