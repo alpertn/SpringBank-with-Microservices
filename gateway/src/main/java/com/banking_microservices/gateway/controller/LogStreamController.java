@@ -13,39 +13,17 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * cmdye komut yazarak gelen logları controller vasıtasıyla ulastırmak.
- * Admin Log Streaming Controller
- *
- * Kubernetes loglarini SSE (Server-Sent Events) olarak frontend'e iletir.
- * Kullanim: GET /api/gateway/admin/logs/{service}
- *
- * Kullanilan kubectl komutu:
- * kubectl logs -n banking-microservices -l app={service} --tail=200 -f
- * --max-log-requests=10
- *
- * Bu endpoint Spring WebFlux reactive stack uzerinde calisir.
- * Admin panelinde EventSource API ile baglanilir.
- */
 @Slf4j
 @RestController
 @RequestMapping("/api/gateway/admin")
 public class LogStreamController {
 
-    /** Desteklenen servisler — sadece bunlara izin verilir */
     private static final List<String> ALLOWED_SERVICES = List.of(
             "gateway", "auth-service", "user-service",
             "money-service", "transaction-service", "fraud-service");
 
     private static final String NAMESPACE = "banking-microservices";
 
-    /**
-     * Belirtilen servise ait Kubernetes loglarini SSE stream olarak dondurur.
-     *
-     * @param service Servis adi (auth-service, money-service vb.)
-     * @param tail    Kac satirlik log gecmisi alinacak (varsayilan 150)
-     * @return SSE stream — her satir bir event olarak gelir
-     */
     @GetMapping(value = "/logs/{service}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ServerSentEvent<String>> streamLogs(
             @PathVariable String service,
@@ -53,7 +31,6 @@ public class LogStreamController {
 
         log.info(" > LogStreamController | streamLogs -> Istek alindi. Service: {}, Tail: {}", service, tail);
 
-        // Tum servisler isteniyor mu?
         if ("all".equals(service)) {
             return buildStream(
                 "all",
@@ -63,13 +40,9 @@ public class LogStreamController {
             );
         }
 
-        // Guvenlik: sadece izin verilen servislere sorgu yapilir
         if (!ALLOWED_SERVICES.contains(service)) {
-            log.warn(" > LogStreamController | streamLogs -> Izinsiz servis istegi: {}", service);
             return Flux.just(ServerSentEvent.<String>builder()
-                    .event("error")
-                    .data("[HATA] Gecersiz servis: " + service)
-                    .build());
+                    .event("error").data("[HATA] Gecersiz servis: " + service).build());
         }
 
         return buildStream(
@@ -80,73 +53,77 @@ public class LogStreamController {
         );
     }
 
-    /**
-     * Verilen kubectl komutu ile SSE log stream olusturur.
-     * subscribeOn(Schedulers.boundedElastic()) ile blocking I/O reactive thread pool'a tasiniyor.
-     */
+    @GetMapping(value = "/logs/mock", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<ServerSentEvent<String>> mockStream() {
+        return Flux.interval(Duration.ofSeconds(1))
+                .map(seq -> ServerSentEvent.<String>builder()
+                        .event("log")
+                        .data("[MOCK] Sistem log " + seq)
+                        .build())
+                .take(10);
+    }
+
     private Flux<ServerSentEvent<String>> buildStream(String label, List<String> cmd) {
         return Flux.<ServerSentEvent<String>>create(emitter -> {
             Process process = null;
+            Thread readerThread = null;
             try {
-                ProcessBuilder pb = new ProcessBuilder(new ArrayList<>(cmd));
+                ProcessBuilder pb = new ProcessBuilder(cmd);
                 pb.redirectErrorStream(true);
                 process = pb.start();
+                final Process p = process; // lambda icin
 
                 emitter.next(ServerSentEvent.<String>builder()
                         .event("connected")
                         .data("[SYSTEM] " + label + " log stream basladi...")
                         .build());
 
-                try (BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(process.getInputStream()))) {
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        if (emitter.isCancelled()) break;
-                        emitter.next(ServerSentEvent.<String>builder()
-                                .event("log")
-                                .data(line)
-                                .build());
+                // Read in a separate manual thread to avoid blocking WebFlux Schedulers
+                // and correctly handle client cancellation
+                readerThread = new Thread(() -> {
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+                        String line;
+                        // isCancelled() was insufficient in readLine() blocking wait. 
+                        // Now if process is destroyed, readLine will break with IOException.
+                        while (!emitter.isCancelled() && (line = reader.readLine()) != null) {
+                            emitter.next(ServerSentEvent.<String>builder().event("log").data(line).build());
+                        }
+                    } catch (Exception e) {
+                        if (!emitter.isCancelled()) {
+                            log.error(" > LogStreamController stream kesildi: {}", e.getMessage());
+                        }
+                    } finally {
+                        emitter.complete();
                     }
-                }
+                });
+                readerThread.setDaemon(true);
+                readerThread.start();
 
-                emitter.next(ServerSentEvent.<String>builder()
-                        .event("disconnected")
-                        .data("[SYSTEM] Log stream sonlandi.")
-                        .build());
-                emitter.complete();
+                // Handle client cancellation (e.g. browser closes connection)
+                emitter.onDispose(() -> {
+                    log.info(" > LogStreamController | stream iptal edildi. Process sonlandiriliyor.");
+                    p.destroyForcibly();
+                });
 
             } catch (Exception e) {
-                log.error(" > LogStreamController | buildStream -> Hata: {}", e.getMessage());
+                log.error(" > LogStreamController | buildStream Hata: {}", e.getMessage());
                 emitter.next(ServerSentEvent.<String>builder()
                         .event("error")
-                        .data("[HATA] kubectl baglanti hatasi: " + e.getMessage()
-                                + " | kubectl PATH'de mi? Namespace dogru mu?")
+                        .data("[HATA] kubectl baslatilamadi: " + e.getMessage())
                         .build());
                 emitter.complete();
-            } finally {
-                if (process != null) process.destroyForcibly();
             }
-        })
-        .subscribeOn(Schedulers.boundedElastic())
-        .timeout(Duration.ofMinutes(30), Flux.empty());
+        });
     }
 
-    /**
-     * Tum servislerin son loglarini tek seferde toplar (polling icin).
-     * SSE degil — HTTP GET ile JSON doner.
-     *
-     * @param service Servis adi
-     * @param lines   Kac satir (varsayilan 50)
-     */
     @GetMapping("/logs/{service}/recent")
     public Flux<String> getRecentLogs(
             @PathVariable String service,
             @RequestParam(defaultValue = "50") int lines) {
 
-        log.info(" > LogStreamController | getRecentLogs -> Istek alindi. Service: {}, Lines: {}", service, lines);
+        log.info(" > LogStreamController | getRecentLogs -> Istek alindi. Service: {}", service);
 
         if (!ALLOWED_SERVICES.contains(service) && !"all".equals(service)) {
-            log.warn(" > LogStreamController | getRecentLogs -> Izinsiz servis: {}", service);
             return Flux.just("[HATA] Gecersiz servis: " + service);
         }
 
@@ -169,8 +146,7 @@ public class LogStreamController {
                 pb.redirectErrorStream(true);
                 Process process = pb.start();
 
-                try (BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(process.getInputStream()))) {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
                         emitter.next(line);
@@ -179,7 +155,6 @@ public class LogStreamController {
                 process.waitFor();
                 emitter.complete();
             } catch (Exception e) {
-                log.error(" > LogStreamController | getRecentLogs -> Hata: {}", e.getMessage());
                 emitter.next("[HATA] " + e.getMessage());
                 emitter.complete();
             }
