@@ -25,19 +25,23 @@ const STATUS_MAP = {
     'INSUFFICIENT_FUNDS':{ label: 'Yetersiz Bakiye',    css: 'badge-danger' },
     'FRAUD_REVIEW':      { label: 'İncelemede',         css: 'badge-warning' },
     'FRAUD_REJECTED':    { label: 'Reddedildi',         css: 'badge-danger' },
+    'BLOCK_MONEY':       { label: 'Tutar Bloke Edildi', css: 'badge-warning' },
     'FUNDS_BLOCKED':     { label: 'Bloke Edildi',       css: 'badge-warning' },
+    'BLOCK_MONEY_FAILED':{ label: 'Bloke Hatası',       css: 'badge-danger' },
     'FUNDS_BLOCK_FAILED':{ label: 'Bloke Hatası',       css: 'badge-danger' },
     'PROCESSING':        { label: 'İşleniyor',          css: 'badge-warning' },
     'COMPLETED':         { label: 'Tamamlandı',         css: 'badge-success' },
     'FAILED':            { label: 'Başarısız',          css: 'badge-danger' },
+    'DEPOSIT_FAILED':    { label: 'Yatırma Başarısız',  css: 'badge-danger' },
+    'WITHDRAW_FAILED':   { label: 'Çekme Başarısız',   css: 'badge-danger' },
     'KAFKA_ERROR':       { label: 'Sistem Hatası',      css: 'badge-danger' },
     'DECLINED':          { label: 'Reddedildi',         css: 'badge-danger' },
     'REVERSED':          { label: 'İptal Edildi',       css: 'badge-warning' },
 };
 
-// DUZELTME: islem tipi etiketlerini Turkce karsiliklar ile goster.
+// DÜZELTME: Backend'de enum değeri 'TRANSFER', önceden 'TRANSACTION' yazıyordu ve eşleşmiyordu.
 const TYPE_MAP = {
-    'TRANSACTION': 'Transfer',
+    'TRANSFER':    'Transfer',
     'DEPOSIT':     'Para Yatırma',
     'WITHDRAW':    'Para Çekme',
 };

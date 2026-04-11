@@ -6,7 +6,10 @@ kafka:
     transaction:
       listener: ${KAFKA_TRANSACTION_USERNAME_VALIDATION_LISTENER:banking-microservices.transaction.money-service.block-money.success.v1}
       sender: ${KAFKA_TRANSACTION_USERNAME_VALIDATION_SENDER:banking-microservices.transaction.user-service.user-validation.success.v1}
-      error: ${KAFKA_TRANSACTION_USERNAME_VALIDATION_ERROR:banking-microservices.transaction.user-service.user-validation.error.v1}
+      # DÜZELTME: Eski topic (user-validation.error.v1) hiçbir servis tarafından dinlenmiyordu.
+      # Transaction-service'in error listener'ı sadece transaction-service.error.v1'i dinliyor.
+      # Bu yüzden user-validation hataları buharlaşıyordu ve transaction CREATED'da kalıyordu.
+      error: ${KAFKA_TRANSACTION_USERNAME_VALIDATION_ERROR:banking-microservices.transaction.transaction-service.error.v1}
     create-user:
       authservicelistener: ${KAFKA_AUTH_SERVICE_CREATE_USER_LISTENER:banking-microservices.create-user.auth-service.progress.v1}
       sender: ${KAFKA_CREATE_USER_SENDER:banking-microservices.username-validation.user-service.progress.v1}

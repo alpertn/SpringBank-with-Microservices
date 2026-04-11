@@ -230,6 +230,35 @@ public class TransactionService {
         entity.setError(dto.getError());
         entity.setErrorDescription(dto.getErrorDescription());
         entity.setTransferStatus(mapToTransferStatus(dto.getStatus()));
+
+        // DÜZELTME: User-service validation sonrası DTO'ya eklenen sender/receiver bilgilerini
+        // de entity'ye yansıt. Önceden sadece status güncelleniyordu ve işlem geçmişinde
+        // isimler boş kalıyordu.
+        if (dto.getSenderName() != null && entity.getSenderName() == null) {
+            entity.setSenderName(dto.getSenderName());
+        }
+        if (dto.getSenderSurname() != null && entity.getSenderSurname() == null) {
+            entity.setSenderSurname(dto.getSenderSurname());
+        }
+        if (dto.getSenderEmail() != null && entity.getSenderEmail() == null) {
+            entity.setSenderEmail(dto.getSenderEmail());
+        }
+        if (dto.getReceiverName() != null && entity.getReceiverName() == null) {
+            entity.setReceiverName(dto.getReceiverName());
+        }
+        if (dto.getReceiverSurname() != null && entity.getReceiverSurname() == null) {
+            entity.setReceiverSurname(dto.getReceiverSurname());
+        }
+        if (dto.getReceiverEmail() != null && entity.getReceiverEmail() == null) {
+            entity.setReceiverEmail(dto.getReceiverEmail());
+        }
+        if (dto.getReceiverUserId() != null && entity.getReceiverUserId() == null) {
+            entity.setReceiverUserId(dto.getReceiverUserId());
+        }
+        if (dto.getUserValidation() != null) {
+            entity.setUserValidation(dto.getUserValidation());
+        }
+
         try {
             transactionRepository.save(entity);
             log.info(" ({}) > TransactionService | updateTransactionStatus -> Transaction status GUNCELLENDI: {} -> {}",

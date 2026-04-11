@@ -99,6 +99,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   
   async function loadBalance() {
+    const form = document.getElementById('transfer-form');
+    const btn = document.getElementById('transfer-btn');
+    const msg = document.getElementById('transfer-msg');
     try {
       const res = await API.call('/api/money-service/v1/accounts/balance-info', 'GET');
       if (res && res.ok) {
@@ -106,8 +109,18 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('balance-display').innerText = API.formatMoney(data.money);
         document.getElementById('iban-display').innerText = 'IBAN: ' + data.userIban;
         window.userIbanStr = data.userIban;
+        if (form) form.style.opacity = '1';
+        if (btn) btn.disabled = false;
+      } else {
+        console.warn('[transfer] Balance API returned non-ok:', res?.status);
+        if (form) form.style.opacity = '0.5';
+        if (btn) btn.disabled = true;
+        API.showMsg(msg, '⚠️ Hesap bilgileri yüklenemedi. Sayfayı yenileyip tekrar deneyin.', 'danger');
       }
     } catch(e) {
       console.warn('[transfer] Balance yüklenemedi:', e?.message);
+      if (form) form.style.opacity = '0.5';
+      if (btn) btn.disabled = true;
+      API.showMsg(msg, '⚠️ Hesap bilgileri alınamadı. Lütfen internet bağlantınızı kontrol edin.', 'danger');
     }
   }

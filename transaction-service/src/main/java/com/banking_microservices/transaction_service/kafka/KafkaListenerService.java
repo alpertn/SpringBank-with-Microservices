@@ -52,10 +52,25 @@ public class KafkaListenerService {
         if (isDuplicate(dto, false, "listenErrorTopic")) return;
 
         log.info(" ({}) > KafkaListenerService | listenErrorTopic -> Data islenmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
-        transactionService.saveTransaction(dto);
+
+        // DÜZELTME: Mevcut entity varsa status güncelle, yoksa yeni kayıt oluştur.
+        // Önceden her zaman saveTransaction() çağrılıyordu ve yeni entity oluşturuluyordu,
+        // bu yüzden orijinal entity CREATED statüsünde kalıyordu.
+        var entityOpt = transactionRepository.findByEventId(dto.getEventUUID());
+        if (entityOpt.isPresent()) {
+            transactionService.updateTransactionStatus(dto);
+        } else {
+            transactionService.saveTransaction(dto);
+        }
     }
 
-    @KafkaListener(topicPattern = "${kafka.topics.transaction.logger.listener}")
+    // DÜZELTME: Bu listener farklı bir consumer group kullanmalı.
+    // Önceden aynı group-id (transaction-service-group) ile çalışıyordu ve
+    // topicPattern regex'i diğer listener'ların topic'lerini de kapsadığı için
+    // Kafka partition'ları bazen bu listener'a veriyordu. Sonuç: blockmoney,
+    // user-validation ve result mesajları asıl işleyen listener'lara ulaşmıyordu
+    // ve transaction statüsü hep CREATED kalıyordu.
+    @KafkaListener(topicPattern = "${kafka.topics.transaction.logger.listener}", groupId = "transaction-service-logger-group")
     public void listenAllTransactionTopics(String topicData) {
         log.info(" ({}) > KafkaListenerService | listenAllTransactionTopics -> Metoda veri geldi. RawData:\n{}", currentTime.get(), topicData);
 
@@ -64,12 +79,7 @@ public class KafkaListenerService {
 
         log.info(" ({}) > KafkaListenerService | listenAllTransactionTopics -> event: {} status: {}, Dto:\n{}", currentTime.get(), dto.getEventUUID(), dto.getStatus(), gson.toJson(dto));
 
-        try {
-            // Log only, prevent double execution
-            // transactionService.updateTransactionStatus(dto);
-        } catch (Exception e) {
-            log.error(" ({}) > KafkaListenerService | listenAllTransactionTopics -> updateTransactionStatus hatasi: {}", currentTime.get(), e.getMessage());
-        }
+        // Sadece loglama — iş mantığı buraya eklenmemeli.
     }
 
     @KafkaListener(topics = "${kafka.topics.transaction.blockmoney.listener}")

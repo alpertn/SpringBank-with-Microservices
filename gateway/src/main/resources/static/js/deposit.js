@@ -34,9 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
   
-      // IBAN kontrolü — senderIban IBAN display'den alınıyor
-      const ibanText = document.getElementById('iban-display').innerText.replace('IBAN: ','').trim();
-      if (!ibanText || ibanText === '-') {
+      // DÜZELTME: IBAN artık DOM text'inden değil, window.userIbanStr'den alınıyor (withdraw.js ile tutarlı)
+      const senderIban = window.userIbanStr || '';
+      if (!senderIban) {
         API.showMsg(msg, '❌ Hesap IBAN bilgisi yüklenemedi. Lütfen sayfayı yenileyiniz.', 'danger');
         await loadBalance();
         return;
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         // 1. Transaction Service'e Deposit Ekle (Audit Logs + Kafka trigger for money-service)
         const dtData = {
-          senderIban: ibanText,
+          senderIban: senderIban,
           amount: amount,
           transactionType: 'DEPOSIT',
           description: description || 'Şubeden/ATMden Para Yatırma'
@@ -87,14 +87,29 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   
   async function loadBalance() {
+    const form = document.getElementById('deposit-form');
+    const btn = document.getElementById('deposit-btn');
+    const msg = document.getElementById('deposit-msg');
     try {
       const res = await API.call('/api/money-service/v1/accounts/balance-info', 'GET');
       if (res && res.ok) {
         const data = await res.json();
         document.getElementById('balance-display').innerText = API.formatMoney(data.money);
         document.getElementById('iban-display').innerText = 'IBAN: ' + (data.userIban || '-');
+        // DÜZELTME: window.userIbanStr'e de kaydet (senderIban için kullanılıyor)
+        window.userIbanStr = data.userIban;
+        if (form) form.style.opacity = '1';
+        if (btn) btn.disabled = false;
+      } else {
+        console.warn('[deposit] Balance API returned non-ok:', res?.status);
+        if (form) form.style.opacity = '0.5';
+        if (btn) btn.disabled = true;
+        API.showMsg(msg, '⚠️ Hesap bilgileri yüklenemedi. Sayfayı yenileyip tekrar deneyin.', 'danger');
       }
     } catch(e) {
       console.warn('[deposit] Balance yüklenemedi:', e?.message);
+      if (form) form.style.opacity = '0.5';
+      if (btn) btn.disabled = true;
+      API.showMsg(msg, '⚠️ Hesap bilgileri alınamadı. Lütfen internet bağlantınızı kontrol edin.', 'danger');
     }
   }

@@ -87,6 +87,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   
   async function loadBalance() {
+    const form = document.getElementById('withdraw-form');
+    const btn = document.getElementById('withdraw-btn');
+    const msg = document.getElementById('withdraw-msg');
     try {
       const res = await API.call('/api/money-service/v1/accounts/balance-info', 'GET');
       if (res && res.ok) {
@@ -96,8 +99,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const blocked = data.blockedMoney ?? data.blockedmoney ?? 0;
         document.getElementById('blocked-display').innerText = 'Blokeli Bakiye: ' + API.formatMoney(blocked);
         window.userIbanStr = data.userIban;
+        // DÜZELTME: Bakiye başarıyla yüklendi, formu aktif et
+        if (form) form.style.opacity = '1';
+        if (btn) btn.disabled = false;
+        if (msg) API.hideMsg(msg);
+      } else {
+        // DÜZELTME: API çağrısı başarısız — formu devre dışı bırak ve kullanıcıyı bilgilendir
+        console.warn('[withdraw] Balance API returned non-ok:', res?.status);
+        if (form) form.style.opacity = '0.5';
+        if (btn) btn.disabled = true;
+        API.showMsg(msg, '⚠️ Hesap bilgileri yüklenemedi. Hesabınız henüz oluşturulmamış olabilir veya sunucu hatası oluştu. Sayfayı yenileyip tekrar deneyin.', 'danger');
       }
     } catch(e) {
       console.warn('[withdraw] Balance yüklenemedi:', e?.message);
+      // DÜZELTME: İstisna durumunda da formu devre dışı bırak
+      if (form) form.style.opacity = '0.5';
+      if (btn) btn.disabled = true;
+      API.showMsg(msg, '⚠️ Hesap bilgileri alınamadı. Lütfen internet bağlantınızı kontrol edip sayfayı yenileyin.', 'danger');
     }
   }

@@ -81,8 +81,9 @@ spec:
               value: banking-microservices.transaction.money-service.block-money.success.v1
             - name: KAFKA_TRANSACTION_USERNAME_VALIDATION_SENDER
               value: banking-microservices.transaction.user-service.user-validation.success.v1
+            # DÜZELTME: Eski topic (user-validation.error.v1) dinlenmiyordu
             - name: KAFKA_TRANSACTION_USERNAME_VALIDATION_ERROR
-              value: banking-microservices.transaction.user-service.user-validation.error.v1
+              value: banking-microservices.transaction.transaction-service.error.v1
 
 
 ---
