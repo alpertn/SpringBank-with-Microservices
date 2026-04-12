@@ -75,6 +75,10 @@ management:
       enabled: true
     readinessstate:
       enabled: true
+    redis:
+      enabled: false
+    kafka:
+      enabled: false
   security:
     enabled: false
 

@@ -239,4 +239,37 @@ public class MoneyAdminController {
         log.info(" ({}) > MoneyAdminController | getCount -> Toplam hesap: {}", currentTime.get(), total);
         return ResponseEntity.ok(Map.of("totalAccounts", total));
     }
+
+    /**
+     * Admin hesap silme: userId veya keycloakUserUUID ile money kaydini sil.
+     */
+    @DeleteMapping("/account/{userId}")
+    public ResponseEntity<?> deleteAccount(@PathVariable String userId) {
+        log.warn(" ({}) > MoneyAdminController | deleteAccount -> Admin hesap siliyor. UserId: {}", currentTime.get(), userId);
+
+        Optional<UserMoney> found = userMoneyRepository.findByUserId(userId);
+        if (found.isEmpty()) {
+            // keycloakUserUUID ile de dene
+            List<UserMoney> all = userMoneyRepository.findAll();
+            found = all.stream()
+                    .filter(u -> userId.equals(u.getKeycloakUserUUID()))
+                    .findFirst();
+        }
+
+        if (found.isEmpty()) {
+            log.warn(" ({}) > MoneyAdminController | deleteAccount -> Hesap bulunamadi: {}", currentTime.get(), userId);
+            return ResponseEntity.notFound().build();
+        }
+
+        UserMoney acc = found.get();
+        userMoneyRepository.delete(acc);
+        log.info(" ({}) > MoneyAdminController | deleteAccount -> Hesap silindi. UserId: {}, IBAN: {}", currentTime.get(), acc.getUserId(), acc.getUserIban());
+
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("status", "deleted");
+        result.put("userId", acc.getUserId());
+        result.put("userIban", acc.getUserIban());
+        result.put("deletedBalance", acc.getMoney());
+        return ResponseEntity.ok(result);
+    }
 }

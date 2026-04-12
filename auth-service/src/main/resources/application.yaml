@@ -46,6 +46,10 @@ management:
       enabled: true
     readinessstate:
       enabled: true
+    redis:
+      enabled: false
+    kafka:
+      enabled: false
 logging:
   pattern:
     console: "%-5level --- [auth-service] : %msg%n"

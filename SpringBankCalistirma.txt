@@ -38,9 +38,24 @@ kubectl apply -f k8s/02-Apps.yaml
 kubectl rollout restart deployment -n banking-microservices
 kubectl get pods -n banking-microservices
 
+
+docker build -t SpringBankWithMicroservices/auth-service:1.0.0 ./auth-service
+docker build -t SpringBankWithMicroservices/user-service:1.0.0 ./user-service
+docker build -t SpringBankWithMicroservices/money-service:1.0.0 ./money-service
+docker build -t SpringBankWithMicroservices/transaction-service:1.0.0 ./transaction-service
+docker build -t SpringBankWithMicroservices/gateway:1.0.0 ./gateway
+docker build -t SpringBankWithMicroservices/fraud-service:1.0.0 ./fraud-service
+kubectl apply -f k8s/01-Base.yaml
+kubectl apply -f k8s/02-Apps.yaml
+kubectl rollout restart deployment -n banking-microservices
+kubectl get pods -n banking-microservices
+kubectl get pods -n banking-microservices
+
+
 kubectl logs -n banking-microservices deploy/fraud-service --tail=50 > fraud_logs_new.txt
 kubectl logs -n banking-microservices -l "app in (gateway, auth-service, user-service, transaction-service, money-service, fraud-service)" -f --max-log-requests=50
 
+SELECT * FROM users; kubectl exec -it postgres-75bf67f4f4-p5fhj -n banking-microservices -- psql -U banking_admin -d postgres
 
 Powershell paralelq
 

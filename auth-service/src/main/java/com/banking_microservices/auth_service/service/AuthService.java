@@ -65,7 +65,8 @@ public class AuthService {
                     .name(dto.getName())
                     .surname(dto.getSurname())
                     .password(dto.getPassword())
-                    .email(dto.getEmail()).build();
+                    .email(dto.getEmail())
+                    .role(Role.USER).build();
 
             log.info(" ({}) > AuthService | createUser -> Kafkaya veri gonderiliyor.\n{}", currentTime.get(), gson.toJson(userTopicDto));
             kafkaSender.sendCreateUserToUserTopic(userTopicDto);

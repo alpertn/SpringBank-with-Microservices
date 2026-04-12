@@ -41,6 +41,12 @@ public class AdminController {
         return ResponseEntity.ok(userService.findUserById(id));
     }
 
+    @GetMapping("/findbykeycloakuuid/{uuid}")
+    public ResponseEntity<Users> findByKeycloakUUID(@PathVariable String uuid) {
+        log.info(" ({}) > AdminController | findByKeycloakUUID -> Istek alindi. UUID : {}", currentTime.get(), uuid);
+        return ResponseEntity.ok(userService.findByKeycloakUUID(uuid));
+    }
+
     @GetMapping("/search")
     public ResponseEntity<List<Users>> searchUsers(@RequestParam String query) {
         log.info(" ({}) > AdminController | searchUsers -> Istek alindi. Query : {}", currentTime.get(), query);

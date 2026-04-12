@@ -52,7 +52,7 @@ function toast(msg, type = 'info') {
   el.className = `toast-item ${type}`;
   const icons = { success: 'ph-check-circle', error: 'ph-x-circle', warning: 'ph-warning', info: 'ph-info' };
   const colors = { success: 'var(--success)', error: 'var(--danger)', warning: 'var(--warning)', info: 'var(--primary)' };
-  el.innerHTML = `<i class="ph-fill ${icons[type]||'ph-info'}" style="font-size:18px;color:${colors[type]||'var(--primary)'}; flex-shrink:0;"></i><span>${escHtml(msg)}</span>`;
+  el.innerHTML = `<i class="ph-fill ${icons[type] || 'ph-info'}" style="font-size:18px;color:${colors[type] || 'var(--primary)'}; flex-shrink:0;"></i><span>${escHtml(msg)}</span>`;
   stack.appendChild(el);
   setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity 0.3s'; setTimeout(() => el.remove(), 300); }, 4000);
 }
@@ -94,11 +94,11 @@ function badge(val) {
     return `<span class="badge badge-danger"><i class="ph-fill ph-x-circle"></i> ${escaped}</span>`;
   if (['PENDING', 'PROGRESS', 'FRAUD_REVIEW', 'BLOCK_MONEY', 'CREATED'].includes(s))
     return `<span class="badge badge-warning"><i class="ph ph-clock"></i> ${escaped}</span>`;
-  if (['DEPOSIT'].includes(s))  return `<span class="badge badge-teal"><i class="ph ph-plus"></i> ${escaped}</span>`;
+  if (['DEPOSIT'].includes(s)) return `<span class="badge badge-teal"><i class="ph ph-plus"></i> ${escaped}</span>`;
   if (['WITHDRAW'].includes(s)) return `<span class="badge badge-warning"><i class="ph ph-minus"></i> ${escaped}</span>`;
   if (['TRANSFER', 'EFT'].includes(s)) return `<span class="badge badge-info"><i class="ph ph-arrows-left-right"></i> ${escaped}</span>`;
   if (['ADMIN'].includes(s)) return `<span class="badge badge-purple">${escaped}</span>`;
-  if (['USER'].includes(s))  return `<span class="badge badge-info">${escaped}</span>`;
+  if (['USER'].includes(s)) return `<span class="badge badge-info">${escaped}</span>`;
   return `<span class="badge badge-muted">${escaped}</span>`;
 }
 
@@ -285,14 +285,14 @@ function navigateTo(page) {
   if (page !== 'logs') stopLogs();
 
   switch (page) {
-    case 'dashboard':    initDashboard(); break;
-    case 'users':        loadUsers(); break;
+    case 'dashboard': initDashboard(); break;
+    case 'users': loadUsers(); break;
     case 'transactions': initTxPage(); break;
-    case 'accounts':     loadTopAccounts(); loadAccountStats(); break;
-    case 'fraud':        loadFraud(); break;
-    case 'health':       checkHealth(); healthTimer = setInterval(checkHealth, 30000); break;
-    case 'logs':         break;
-    case 'activity':     renderActivity(); break;
+    case 'accounts': loadTopAccounts(); loadAccountStats(); break;
+    case 'fraud': loadFraud(); break;
+    case 'health': checkHealth(); healthTimer = setInterval(checkHealth, 30000); break;
+    case 'logs': break;
+    case 'activity': renderActivity(); break;
   }
 }
 
@@ -325,8 +325,8 @@ function initSidebarUser() {
 // 1. DASHBOARD
 // ═══════════════════════════════════════════════════════════════
 let roleChartInst = null;
-let volChartInst  = null;
-let dashTxData    = []; // Store for CSV export
+let volChartInst = null;
+let dashTxData = []; // Store for CSV export
 
 async function initDashboard() {
   try {
@@ -339,17 +339,17 @@ async function initDashboard() {
       api('GET', '/api/transaction-service/v1/admin/stats/daily?days=7')
     ]);
 
-    const total    = totalUsers.status === 'fulfilled'  ? (totalUsers.value || 0) : 0;
-    const active   = activeData.status === 'fulfilled'  ? (activeData.value?.active || 0) : 0;
-    const roles    = roleData.status === 'fulfilled'    ? (roleData.value || {}) : {};
-    const money    = moneySummary.status === 'fulfilled'? (moneySummary.value || {}) : {};
-    const txSum    = txSummary.status === 'fulfilled'   ? (txSummary.value || {}) : {};
-    const daily    = dailyStats.status === 'fulfilled'  ? (dailyStats.value || []) : [];
+    const total = totalUsers.status === 'fulfilled' ? (totalUsers.value || 0) : 0;
+    const active = activeData.status === 'fulfilled' ? (activeData.value?.active || 0) : 0;
+    const roles = roleData.status === 'fulfilled' ? (roleData.value || {}) : {};
+    const money = moneySummary.status === 'fulfilled' ? (moneySummary.value || {}) : {};
+    const txSum = txSummary.status === 'fulfilled' ? (txSummary.value || {}) : {};
+    const daily = dailyStats.status === 'fulfilled' ? (dailyStats.value || []) : [];
 
-    document.getElementById('kpiTotalUsers').textContent  = total;
+    document.getElementById('kpiTotalUsers').textContent = total;
     document.getElementById('kpiActiveUsers').textContent = active;
-    document.getElementById('kpiTodayTx').textContent     = txSum.totalCount || '—';
-    document.getElementById('kpiErrorTx').textContent     = txSum.failed || '—';
+    document.getElementById('kpiTodayTx').textContent = txSum.totalCount || '—';
+    document.getElementById('kpiErrorTx').textContent = txSum.failed || '—';
 
     const kpiMoney = document.getElementById('kpiTotalMoney');
     if (kpiMoney) kpiMoney.textContent = formatMoney(money.totalBalance);
@@ -559,7 +559,7 @@ function renderUsersTable() {
       <td>${escHtml(u.mail || '-')}</td>
       <td>
         <select class="role-select" data-user-idx="${globalIdx}" onchange="updateRole(this)">
-          <option value="USER"  ${u.role === 'USER'  ? 'selected' : ''}>USER</option>
+          <option value="USER"  ${u.role === 'USER' ? 'selected' : ''}>USER</option>
           <option value="ADMIN" ${u.role === 'ADMIN' ? 'selected' : ''}>ADMIN</option>
         </select>
       </td>
@@ -568,8 +568,8 @@ function renderUsersTable() {
       <td>
         <button class="action-link" onclick="showUserDetail(${globalIdx})">Detay</button>
         ${u.active
-          ? `<button class="action-link orange" onclick="toggleStatus(${globalIdx}, false)">Pasifleştir</button>`
-          : `<button class="action-link green" onclick="toggleStatus(${globalIdx}, true)">Aktifleştir</button>`}
+        ? `<button class="action-link orange" onclick="toggleStatus(${globalIdx}, false)">Pasifleştir</button>`
+        : `<button class="action-link green" onclick="toggleStatus(${globalIdx}, true)">Aktifleştir</button>`}
         <button class="action-link" onclick="showResetPwd(${globalIdx})">Şifre</button>
         <button class="action-link red" onclick="showDelete(${globalIdx})">Sil</button>
       </td>
@@ -590,13 +590,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function searchUsers() {
-  const name  = document.getElementById('searchName').value.trim();
+  const name = document.getElementById('searchName').value.trim();
   const email = document.getElementById('searchEmail').value.trim();
-  const id    = document.getElementById('searchId').value.trim();
+  const id = document.getElementById('searchId').value.trim();
   try {
-    if (id)    { const u = await api('GET', `/api/user-service/v1/admin/finduserbyid/${id}`); allUsers = u ? [u] : []; }
-    else if (email)  { allUsers = await api('GET', `/api/user-service/v1/admin/findbyemail?email=${encodeURIComponent(email)}`) || []; }
-    else if (name)   { allUsers = await api('GET', `/api/user-service/v1/admin/search?query=${encodeURIComponent(name)}`) || []; }
+    if (id) { const u = await api('GET', `/api/user-service/v1/admin/finduserbyid/${id}`); allUsers = u ? [u] : []; }
+    else if (email) { allUsers = await api('GET', `/api/user-service/v1/admin/findbyemail?email=${encodeURIComponent(email)}`) || []; }
+    else if (name) { allUsers = await api('GET', `/api/user-service/v1/admin/search?query=${encodeURIComponent(name)}`) || []; }
     else { await loadUsers(); return; }
     usersPage = 1;
     renderUsersTable();
@@ -605,7 +605,7 @@ async function searchUsers() {
 }
 
 // FIXED: Use index-based approach instead of string ID in onclick to prevent XSS
-window.updateRole = async function(selectEl) {
+window.updateRole = async function (selectEl) {
   const idx = parseInt(selectEl.dataset.userIdx);
   const u = allUsers[idx];
   if (!u) return;
@@ -618,7 +618,7 @@ window.updateRole = async function(selectEl) {
   } catch (e) { toast(e.message, 'error'); renderUsersTable(); }
 };
 
-window.toggleStatus = async function(idx, activate) {
+window.toggleStatus = async function (idx, activate) {
   const u = allUsers[idx];
   if (!u) return;
   try {
@@ -633,7 +633,7 @@ window.toggleStatus = async function(idx, activate) {
 // User Detail Modal with inline edit
 let editingUserId = null;
 
-window.showUserDetail = async function(idx) {
+window.showUserDetail = async function (idx) {
   const u = allUsers[idx];
   if (!u) return;
   editingUserId = u.id;
@@ -651,7 +651,7 @@ window.showUserDetail = async function(idx) {
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token()}`, 'X-User-KeycloakUUID': targetUUID }
       });
       if (balRes.ok) balData = await balRes.json();
-    } catch (_) {}
+    } catch (_) { }
 
     body.innerHTML = `
       <div class="sub-heading">Kişisel Bilgiler</div>
@@ -713,7 +713,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-window.showResetPwd = function(idx) {
+window.showResetPwd = function (idx) {
   const u = allUsers[idx];
   if (!u) return;
   document.getElementById('resetPwdUserId').value = u.id;
@@ -721,7 +721,7 @@ window.showResetPwd = function(idx) {
   openModal('modalResetPwd');
 };
 
-window.showDelete = function(idx) {
+window.showDelete = function (idx) {
   const u = allUsers[idx];
   if (!u) return;
   document.getElementById('btnConfirmDelete').onclick = () => confirmDelete(u.id);
@@ -778,7 +778,7 @@ function isoOffset(days) {
 function initTxPage() {
   if (!document.getElementById('txEnd').value) {
     document.getElementById('txStart').value = isoOffset(-30);
-    document.getElementById('txEnd').value   = isoOffset(1);
+    document.getElementById('txEnd').value = isoOffset(1);
   }
   loadTransactions();
 }
@@ -800,7 +800,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadTransactions() {
   const start = document.getElementById('txStart').value;
-  const end   = document.getElementById('txEnd').value;
+  const end = document.getElementById('txEnd').value;
   if (!start || !end) { toast('Tarih aralığı seçin', 'warning'); return; }
   renderTxTable(null, 'loading');
   try {
@@ -834,7 +834,7 @@ async function loadStuckTransactions() {
     currentTxData = txs;
     updateTxKpis(txs);
     renderTxTable(txs);
-  } catch(e) { toast(e.message, 'error'); }
+  } catch (e) { toast(e.message, 'error'); }
 }
 
 async function loadTopVolume() {
@@ -844,15 +844,15 @@ async function loadTopVolume() {
     currentTxData = txs;
     updateTxKpis(txs);
     renderTxTable(txs);
-  } catch(e) { toast(e.message, 'error'); }
+  } catch (e) { toast(e.message, 'error'); }
 }
 
 function updateTxKpis(txs) {
   let vol = 0, errs = 0;
   txs.forEach(t => { vol += (t.money || 0); if (t.error) errs++; });
   document.getElementById('txCount').textContent = txs.length;
-  document.getElementById('txVol').textContent   = formatMoney(vol);
-  document.getElementById('txErrs').textContent  = errs;
+  document.getElementById('txVol').textContent = formatMoney(vol);
+  document.getElementById('txErrs').textContent = errs;
 }
 
 function renderTxTable(txs, state, errMsg) {
@@ -882,7 +882,7 @@ function renderTxTable(txs, state, errMsg) {
 }
 
 // FIXED: Safe transaction detail display — no JSON.stringify in onclick
-window.showTxDetailByIdx = function(btn) {
+window.showTxDetailByIdx = function (btn) {
   const source = btn.dataset.txSource;
   const idx = parseInt(btn.dataset.txIdx);
   let t;
@@ -917,6 +917,7 @@ window.showTxDetailByIdx = function(btn) {
 // 4. ACCOUNT OPS
 // ═══════════════════════════════════════════════════════════════
 let opUserId = null;
+let opUserInternalId = null;
 let distChartInst = null;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -929,6 +930,11 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnWithdraw')?.addEventListener('click', () => opTransaction('withdraw'));
   document.getElementById('btnIbanLookup')?.addEventListener('click', lookupIban);
   document.getElementById('btnTxHistory')?.addEventListener('click', loadTxHistory);
+
+  // Delete buttons
+  document.getElementById('btnDeleteFromUser')?.addEventListener('click', deleteFromUserService);
+  document.getElementById('btnDeleteFromMoney')?.addEventListener('click', deleteFromMoneyService);
+  document.getElementById('btnDeleteFromAll')?.addEventListener('click', deleteFromAllServices);
 });
 
 async function loadAccountStats() {
@@ -991,18 +997,60 @@ async function lookupAccount() {
   const id = document.getElementById('opUserId').value.trim();
   if (!id) { toast('Kullanıcı ID giriniz', 'warning'); return; }
   try {
+    // Money-service balance info
     const res = await fetch('/api/money-service/v1/accounts/balance-info', {
       headers: { ...authH(), 'X-User-KeycloakUUID': id }
     });
     if (res.status === 401) { window.location.href = '/login.html'; return; }
     if (!res.ok) throw new Error('Hesap bulunamadı');
     const data = await res.json();
-    document.getElementById('opIban').textContent    = data.userIban || '-';
-    document.getElementById('opBal').textContent     = formatMoney(data.money);
+    document.getElementById('opIban').textContent = data.userIban || '-';
+    document.getElementById('opBal').textContent = formatMoney(data.money);
     document.getElementById('opBlocked').textContent = formatMoney(data.blockedMoney);
-    document.getElementById('opUuid').textContent    = id;
+    document.getElementById('opUuid').textContent = id;
     document.getElementById('accountBox').style.display = 'block';
     opUserId = id;
+
+    // User-service user info — try keycloakUUID endpoint first, then internal ID
+    try {
+      let userData = null;
+
+      // 1. Try looking up by keycloakUUID (this is the ID money-service uses)
+      try {
+        userData = await api('GET', `/api/user-service/v1/admin/findbykeycloakuuid/${id}`);
+      } catch (_) { }
+
+      // 2. Fallback: try by internal ID
+      if (!userData) {
+        try {
+          userData = await api('GET', `/api/user-service/v1/admin/finduserbyid/${id}`);
+        } catch (_) { }
+      }
+
+      if (userData) {
+        document.getElementById('opUserName').textContent = `${userData.name || ''} ${userData.surname || ''}`.trim() || '—';
+        document.getElementById('opUserEmail').textContent = userData.mail || '—';
+        document.getElementById('opUserRole').innerHTML = badge(userData.role);
+        document.getElementById('opUserStatus').innerHTML = userData.active
+          ? '<span class="badge badge-success">Aktif</span>'
+          : '<span class="badge badge-muted">Pasif</span>';
+        document.getElementById('opUserInternalId').textContent = userData.id || '—';
+        // Store internal ID for delete operations
+        opUserInternalId = userData.id;
+      } else {
+        document.getElementById('opUserName').textContent = '—';
+        document.getElementById('opUserEmail').textContent = '—';
+        document.getElementById('opUserRole').textContent = '—';
+        document.getElementById('opUserStatus').textContent = '—';
+        document.getElementById('opUserInternalId').textContent = '—';
+        opUserInternalId = null;
+      }
+    } catch (_) {
+      // User-service data is optional
+      document.getElementById('opUserName').textContent = '(yüklenemedi)';
+      opUserInternalId = null;
+    }
+
     toast('Hesap bulundu', 'success');
   } catch (e) {
     document.getElementById('accountBox').style.display = 'none';
@@ -1020,7 +1068,7 @@ async function opTransaction(type) {
     toast(`${type === 'deposit' ? '✅ Para yatırıldı' : '✅ Para çekildi'}: ${formatMoney(amt)}`, 'success');
     document.getElementById('opAmount').value = '';
     await lookupAccount();
-    addActivity('money', `${type === 'deposit' ? 'Para yatırma' : 'Para çekme'}: ${formatMoney(amt)} (Kullanıcı: ${opUserId.slice(0,8)}...)`);
+    addActivity('money', `${type === 'deposit' ? 'Para yatırma' : 'Para çekme'}: ${formatMoney(amt)} (Kullanıcı: ${opUserId.slice(0, 8)}...)`);
   } catch (e) { toast(e.message, 'error'); }
 }
 
@@ -1057,7 +1105,7 @@ async function loadTxHistory() {
 }
 
 async function loadAllAccounts() {
-  const card  = document.getElementById('allAccountsCard');
+  const card = document.getElementById('allAccountsCard');
   const tbody = document.getElementById('allAccountsTbody');
   card.style.display = 'block';
   tbody.innerHTML = `<tr><td colspan="5" class="empty-msg"><div class="loader-ring"></div> Yükleniyor...</td></tr>`;
@@ -1074,7 +1122,7 @@ async function loadAllAccounts() {
         <td><button class="action-link" onclick="prefillLookup('${escHtml(a.userId)}')">Sorgula</button></td>
       </tr>
     `).join('');
-  } catch(e) { toast(e.message, 'error'); }
+  } catch (e) { toast(e.message, 'error'); }
 }
 
 async function loadTopAccounts() {
@@ -1086,7 +1134,7 @@ async function loadTopAccounts() {
     if (!data.length) { tbody.innerHTML = `<tr><td colspan="6" class="empty-msg">Veri yok.</td></tr>`; return; }
     tbody.innerHTML = data.map((a, i) => `
       <tr>
-        <td><strong style="color:var(--warning);">#${i+1}</strong></td>
+        <td><strong style="color:var(--warning);">#${i + 1}</strong></td>
         <td class="mono" style="font-size:11px;">${trunc(a.userId, 12)}</td>
         <td class="mono" style="font-size:11px;">${escHtml(a.userIban || '-')}</td>
         <td style="font-weight:800;color:var(--success);">${formatMoney(a.balance)}</td>
@@ -1094,10 +1142,10 @@ async function loadTopAccounts() {
         <td><button class="action-link" onclick="prefillLookup('${escHtml(a.userId)}')">Sorgula</button></td>
       </tr>
     `).join('');
-  } catch(e) { toast(e.message, 'error'); }
+  } catch (e) { toast(e.message, 'error'); }
 }
 
-window.prefillLookup = function(userId) {
+window.prefillLookup = function (userId) {
   document.getElementById('opUserId').value = userId;
   lookupAccount();
 };
@@ -1109,8 +1157,58 @@ async function unblockAccount() {
     toast(`✅ Bloke kaldırıldı: ${formatMoney(res.unblocked)}`, 'success');
     await lookupAccount();
     await loadTopAccounts();
-    addActivity('money', `Bloke kaldırıldı: ${formatMoney(res.unblocked)} (Kullanıcı: ${opUserId.slice(0,8)}...)`);
-  } catch(e) { toast(e.message, 'error'); }
+    addActivity('money', `Bloke kaldırıldı: ${formatMoney(res.unblocked)} (Kullanıcı: ${opUserId.slice(0, 8)}...)`);
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+// ─── Delete from User-Service ─────────────────────────────────
+async function deleteFromUserService() {
+  const deleteId = opUserInternalId || opUserId;
+  if (!deleteId) { toast('Önce bir hesap sorgulayın', 'warning'); return; }
+  if (!confirm(`User-Service'den silinecek:\nID: ${deleteId}\n\nBu işlem geri alınamaz. Devam?`)) return;
+  try {
+    await api('DELETE', `/api/user-service/v1/admin/deleteuser/${deleteId}`);
+    toast('✅ User-Service kaydı silindi', 'success');
+    addActivity('error', `User-Service'den silindi: ${deleteId}`);
+  } catch (e) { toast(`User-Service silme hatası: ${e.message}`, 'error'); }
+}
+
+// ─── Delete from Money-Service ────────────────────────────────
+async function deleteFromMoneyService() {
+  if (!opUserId) { toast('Önce bir hesap sorgulayın', 'warning'); return; }
+  if (!confirm(`Money-Service'den silinecek:\nUserID: ${opUserId}\n\nBu işlem geri alınamaz. Devam?`)) return;
+  try {
+    await api('DELETE', `/api/money-service/v1/admin/account/${opUserId}`);
+    toast('✅ Money-Service kaydı silindi', 'success');
+    addActivity('error', `Money-Service'den silindi: ${opUserId.slice(0, 8)}...`);
+  } catch (e) { toast(`Money-Service silme hatası: ${e.message}`, 'error'); }
+}
+
+// ─── Delete from ALL Microservices ────────────────────────────
+async function deleteFromAllServices() {
+  const deleteId = opUserInternalId || opUserId;
+  if (!opUserId || !deleteId) { toast('Önce bir hesap sorgulayın', 'warning'); return; }
+  if (!confirm(`TÜM MİKROSERVİSLERDEN silinecek:\n• User-Service ID: ${deleteId}\n• Money-Service ID: ${opUserId}\n\n⚠️ Bu işlem geri alınamaz! Devam?`)) return;
+
+  const results = [];
+
+  // 1. User-Service
+  try {
+    await api('DELETE', `/api/user-service/v1/admin/deleteuser/${deleteId}`);
+    results.push('✅ User-Service');
+  } catch (e) { results.push(`❌ User-Service: ${e.message}`); }
+
+  // 2. Money-Service
+  try {
+    await api('DELETE', `/api/money-service/v1/admin/account/${opUserId}`);
+    results.push('✅ Money-Service');
+  } catch (e) { results.push(`❌ Money-Service: ${e.message}`); }
+
+  toast(results.join(' | '), results.every(r => r.startsWith('✅')) ? 'success' : 'warning');
+  addActivity('error', `Tüm servislerden silindi: ${opUserId.slice(0, 8)}... → ${results.join(', ')}`);
+  document.getElementById('accountBox').style.display = 'none';
+  opUserId = null;
+  opUserInternalId = null;
 }
 
 async function searchByIban() {
@@ -1122,8 +1220,8 @@ async function searchByIban() {
     document.getElementById('ibanTxResult').style.display = 'block';
     if (!txs.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty-msg">İşlem bulunamadı.</td></tr>'; return; }
     tbody.innerHTML = txs.map(t => {
-      const isOwnSender  = t.senderIban === iban;
-      const counterpart  = isOwnSender ? (t.receiverName || t.receiverIban || '-') : (t.senderName || t.senderIban || '-');
+      const isOwnSender = t.senderIban === iban;
+      const counterpart = isOwnSender ? (t.receiverName || t.receiverIban || '-') : (t.senderName || t.senderIban || '-');
       return `<tr>
         <td>${badge(t.transactionType)}</td>
         <td style="font-weight:700;">${formatMoney(t.money)}</td>
@@ -1132,7 +1230,7 @@ async function searchByIban() {
         <td style="font-size:11px;">${formatDate(t.localDateTime)}</td>
       </tr>`;
     }).join('');
-  } catch(e) { toast(e.message, 'error'); }
+  } catch (e) { toast(e.message, 'error'); }
 }
 
 
@@ -1199,7 +1297,7 @@ async function loadFraud() {
     // Most common error type
     const typeCounts = {};
     errors.forEach(e => { typeCounts[e.transactionType] = (typeCounts[e.transactionType] || 0) + 1; });
-    const mostCommon = Object.entries(typeCounts).sort(([,a],[,b])=>b-a)[0];
+    const mostCommon = Object.entries(typeCounts).sort(([, a], [, b]) => b - a)[0];
     document.getElementById('errCommon').textContent = mostCommon ? mostCommon[0] : '—';
 
     // Render error type chart
@@ -1210,7 +1308,7 @@ async function loadFraud() {
         <td>${trunc(e.id, 8)}</td>
         <td>${badge(e.transactionType)}</td>
         <td style="font-weight:700;">${formatMoney(e.money)}</td>
-        <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escHtml(e.errorDescription||'')}">${escHtml(e.errorDescription || '-')}</td>
+        <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escHtml(e.errorDescription || '')}">${escHtml(e.errorDescription || '-')}</td>
         <td>${escHtml(e.senderName || '-')}</td>
         <td>${escHtml(e.receiverName || '-')}</td>
         <td style="font-size:11px;">${formatDate(e.localDateTime)}</td>
@@ -1264,12 +1362,12 @@ function renderErrorTypeChart(errorsByType) {
 // 6. SYSTEM HEALTH
 // ═══════════════════════════════════════════════════════════════
 const HEALTH_SVCS = [
-  { name: 'Gateway',             path: '/actuator/health' },
-  { name: 'User Service',        path: '/api/user-service/actuator/health' },
-  { name: 'Money Service',       path: '/api/money-service/actuator/health' },
+  { name: 'Gateway', path: '/actuator/health' },
+  { name: 'User Service', path: '/api/user-service/actuator/health' },
+  { name: 'Money Service', path: '/api/money-service/actuator/health' },
   { name: 'Transaction Service', path: '/api/transaction-service/actuator/health' },
-  { name: 'Auth Service',        path: '/api/auth-service/actuator/health' },
-  { name: 'Fraud Service',       path: '/api/fraud-service/actuator/health' },
+  { name: 'Auth Service', path: '/api/auth-service/actuator/health' },
+  { name: 'Fraud Service', path: '/api/fraud-service/actuator/health' },
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -1542,7 +1640,7 @@ function cleanupEventSource() {
 function updateLogStatus(state, svc) {
   const dot = document.getElementById('logStatusDot');
   const txt = document.getElementById('logStatusText');
-  switch(state) {
+  switch (state) {
     case 'connecting':
       if (dot) dot.style.background = 'var(--warning)';
       if (txt) txt.textContent = `${svc} bağlanıyor...`;
@@ -1603,6 +1701,42 @@ function clearLogs() {
   stopLogs();
   document.querySelectorAll('.log-svc-btn').forEach(b => b.classList.remove('active'));
 }
+
+// ─── Log Layout Switcher ─────────────────────────────────────
+let currentLogLayout = localStorage.getItem('sb_log_layout') || 'classic';
+
+function applyLogLayout(layout) {
+  currentLogLayout = layout;
+  localStorage.setItem('sb_log_layout', layout);
+  const term = document.getElementById('log-terminal');
+  if (!term) return;
+
+  // Remove all layout classes
+  term.classList.remove('layout-claude-code', 'layout-datadog', 'layout-grafana', 'layout-claude-chat');
+
+  // Add selected layout class (classic uses default styles — no extra class)
+  if (layout !== 'classic') {
+    term.classList.add(`layout-${layout}`);
+  }
+
+  // Update active button
+  document.querySelectorAll('.log-layout-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.layout === layout);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Layout switcher buttons
+  document.querySelectorAll('.log-layout-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      applyLogLayout(btn.dataset.layout);
+      addActivity('info', `Log layout değiştirildi: ${btn.dataset.layout}`);
+    });
+  });
+
+  // Apply saved layout on load
+  applyLogLayout(currentLogLayout);
+});
 
 // ═══════════════════════════════════════════════════════════════
 // 8. ACTIVITY LOG PAGE

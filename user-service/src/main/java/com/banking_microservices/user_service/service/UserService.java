@@ -161,7 +161,12 @@ public class UserService {
 
     public Users findUserById(String id) {
         return userRepository.findUsersById(String.valueOf(id))
-                .orElseThrow(() -> new UserNotFoundById("User Not Found By Id: {}" + id));
+                .orElseThrow(() -> new UserNotFoundById("User Not Found By Id: " + id));
+    }
+
+    public Users findByKeycloakUUID(String keycloakUUID) {
+        return userRepository.findByKeycloakUUID(keycloakUUID)
+                .orElseThrow(() -> new UserNotFoundById("User Not Found By KeycloakUUID: " + keycloakUUID));
     }
 
     public void updateUser(Users user) {

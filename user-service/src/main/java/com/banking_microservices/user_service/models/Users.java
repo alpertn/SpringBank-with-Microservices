@@ -22,6 +22,7 @@ public class Users {
     @Id
     @UuidGenerator
     private String id;
+    @Column(name = "keycloackuuid")
     private String keycloakUUID;
     private String mail;
     private String password;
