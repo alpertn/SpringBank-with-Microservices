@@ -1,4 +1,4 @@
-#Notlar
+﻿#Notlar
 
 #HPA çalışması için Metrics Server kurulmalı:
 #kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
@@ -91,7 +91,7 @@ spec:
             - name: SPRING_DATASOURCE_PASSWORD
               value: banking_admin
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
-              value: update
+              value: create
 
             # Port Numarasi
             - name: USER_SERVICE_PORT_NUMBER
@@ -214,7 +214,7 @@ spec:
             - name: SPRING_DATASOURCE_PASSWORD
               value: banking_admin
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
-              value: update
+              value: create
 
             # Harici Zorunlu Olmayanlar
             - name: MONEY_SERVICE_PORT_NUMBER
@@ -342,7 +342,7 @@ spec:
             - name: SPRING_DATASOURCE_PASSWORD
               value: banking_admin
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
-              value: update
+              value: create
 
             # PORT
             - name: TRANSACTION_SERVICE_PORT_NUMBER
@@ -457,7 +457,7 @@ spec:
             - name: SPRING_DATASOURCE_PASSWORD
               value: banking_admin
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
-              value: update
+              value: create
             # Redis
             - name: SPRING_DATA_REDIS_PORT
               value: "6379"
@@ -678,7 +678,7 @@ spec:
             - name: SPRING_DATASOURCE_PASSWORD
               value: banking_admin
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
-              value: update
+              value: create
 
             # PORT
             - name: FRAUD_SERVICE_PORT_NUMBER
