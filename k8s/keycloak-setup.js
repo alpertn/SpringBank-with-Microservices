@@ -54,6 +54,13 @@ async function getAdminToken() {
 
 async function createRealm(token) {
     console.log(`[2/10] Creating realm '${REALM_NAME}'...`);
+    const realmConfig = {
+        realm: REALM_NAME,
+        enabled: true,
+        accessTokenLifespan: 600,           // 5 dk → 10 dk (2x)
+        ssoSessionIdleTimeout: 3600,         // 30 dk → 60 dk (2x)
+        ssoSessionMaxLifespan: 72000         // 10 saat → 20 saat (2x)
+    };
     try {
         await request('/admin/realms', {
             method: 'POST',
@@ -61,11 +68,20 @@ async function createRealm(token) {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             }
-        }, { realm: REALM_NAME, enabled: true });
+        }, realmConfig);
         console.log('      Realm created.');
     } catch (e) {
-        if (e.message.includes('409')) console.log('      Realm already exists. Moving on.');
-        else throw e;
+        if (e.message.includes('409')) {
+            console.log('      Realm already exists. Updating token lifespans...');
+            await request(`/admin/realms/${REALM_NAME}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            }, realmConfig);
+            console.log('      Realm token lifespans updated.');
+        } else throw e;
     }
 }
 
