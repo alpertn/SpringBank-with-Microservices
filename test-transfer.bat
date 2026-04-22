@@ -8,8 +8,6 @@ setlocal enabledelayedexpansion
 :: ============================================================
 
 set GATEWAY=http://localhost:8095
-set DELAY_SHORT=5
-set DELAY_LONG=15
 
 :: -- Rastgele 8 karakterlik suffix (harf+rakam) --
 for /f "delims=" %%R in ('powershell.exe -NoProfile -Command "(-join((48..57+97..122)|Get-Random -Count 8|ForEach-Object{[char]$_}))"') do set RAND1=%%R
@@ -44,16 +42,16 @@ echo.
 echo [ADIM 1/10] Kullanici 1 kayit ediliyor...
 curl.exe -s -X POST "%GATEWAY%/api/auth-service/v1/auth/register" -H "Content-Type: application/json" -d "{\"email\":\"!USER1_EMAIL!\",\"password\":\"%USER1_PASS%\",\"name\":\"!USER1_NAME!\",\"surname\":\"!USER1_SURNAME!\",\"role\":\"USER\"}"
 echo.
-echo  [%DELAY_LONG%sn bekleniyor - Kafka user-create akisi...]
-timeout /t %DELAY_LONG% /nobreak >nul
+echo  [7sn bekleniyor - Kafka user-create akisi...]
+powershell.exe -NoProfile -Command "Start-Sleep -Seconds 7"
 
 :: ADIM 2: Kullanici 2 Kayit
 echo.
 echo [ADIM 2/10] Kullanici 2 kayit ediliyor...
 curl.exe -s -X POST "%GATEWAY%/api/auth-service/v1/auth/register" -H "Content-Type: application/json" -d "{\"email\":\"!USER2_EMAIL!\",\"password\":\"%USER2_PASS%\",\"name\":\"!USER2_NAME!\",\"surname\":\"!USER2_SURNAME!\",\"role\":\"USER\"}"
 echo.
-echo  [%DELAY_LONG%sn bekleniyor - Kafka user-create akisi...]
-timeout /t %DELAY_LONG% /nobreak >nul
+echo  [7sn bekleniyor - Kafka user-create akisi...]
+powershell.exe -NoProfile -Command "Start-Sleep -Seconds 7"
 
 :: ADIM 3: Kullanici 1 Login
 echo.
@@ -102,8 +100,8 @@ echo.
 echo  Kullanici 2 money hesabi...
 curl.exe -s -X POST "%GATEWAY%/api/money-service/v1/accounts/createusermoney" -H "Authorization: Bearer !TOKEN2!" -H "X-User-KeycloakUUID: !UUID2!"
 echo.
-echo  [%DELAY_SHORT%sn bekleniyor...]
-timeout /t %DELAY_SHORT% /nobreak >nul
+echo  [5sn bekleniyor...]
+powershell.exe -NoProfile -Command "Start-Sleep -Seconds 5"
 
 :: ADIM 6: Kullanici 2 IBAN al
 echo.
@@ -136,25 +134,23 @@ echo.
 echo [ADIM 8/10] Kullanici 1'e DEPOSIT (5000 TL)...
 curl.exe -s -X POST "%GATEWAY%/api/transaction-service/v1/transactions/create" -H "Authorization: Bearer !TOKEN1!" -H "Content-Type: application/json" -H "X-User-KeycloakUUID: !UUID1!" -H "X-User-Email: !USER1_EMAIL!" -H "X-User-Name: !USER1_NAME!" -H "X-User-Surname: !USER1_SURNAME!" -d "{\"amount\":5000,\"transactionType\":\"DEPOSIT\",\"senderIban\":null,\"receiverIban\":null,\"receiverName\":null,\"receiverSurname\":null,\"description\":\"Test deposit\"}"
 echo.
-echo  [%DELAY_LONG%sn bekleniyor - Kafka DEPOSIT akisi...]
-timeout /t %DELAY_LONG% /nobreak >nul
+echo  [7sn bekleniyor - Kafka DEPOSIT akisi...]
+powershell.exe -NoProfile -Command "Start-Sleep -Seconds 7"
 echo  -- Deposit sonrasi Kullanici 1 --
 curl.exe -s -X GET "%GATEWAY%/api/money-service/v1/accounts/balance-info" -H "Authorization: Bearer !TOKEN1!" -H "X-User-KeycloakUUID: !UUID1!"
 echo.
 
 :: ADIM 9: TRANSFER 1000 TL
 echo.
-echo [ADIM 9/10] TRANSFER: !USER1_NAME! --^> !USER2_NAME! (1000 TL)
+echo [ADIM 9/10] TRANSFER: !USER1_NAME! ^> !USER2_NAME! (1000 TL)
 echo  Alici IBAN     : !USER2_IBAN!
 echo  Alici Ad/Soyad : !USER2_NAME! !USER2_SURNAME!
 echo.
 curl.exe -s -X POST "%GATEWAY%/api/transaction-service/v1/transactions/create" -H "Authorization: Bearer !TOKEN1!" -H "Content-Type: application/json" -H "X-User-KeycloakUUID: !UUID1!" -H "X-User-Email: !USER1_EMAIL!" -H "X-User-Name: !USER1_NAME!" -H "X-User-Surname: !USER1_SURNAME!" -d "{\"amount\":1000,\"transactionType\":\"TRANSFER\",\"senderIban\":null,\"receiverIban\":\"!USER2_IBAN!\",\"receiverName\":\"!USER2_NAME!\",\"receiverSurname\":\"!USER2_SURNAME!\",\"description\":\"Test transfer\"}"
 echo.
 echo.
-echo  [%DELAY_LONG%sn bekleniyor - Kafka: block then user-validate then fraud then execute...]
-timeout /t %DELAY_LONG% /nobreak >nul
-echo  [+%DELAY_LONG%sn daha bekleniyor...]
-timeout /t %DELAY_LONG% /nobreak >nul
+echo  [30sn bekleniyor - Kafka: block > user-validate > fraud > execute...]
+powershell.exe -NoProfile -Command "Start-Sleep -Seconds 30"
 
 :: ADIM 10: Son bakiyeler
 echo.
