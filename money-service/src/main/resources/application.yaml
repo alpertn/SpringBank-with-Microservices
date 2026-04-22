@@ -8,6 +8,7 @@ kafka:
       blockmoney:
         listener: ${KAFKA_TRANSACTION_BLOCKUSER_LISTENER:banking-microservices.transaction.transaction-service.created.v1}
         sender: ${KAFKA_TRANSACTION_BLOCKUSER_SENDER:banking-microservices.transaction.money-service.block-money.success.v1}
+        user-validation-sender: ${KAFKA_TRANSACTION_BLOCKMONEY_USERVALIDATION_SENDER:banking-microservices.transaction.money-service.block-money.user-validation.v1}
       transactionmoney:
         # Diyagram Adım 1: created.v1'i dinle → DEPOSIT/WITHDRAW direkt işle, TRANSFER → blockFunds()
         listener: ${KAFKA_TRANSACTION_TOPIC_LISTENER:banking-microservices.transaction.transaction-service.created.v1}

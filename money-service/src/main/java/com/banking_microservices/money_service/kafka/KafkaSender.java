@@ -48,6 +48,9 @@ public class KafkaSender {
     @Value("${kafka.topics.transaction.blockmoney.sender}")
     private String blockMoneyTopicSender;
 
+    @Value("${kafka.topics.transaction.blockmoney.user-validation-sender}")
+    private String blockMoneyUserValidationTopicSender;
+
 
     @Value("${kafka.topics.transaction.result.sender}")
     private String transactionResultSenderTopic;
@@ -57,16 +60,6 @@ public class KafkaSender {
         this.currentTime = currentTime;
     }
 
-    public void sendTransaction(String key, KafkaTransactionTopicMessageDto kafkaTransactionTopicMessageDto) {
-        try {
-            log.info(" ({}) > KafkaSender | sendTransaction -> Kafkaya mesaj gonderilmek uzere alindi. Dto: \n{}", currentTime.get(), gson.toJson(kafkaTransactionTopicMessageDto));
-            kafkaTemplate.send(transactionSenderTopic, key, kafkaTransactionTopicMessageDto);
-            log.info(" ({}) > KafkaSender | sendTransaction -> Kafkaya mesaj gonderildi. Key: {}, Dto: \n{}", currentTime.get(), key, gson.toJson(kafkaTransactionTopicMessageDto));
-        } catch (Exception e) {
-            log.warn(" ({}) > KafkaSender | sendTransaction -> Kafkaya mesaj gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
-            throw new KafkaSendException("Kafka Send Exception. " + key + " " + kafkaTransactionTopicMessageDto);
-        }
-    }
 
 
     /**
@@ -95,8 +88,11 @@ public class KafkaSender {
     public void sendBlockedMoneyTopic(String key, KafkaTransactionTopicMessageDto dto) {
         try {
             log.info(" ({}) > KafkaSender | sendBlockedMoneyTopic -> Blockmoney mesaji gonderilmek uzere alindi. Dto: \n{}", currentTime.get(), gson.toJson(dto));
+            // 1) transaction-service status update
             kafkaTemplate.send(blockMoneyTopicSender, key, dto);
-            log.info(" ({}) > KafkaSender | sendBlockedMoneyTopic -> Kafkaya blockmoney mesaji gonderildi. Key: {}, Dto: \n{}", currentTime.get(), key, gson.toJson(dto));
+            // 2) user-service'in dogrudan alacagi ayri validation topic
+            kafkaTemplate.send(blockMoneyUserValidationTopicSender, key, dto);
+            log.info(" ({}) > KafkaSender | sendBlockedMoneyTopic -> Kafkaya blockmoney mesaji gonderildi (her iki topice). Key: {}", currentTime.get(), key);
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendBlockedMoneyTopic -> Kafkaya blockmoney mesaji gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
             dto.setStatus(TransactionStatus.BLOCK_MONEY_FAILED);

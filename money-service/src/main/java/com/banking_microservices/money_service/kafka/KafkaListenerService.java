@@ -88,6 +88,8 @@ public class KafkaListenerService {
         }
     }
 
+
+
     // ═══════════════════════════════════════════════════════════════════════
     // ADIM 4 — fraud-checked.v1 dinle (TRANSFER için)
     //   TRANSFER → gerçek para hareketi: withdrawBlocked + deposit → COMPLETED

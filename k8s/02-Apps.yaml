@@ -1,4 +1,4 @@
-﻿#Notlar
+#Notlar
 
 #HPA çalışması için Metrics Server kurulmalı:
 #kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
@@ -91,7 +91,7 @@ spec:
             - name: SPRING_DATASOURCE_PASSWORD
               value: banking_admin
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
-              value: create
+              value: update
 
             # Port Numarasi
             - name: USER_SERVICE_PORT_NUMBER
@@ -115,18 +115,25 @@ spec:
             - name: KAFKA_USERNAME_VALIDATION_SENDER
               value: banking-microservices.username-validation.user-service.success.v1
             - name: KAFKA_USERNAME_VALIDATION_LISTENER
-              value: banking-microservices.username-validation.money-service.progress.v1
+              value: banking-microservices.username-validation.money-service.progress.v1 # banking-microservices.transaction.money-service.block-money.success.v1
             - name: KAFKA_USERNAME_VALIDATION_ERROR
               value: banking-microservices.username-validation.money-service.error.v1
             # Transaction Validation
-            # Diyagram Adim 2: block-money.success.v1'i dinle (eski: fraud-checked.v1)
+            # Diyagram Adim 2: block-money.user-validation.v1'i dinle (user-service icin ozel topic)
             - name: KAFKA_TRANSACTION_USERNAME_VALIDATION_LISTENER
-              value: banking-microservices.transaction.money-service.block-money.success.v1
+              value: banking-microservices.transaction.money-service.block-money.user-validation.v1
             - name: KAFKA_TRANSACTION_USERNAME_VALIDATION_SENDER
               value: banking-microservices.transaction.user-service.user-validation.success.v1
             # DÜZELTME: Eski topic (user-validation.error.v1) dinlenmiyordu
             - name: KAFKA_TRANSACTION_USERNAME_VALIDATION_ERROR
               value: banking-microservices.transaction.transaction-service.error.v1
+            # Kafka Consumer Fix: auto-offset-reset=earliest + StringDeserializer
+            - name: SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET
+              value: earliest
+            - name: SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER
+              value: org.apache.kafka.common.serialization.StringDeserializer
+            - name: SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER
+              value: org.apache.kafka.common.serialization.StringDeserializer
 
 
 ---
@@ -214,7 +221,7 @@ spec:
             - name: SPRING_DATASOURCE_PASSWORD
               value: banking_admin
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
-              value: create
+              value: update
 
             # Harici Zorunlu Olmayanlar
             - name: MONEY_SERVICE_PORT_NUMBER
@@ -246,6 +253,9 @@ spec:
               value: banking-microservices.transaction.transaction-service.created.v1
             - name: KAFKA_TRANSACTION_BLOCKUSER_SENDER
               value: banking-microservices.transaction.money-service.block-money.success.v1
+            # Yeni: user-service icin ozel block-money validation topic
+            - name: KAFKA_TRANSACTION_BLOCKMONEY_USERVALIDATION_SENDER
+              value: banking-microservices.transaction.money-service.block-money.user-validation.v1
             # Diyagram Adim 4 (YENi): fraud-checked.v1'i dinler - TRANSFER gercek para hareketi
             - name: KAFKA_TRANSACTION_TRANSFER_EXECUTE_LISTENER
               value: banking-microservices.transaction.fraud-service.checked.v1
@@ -342,7 +352,7 @@ spec:
             - name: SPRING_DATASOURCE_PASSWORD
               value: banking_admin
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
-              value: create
+              value: update
 
             # PORT
             - name: TRANSACTION_SERVICE_PORT_NUMBER
@@ -457,7 +467,7 @@ spec:
             - name: SPRING_DATASOURCE_PASSWORD
               value: banking_admin
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
-              value: create
+              value: update
             # Redis
             - name: SPRING_DATA_REDIS_PORT
               value: "6379"
@@ -678,7 +688,7 @@ spec:
             - name: SPRING_DATASOURCE_PASSWORD
               value: banking_admin
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
-              value: create
+              value: update
 
             # PORT
             - name: FRAUD_SERVICE_PORT_NUMBER
