@@ -1,14 +1,7 @@
-package com.banking_microservices.money_service.service;
+25.04.26
 
-Transaction-Servicede 
-KafkaTransactionTopicService kullanılmıyor ve sendTransactionToUserService kafka gonderme methoduna gonderılıyor.
+- Saga Pattern Eklenecek
 
-
-sendBlockedMoneyTopic de sadece bloke olan para transferlerınde kullanılıyor.
-
-
-KafkaTransactionTopicService ile sendBlockedMoneyTopic birleştirilecek. user-service bu bilgileri aldıgında eğer transfer ise receiver iban receiver id'yi ve isimlerin çakışmamasını kontrol edicek.
-eğer transfer değil de deposit withdraw ise işlem receiver a bakmayacak. yine fraud serviceye gidecek bypass olmayacak.
-
-tüm işlem bittikten sonra da eski committe yazılan hatalara bakılacak. düzeltilen yerleri kullanan yerler de düzeltilmiş mi bakılacak.
-
+İlk transaction işlemleri için money-serviceye classlar eklenecek.
+Transaction-serviceye endpointler eklenecek
+Kafka ile sağlanacak.

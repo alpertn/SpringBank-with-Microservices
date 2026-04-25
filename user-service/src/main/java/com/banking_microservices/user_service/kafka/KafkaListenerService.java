@@ -75,6 +75,8 @@ public class KafkaListenerService {
             log.warn(" ({}) > KafkaListenerService | listenCreateUserTopic -> Zaten islendi, atlaniyor: {}", currentTime.get(), dto.getEventUUID());
             return;
         }
+        log.info(" ({}) > KafkaListenerService | listenCreateUserTopic -> repositorye kaydediliyor. Dto:\n{}", currentTime.get(), gson.toJson(dto));
+
         eventRepository.save(KafkaEvent.builder()
                 .eventId(dto.getEventUUID())
                 .eventType(KafkaEventType.USER_CREATE_SUCCESS.name())
