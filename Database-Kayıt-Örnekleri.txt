@@ -1,0 +1,278 @@
+Transaction-Service
+
+DB banking_transactions
+
+Table transactions
+
+
+command(pod ismiyle): kubectl exec -it -n banking-microservices postgres-ffc4dfb95-xctnk -- env PGPASSWORD=local_password psql -U banking_admin -d banking_transactions -x -c "SELECT * FROM transactions;"
+
+
+-[ RECORD 3 ]------+-------------------------------------
+id                 | 5514c3a3-352b-4f24-966b-7ba25a520585
+description        | Şubeden/ATMden Para Yatırma
+error              | f
+error_description  |
+event_id           | 6afa404f-1295-46e2-92ba-370dc441e57a
+is_money_blocked   | f
+created_at         | 2026-04-25 14:02:46.606226
+money              | 1000.00
+receiver_email     |
+receiver_iban      | TR7873156YBE56NI6YOIX7MXQB
+receiver_name      |
+receiver_surname   |
+receiver_user_id   |
+sender_email       | ozbay@gmail.com
+sender_iban        | TR7873156YBE56NI6YOIX7MXQB
+sender_name        | mehmet alper
+sender_surname     | ozbay
+sender_user_id     | fa63894f-7382-477b-9846-384b9037bf7b
+status             | COMPLETED
+status_description | İşlem tamamlandı
+transaction_type   | DEPOSIT
+transfer_status    | COMPLETED
+user_validation    | f
+-[ RECORD 4 ]------+-------------------------------------
+id                 | f9f20ef2-6634-49a8-98ab-9c90be0b7741
+description        | Şubeden/ATMden Para Yatırma
+error              | f
+error_description  |
+event_id           | e64f5cec-371f-4125-b932-2d8ce7a7a0ef
+is_money_blocked   | f
+created_at         | 2026-04-25 14:02:54.960076
+money              | 5000.00
+receiver_email     |
+receiver_iban      | TR25123412YFAR63NI7EVYXQ7Y
+receiver_name      |
+receiver_surname   |
+receiver_user_id   |
+sender_email       | karakusorhan@gmail.com
+sender_iban        | TR25123412YFAR63NI7EVYXQ7Y
+sender_name        | orhan
+sender_surname     | karakus
+sender_user_id     | cab5954c-fb80-412d-8ac5-a16ac445811b
+status             | COMPLETED
+status_description | İşlem tamamlandı
+transaction_type   | DEPOSIT
+transfer_status    | COMPLETED
+user_validation    | f
+-[ RECORD 5 ]------+-------------------------------------
+id                 | 985a5aa1-24e9-4af7-96dc-87e9955d5919
+description        | bagis
+error              | f
+error_description  |
+event_id           | 9a0ece09-d291-46aa-9de5-fab397823a73
+is_money_blocked   | f
+created_at         | 2026-04-25 14:03:16.575459
+money              | 4000.00
+receiver_email     | ozbay@gmail.com
+receiver_iban      | TR7873156YBE56NI6YOIX7MXQB
+receiver_name      | mehmet alper
+receiver_surname   | ozbay
+receiver_user_id   | fa63894f-7382-477b-9846-384b9037bf7b
+sender_email       | karakusorhan@gmail.com
+sender_iban        | TR25123412YFAR63NI7EVYXQ7Y
+sender_name        | orhan
+sender_surname     | karakus
+sender_user_id     | cab5954c-fb80-412d-8ac5-a16ac445811b
+status             | COMPLETED
+status_description | İşlem tamamlandı
+transaction_type   | TRANSFER
+transfer_status    | COMPLETED
+user_validation    | t
+-[ RECORD 6 ]------+-------------------------------------
+id                 | 8284d5c9-05f9-487e-bfac-b9fb485cd34b
+description        | Şubeden/ATMden Para Çekme
+error              | f
+error_description  |
+event_id           | cdefb39a-a075-4644-b7e7-2dabed746220
+is_money_blocked   | f
+created_at         | 2026-04-25 14:05:23.70542
+money              | 1000.00
+receiver_email     |
+receiver_iban      |
+receiver_name      |
+receiver_surname   |
+receiver_user_id   |
+sender_email       | karakusorhan@gmail.com
+sender_iban        | TR25123412YFAR63NI7EVYXQ7Y
+sender_name        | orhan
+sender_surname     | karakus
+sender_user_id     | cab5954c-fb80-412d-8ac5-a16ac445811b
+status             | COMPLETED
+status_description | İşlem tamamlandı
+transaction_type   | WITHDRAW
+transfer_status    | COMPLETED
+user_validation    | f
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+User-Service
+banking_users
+Table = users
+
+kubectl exec -it -n banking-microservices postgres-ffc4dfb95-xctnk -- env PGPASSWORD=local_password psql -U banking_admin -d banking_users -x -c "SELECT * FROM users;"
+
+
+-[ RECORD 1 ]-+-------------------------------------
+id            | c7c6ba3c-bcb5-4f51-86ce-a2ba0912b860
+active        | t
+created_at    | 2026-04-25 13:37:41.867141
+keycloackuuid | b7a5fce4-2f7d-4330-a705-a807be87b4e8
+mail          | elif.demir_tuveny8i@springbank.test
+name          | Elif
+password      | Test1234
+role          | 0
+surname       | Demir
+-[ RECORD 2 ]-+-------------------------------------
+id            | db118b0b-71a1-478d-87a3-a457b7a4476e
+active        | t
+created_at    | 2026-04-25 13:37:46.986818
+keycloackuuid | 7aa818bb-9ad0-4355-8d8f-309bbba09b91
+mail          | yusuf.cakir_tlghbnr6@springbank.test
+name          | Yusuf
+password      | Test1234
+role          | 0
+surname       | Cakir
+-[ RECORD 3 ]-+-------------------------------------
+id            | ec858347-c2f3-48bb-be5e-8c5d1a14e8a5
+active        | t
+created_at    | 2026-04-25 14:02:20.750237
+keycloackuuid | fa63894f-7382-477b-9846-384b9037bf7b
+mail          | ozbay@gmail.com
+name          | mehmet alper
+password      | ozbay@gmail.com
+role          | 0
+surname       | ozbay
+-[ RECORD 4 ]-+-------------------------------------
+id            | 47e62eb7-5459-4b77-94f2-687b606d14fa
+active        | t
+created_at    | 2026-04-25 14:02:40.324266
+keycloackuuid | cab5954c-fb80-412d-8ac5-a16ac445811b
+mail          | karakusorhan@gmail.com
+name          | orhan
+password      | karakusorhan@gmail.com
+role          | 0
+surname       | karakus
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Table = kafka_event
+
+kubectl exec -it -n banking-microservices postgres-ffc4dfb95-xctnk -- env PGPASSWORD=local_password psql -U banking_admin -d banking_users -x -c "SELECT * FROM kafka_event;"
+
+-[ RECORD 1 ]------------------------------------
+event_id   | b7a5fce4-2f7d-4330-a705-a807be87b4e8
+created_at | 2026-04-25 13:37:40.882765
+event_type | USER_AUTH_CREATE
+-[ RECORD 2 ]------------------------------------
+event_id   | 7aa818bb-9ad0-4355-8d8f-309bbba09b91
+created_at | 2026-04-25 13:37:46.98202
+event_type | USER_AUTH_CREATE
+-[ RECORD 3 ]------------------------------------
+event_id   | 89d3f08d-b789-4402-9a33-573425469ba5
+created_at | 2026-04-25 13:38:35.202223
+event_type | USER_TX_VALIDATE
+-[ RECORD 4 ]------------------------------------
+event_id   | fa63894f-7382-477b-9846-384b9037bf7b
+created_at | 2026-04-25 14:02:20.643984
+event_type | USER_AUTH_CREATE
+-[ RECORD 5 ]------------------------------------
+event_id   | cab5954c-fb80-412d-8ac5-a16ac445811b
+created_at | 2026-04-25 14:02:40.317774
+event_type | USER_AUTH_CREATE
+-[ RECORD 6 ]------------------------------------
+event_id   | 9a0ece09-d291-46aa-9de5-fab397823a73
+created_at | 2026-04-25 14:03:16.79618
+event_type | USER_TX_VALIDATE
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+money-Service
+banking_money
+Table = money
+
+kubectl exec -it -n banking-microservices postgres-ffc4dfb95-xctnk -- env PGPASSWORD=local_password psql -U banking_admin -d banking_money -x -c "SELECT * FROM money;"
+
+-[ RECORD 1 ]------+-------------------------------------
+id                 | 17d373e4-3bd2-456e-920d-b95145ee340f
+blocked_money      | 0.00
+keycloak_user_uuid | b7a5fce4-2f7d-4330-a705-a807be87b4e8
+money              | 4000.00
+user_iban          | TR45437316CLR0TQ5NZLSHUJHK
+user_id            | b7a5fce4-2f7d-4330-a705-a807be87b4e8
+-[ RECORD 2 ]------+-------------------------------------
+id                 | 636a1a68-fc1d-429e-8966-84b4ee1bfcfa
+blocked_money      | 0.00
+keycloak_user_uuid | 7aa818bb-9ad0-4355-8d8f-309bbba09b91
+money              | 1000.00
+user_iban          | TR63447762MUIL2WVTNQOC5V1T
+user_id            | 7aa818bb-9ad0-4355-8d8f-309bbba09b91
+-[ RECORD 3 ]------+-------------------------------------
+id                 | 12fe7f21-3946-43d3-bb40-9f74d112b05d
+blocked_money      | 0.00
+keycloak_user_uuid | fa63894f-7382-477b-9846-384b9037bf7b
+money              | 5000.00
+user_iban          | TR7873156YBE56NI6YOIX7MXQB
+user_id            | fa63894f-7382-477b-9846-384b9037bf7b
+-[ RECORD 4 ]------+-------------------------------------
+id                 | 94787154-e6c7-46ea-81fe-24703492831d
+blocked_money      | 0.00
+keycloak_user_uuid | cab5954c-fb80-412d-8ac5-a16ac445811b
+money              | 0.00
+user_iban          | TR25123412YFAR63NI7EVYXQ7Y
+user_id            | cab5954c-fb80-412d-8ac5-a16ac445811b
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Table = kafkalastactivity
+
+kubectl exec -it -n banking-microservices postgres-ffc4dfb95-xctnk -- env PGPASSWORD=local_password psql -U banking_admin -d banking_money -x -c "SELECT * FROM kafkalastactivity;"
+
+-[ RECORD 1 ]------------------------------------
+id         | bd242fdc-9a1b-4f5b-b5f4-64a90782ea95
+created_at | 2026-04-25 13:38:23.311694
+event_type | TRANSACTION_PROCESS
+eventuuid  | fea570b7-cdcd-437c-b235-884d52c4586a
+-[ RECORD 2 ]------------------------------------
+id         | 6e4a7226-ad84-4706-b835-9c0f4f1275ef
+created_at | 2026-04-25 13:38:33.239884
+event_type | TRANSACTION_PROCESS
+eventuuid  | 89d3f08d-b789-4402-9a33-573425469ba5
+-[ RECORD 3 ]------------------------------------
+id         | be58d817-999b-429d-be71-8e9a63931cea
+created_at | 2026-04-25 13:38:42.595994
+event_type | FRAUD_CHECKED_EFT
+eventuuid  | 89d3f08d-b789-4402-9a33-573425469ba5
+-[ RECORD 4 ]------------------------------------
+id         | 79059158-d2dc-4979-8644-67c05f00bd3f
+created_at | 2026-04-25 14:02:47.221246
+event_type | TRANSACTION_PROCESS
+eventuuid  | 6afa404f-1295-46e2-92ba-370dc441e57a
+-[ RECORD 5 ]------------------------------------
+id         | 09a4ff96-0805-4b44-9e18-814819db4d46
+created_at | 2026-04-25 14:02:54.981699
+event_type | TRANSACTION_PROCESS
+eventuuid  | e64f5cec-371f-4125-b932-2d8ce7a7a0ef
+-[ RECORD 6 ]------------------------------------
+id         | 9fdf3454-ae79-4924-89c2-bd84010edb64
+created_at | 2026-04-25 14:03:16.606285
+event_type | TRANSACTION_PROCESS
+eventuuid  | 9a0ece09-d291-46aa-9de5-fab397823a73
+-[ RECORD 7 ]------------------------------------
+id         | 5d78ab9b-214a-4638-8c2a-6a2b63d66212
+created_at | 2026-04-25 14:03:17.298235
+event_type | FRAUD_CHECKED_EFT
+eventuuid  | 9a0ece09-d291-46aa-9de5-fab397823a73
+-[ RECORD 8 ]------------------------------------
+id         | f7887730-2052-4b1e-947b-b615b12ac05c
+created_at | 2026-04-25 14:05:23.750691
+event_type | TRANSACTION_PROCESS
+eventuuid  | cdefb39a-a075-4644-b7e7-2dabed746220

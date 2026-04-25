@@ -4,4 +4,13 @@
 
 İlk transaction işlemleri için money-serviceye classlar eklenecek.
 Transaction-serviceye endpointler eklenecek
-Kafka ile sağlanacak.
+Veri yine event driven arch Kafka
+
+Zorunlu olmayan
+
+tum mikroservislerde kafka event ile alakali table
+created_at         | 2026-04-25 14:05:23.70542
+
+boyle olucak
+
+created_at         | 2026-04-25 14:05:23

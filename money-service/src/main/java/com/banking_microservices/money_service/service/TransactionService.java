@@ -85,5 +85,8 @@ public class TransactionService {
         ibanResolver.assertAccountExists(dto.getReceiverIban(), "Receiver", dto);
 
         moneyTransferExecutor.execute(dto);
+
     }
+
+    // handleSagaEvent
 }

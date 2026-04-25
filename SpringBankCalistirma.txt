@@ -74,3 +74,5 @@ $jobs | Receive-Job
 kubectl rollout restart deployment -n banking-microservices
 kubectl get pods -n banking-microservices
 
+
+kubectl exec -it -n banking-microservices postgres-ffc4dfb95-xctnk -- env PGPASSWORD=local_password psql -U banking_admin -d banking_transactions -c "SELECT * FROM transactions;"
