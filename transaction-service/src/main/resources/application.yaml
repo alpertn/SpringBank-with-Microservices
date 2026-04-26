@@ -20,6 +20,12 @@ kafka:
       result:
         listener: ${KAFKA_TRANSACTION_RESULT_LISTENER:banking-microservices.transaction.result.success.v1}
 
+        # Saga
+
+      saga:
+        listener: ${KAFKA_TRANSACTION_SAGA_TRANSACTION-SERVICE_CREATED:banking-microservices.transaction.saga.transaction-service.created.v1}
+        sender: ${KAFKA_TRANSACTION_SAGA_MONEY-SERVICE_SUCCESS:banking-microservices.transaction.saga.money-service.success.v1}
+        error: ${KAFKA_TRANSACTION_SAGA_MONEY-SERVICE_ERROR:banking-microservices.transaction.saga.money-service.error.v1}
 spring:
   application:
     name: transaction-service

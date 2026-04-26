@@ -38,7 +38,7 @@ public class SagaService {
     //        log.error(" > TransactionErrorHandler | sendErrorAndThrow -> Hata Kafkaya iletildi. EventUUID: {}, Aciklama: {}", dto.getEventUUID(), description);
     //        throw exception;
     //    }
-    public <T extends RuntimeException> void sendErrorAndThrow()
+//    public <T extends RuntimeException> void sendErrorAndThrow()
 
 }
 //|
