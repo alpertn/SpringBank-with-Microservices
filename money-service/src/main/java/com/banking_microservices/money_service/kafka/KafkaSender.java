@@ -1,7 +1,10 @@
 package com.banking_microservices.money_service.kafka;
 
 import com.banking_microservices.money_service.dto.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.money_service.dto.SagaEventDto;
+import com.banking_microservices.money_service.dto.SagaEventsDto;
 import com.banking_microservices.money_service.exception.KafkaSendException;
+import com.banking_microservices.money_service.models.SagaEvents;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +53,12 @@ public class KafkaSender {
 
     @Value("${kafka.topics.transaction.blockmoney.user-validation-sender}")
     private String blockMoneyUserValidationTopicSender;
+
+    @Value("${kafka.topics.transaction.saga.sender}")
+    private String sagaSenderTopic;
+
+    @Value("${kafka.topics.transaction.saga.error}")
+    private String sagaErrorTopic;
 
 
     @Value("${kafka.topics.transaction.result.sender}")
@@ -161,4 +170,36 @@ public class KafkaSender {
             throw new KafkaSendException("Kafka Transaction Success Send Exception. " + key + " " + dto);
         }
     }
+
+
+    public void sendSagaSuccess(SagaEventsDto dto) {
+        if (dto == null) throw new KafkaSendException("sendSagaSuccess: dto null");
+        if (dto.getKafkaEventUUID() == null) throw new KafkaSendException("sendSagaSuccess: kafkaEventUUID null");
+
+        log.info(" ({}) > KafkaSender | sendSagaSuccess -> Saga success Kafkaya gonderilmek uzere alindi. UUID: {}, Status: {}", currentTime.get(), dto.getUUID(), dto.getStatus());
+        try {
+            kafkaTemplate.send(sagaSenderTopic, dto.getKafkaEventUUID(), dto);
+            log.info(" ({}) > KafkaSender | sendSagaSuccess -> Saga success Kafkaya gonderildi. Topic: {}, UUID: {}", currentTime.get(), sagaSenderTopic, dto.getUUID());
+        } catch (Exception e) {
+            log.error(" ({}) > KafkaSender | sendSagaSuccess -> Saga success Kafkaya gonderilemedi! UUID: {}, Hata: {}", currentTime.get(), dto.getUUID(), e.getMessage());
+            throw new KafkaSendException("Kafka Saga Success Send Exception. UUID = " + dto.getKafkaEventUUID() + " - " + e.getMessage());
+        }
+
+    }
+
+    public void sendSagaError(SagaEventsDto dto) {
+        if (dto == null) throw new KafkaSendException("sendSagaError: dto null");
+        if (dto.getKafkaEventUUID() == null) throw new KafkaSendException("sendSagaError: kafkaEventUUID null");
+
+        log.info(" ({}) > KafkaSender | sendSagaError -> Saga error Kafkaya gonderilmek uzere alindi. UUID: {}, Status: {}", currentTime.get(), dto.getUUID(), dto.getStatus());
+        try {
+            kafkaTemplate.send(sagaErrorTopic, dto.getKafkaEventUUID(), dto);
+            log.info(" ({}) > KafkaSender | sendSagaError -> Saga error Kafkaya gonderildi. Topic: {}, UUID: {}", currentTime.get(), sagaErrorTopic, dto.getUUID());
+        } catch (Exception e) {
+            log.error(" ({}) > KafkaSender | sendSagaError -> Saga error Kafkaya gonderilemedi! UUID: {}, Hata: {}", currentTime.get(), dto.getUUID(), e.getMessage());
+            throw new KafkaSendException("Kafka Saga Error Send Exception. UUID = " + dto.getKafkaEventUUID() + " - " + e.getMessage());
+        }
+
+    }
+
 }

@@ -1,9 +1,12 @@
 package com.banking_microservices.money_service.kafka;
 
 import com.banking_microservices.money_service.dto.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.money_service.dto.SagaEventsDto;
 import com.banking_microservices.money_service.dto.enums.KafkaEventType;
 import com.banking_microservices.money_service.dto.enums.TransactionStatus;
 import com.banking_microservices.money_service.dto.enums.TransactionType;
+import com.banking_microservices.money_service.models.SagaEvents;
+import com.banking_microservices.money_service.service.SagaService;
 import com.banking_microservices.money_service.service.TransactionService;
 import com.banking_microservices.money_service.service.UserMoneyService;
 import com.banking_microservices.money_service.service.helper.IdempotencyGuard;
@@ -24,6 +27,7 @@ public class KafkaListenerService {
     private final UserMoneyService userMoneyService;
     private final KafkaSender kafkaSender;
     private final IdempotencyGuard idempotencyGuard;
+    private final SagaService sagaService;
     private final Supplier<String> currentTime;
 
     private final Gson gson = new GsonBuilder()
@@ -39,11 +43,13 @@ public class KafkaListenerService {
                                 UserMoneyService userMoneyService,
                                 KafkaSender kafkaSender,
                                 IdempotencyGuard idempotencyGuard,
+                                SagaService sagaService,
                                 Supplier<String> currentTime) {
         this.transactionService = transactionService;
         this.userMoneyService = userMoneyService;
         this.kafkaSender = kafkaSender;
         this.idempotencyGuard = idempotencyGuard;
+        this.sagaService = sagaService;
         this.currentTime = currentTime;
     }
 
@@ -252,8 +258,37 @@ public class KafkaListenerService {
     ///  SAGA
     /// LISTENER
 
-    private void listenSagaTopic(){
-        
+    @KafkaListener(topics = "${kafka.topics.transaction.saga.listener}")
+    public void listenSagaTopic(String data) {
+        log.info(" ({}) > KafkaListenerService | listenSagaTopic -> Metoda veri geldi. RawData: {}", currentTime.get(), data);
+
+        if (data == null || data.isBlank()) {
+            log.warn(" ({}) > KafkaListenerService | listenSagaTopic -> Gecersiz (bos) mesaj alindi, atlaniyor.", currentTime.get());
+            return;
+        }
+
+        SagaEventsDto dto = null;
+        try {
+            dto = gson.fromJson(data, SagaEventsDto.class);
+        } catch (Exception e) {
+            log.error(" ({}) > KafkaListenerService | listenSagaTopic -> JSON parse hatasi! RawData: {}, Hata: {}", currentTime.get(), data, e.getMessage());
+            return;
+        }
+
+        if (dto == null || dto.getKafkaEventUUID() == null) {
+            log.warn(" ({}) > KafkaListenerService | listenSagaTopic -> Parse edilemedi veya KafkaEventUUID null, atlaniyor.", currentTime.get());
+            return;
+        }
+
+        log.info(" ({}) > KafkaListenerService | listenSagaTopic -> Saga event SagaService'e gonderiliyor. UUID: {}, KafkaEventUUID: {}", currentTime.get(), dto.getUUID(), dto.getKafkaEventUUID());
+
+        try {
+            sagaService.handleSagaEvent(dto);
+            log.info(" ({}) > KafkaListenerService | listenSagaTopic -> Saga event islendi. UUID: {}", currentTime.get(), dto.getUUID());
+        } catch (Exception e) {
+            log.error(" ({}) > KafkaListenerService | listenSagaTopic -> Saga event islenirken hata! UUID: {}, Hata: {}", currentTime.get(), dto.getUUID(), e.getMessage());
+        }
+
     }
 
 

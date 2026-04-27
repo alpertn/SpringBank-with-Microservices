@@ -1,6 +1,8 @@
 package com.banking_microservices.transaction_service.kafka;
 
 import com.banking_microservices.transaction_service.dto.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.transaction_service.exception.ValueNotFoundException;
+import com.banking_microservices.transaction_service.model.SagaEvents;
 import com.banking_microservices.transaction_service.model.TransactionEntity;
 import com.banking_microservices.transaction_service.repository.TransactionRepository;
 import com.banking_microservices.transaction_service.service.TransactionService;
@@ -175,6 +177,31 @@ public class KafkaListenerService {
                 return true;
             }
             return false;
+        }
+    }
+
+    @KafkaListener(topics = "${kafka.topics.transaction.saga.listener}")
+    public void listenSagaTopic(String data) {
+        log.info(" ({}) > KafkaListenerService | listenSagaTopic -> Metoda veri geldi. RawData:\n{}", currentTime.get(), data);
+
+        if (data == null || data.isBlank()) {
+            log.warn(" ({}) > KafkaListenerService | listenSagaTopic -> Gecersiz (bos) mesaj alindi, atlaniyor.", currentTime.get());
+            throw new ValueNotFoundException("Value Not Found On Saga Kafka Topic Listener. data is null or empty");
+        }
+
+        SagaEvents model = gson.fromJson(data, SagaEvents.class);
+        if (model == null || model.getUUID() == null) {
+            log.warn(" ({}) > KafkaListenerService | listenSagaTopic -> Parse edilemedi veya UUID null, atlaniyor. RawData:\n{}", currentTime.get(), data);
+            throw new ValueNotFoundException("Value Not Found On Saga Kafka Topic Listener. model: " + data);
+        }
+
+        log.info(" ({}) > KafkaListenerService | listenSagaTopic -> Saga event islenmek uzere alindi. UUID: {}, Status: {}", currentTime.get(), model.getUUID(), model.getStatus());
+
+        try {
+            transactionService.updateSagaEventStatus(model);
+            log.info(" ({}) > KafkaListenerService | listenSagaTopic -> Saga event status guncellendi. UUID: {}, Status: {}", currentTime.get(), model.getUUID(), model.getStatus());
+        } catch (Exception e) {
+            log.error(" ({}) > KafkaListenerService | listenSagaTopic -> updateSagaEventStatus hatasi. UUID: {}, Hata: {}", currentTime.get(), model.getUUID(), e.getMessage(), e);
         }
     }
 }

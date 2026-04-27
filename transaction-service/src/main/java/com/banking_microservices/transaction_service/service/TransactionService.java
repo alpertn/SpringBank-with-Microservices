@@ -1,16 +1,17 @@
 package com.banking_microservices.transaction_service.service;
 
+import com.banking_microservices.transaction_service.dto.TransactionHistory;
 import com.banking_microservices.transaction_service.dto.TransactionRequestDto;
 import com.banking_microservices.transaction_service.dto.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.transaction_service.dto.enums.SagaStatus;
 import com.banking_microservices.transaction_service.dto.enums.TransactionStatus;
 import com.banking_microservices.transaction_service.dto.enums.TransactionType;
 import com.banking_microservices.transaction_service.dto.enums.TransferStatus;
-import com.banking_microservices.transaction_service.exception.GetErrorLogsException;
-import com.banking_microservices.transaction_service.exception.KafkaSendExceptionOnService;
-import com.banking_microservices.transaction_service.exception.TransactionNotFoundException;
-import com.banking_microservices.transaction_service.exception.TransactionSaveException;
+import com.banking_microservices.transaction_service.exception.*;
 import com.banking_microservices.transaction_service.kafka.KafkaSender;
+import com.banking_microservices.transaction_service.model.SagaEvents;
 import com.banking_microservices.transaction_service.model.TransactionEntity;
+import com.banking_microservices.transaction_service.repository.SagaEventsRepository;
 import com.banking_microservices.transaction_service.repository.TransactionRepository;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -41,12 +42,14 @@ public class TransactionService {
             .create();
     private final KafkaSender kafkaSender;
     private final Supplier<String> currentTime;
+    private final SagaEventsRepository sagaEventsRepository;
 
     public TransactionService(TransactionRepository transactionRepository, KafkaSender kafkaSender,
-            Supplier<String> currentTime) {
+                              Supplier<String> currentTime, SagaEventsRepository sagaEventsRepository) {
         this.transactionRepository = transactionRepository;
         this.kafkaSender = kafkaSender;
         this.currentTime = currentTime;
+        this.sagaEventsRepository = sagaEventsRepository;
     }
 
     @Transactional
@@ -334,4 +337,89 @@ public class TransactionService {
             return TransferStatus.CREATED;
         }
     }
+
+
+    public void createSagaEvent(String eventUUID) {
+        log.info(" ({}) > TransactionService | createSagaEvent -> Metoda veri geldi. EventUUID: {}", currentTime.get(), eventUUID);
+
+        if (eventUUID == null || eventUUID.isBlank()) {
+            log.warn(" ({}) > TransactionService | createSagaEvent -> EventUUID null veya bos!", currentTime.get());
+            throw new TransactionNotFoundException("EventUUID bos olamaz.");
+        }
+
+        TransactionEntity transaction = transactionRepository.findByEventId(eventUUID).orElseThrow(() -> {
+            log.warn(" ({}) > TransactionService | createSagaEvent -> Transaction bulunamadi! EventUUID: {}", currentTime.get(), eventUUID);
+            return new TransactionNotFoundException("Transaction not found : " + eventUUID);
+        });
+
+        log.info(" ({}) > TransactionService | createSagaEvent -> Transaction bulundu. EventUUID: {}, Status: {}", currentTime.get(), eventUUID, transaction.getStatus());
+
+        SagaEvents sagaEvent = SagaEvents.builder()
+                .kafkaEventUUID(eventUUID)
+                .status(SagaStatus.CREATED)
+                .transactionHistory(
+                        TransactionHistory.builder()
+                                .eventId(transaction.getEventId())
+                                .description(transaction.getDescription())
+                                .money(transaction.getMoney())
+                                .senderUserId(transaction.getSenderUserId())
+                                .receiverUserId(transaction.getReceiverUserId())
+                                .build()
+                )
+                .build();
+
+        try {
+            kafkaSender.sendSagaEvent(sagaEvent);
+            log.info(" ({}) > TransactionService | createSagaEvent -> Saga event Kafkaya gonderildi. UUID: {}", currentTime.get(), sagaEvent.getUUID());
+        } catch (Exception e) {
+            log.error(" ({}) > TransactionService | createSagaEvent -> Saga event Kafkaya gonderilemedi! UUID: {}, Hata: {}", currentTime.get(), sagaEvent.getUUID(), e.getMessage());
+            throw new SagaEventDatabaseSaveException("Saga event Kafka gonderimi basarisiz: " + e.getMessage());
+        }
+
+        try {
+            sagaEventsRepository.save(sagaEvent);
+            log.info(" ({}) > TransactionService | createSagaEvent -> Saga event veritabanina kaydedildi. UUID: {}", currentTime.get(), sagaEvent.getUUID());
+        } catch (Exception e) {
+            log.error(" ({}) > TransactionService | createSagaEvent -> Saga event veritabanina kaydedilemedi! UUID: {}, Hata: {}", currentTime.get(), sagaEvent.getUUID(), e.getMessage());
+            throw new SagaEventDatabaseSaveException("An Exception With Save Database saga Event Model. " + e.getMessage());
+        }
+
+    }
+
+    @Transactional
+    public void updateSagaEventStatus(SagaEvents sagaEvents) {
+
+        if (sagaEvents == null || sagaEvents.getUUID() == null) {
+            log.warn(" ({}) > TransactionService | updateSagaEventStatus -> sagaEvents veya UUID null, isleme atlanacak.", currentTime.get());
+            return;
+        }
+
+        log.info(" ({}) > TransactionService | updateSagaEventStatus -> Metoda veri geldi. UUID: {}, Status: {}", currentTime.get(), sagaEvents.getUUID(), sagaEvents.getStatus());
+
+        SagaEvents existingSagaEvent = sagaEventsRepository.findById(sagaEvents.getUUID()).orElseThrow(() -> {
+            log.warn(" ({}) > TransactionService | updateSagaEventStatus -> Saga event bulunamadi! UUID: {}", currentTime.get(), sagaEvents.getUUID());
+            return new SagaEventNotFoundException("Saga event not found : " + sagaEvents.getUUID());
+        });
+
+        log.info(" ({}) > TransactionService | updateSagaEventStatus -> Mevcut status: {} -> Yeni status: {} UUID: {}", currentTime.get(), existingSagaEvent.getStatus(), sagaEvents.getStatus(), sagaEvents.getUUID());
+
+        existingSagaEvent.setStatus(sagaEvents.getStatus());
+        existingSagaEvent.setErrorDescripton(sagaEvents.getErrorDescripton());
+
+        if (sagaEvents.getTransactionHistory() != null) {
+            existingSagaEvent.setTransactionHistory(sagaEvents.getTransactionHistory());
+        }
+
+        try {
+            sagaEventsRepository.save(existingSagaEvent);
+            log.info(" ({}) > TransactionService | updateSagaEventStatus -> Saga event status GUNCELLENDI. UUID: {}, Status: {}", currentTime.get(), existingSagaEvent.getUUID(), existingSagaEvent.getStatus());
+        } catch (Exception e) {
+            log.error(" ({}) > TransactionService | updateSagaEventStatus -> Saga event status guncellenemedi! UUID: {}, Hata: {}", currentTime.get(), existingSagaEvent.getUUID(), e.getMessage());
+            throw new SagaEventDatabaseSaveException("Saga event status guncellenemedi: " + e.getMessage());
+        }
+    }
+
+    
+
+
 }

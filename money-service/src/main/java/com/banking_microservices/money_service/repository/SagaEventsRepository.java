@@ -1,9 +1,17 @@
 package com.banking_microservices.money_service.repository;
 
-import com.banking_microservices.money_service.models.SagaEvents;
+import com.banking_microservices.money_service.dto.SagaEventsDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface SagaEventsRepository extends JpaRepository<SagaEvents, String> {
+import java.util.Optional;
+
+public interface SagaEventsRepository extends JpaRepository<SagaEventsDto, String> {
 
     boolean existsByUUID(String uuid);
+
+    boolean existsByKafkaEventUUID(String kafkaEventUUID);
+
+    Optional<SagaEventsDto> findByKafkaEventUUID(String kafkaEventUUID);
+
 }
+

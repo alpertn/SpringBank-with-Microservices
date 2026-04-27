@@ -1,6 +1,5 @@
-package com.banking_microservices.money_service.models;
+package com.banking_microservices.money_service.dto;
 
-import com.banking_microservices.money_service.dto.TransactionEntity;
 import com.banking_microservices.money_service.dto.enums.SagaStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -17,7 +16,7 @@ import org.hibernate.annotations.UuidGenerator;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SagaEvents {
+public class SagaEventsDto {
 
 
     @Id
