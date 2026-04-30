@@ -48,6 +48,9 @@ spring:
     hikari:
       maximum-pool-size: 10
       minimum-idle: 5
+      max-lifetime: 580000 # Connection ne zaman yenilensin
+      keepalive-time: 150000 # Boşta duran connection ölmesin diye ping
+      connection-timeout: 20000 # Connection bulamazsa ne kadar beklensin
   jpa:
     hibernate:
       ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
