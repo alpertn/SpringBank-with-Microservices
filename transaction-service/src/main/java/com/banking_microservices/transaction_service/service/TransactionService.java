@@ -419,7 +419,35 @@ public class TransactionService {
         }
     }
 
-    
+    public SagaEvents getSagaEventByUUID(String uuid) {
+        log.info(" ({}) > TransactionService | getSagaEventByUUID -> Metoda veri geldi. UUID: {}", currentTime.get(), uuid);
+        return sagaEventsRepository.findById(uuid).orElseThrow(() -> {
+            log.warn(" ({}) > TransactionService | getSagaEventByUUID -> Saga event bulunamadi! UUID: {}", currentTime.get(), uuid);
+            return new SagaEventNotFoundException("Saga event not found with UUID: " + uuid);
+        });
+    }
 
+    public SagaEvents getSagaEventByKafkaEventUUID(String kafkaEventUUID) {
+        log.info(" ({}) > TransactionService | getSagaEventByKafkaEventUUID -> Metoda veri geldi. KafkaEventUUID: {}", currentTime.get(), kafkaEventUUID);
+        return sagaEventsRepository.findByKafkaEventUUID(kafkaEventUUID).orElseThrow(() -> {
+            log.warn(" ({}) > TransactionService | getSagaEventByKafkaEventUUID -> Saga event bulunamadi! KafkaEventUUID: {}", currentTime.get(), kafkaEventUUID);
+            return new SagaEventNotFoundException("Saga event not found with kafkaEventUUID: " + kafkaEventUUID);
+        });
+    }
+
+    public List<SagaEvents> getAllSagaEvents() {
+        log.info(" ({}) > TransactionService | getAllSagaEvents -> Tum saga eventler sorgulanıyor.", currentTime.get());
+        try {
+            return sagaEventsRepository.findAll();
+        } catch (Exception e) {
+            log.error(" ({}) > TransactionService | getAllSagaEvents -> Sorgulama hatasi: {}", currentTime.get(), e.getMessage());
+            throw new SagaEventNotFoundException("Saga events could not be listed: " + e.getMessage());
+        }
+    }
+
+    public boolean sagaExistsByKafkaEventUUID(String kafkaEventUUID) {
+        log.info(" ({}) > TransactionService | sagaExistsByKafkaEventUUID -> KafkaEventUUID: {}", currentTime.get(), kafkaEventUUID);
+        return sagaEventsRepository.existsByKafkaEventUUID(kafkaEventUUID);
+    }
 
 }

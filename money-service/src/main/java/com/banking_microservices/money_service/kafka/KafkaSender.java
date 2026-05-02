@@ -1,10 +1,8 @@
 package com.banking_microservices.money_service.kafka;
 
 import com.banking_microservices.money_service.dto.KafkaTransactionTopicMessageDto;
-import com.banking_microservices.money_service.dto.SagaEventDto;
 import com.banking_microservices.money_service.dto.SagaEventsDto;
 import com.banking_microservices.money_service.exception.KafkaSendException;
-import com.banking_microservices.money_service.models.SagaEvents;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
