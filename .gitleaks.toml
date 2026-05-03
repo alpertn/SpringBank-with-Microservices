@@ -1,0 +1,14 @@
+# ==========================================================
+# GITLEAKS CONFIG
+# Bu dosya secret tarama aracina "nerelere bak, nereleri gecici
+# olarak gorme" bilgisini verir.
+#
+# Cok onemli:
+# Bu dosya secret SAKLAMAZ.
+# Sadece tarama davranisini ayarlar.
+# ==========================================================
+title = "SpringBank Gitleaks Config"
+
+[allowlist]
+description = "Legacy demo manifests still contain sample credentials. CI'da tum taramanin kilitlenmemesi icin sadece eski k8s klasoru gecici olarak allowlist edildi."
+paths = ['''k8s/''']

@@ -1,0 +1,23 @@
+# ==========================================================
+# PRE-COMMIT CONFIG
+# Bu dosya local makinede "git commit" atmadan ONCE calisacak
+# otomatik kontrolleri tanimlar.
+#
+# Neden var?
+# CI'da yakalanacak bir gizli bilgi sizintisini daha commit
+# etmeden once kendi bilgisayarinda yakalayabil diye.
+# ==========================================================
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    # Not:
+    # Gitleaks'in hangi surumunu kullanacagimizi sabitler.
+    rev: v8.24.2
+    hooks:
+      - id: gitleaks
+        # Not:
+        # Boylece "git commit" oncesi local makinede de secret taramasi yapabilirsin.
+        # Kurulum: pip install pre-commit && pre-commit install
+        args:
+          # Not:
+          # Gitleaks ayarlarini repo kokundeki .gitleaks.toml dosyasindan oku.
+          - "--config=.gitleaks.toml"

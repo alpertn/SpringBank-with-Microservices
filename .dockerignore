@@ -1,0 +1,11 @@
+.git
+.github
+.idea
+.vscode
+**/target
+**/.mvn
+**/.idea
+**/.DS_Store
+README.md
+argocd
+helm

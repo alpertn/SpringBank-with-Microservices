@@ -1,0 +1,437 @@
+# ==========================================================
+# CI WORKFLOW - SIFIRDAN ANLATIM
+# ==========================================================
+#
+# CI ne demek?
+# CI = Continuous Integration.
+# Turkcesi: surekli entegrasyon.
+#
+# En basit haliyle CI sunu yapar:
+# "Ben kodu GitHub'a gonderdim. GitHub benim yerime otomatik kontrol etsin:
+#  sifre/token kacirmisim mi, testler geciyor mu, kod kalitesi uygun mu?"
+#
+# Bu dosya nerede durmali?
+# GitHub Actions'in otomatik gormesi icin bu dosyanin yeri mecburen:
+# .github/workflows/ci.yml
+#
+# Yani bu dosyayi baska klasore tasirsan GitHub bunu workflow olarak calistirmaz.
+# Ayrica okumasi kolay olsun diye repo kokune GITHUB-WORKFLOWS-NEDIR.md dosyasi da ekledim.
+#
+# Bu CI dosyasinin yaptigi isler:
+# 1) Kodun icinde gizli bilgi var mi diye Gitleaks ile bakar.
+# 2) Her mikroservis icin Maven testlerini calistirir.
+# 3) JaCoCo ile test coverage raporu uretir.
+# 4) SonarQube bilgileri girildiyse kalite analizi yapar.
+# 5) En sonda GitHub Actions ekranina kisa ozet yazar.
+#
+# Burada "deploy" yok.
+# CI sadece kontrol eder.
+# Deploy tarafini cd.yml baslatir.
+# ==========================================================
+name: CI
+# [DEGISEBILIR] "CI" yazan kismi istedigin bir isimle degistirebilirsin.
+# Ornegin: name: Kalite Kontrolu
+# Bu isim sadece GitHub Actions arayuzunde gorunur, pipeline'i etkilemez.
+
+# ==========================================================
+# on = BU WORKFLOW NE ZAMAN CALISACAK?
+# ==========================================================
+#
+# pull_request:
+# Biri PR acarsa veya PR'a yeni commit atarsa CI calisir.
+# Amac: Kod ana branch'e girmeden once kontrol edilsin.
+#
+# push:
+# Asagidaki branch'lere direkt push gelirse CI calisir.
+# Amac: Ana branch veya gelistirme branch'i bozuldu mu hemen gorelim.
+on:
+  pull_request:
+  # [SABIT] "pull_request:" kelimesini degistirme. GitHub Actions bu anahtari taniyor.
+
+  push:
+    # [SABIT] "push:" kelimesini degistirme. GitHub Actions bu anahtari taniyor.
+
+    branches:
+      # [SABIT] "branches:" kelimesini degistirme.
+
+      # main:
+      # Modern GitHub projelerinde ana branch genelde main'dir.
+      - main
+      # [DEGISEBILIR] Reponun ana branch adi farkliysa buraya yaz.
+      # Ornegin: - master  veya  - production
+      # Ama hangi ismi yazarsan GitHub'daki gercek branch adiyla birebir eslesmeli.
+
+      # codex/**:
+      # Codex ile actigimiz branch'lerde de otomatik kontrol calissin diye.
+      # [DEGISEBILIR] Bu pattern senin branch adlandirma kuralina gore degisebilir.
+      # "codex/**" demek "codex/ ile baslayan her branch" demek.
+      # Ornegin: "feature/**" veya "fix/**" da yazabilirsin.
+      # Tamamen silersen sadece main branch'i izler.
+
+# ==========================================================
+# permissions = WORKFLOW'A VERILEN IZINLER
+# ==========================================================
+#
+# contents: read
+# Repo dosyalarini okuyabilsin.
+#
+# security-events: write
+# Guvenlik tarama sonuclari GitHub Security tarafina yazilabilsin.
+permissions:
+  # [SABIT] "permissions:", "contents:", "security-events:" kelimelerini degistirme.
+  # Bunlar GitHub Actions'in tanimli anahtar kelimeleri.
+  contents: read
+  # [SABIT] "read" ve "write" degerlerini de degistirme; azaltirsan Gitleaks patlar.
+  security-events: write
+
+# ==========================================================
+# env = ORTAK DEGISKENLER
+# ==========================================================
+#
+# Buraya yazilan degerleri asagidaki job'lar kullanabilir.
+# Java 21 kullaniyoruz cunku servisler Java/Spring Boot projesi.
+env:
+  JAVA_VERSION: "21"
+  # [DEGISEBILIR] Projen farkli bir Java surumu kullaniyorsa buradan degistir.
+  # Ornegin: "17" veya "11"
+  # Ama "JAVA_VERSION" ismini asagida referans vereceginden degistirirsen
+  # asagidaki ${{ env.JAVA_VERSION }} kullanimlari da guncellenmeli.
+  # En iyisi ismi oldugu gibi birak, sadece deger kismini ("21") degistir.
+
+# ==========================================================
+# jobs = WORKFLOW ICINDE CALISACAK BUYUK IS BLOKLARI
+# ==========================================================
+#
+# Bir workflow birden fazla job'dan olusabilir.
+# Bu dosyada 3 job var:
+#
+# 1) secret-scan
+# 2) quality
+# 3) summary
+#
+# secret-scan once calisir.
+# quality, secret-scan basarili olursa calisir.
+# summary en sonda calisir.
+jobs:
+  # [SABIT] "jobs:" kelimesini degistirme.
+
+  # ========================================================
+  # JOB 1: SECRET SCAN
+  # ========================================================
+  #
+  # Bu job'un amaci:
+  # Repo'ya yanlislikla sifre, token, API key gibi gizli bilgi girmis mi bakmak.
+  #
+  # Neden ilk bu calisiyor?
+  # Cunku secret sizintisi varsa test calistirmadan once durmak daha dogru.
+  secret-scan:
+    # [DEGISEBILIR] "secret-scan" job'un tanim adidir. Istersen degistirebilirsin.
+    # Ama asagida "needs: secret-scan" yazan yer var; orada da ayni sekilde guncellemeyi unutma.
+
+    name: Secret Scan (Gitleaks)
+    # [DEGISEBILIR] GitHub Actions arayuzunde gorunen baslik. Diledgin gibi degistirebilirsin.
+    # Altindaki "secret-scan:" job adi ile karistirma; bu sadece gorsel isim.
+
+    # runs-on:
+    # GitHub'in bize verdigi gecici sanal makine turu.
+    # ubuntu-latest = Linux tabanli temiz bir runner.
+    runs-on: ubuntu-latest
+    # [DEGISEBILIR] Farkli bir runner kullanmak zorunda kalirsan degistirirsin.
+    # Ornegin: windows-latest veya macos-latest
+    # Ama bu projedeki servisler Linux ortamina gore ayarli; degistirirsen Maven komutlari bozulabilir.
+    # [SABIT] "runs-on:" anahtar kelimesini degistirme.
+
+    steps:
+      # [SABIT] "steps:" kelimesini degistirme.
+
+      # steps:
+      # Bir job'un icindeki kucuk adimlardir.
+      # GitHub bu adimlari yukaridan asagiya sirayla calistirir.
+
+      - name: Checkout repository
+        # [DEGISEBILIR] "name:" satirindaki metin sadece gorsel etiket. Diledgin gibi degistirebilirsin.
+        # [SABIT] "name:" anahtar kelimesini degistirme.
+
+        # uses:
+        # Hazir bir GitHub Action kullanmak demek.
+        # actions/checkout@v4 repo kodunu runner'a indirir.
+        uses: actions/checkout@v4
+        # [YARI-SABIT] "actions/checkout" kismi sabit; bu Action'in resmi adidir.
+        # "@v4" kismi surumu belirtir. Yeni bir major surum cikinca "@v5" gibi guncelleyebilirsin.
+        # Ama orta adim olarak surumu degistirme; once dokumani oku.
+        with:
+          # fetch-depth: 0
+          # Normalde checkout sadece son commit'i alabilir.
+          # 0 yazinca tum git gecmisi gelir.
+          # Secret taramada gecmisteki commit'lere de bakmak icin faydalidir.
+          fetch-depth: 0
+          # [DEGISEBILIR] Sadece son commit'e bakman yeterliyse "1" yazabilirsin; daha hizli calisir.
+          # Ama Gitleaks gecmisi de taramaz; bu bir kompromis.
+          # [SABIT] "fetch-depth:" anahtar kelimesini degistirme.
+
+      - name: Scan repository for hard-coded secrets
+        # Gitleaks ne yapar?
+        # Dosyalarda ve git gecmisinde secret'a benzeyen metinleri arar.
+        #
+        # Ornek yakalamak istedigi seyler:
+        # - GitHub token
+        # - veritabani sifresi
+        # - API key
+        # - private key
+        #
+        # Eger ciddi bir secret bulursa workflow fail olur.
+        uses: gitleaks/gitleaks-action@v2
+        # [YARI-SABIT] "gitleaks/gitleaks-action" Action'in resmi adidir; degistirme.
+        # "@v2" surumu. Yeni major surum cikinca guncelleme yapabilirsin.
+        env:
+          # .gitleaks.toml:
+          # Bu projeye ozel Gitleaks ayarlari burada.
+          GITLEAKS_CONFIG: .gitleaks.toml
+          # [DEGISEBILIR] Gitleaks konfig dosyasinin yolunu degistirebilirsin.
+          # Ama o dosyanin repo'da var olmasi gerekiyor; yoksa Gitleaks varsayilan kurallari kullanir.
+          # [SABIT] "GITLEAKS_CONFIG:" anahtar kelimesini degistirme; Gitleaks bunu bekliyor.
+
+          # GitHub'in workflow icin verdigi gecici token.
+          # Bunu sen elle olusturmuyorsun.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # [SABIT] Hem "GITHUB_TOKEN" hem "${{ secrets.GITHUB_TOKEN }}" kismini degistirme.
+          # GITHUB_TOKEN GitHub tarafindan otomatik uretilir; sen bir sey yapman gerekmiyor.
+
+  # ========================================================
+  # JOB 2: QUALITY
+  # ========================================================
+  #
+  # Bu job'un amaci:
+  # Her mikroserviste testleri calistirmak, coverage uretmek ve SonarQube'a analiz gondermek.
+  #
+  # needs: secret-scan
+  # Bu satir su demek:
+  # "secret-scan bitmeden quality job'una baslama."
+  quality:
+    # [DEGISEBILIR] Job'un tanim adi. Degistirirsen asagidaki "needs: quality" (summary job'unda) da guncelle.
+
+    name: Quality - ${{ matrix.service }}
+    # [SABIT] "${{ matrix.service }}" kismini degistirme. Bu ifade matrix'ten gelen servis adini dinamik olarak koyar.
+    # "Quality -" on ekini istersen degistirebilirsin; gorsel etiket.
+
+    runs-on: ubuntu-latest
+    needs: secret-scan
+    # [SABIT] "needs:" anahtar kelimesini degistirme.
+    # [DEGISEBILIR] "secret-scan" kismini, yukarida o job'a verdigin isimle eslestirecek sekilde degistirebilirsin.
+
+    strategy:
+      # [SABIT] "strategy:" kelimesini degistirme.
+
+      # fail-fast: false
+      # Bir servis patlarsa diger servislerin testlerini hemen iptal etme.
+      # Boylece ayni kosuda hangi servisler saglam, hangileri bozuk gorebiliriz.
+      fail-fast: false
+      # [DEGISEBILIR] "true" yazarsan ilk bozulan serviste diger tum servisler de iptal edilir.
+      # [SABIT] "fail-fast:" anahtar kelimesini degistirme.
+
+      # matrix nedir?
+      # Ayni job'u farkli degerlerle birden fazla kez calistirmaktir.
+      #
+      # Burada matrix.service listedeki her servis adini sirayla alir.
+      # GitHub Actions bunlari paralel calistirmaya calisir.
+      #
+      # Ornek:
+      # - auth-service icin ayri quality job
+      # - user-service icin ayri quality job
+      # - gateway icin ayri quality job
+      matrix:
+        # [SABIT] "matrix:" kelimesini degistirme.
+
+        service:
+          # [YARI-SABIT] "service:" kelimesini degistirirsen asagidaki "${{ matrix.service }}"
+          # kullanimlari patlar. Degistirmemen onerilir.
+
+          - auth-service
+          - user-service
+          - money-service
+          - transaction-service
+          - fraud-service
+          - gateway
+          # [DEGISEBILIR] Bu liste serbest. Yeni servis ekleyebilir, mevcutlari silip degistirebilirsin.
+          # UYARI: Buradaki her isim, repo kokunde ayni isimde bir klasore karsilik gelmeli.
+          # Ornegin "auth-service" yaziyorsa, repo'nda "auth-service/" klasoru olmali;
+          # yoksa o servis icin calistirilan Maven komutu "dizin bulunamadi" hatasi verir.
+
+    defaults:
+      run:
+        # working-directory:
+        # Maven komutu hangi klasorde calissin?
+        #
+        # matrix.service o an hangi servis ise oraya girer.
+        # Ornek: auth-service kosusunda komut auth-service klasorunde calisir.
+        working-directory: ${{ matrix.service }}
+        # [SABIT] "${{ matrix.service }}" ifadesini degistirme. Hangi klasorde calisacagini dinamik belirler.
+        # [SABIT] "working-directory:" anahtar kelimesini degistirme.
+
+    env:
+      # SonarQube secret'larini job env olarak aliyoruz.
+      #
+      # Neden?
+      # GitHub Actions'ta secret degerlerini dogrudan if kosulunda kullanmak yerine
+      # env uzerinden kontrol etmek daha temiz ve okunabilir bir yoldur.
+      #
+      # Bu degerler GitHub tarafindan maskelenir; loglarda acik acik yazilmaz.
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      # [YARI-SABIT] "SONAR_TOKEN" ismini degistirirsen asagidaki if kosulunu ve sonar:sonar komutunu da guncellemelisin.
+      # "${{ secrets.SONAR_TOKEN }}" ifadesindeki "SONAR_TOKEN" kismi GitHub repo secret'inin adiyla eslesmeli;
+      # GitHub'da secret'i farkli bir isimle kaydettiysen buraya o ismi yaz.
+
+      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      # [YARI-SABIT] Yukaridaki SONAR_TOKEN ile ayni mantik gecerli.
+      # "${{ secrets.SONAR_HOST_URL }}" kismindaki "SONAR_HOST_URL",
+      # GitHub repo secret'inin adiyla eslesmeli.
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        # Yukarida ayni Action kullanildi; ornek notlara bak.
+
+      - name: Set up Java
+        # Spring Boot servislerini build/test etmek icin runner'a Java kuruyoruz.
+        uses: actions/setup-java@v4
+        # [YARI-SABIT] "actions/setup-java" resmi Action adi; degistirme.
+        # "@v4" surumunu yeni major cikinca guncelleyebilirsin.
+        with:
+          # temurin:
+          # Eclipse Temurin JDK dagitimidir. CI ortamlarinda cok yaygin kullanilir.
+          distribution: temurin
+          # [DEGISEBILIR] Farkli bir JDK dagitimu kullanmak istersen: "corretto", "zulu", "microsoft" gibi.
+          # [SABIT] "distribution:" anahtar kelimesini degistirme.
+
+          java-version: ${{ env.JAVA_VERSION }}
+          # [SABIT] "${{ env.JAVA_VERSION }}" ifadesini degistirme; dosyanin en ustundeki env.JAVA_VERSION'dan okur.
+          # Surum numarasini degistirmek istiyorsan yukardaki "JAVA_VERSION: '21'" satirini guncelle.
+          # [SABIT] "java-version:" anahtar kelimesini degistirme.
+
+          # cache: maven
+          # Maven dependency'leri cache'lenir.
+          # Boylece her workflow kosusunda her sey sifirdan inmez, daha hizli olur.
+          cache: maven
+          # [DEGISEBILIR] Gradle kullaniyorsan "gradle" yaz. Cache istemiyorsan bu satiri tamamen sil.
+          # [SABIT] "cache:" anahtar kelimesini degistirme.
+
+      - name: Run unit tests and create JaCoCo XML report
+        # Bu komut neden uzun?
+        #
+        # mvn -B clean:
+        # Maven'i batch modda calistirir ve once eski build ciktisini temizler.
+        #
+        # jacoco:prepare-agent:
+        # Testler calisirken hangi kod satirlari calisti bilgisini toplamak icin hazirlik yapar.
+        #
+        # verify:
+        # Maven test/build dogrulama asamasini calistirir.
+        #
+        # jacoco:report:
+        # Toplanan coverage bilgisinden rapor uretir.
+        #
+        # SonarQube coverage okuyacaksa genelde target/site/jacoco/jacoco.xml dosyasina ihtiyac duyar.
+        run: >
+          mvn -B clean
+          org.jacoco:jacoco-maven-plugin:0.8.12:prepare-agent
+          # [DEGISEBILIR] "0.8.12" JaCoCo plugin surumudur. Yeni surum cikinca guncelleyebilirsin.
+          # [SABIT] "org.jacoco:jacoco-maven-plugin" kismi Maven koordinatidir; degistirme.
+          verify
+          org.jacoco:jacoco-maven-plugin:0.8.12:report
+
+      - name: Publish test artifacts
+        # if: always()
+        # Testler basarisiz olsa bile raporlari yuklemeyi dene.
+        # Boylece GitHub Actions ekranindan hata raporlarini indirebilirsin.
+        if: always()
+        # [SABIT] "if:" anahtar kelimesini degistirme.
+        # [SABIT] "always()" GitHub Actions'in tanimli bir fonksiyonu; degistirme.
+        uses: actions/upload-artifact@v4
+        # [YARI-SABIT] "actions/upload-artifact" resmi Action adi; degistirme.
+        with:
+          # Artifact adi servis adina gore degisir.
+          # Ornek: auth-service-reports
+          name: ${{ matrix.service }}-reports
+          # [DEGISEBILIR] "-reports" son ekini istersen degistirebilirsin. Ornegin: "-test-ciktisi"
+          # [SABIT] "${{ matrix.service }}" kismini degistirme; servis adini dinamik ekler.
+
+          path: |
+            ${{ matrix.service }}/target/surefire-reports
+            ${{ matrix.service }}/target/site/jacoco
+            # [YARI-SABIT] Bu yollar Maven'in urettigi standart cikti dizinleridir.
+            # pom.xml'de jacoco veya surefire cikti dizinini degistirdiysen buraya da yansitmalisin.
+            # "${{ matrix.service }}" kismi sabit; servis adini dinamik koyar.
+
+      - name: SonarQube analysis
+        # Bu adim neden kosullu?
+        #
+        # SonarQube kullanmak icin GitHub repo ayarlarinda iki secret gerekir:
+        # - SONAR_TOKEN
+        # - SONAR_HOST_URL
+        #
+        # Bu secret'lar yoksa pipeline komple patlamasin diye bu adim atlanir.
+        if: ${{ env.SONAR_TOKEN != '' && env.SONAR_HOST_URL != '' }}
+        # [SABIT] Bu if ifadesinin yapisini degistirme.
+        # "SONAR_TOKEN" ve "SONAR_HOST_URL" isimlerini yukardaki env: bloguyla tutarli tut.
+        run: >
+          mvn -B sonar:sonar
+          # [SABIT] "sonar:sonar" Maven SonarQube plugin hedefidir; degistirme.
+          -Dsonar.host.url=${SONAR_HOST_URL}
+          # [SABIT] "-Dsonar.host.url=" parametresinin ismini degistirme; SonarQube bunu bekliyor.
+          # "${SONAR_HOST_URL}" yukarida env: bloguna tanimladigin degiskenden gelir.
+          -Dsonar.token=${SONAR_TOKEN}
+          # [SABIT] "-Dsonar.token=" parametresinin ismini degistirme.
+          -Dsonar.projectKey=springbank-${{ matrix.service }}
+          # [DEGISEBILIR] "springbank-" on ekini projenin adiyla degistirebilirsin.
+          # Ornegin: -Dsonar.projectKey=myapp-${{ matrix.service }}
+          # UYARI: Bu deger SonarQube arayuzundeki proje anahtariyla eslesmeli;
+          # eslesmezse SonarQube yeni bir proje olusturur, eskisiyle birlestirmez.
+          "-Dsonar.projectName=SpringBank ${{ matrix.service }}"
+          # [DEGISEBILIR] "SpringBank" kismini projenin gorsel adiyla degistirebilirsin.
+          # UYARI: Tirnak isaretlerini kaldirma; bosluk iceren degerler tirnaksiz patlar.
+          -Dsonar.qualitygate.wait=true
+          # [DEGISEBILIR] "true" yazinca SonarQube quality gate sonucunu bekler; basarisizsa pipeline fail olur.
+          # "false" yazarsan tarama gonder ama sonucu bekleme; pipeline devam eder.
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+          # [YARI-SABIT] Bu yol JaCoCo'nun urettigi XML rapor dosyasinin konumudur.
+          # pom.xml'de jacoco cikti dizinini degistirdiysen buraya da yansit.
+          # "target/site/jacoco/jacoco.xml" Maven'in varsayilan ciktisuyla eslesiyor; elleme.
+
+  # ========================================================
+  # JOB 3: SUMMARY
+  # ========================================================
+  #
+  # Bu job'un amaci:
+  # GitHub Actions kosusunun sonunda ekrana insan okunabilir kisa ozet yazmak.
+  #
+  # if: always()
+  # Onceki job'lardan biri fail olsa bile ozet yazmaya calisir.
+  summary:
+    # [DEGISEBILIR] Job'un tanim adi. Baska hicbir yer buna "needs" ile bagli degil, serbestce degistirebilirsin.
+
+    name: CI Summary
+    # [DEGISEBILIR] GitHub Actions arayuzundeki gorsel baslik.
+
+    runs-on: ubuntu-latest
+    needs:
+      - secret-scan
+      - quality
+      # [DEGISEBILIR] Bu listede hangi job'lar varsa o job'larin bitmesini bekler.
+      # Yukarida job adlarini degistirdiysen buraya da ayni isimleri yaz.
+    if: always()
+    # [SABIT] "always()" fonksiyonunu degistirme; onceki job'lar fail olsa da ozet yazsin diye var.
+
+    steps:
+      - name: Write short summary
+        # GITHUB_STEP_SUMMARY:
+        # GitHub Actions'in o kosuya ozel ozet alanidir.
+        # Buraya yazilanlar workflow sayfasinda duzgun sekilde gorunur.
+        run: |
+          echo "CI stage complated." >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Secret scan: Gitleaks" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Test + Coverage: Maven + JaCoCo" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Quality Gate: SonarQube (secret varsa aktif)" >> "$GITHUB_STEP_SUMMARY"
+          # [DEGISEBILIR] echo satirlarinin icindeki metinleri istedigin gibi degistirebilirsin.
+          # [SABIT] "$GITHUB_STEP_SUMMARY" degisken adini degistirme; GitHub Actions bu adi biliyor.
+          # [SABIT] ">>" operatorunu degistirme; her satirda dosyaya ekleme yapar.
