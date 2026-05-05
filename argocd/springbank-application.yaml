@@ -1,0 +1,50 @@
+# Bu manifest Argo CD'ye "bu repo icindeki Helm chart'i izle" der.
+# Pipeline image tag'ini degistirince Argo CD bunu gorur ve cluster'a uygular.
+# BURADA SENIN DEGISTIRECEGIN EN ONEMLI YERLER:
+# 1) repoURL
+# 2) targetRevision
+# 3) namespace
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  # Not:
+  # Argo CD ekraninda gorunecek uygulama ismi.
+  name: springbank
+  namespace: argocd
+spec:
+  # Not:
+  # Argo CD project. Simdilik default biraktik.
+  project: default
+  source:
+    # Not:
+    # BURAYI SEN DEGISTIRECEKSIN.
+    # Ornek:
+    # https://github.com/alpertn/SpringBank-with-Microservices.git
+    repoURL: https://github.com/alpertn/SpringBank-with-Microservices.git
+    # Not:
+    # Argo CD hangi branch'i izleyecek?
+    targetRevision: main
+    # Not:
+    # Repo icindeki Helm chart'in bulundugu klasor.
+    path: helm/springbank
+    helm:
+      valueFiles:
+        - values.yaml
+        - values-prod.yaml
+  destination:
+    # Not:
+    # kubernetes.default.svc = Argo CD'nin kurulu oldugu ayni cluster
+    server: https://kubernetes.default.svc
+    # Not:
+    # Uygulamalarin deploy olacagi namespace
+    namespace: banking-microservices
+  syncPolicy:
+    automated:
+      # prune = Git'ten silineni cluster'dan da sil
+      prune: true
+      # selfHeal = cluster'da elle bozulan durumu tekrar Git'teki hale cek
+      selfHeal: true
+    syncOptions:
+      # Not:
+      # Namespace yoksa Argo CD olustursun.
+      - CreateNamespace=true
