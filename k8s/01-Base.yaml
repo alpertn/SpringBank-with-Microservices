@@ -34,6 +34,7 @@ data:
     CREATE DATABASE banking_auth;
     CREATE DATABASE banking_users;
     CREATE DATABASE banking_money;
+    CREATE DATABASE banking_money_command;
     CREATE DATABASE banking_transactions;
     CREATE DATABASE banking_fraud;
     CREATE DATABASE banking;
@@ -41,6 +42,7 @@ data:
     GRANT ALL PRIVILEGES ON DATABASE banking_auth TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking_users TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking_money TO banking_admin;
+    GRANT ALL PRIVILEGES ON DATABASE banking_money_command TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking_transactions TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking_fraud TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking TO banking_admin;
@@ -146,6 +148,135 @@ spec:
   ports:
     - port: 6379
       targetPort: 6379
+
+---
+
+#
+# MONGODB --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#
+# NEDEN GEREKLI?
+# money-service-query CQRS read-side oldugu icin sorgu verisini write database'den degil kendi read database'inden okumali.
+# Bu deployment o read database'i saglar.
+#
+# AKIS:
+# money-service-command Kafka'ya event basar
+#   -> money-service-query bu event'i dinler
+#     -> MongoDB'ye projection/read model olarak yazar
+#       -> REST veya gRPC query isteklerinde ilk bakilan ana veri kaynagi burasi olur
+#
+# NOT:
+# Elasticsearch de read tarafta vardir ama source of truth olarak burada MongoDB kullanilir.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb
+  namespace: banking-microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+        - name: mongodb
+          image: mongo:7.0
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - mountPath: /data/db
+              name: mongodb-data
+      volumes:
+        - name: mongodb-data
+          hostPath:
+            path: /data/banking_mongodb
+            type: DirectoryOrCreate
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb
+  namespace: banking-microservices
+spec:
+  selector:
+    app: mongodb
+  ports:
+    - port: 27017
+      targetPort: 27017
+
+---
+
+#
+# ELASTICSEARCH ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#
+# NEDEN GEREKLI?
+# Query tarafinda sadece tekil kayit cekmek degil arama ve filtreleme de hizli olmali.
+# Elasticsearch burada money-service-query icin ek index katmani olarak calisir.
+#
+# AKIS:
+# money-service-query Kafka event'ini alip once read modeli uretir
+#   -> ayni veriyi Elasticsearch indexine de yazar
+#     -> userId, iban veya keycloak UUID gibi alanlarda hizli arama yapabilir
+#
+# NOT:
+# MongoDB ana read modeldir.
+# Elasticsearch ise arama, filtreleme ve daha hizli query performansi icin yardimci katmandir.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch
+  namespace: banking-microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+        - name: elasticsearch
+          image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+          ports:
+            - containerPort: 9200
+          env:
+            - name: discovery.type
+              value: single-node
+            - name: xpack.security.enabled
+              value: "false"
+            - name: ES_JAVA_OPTS
+              value: -Xms512m -Xmx512m
+          volumeMounts:
+            - mountPath: /usr/share/elasticsearch/data
+              name: elasticsearch-data
+      volumes:
+        - name: elasticsearch-data
+          hostPath:
+            path: /data/banking_elasticsearch
+            type: DirectoryOrCreate
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+  namespace: banking-microservices
+spec:
+  selector:
+    app: elasticsearch
+  ports:
+    - port: 9200
+      targetPort: 9200
 
 ---
 

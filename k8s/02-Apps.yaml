@@ -322,6 +322,246 @@ spec:
 ---
 
 #
+# Money Service Command --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#
+# NEDEN GEREKLI?
+# Eski money-service hem write hem read isi yaptigi icin CQRS ayrimi yoktu.
+# Bu servis sadece write-side icin ayrildi ve tum command sorumlulugu buraya verildi.
+#
+# BU SERVISTE NELER CALISIR?
+# create account, deposit, withdraw, block money, transfer gibi tum money command'leri burada calisir.
+# Kalici write modeli Postgres'tedir ve bu servis banking_money_command database'ine yazar.
+#
+# AKIS:
+# command request gelir
+#   -> Postgres'e write edilir
+#     -> her basarili state degisikligi banking-microservices.transaction.money-service.block-money.success.v1 topic'ine basilir
+#       -> money-service-query bu event'i okuyup kendi read database'lerini gunceller
+# Ayrica query servisine gRPC ile "projection sync registration" gonderilir.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: money-service-command
+  namespace: banking-microservices
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: money-service-command
+  template:
+    metadata:
+      labels:
+        app: money-service-command
+    spec:
+      containers:
+        - name: money-service-command
+          image: SpringBankWithMicroservices/money-service-command:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8092
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres:5432/banking_money_command
+            - name: SPRING_DATASOURCE_USERNAME
+              value: banking_admin
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: banking_admin
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: update
+            - name: MONEY_SERVICE_COMMAND_PORT
+              value: "8092"
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092
+            - name: MONEY_SERVICE_PROJECTION_TOPIC
+              value: banking-microservices.transaction.money-service.block-money.success.v1
+            - name: MONEY_SERVICE_QUERY_GRPC_ADDRESS
+              value: static://money-service-query:9193
+
+---
+
+# BU SERVICE NE YAPAR?
+# Deployment altinda acilan money-service-command pod'larina sabit bir DNS verir.
+# Kubernetes icinde baska bir servis "http://money-service-command:8092" diyerek bu command servise erisebilir.
+# Disariya acik degildir cunku type belirtilmedigi icin varsayilan olarak ClusterIP calisir.
+apiVersion: v1
+kind: Service
+metadata:
+  name: money-service-command
+  namespace: banking-microservices
+spec:
+  selector:
+    app: money-service-command
+  ports:
+    - port: 8092
+      targetPort: 8092
+
+---
+
+# HPA NEDEN VAR?
+# Transaction sayisi arttiginda write-side pod sayisi otomatik artsin diye vardir.
+# Write-side oldugu icin read-side'a gore daha az memory ile baslatildi ama gercek yuk altinda tekrar tuning gerekebilir.
+# CPU veya memory esikleri asilinca Kubernetes replica sayisini arttirir, trafik azalinca geri dusurur.
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: money-service-command-hpa
+  namespace: banking-microservices
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: money-service-command
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 60
+
+---
+
+#
+# Money Service Query --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#
+# NEDEN GEREKLI?
+# CQRS mantiginda query tarafi write database'ine direkt gitmez.
+# Bu servis sadece read-side olarak ayrildi ve tum query sorumlulugu buraya verildi.
+#
+# BU SERVIS NE YAPAR?
+# Kafka'dan banking-microservices.transaction.money-service.block-money.success.v1 topic'ini dinler.
+# Gelen event'leri MongoDB'ye read model olarak yazar, Elasticsearch'e de arama indexi olarak kopyalar.
+#
+# AKIS:
+# money-service-command event basar
+#   -> money-service-query event'i consume eder
+#     -> MongoDB ve Elasticsearch tarafini gunceller
+#       -> REST query endpointleri veya gRPC query cagrilari bu guncel read modelden cevap doner
+#
+# EK NOT:
+# gRPC uzerinden money-service-command ile haberlesir.
+# projection sync registration alabilir ve ihtiyac halinde query response donebilir.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: money-service-query
+  namespace: banking-microservices
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: money-service-query
+  template:
+    metadata:
+      labels:
+        app: money-service-query
+    spec:
+      containers:
+        - name: money-service-query
+          image: SpringBankWithMicroservices/money-service-query:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8093
+            - containerPort: 9193
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "750m"
+          env:
+            - name: MONEY_SERVICE_QUERY_PORT
+              value: "8093"
+            - name: MONEY_SERVICE_QUERY_GRPC_PORT
+              value: "9193"
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092
+            - name: SPRING_KAFKA_CONSUMER_GROUP_ID
+              value: money-service-query-group
+            - name: SPRING_DATA_MONGODB_URI
+              value: mongodb://mongodb:27017/banking_money_query
+            - name: SPRING_ELASTICSEARCH_URIS
+              value: http://elasticsearch:9200
+            - name: MONEY_SERVICE_PROJECTION_TOPIC
+              value: banking-microservices.transaction.money-service.block-money.success.v1
+
+---
+
+# BU SERVICE NE YAPAR?
+# Query servise Kubernetes ici sabit DNS verir.
+# Iki farkli port acar:
+# 8093 -> REST query endpointleri
+# 9193 -> mikroservisler arasi gRPC haberlesmesi
+# Boylece command servis "money-service-query:9193" ile query servise baglanabilir.
+apiVersion: v1
+kind: Service
+metadata:
+  name: money-service-query
+  namespace: banking-microservices
+spec:
+  selector:
+    app: money-service-query
+  ports:
+    - name: http
+      port: 8093
+      targetPort: 8093
+    - name: grpc
+      port: 9193
+      targetPort: 9193
+
+---
+
+# HPA NEDEN VAR?
+# Read-side tarafta hem MongoDB projection hem de Elasticsearch indexleme oldugu icin memory ihtiyaci daha yuksek olabilir.
+# Ozellikle event akisi hizlandiginda veya yeniden projection yapildiginda pod sayisi otomatik artabilsin diye tanimlandi.
+# CPU ve memory esiklerine gore Kubernetes bu deployment'in replica sayisini otomatik yonetir.
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: money-service-query-hpa
+  namespace: banking-microservices
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: money-service-query
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 70
+
+---
+
+#
 #Transaction-Service --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #
 
