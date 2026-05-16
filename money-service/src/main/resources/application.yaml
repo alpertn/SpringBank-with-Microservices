@@ -1,44 +1,40 @@
 kafka:
   topics:
     create-user:
-      sender: ${KAFKA_CREATE_USER_SENDER:banking-microservices.create-user.money-service.success.v1}
-      listener: ${KAFKA_CREATE_USER_LISTENER:banking-microservices.username-validation.user-service.progress.v1}
-      error: ${KAFKA_CREATE_USER_ERROR:banking-microservices.create-user.money-service.error.v1}
+      sender: ${KAFKA_MONEY_ACCOUNT_CREATED_TOPIC:banking-microservices.money.account.created.v1}
+      listener: ${KAFKA_USER_CREATED_TOPIC:banking-microservices.user.created.v1}
+      error: ${KAFKA_MONEY_ACCOUNT_CREATE_FAILED_TOPIC:banking-microservices.money.account.create-failed.v1}
     transaction:
       blockmoney:
-        listener: ${KAFKA_TRANSACTION_BLOCKUSER_LISTENER:banking-microservices.transaction.transaction-service.created.v1}
-        sender: ${KAFKA_TRANSACTION_BLOCKUSER_SENDER:banking-microservices.transaction.money-service.block-money.success.v1}
-        user-validation-sender: ${KAFKA_TRANSACTION_BLOCKMONEY_USERVALIDATION_SENDER:banking-microservices.transaction.money-service.block-money.user-validation.v1}
+        listener: ${KAFKA_TRANSACTION_CREATED_TOPIC:banking-microservices.transaction.created.v1}
+        sender: ${KAFKA_TRANSACTION_MONEY_BLOCKED_TOPIC:banking-microservices.transaction.money-blocked.v1}
+        user-validation-sender: ${KAFKA_TRANSACTION_USER_VALIDATION_REQUEST_TOPIC:banking-microservices.transaction.user-validation.request.v1}
       transactionmoney:
         # Diyagram Adım 1: created.v1'i dinle → DEPOSIT/WITHDRAW direkt işle, TRANSFER → blockFunds()
-        listener: ${KAFKA_TRANSACTION_TOPIC_LISTENER:banking-microservices.transaction.transaction-service.created.v1}
-        sender: ${KAFKA_TRANSACTION_TOPIC_SENDER:banking-microservices.transaction.transaction-service.success.v1}
+        listener: ${KAFKA_TRANSACTION_CREATED_TOPIC:banking-microservices.transaction.created.v1}
+        sender: ${KAFKA_TRANSACTION_COMPLETED_TOPIC:banking-microservices.transaction.completed.v1}
       transferexecute:
         # Diyagram Adım 4 (YENİ): fraud-checked.v1 → TRANSFER gerçek para hareketi (withdrawBlocked + deposit)
-        listener: ${KAFKA_TRANSACTION_TRANSFER_EXECUTE_LISTENER:banking-microservices.transaction.fraud-service.checked.v1}
+        listener: ${KAFKA_TRANSACTION_FRAUD_CHECKED_TOPIC:banking-microservices.transaction.fraud.checked.v1}
       result:
-        sender: ${KAFKA_TRANSACTION_RESULT_SENDER:banking-microservices.transaction.result.success.v1}
-      error: ${KAFKA_TRANSACTION_TOPIC_ERROR:banking-microservices.transaction.transaction-service.error.v1}
+        sender: ${KAFKA_TRANSACTION_COMPLETED_TOPIC:banking-microservices.transaction.completed.v1}
+      error: ${KAFKA_TRANSACTION_FAILED_TOPIC:banking-microservices.transaction.failed.v1}
 
       #Saga
       saga:
-          listener: ${KAFKA_TRANSACTION_SAGA_TRANSACTION-SERVICE_CREATED:banking-microservices.transaction.saga.transaction-service.created.v1}
-          sender: ${KAFKA_TRANSACTION_SAGA_MONEY-SERVICE_SUCCESS:banking-microservices.transaction.saga.money-service.success.v1}
-          error:  ${KAFKA_TRANSACTION_SAGA_MONEY-SERVICE_ERROR:banking-microservices.transaction.saga.money-service.error.v1}
+          listener: ${KAFKA_TRANSACTION_SAGA_CREATED_TOPIC:banking-microservices.transaction.saga.created.v1}
+          sender: ${KAFKA_TRANSACTION_SAGA_MONEY_COMPLETED_TOPIC:banking-microservices.transaction.saga.money.completed.v1}
+          error:  ${KAFKA_TRANSACTION_SAGA_MONEY_FAILED_TOPIC:banking-microservices.transaction.saga.money.failed.v1}
 
 
 
-    username-validation:
-      sender: ${KAFKA_USERNAME_VALIDATION_SENDER:banking-microservices.username-validation.money-service.progress.v1}
-      listener: ${KAFKA_USERNAME_VALIDATION_LISTENER:banking-microservices.username-validation.user-service.success.v1}
-
-##            - name: KAFKA_TRANSACTION_SAGA_TRANSACTION-SERVICE_CREATED
-#              value: banking-microservices.transaction.saga.transaction-service.created.v1
+##            - name: KAFKA_TRANSACTION_SAGA_CREATED_TOPIC
+#              value: banking-microservices.transaction.saga.created.v1
 #            # Listener (listen Money-service)
-#            - name: KAFKA_TRANSACTION_SAGA_MONEY-SERVICE_SUCCESS
-#              value: banking-microservices.transaction.saga.money-service.success.v1
-#            - name: KAFKA_TRANSACTION_SAGA_MONEY-SERVICE_ERROR
-#              value: banking-microservices.transaction.saga.money-service.error.v1
+#            - name: KAFKA_TRANSACTION_SAGA_MONEY_COMPLETED_TOPIC
+#              value: banking-microservices.transaction.saga.money.completed.v1
+#            - name: KAFKA_TRANSACTION_SAGA_MONEY_FAILED_TOPIC
+#              value: banking-microservices.transaction.saga.money.failed.v1
 server:
   port: ${MONEY_SERVICE_PORT_NUMBER:8082}
 

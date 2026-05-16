@@ -10,7 +10,13 @@ const API = {
   // Token işlemleri
   getToken:        () => localStorage.getItem('sb_token'),
   getRefreshToken: () => localStorage.getItem('sb_refresh'),
-  getUserData:     () => { try { return JSON.parse(localStorage.getItem('sb_user') || '{}'); } catch { return {}; } },
+  getUserData() {
+    try {
+      const stored = JSON.parse(localStorage.getItem('sb_user') || '{}');
+      if (stored && Object.keys(stored).length > 0) return stored;
+    } catch { /* ignore */ }
+    return this.ensureUserData();
+  },
 
   setTokens(access, refresh) {
     localStorage.setItem('sb_token', access);
@@ -19,6 +25,20 @@ const API = {
 
   setUser(data) {
     localStorage.setItem('sb_user', JSON.stringify(data));
+  },
+
+  ensureUserData() {
+    const parsed = this.parseJwt();
+    if (!parsed) return {};
+    const profile = {
+      id: parsed.sub || null,
+      email: parsed.email || '',
+      name: parsed.given_name || parsed.name || parsed.preferred_username || '',
+      surname: parsed.family_name || '',
+      roles: parsed?.realm_access?.roles || []
+    };
+    this.setUser(profile);
+    return profile;
   },
 
   clearSession() {
@@ -59,6 +79,7 @@ const API = {
       window.location.href = '/login.html';
       return false;
     }
+    this.ensureUserData();
     return true;
   },
 
@@ -72,31 +93,61 @@ const API = {
     return true;
   },
 
-  // Genel fetch wrapper
-  async call(url, method = 'GET', body = null) {
-    const headers = { 'Content-Type': 'application/json' };
+  authHeaders(extraHeaders = {}, includeContentType = true) {
+    const headers = { ...extraHeaders };
     const token = this.getToken();
+    if (includeContentType && !headers['Content-Type']) headers['Content-Type'] = 'application/json';
     if (token) headers['Authorization'] = 'Bearer ' + token;
+    return headers;
+  },
 
-    const opts = { method, headers };
-    if (body !== null) opts.body = JSON.stringify(body);
-
-    const res = await fetch(this.BASE + url, opts);
-
-    // Token süresi dolmuş
-    if (res.status === 401) {
-      const refreshed = await this.tryRefresh();
-      if (!refreshed) {
-        this.clearSession();
-        window.location.href = '/login.html';
-        return null;
-      }
-      // Tekrar dene
-      headers['Authorization'] = 'Bearer ' + this.getToken();
-      return fetch(this.BASE + url, { ...opts, headers });
+  async fetchWithAuth(url, options = {}) {
+    const opts = { ...options };
+    const originalHeaders = { ...(options.headers || {}) };
+    const hasBody = Object.prototype.hasOwnProperty.call(opts, 'body') && opts.body !== null && opts.body !== undefined;
+    const shouldJsonEncode = hasBody && typeof opts.body !== 'string' && !(opts.body instanceof FormData);
+    opts.headers = this.authHeaders(originalHeaders, !(opts.body instanceof FormData));
+    if (shouldJsonEncode) {
+      opts.body = JSON.stringify(opts.body);
     }
 
+    let res = await fetch(this.BASE + url, opts);
+    if (res.status !== 401) return res;
+
+    const refreshed = await this.tryRefresh();
+    if (!refreshed) {
+      this.clearSession();
+      window.location.href = '/login.html';
+      return null;
+    }
+
+    opts.headers = this.authHeaders(originalHeaders, !(opts.body instanceof FormData));
+    res = await fetch(this.BASE + url, opts);
+    if (res.status === 401) {
+      this.clearSession();
+      window.location.href = '/login.html';
+      return null;
+    }
     return res;
+  },
+
+  // Genel fetch wrapper
+  async call(url, method = 'GET', body = null, extraOptions = {}) {
+    const options = { ...extraOptions, method };
+    if (body !== null) options.body = body;
+    return this.fetchWithAuth(url, options);
+  },
+
+  async getJson(url, method = 'GET', body = null, extraOptions = {}) {
+    const res = await this.call(url, method, body, extraOptions);
+    if (!res) return null;
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}: ${await res.text().catch(() => '')}`);
+    }
+    const ct = res.headers.get('content-type') || '';
+    if (ct.includes('application/json')) return res.json();
+    const text = await res.text();
+    return text || null;
   },
 
   // Refresh token ile yenileme
@@ -104,7 +155,7 @@ const API = {
     const rToken = this.getRefreshToken();
     if (!rToken) return false;
     try {
-      const res = await fetch('/api/auth-service/v1/auth/refresh', {
+      const res = await fetch('/api/user-service/v1/auth/refresh', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ refreshToken: rToken })
@@ -131,7 +182,7 @@ const API = {
     const rToken = this.getRefreshToken();
     if (rToken) {
       try {
-        await fetch('/api/auth-service/v1/auth/logout', {
+        await fetch('/api/user-service/v1/auth/logout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + this.getToken() },
           body: JSON.stringify({ refreshToken: rToken })

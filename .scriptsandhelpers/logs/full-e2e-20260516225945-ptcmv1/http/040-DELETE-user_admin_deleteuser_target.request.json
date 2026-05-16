@@ -1,0 +1,9 @@
+{
+    "method":  "DELETE",
+    "url":  "http://localhost:8095/api/user-service/v1/admin/deleteuser/ee151fc1-5118-4139-aec1-37189357b311",
+    "expected":  [
+                     200
+                 ],
+    "headers":  "Authorization",
+    "body":  null
+}

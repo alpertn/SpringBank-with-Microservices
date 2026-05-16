@@ -1,0 +1,9 @@
+{
+    "method":  "GET",
+    "url":  "http://localhost:8095/api/user-service/v1/admin/findbykeycloakuuid/9b8c8f96-99eb-4bf4-9792-38eac77cd575",
+    "expected":  [
+                     200
+                 ],
+    "headers":  "Authorization",
+    "body":  null
+}

@@ -11,6 +11,8 @@ import com.banking_microservices.money_service.service.UserMoneyService;
 import com.banking_microservices.money_service.service.helper.IdempotencyGuard;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -53,14 +55,45 @@ public class KafkaListenerService {
         this.currentTime = currentTime;
     }
 
+    @KafkaListener(topics = "${kafka.topics.create-user.listener}")
+    public void listenCreateUserTopic(String topicData) {
+        log.info(" ({}) > KafkaListenerService | listenCreateUserTopic -> Metoda veri geldi. RawData: {}", currentTime.get(), topicData);
+
+        String userId = extractCreateUserId(topicData);
+        if (isMissing(userId)) {
+            log.warn(" ({}) > KafkaListenerService | listenCreateUserTopic -> Gecersiz userId, atlaniyor. RawData: {}", currentTime.get(), topicData);
+            return;
+        }
+        if (idempotencyGuard.isDuplicateOrRegister(userId, KafkaEventType.USER_CREATE.name())) {
+            log.warn(" ({}) > KafkaListenerService | listenCreateUserTopic -> Duplicate create-user atlaniyor. UserId: {}", currentTime.get(), userId);
+            return;
+        }
+
+        KafkaTransactionTopicMessageDto dto = KafkaTransactionTopicMessageDto.builder()
+                .eventUUID(userId)
+                .keycloakUserUUID(userId)
+                .senderUserId(userId)
+                .build();
+
+        try {
+            userMoneyService.generateUser(userId);
+            kafkaSender.sendCreateUserSuccess(userId, dto);
+        } catch (Exception exception) {
+            dto.setError(true);
+            dto.setErrorDescription("Create user money account failed: " + exception.getMessage());
+            kafkaSender.sendCreateUserError(userId, dto);
+            throw exception;
+        }
+    }
+
     // ═══════════════════════════════════════════════════════════════════════════════
     // ADIM 1 — created.v1 dinle
     //   DEPOSIT  → direkt para yatır → COMPLETED → result topic
     //   WITHDRAW → direkt para çek   → COMPLETED → result topic
-    //   TRANSFER → parayı BLOKE et → block-money.success.v1
-    //              (user-service → fraud-service → fraud-checked.v1 → ADIM 4)
+    //   TRANSFER → parayı BLOKE et → transaction.money-blocked.v1
+    //              (user-service → fraud-service → transaction.fraud.checked.v1 → ADIM 4)
     //
-    //   NOT: fraud-service artık user-validation.success.v1 dinliyor.
+    //   NOT: fraud-service artık transaction.user-validation.success.v1 dinliyor.
     //   DEPOSIT/WITHDRAW için user-validation gönderilmez, dolayısıyla
     //   fraud-service bu tipleri görmez. Direkt işlenmeleri doğrudur.
     // ═══════════════════════════════════════════════════════════════════════════════
@@ -78,7 +111,7 @@ public class KafkaListenerService {
         log.info(" ({}) > KafkaListenerService | listenCreatedTopic -> Data islenmek uzere alindi. Type: {}, EventUUID: {}", currentTime.get(), txType, dto.getEventUUID());
 
         if (txType == TransactionType.DEPOSIT) {
-            // DEPOSIT: fraud-service bu tiple muhatap değil (user-validation.success.v1 dinliyor).
+            // DEPOSIT: fraud-service bu tiple muhatap değil (transaction.user-validation.success.v1 dinliyor).
             // Direkt para yatır.
             handleDeposit(dto);
         } else if (txType == TransactionType.WITHDRAW) {
@@ -86,8 +119,9 @@ public class KafkaListenerService {
             handleWithdraw(dto);
         } else if (txType == TransactionType.TRANSFER) {
             // TRANSFER ADIM 1: Sadece BLOKE et.
-            // Sonrası: block-money.success.v1 → user-service → user-validation.success.v1
-            //          → fraud-service → fraud-checked.v1 → listenFraudCheckedTopic (ADIM 4)
+            // Sonrası: transaction.money-blocked.v1 ve transaction.user-validation.request.v1
+            //          → user-service → transaction.user-validation.success.v1
+            //          → fraud-service → transaction.fraud.checked.v1 → listenFraudCheckedTopic (ADIM 4)
             handleBlockMoney(dto);
         } else {
             log.warn(" ({}) > KafkaListenerService | listenCreatedTopic -> Bilinmeyen transaction tipi: {}, EventUUID: {}", currentTime.get(), txType, dto.getEventUUID());
@@ -203,7 +237,7 @@ public class KafkaListenerService {
         log.info(" ({}) > KafkaListenerService | handleBlockMoney -> TRANSFER icin BlockMoney baslatiliyor. EventUUID: {}", currentTime.get(), dto.getEventUUID());
         try {
             // Sender IBAN resolve + bakiye doğrulama + parayı bloke et
-            // Başarılı olursa block-money.success.v1 topic'e gönderir (BlockMoneyService içinde)
+            // Başarılı olursa money-blocked ve user-validation request topiclerine gönderir.
             transactionService.KafkaTransactionTopicBlockMoney(dto);
             log.info(" ({}) > KafkaListenerService | handleBlockMoney -> BLOCK_MONEY tamamlandi. EventUUID: {}", currentTime.get(), dto.getEventUUID());
         } catch (Exception e) {
@@ -226,6 +260,31 @@ public class KafkaListenerService {
             log.error(" ({}) > KafkaListenerService | parseMessage -> JSON parse hatasi! RawData: {}, Hata: {}", currentTime.get(), topicData, e.getMessage());
             return null;
         }
+    }
+
+    private String extractCreateUserId(String topicData) {
+        if (isMissing(topicData)) {
+            return null;
+        }
+        try {
+            JsonElement element = JsonParser.parseString(topicData);
+            if (element.isJsonPrimitive()) {
+                return element.getAsString();
+            }
+            if (element.isJsonObject()) {
+                JsonElement keycloakUserUUID = element.getAsJsonObject().get("keycloakUserUUID");
+                if (keycloakUserUUID != null && !keycloakUserUUID.isJsonNull()) {
+                    return keycloakUserUUID.getAsString();
+                }
+                JsonElement userId = element.getAsJsonObject().get("userId");
+                if (userId != null && !userId.isJsonNull()) {
+                    return userId.getAsString();
+                }
+            }
+        } catch (Exception ignored) {
+            return topicData.trim();
+        }
+        return null;
     }
 
     /**

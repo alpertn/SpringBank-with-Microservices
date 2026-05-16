@@ -1,0 +1,27 @@
+
+[02:12:18][elapsed=709ms / 0.709s / 0.012m][kubectl][START] --request-timeout=60s config current-context
+COMMAND:
+kubectl --request-timeout=60s config current-context
+START_ELAPSED_TOTAL: 709ms / 0.709s / 0.012m
+--------------------------------------------------------------------------------
+[02:12:18][elapsed=927ms / 0.927s / 0.015m][kubectl][FAIL] --request-timeout=60s config current-context
+COMMAND:
+kubectl --request-timeout=60s config current-context
+DURATION: 101ms / 0.101s / 0.002m
+EXIT_CODE: 1
+OUTPUT:
+error: error loading config file "C:\Users\alper\.kube\config": open C:\Users\alper\.kube\config: Access is denied.
+--------------------------------------------------------------------------------
+[02:12:18][elapsed=982ms / 0.982s / 0.016m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 981ms / 0.981s / 0.016m
+--------------------------------------------------------------------------------
+[02:12:18][elapsed=1074ms / 1.074s / 0.018m][kubectl][FAIL] --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+DURATION: 87ms / 0.087s / 0.001m
+EXIT_CODE: 1
+OUTPUT:
+error: error loading config file "C:\Users\alper\.kube\config": open C:\Users\alper\.kube\config: Access is denied.
+--------------------------------------------------------------------------------

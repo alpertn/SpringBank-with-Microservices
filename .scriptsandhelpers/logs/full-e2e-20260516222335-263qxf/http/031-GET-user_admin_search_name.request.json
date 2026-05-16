@@ -1,0 +1,9 @@
+{
+    "method":  "GET",
+    "url":  "http://localhost:8095/api/user-service/v1/admin/search?query=E2EAlpha",
+    "expected":  [
+                     200
+                 ],
+    "headers":  "Authorization",
+    "body":  null
+}

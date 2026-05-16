@@ -1,9 +1,9 @@
 kafka:
   topics:
     transaction:
-      listener: ${KAFKA_TRANSACTION_TOPIC_LISTENER:banking-microservices.transaction.user-service.user-validation.success.v1}
-      sender: ${KAFKA_TRANSACTION_TOPIC_SENDER:banking-microservices.transaction.fraud-service.checked.v1}
-      error: ${KAFKA_TRANSACTION_TOPIC_ERROR:banking-microservices.transaction.transaction-service.error.v1}
+      listener: ${KAFKA_TRANSACTION_USER_VALIDATION_SUCCESS_TOPIC:banking-microservices.transaction.user-validation.success.v1}
+      sender: ${KAFKA_TRANSACTION_FRAUD_CHECKED_TOPIC:banking-microservices.transaction.fraud.checked.v1}
+      error: ${KAFKA_TRANSACTION_FAILED_TOPIC:banking-microservices.transaction.failed.v1}
 server:
   port: ${FRAUD_SERVICE_PORT_NUMBER:8085}
 

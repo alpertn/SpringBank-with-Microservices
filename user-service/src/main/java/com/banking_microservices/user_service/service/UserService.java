@@ -1,117 +1,75 @@
 package com.banking_microservices.user_service.service;
 
 import com.banking_microservices.user_service.dto.RoleEnum.RoleEnum.Role;
-import com.banking_microservices.user_service.dto.user.AuthServiceCreateUserTopicDto;
 import com.banking_microservices.user_service.dto.user.KafkaTransactionTopicMessageDto;
 import com.banking_microservices.user_service.dto.enums.TransactionStatus;
 import com.banking_microservices.user_service.dto.enums.TransactionType;
-import com.banking_microservices.user_service.exception.*;
+import com.banking_microservices.user_service.exception.EmailChangeException;
+import com.banking_microservices.user_service.exception.InvalidPasswordException;
+import com.banking_microservices.user_service.exception.LoginException;
+import com.banking_microservices.user_service.exception.UserAlreadyExistsException;
+import com.banking_microservices.user_service.exception.UserNameOrSurnameNotFoundException;
+import com.banking_microservices.user_service.exception.UserNotFoundById;
+import com.banking_microservices.user_service.exception.UserNotFoundByName;
+import com.banking_microservices.user_service.exception.UserRoleUpdateException;
+import com.banking_microservices.user_service.exception.UserUpdateException;
 import com.banking_microservices.user_service.kafka.KafkaSender;
 import com.banking_microservices.user_service.models.Users;
-import com.banking_microservices.user_service.repository.UserRepository;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 @Service
 @Slf4j
 public class UserService {
 
-    private final Gson gson = new GsonBuilder()
-            .serializeNulls()
-            .registerTypeAdapter(java.time.LocalDateTime.class,
-                    (com.google.gson.JsonSerializer<java.time.LocalDateTime>) (src, type, ctx) ->
-                            new com.google.gson.JsonPrimitive(src.toString()))
-            .registerTypeAdapter(java.time.LocalDateTime.class,
-                    (com.google.gson.JsonDeserializer<java.time.LocalDateTime>) (json, type, ctx) ->
-                            java.time.LocalDateTime.parse(json.getAsString()))
-            .setPrettyPrinting()
-            .create();
+    private final Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
 
-    private final UserRepository userRepository;
+    private final KeycloakAdminService keycloakAdminService;
+    private final KeycloakUserService keycloakUserService;
     private final KafkaSender kafkaSender;
+    private final Supplier<String> currentTime;
 
-    private final java.util.function.Supplier<String> currentTime;
-
-    public UserService(UserRepository userRepository, KafkaSender kafkaSender, java.util.function.Supplier<String> currentTime) {
-        this.userRepository = userRepository;
+    public UserService(KeycloakAdminService keycloakAdminService,
+                       KeycloakUserService keycloakUserService,
+                       KafkaSender kafkaSender,
+                       Supplier<String> currentTime) {
+        this.keycloakAdminService = keycloakAdminService;
+        this.keycloakUserService = keycloakUserService;
         this.kafkaSender = kafkaSender;
         this.currentTime = currentTime;
     }
 
-    @Transactional
     public List<Users> getAllUsers() {
-        return userRepository.findAll();
+        return keycloakAdminService.listAllUsers();
     }
 
     public long countByRole(Role role) {
-        return userRepository.countByRole(role);
+        return getAllUsers().stream().filter(user -> role == user.getRole()).count();
     }
 
     public long countByActive(boolean active) {
-        return userRepository.countByActive(active);
+        return getAllUsers().stream().filter(user -> active == Boolean.TRUE.equals(user.getActive())).count();
     }
 
-    @Transactional
     public Users findUserByMail(String mail) {
-        return userRepository.findUsersByMail(mail)
-                .orElseThrow(() -> new MailNotFoundException("Mail Not Found: {}" + mail));
-    }
-
-    public Users saveUser(AuthServiceCreateUserTopicDto authServiceCreateUserTopicDto) {
-
-        if (userRepository.existsBymail(authServiceCreateUserTopicDto.getEmail())) {
-            throw new UserAlreadyExistsException("Mail Already Exists " + authServiceCreateUserTopicDto.getEmail());
-        }
-        try {
-            Role role = Role.valueOf(String.valueOf(authServiceCreateUserTopicDto.getRole()));
-            Users newUsers = Users
-                    .builder()
-                    .mail(authServiceCreateUserTopicDto.getEmail())
-                    .password(authServiceCreateUserTopicDto.getPassword())
-                    .name(authServiceCreateUserTopicDto.getName())
-                    .surname(authServiceCreateUserTopicDto.getSurname())
-                    .keycloakUUID(authServiceCreateUserTopicDto.getKeycloakUserUUID())
-                    .role(Role.valueOf(role.name()))
-                    .build();
-            try {
-                Users user = userRepository.save(newUsers);
-                log.info(" ({}) > UserService | saveUser -> User Olusturuldu! Dto:\n{}", currentTime.get(), gson.toJson(user));
-                try {
-                    kafkaSender.sendCreateUser(user.getKeycloakUUID());
-                    return newUsers;
-                } catch (Exception e) {
-                    throw new KafkaSendException("Kafka ile Create user topicine mesaj gonderilirken hata olustu.");
-                }
-
-            } catch (KafkaSendException e) {
-                throw e;
-            } catch (Exception e) {
-                throw new UserSaveDatabaseException(
-                        "User veritabanina kaydedilirken bir sorun olustu " + e.getMessage() + gson.toJson(newUsers));
-            }
-
-        } catch (IllegalArgumentException e) {
-            throw new RoleParseException("An error with parse role" + e.getMessage());
-        }
+        return keycloakAdminService.findByEmail(mail);
     }
 
     public void transactionTopicMessageVerify(KafkaTransactionTopicMessageDto dto) {
         try {
-            log.info(" ({}) > UserService | transactionTopicMessageVerify -> Metoda veri geldi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
-            Users senderUser = userRepository.findByKeycloakUUID(dto.getSenderUserId())
-                    .orElseThrow(() -> new UserNotFoundById("Sender Not Found: " + dto.getSenderUserId()));
+            Users senderUser = findByKeycloakUUID(dto.getSenderUserId());
 
             dto.setSenderName(senderUser.getName());
             dto.setSenderSurname(senderUser.getSurname());
             dto.setSenderEmail(senderUser.getMail());
 
             if (dto.getTransactionType() == TransactionType.TRANSFER) {
-                Users receiverUser = userRepository.getUsersByNameAndSurname(dto.getReceiverName(), dto.getReceiverSurname())
+                Users receiverUser = keycloakAdminService.findExactByNameAndSurname(dto.getReceiverName(), dto.getReceiverSurname())
                         .orElseThrow(() -> new UserNameOrSurnameNotFoundException("Receiver Name/Surname Not Found"));
 
                 dto.setReceiverUserId(receiverUser.getKeycloakUUID());
@@ -121,91 +79,58 @@ public class UserService {
             dto.setUserValidation(true);
             dto.setStatus(TransactionStatus.VALIDATION_PENDING);
             dto.setStatusDescription(TransactionStatus.VALIDATION_PENDING.getDescription());
-            log.info(" ({}) > UserService | transactionTopicMessageVerify -> Validation basarili. Kafkaya mesaj atiliyor. Dto:\n{}", currentTime.get(), gson.toJson(dto));
             kafkaSender.sendTransactionUserValidationSuccess(dto.getEventUUID(), dto);
-
-        } catch (Exception e) {
-            log.warn(" ({}) > UserService | transactionTopicMessageVerify -> Validation basarisiz! Hata: {}", currentTime.get(), e.getMessage());
+        } catch (UserNotFoundById | UserNameOrSurnameNotFoundException exception) {
             dto.setError(true);
-            dto.setErrorDescription("Username not found or ID mismatch. " + e.getMessage());
-            // DÜZELTME: Status'u FAILED olarak set et. Önceden status BLOCK_MONEY olarak kalıyordu
-            // ve transaction-service'in isDuplicate kontrolü (entity.status == dto.status) true
-            // döndüğü için error mesajı atlanıyordu. Transfer sonsuza dek BLOCK_MONEY'de kalıyordu.
+            dto.setErrorDescription("Username not found or ID mismatch. " + exception.getMessage());
             dto.setStatus(TransactionStatus.FAILED);
             dto.setStatusDescription(TransactionStatus.FAILED.getDescription());
             kafkaSender.sendTransactionUsernameValidationError(dto.getEventUUID(), dto);
-            throw new UserNameOrSurnameNotFoundException(
-                    "User Name Or Surname Not Found or ID mismatch " + e.getMessage());
-        }
-    }
-
-    public void UsernameValidation(KafkaTransactionTopicMessageDto dto) {
-        log.info(" ({}) > UserService | UsernameValidation -> Metoda veri geldi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
-        boolean exists = userRepository.existsByNameAndSurname(dto.getReceiverName(), dto.getReceiverSurname());
-        if (!exists) {
-            log.warn(" ({}) > UserService | UsernameValidation -> Kullanici bulunamadi! Dto:\n{}", currentTime.get(), gson.toJson(dto));
-            kafkaSender.sendUsernameValidationError(dto.getEventUUID(), dto);
-            throw new UserNameOrSurnameNotFoundException(
-                    "User Name Or Surname Not Found " + dto.getReceiverName() + " " + dto.getReceiverSurname());
-        }
-        try {
-            log.info(" ({}) > UserService | UsernameValidation -> Kullanici dogrulandi, kafkaya success mesaji atiliyor. Dto:\n{}", currentTime.get(), gson.toJson(dto));
-            kafkaSender.sendUsernameValidationSuccess(dto.getEventUUID(), dto);
-        } catch (Exception e) {
-            log.error(" ({}) > UserService | UsernameValidation -> Success mesaji atilamadi! Hata: {}", currentTime.get(), e.getMessage());
-            kafkaSender.sendUsernameValidationError(dto.getEventUUID(), dto);
-            throw new UserNameOrSurnameNotFoundException(
-                    "User Name Or Surname Not Found " + dto.getReceiverName() + " " + dto.getReceiverSurname());
+            throw exception;
+        } catch (Exception exception) {
+            dto.setError(true);
+            dto.setErrorDescription("Unexpected validation error. " + exception.getMessage());
+            dto.setStatus(TransactionStatus.FAILED);
+            dto.setStatusDescription(TransactionStatus.FAILED.getDescription());
+            kafkaSender.sendTransactionUsernameValidationError(dto.getEventUUID(), dto);
+            throw new UserUpdateException("Unexpected validation failure: " + exception.getMessage());
         }
     }
 
     public Users findUserById(String id) {
-        return userRepository.findUsersById(String.valueOf(id))
-                .orElseThrow(() -> new UserNotFoundById("User Not Found By Id: " + id));
+        return keycloakAdminService.findById(id);
     }
 
     public Users findByKeycloakUUID(String keycloakUUID) {
-        return userRepository.findByKeycloakUUID(keycloakUUID)
-                .orElseThrow(() -> new UserNotFoundById("User Not Found By KeycloakUUID: " + keycloakUUID));
+        return keycloakAdminService.findByKeycloakUUID(keycloakUUID);
     }
 
     public void updateUser(Users user) {
         try {
-            userRepository.save(user);
-        } catch (Exception e) {
-            throw new UserUpdateException("An Error With Update User. User : \n{}" + gson.toJson(user));
+            keycloakAdminService.updateProfile(user);
+        } catch (RuntimeException exception) {
+            throw exception;
+        } catch (Exception exception) {
+            throw new UserUpdateException("An Error With Update User. User : \n" + gson.toJson(user));
         }
     }
 
-    @Transactional
     public void deleteUserById(String id) {
-        if (!userRepository.existsById(String.valueOf(id))) {
-            throw new UserNotFoundById("User Not Found for delete: " + id);
-        }
-
-        try {
-            userRepository.deleteUsersById(id);
-        } catch (Exception e) {
-            throw new DeleteUserException("An Error With delete user. id: " + id);
-        }
+        keycloakAdminService.deleteUserById(id);
     }
 
-    @Transactional
     public void updateUserRole(String id, Role newRole) {
-        Users user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundById("User Not Found: " + id));
-
         try {
-            user.setRole(Role.valueOf(newRole.name()));
-            userRepository.save(user);
-        } catch (Exception e) {
+            keycloakAdminService.updateUserRole(id, newRole);
+        } catch (RuntimeException exception) {
+            throw exception;
+        } catch (Exception exception) {
             throw new UserRoleUpdateException("Kullanici rolu guncellenemedi: " + id);
         }
     }
 
     public List<Users> searchUsersByName(String name) {
-        List<Users> results = userRepository.findByNameContainingIgnoreCaseOrSurnameContainingIgnoreCase(name, name);
-
+        List<Users> results = keycloakAdminService.searchByName(name);
         if (results.isEmpty()) {
             throw new UserNotFoundByName("Not Found By User Name: " + name);
         }
@@ -213,93 +138,59 @@ public class UserService {
     }
 
     public long getTotalUserCount() {
-        return userRepository.count();
+        return getAllUsers().size();
     }
 
-    @Transactional
     public void updateUserStatus(String id, Boolean active) {
-        Users user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundById("User Not Found: " + id));
-
-        try {
-            user.setActive(active);
-            userRepository.save(user);
-            log.info(" ({}) > UserService | updateUserStatus -> User status updated. ID: {}, Active: {}", currentTime.get(), id, active);
-        } catch (Exception e) {
-            throw new UserUpdateException("Failed to update user status: " + id);
-        }
+        keycloakAdminService.updateUserStatus(id, Boolean.TRUE.equals(active));
+        log.info(" ({}) > UserService | updateUserStatus -> ID: {}, active: {}", currentTime.get(), id, active);
     }
 
     public List<Users> searchUsersByEmail(String email) {
-        List<Users> results = userRepository.findByMailContainingIgnoreCase(email);
+        List<Users> results = keycloakAdminService.searchByEmail(email);
         if (results.isEmpty()) {
             throw new UserNotFoundByName("No users found with email containing: " + email);
         }
         return results;
     }
 
-    @Transactional
     public void resetUserPassword(String id, String newPassword) {
-        Users user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundById("User Not Found: " + id));
-
-        try {
-            user.setPassword(newPassword);
-            userRepository.save(user);
-            log.warn(" ({}) > UserService | resetUserPassword -> Admin password reset for user ID: {}", currentTime.get(), id);
-        } catch (Exception e) {
-            throw new UserUpdateException("Failed to reset password for user: " + id);
-        }
+        keycloakAdminService.resetPassword(id, newPassword);
+        log.warn(" ({}) > UserService | resetUserPassword -> Admin password reset for user ID: {}", currentTime.get(), id);
     }
 
-    @Transactional
     public void changePassword(String userId, String currentPassword, String newPassword) {
-        Users user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundById("User Not Found: " + userId));
-
-        if (!user.getPassword().equals(currentPassword)) {
-            log.warn(" ({}) > UserService | changePassword -> Password change failed for user ID: {} - incorrect current password", currentTime.get(), userId);
-            throw new InvalidPasswordException("Current password is incorrect");
-        }
+        Users user = findUserById(userId);
 
         if (currentPassword.equals(newPassword)) {
             throw new InvalidPasswordException("New password cannot be the same as current password");
         }
 
         try {
-            user.setPassword(newPassword);
-            userRepository.save(user);
-            log.info(" ({}) > UserService | changePassword -> Password changed successfully for user ID: {}", currentTime.get(), userId);
-        } catch (Exception e) {
-            throw new UserUpdateException("Failed to change password for user: " + userId);
+            keycloakUserService.verifyCredentials(user.getMail(), currentPassword);
+            keycloakAdminService.resetPassword(userId, newPassword);
+        } catch (LoginException exception) {
+            throw new InvalidPasswordException("Current password is incorrect");
         }
     }
 
-    @Transactional
     public void changeEmail(String userId, String newEmail, String password) {
-        Users user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundById("User Not Found: " + userId));
+        Users user = findUserById(userId);
 
-        if (!user.getPassword().equals(password)) {
-            log.warn(" ({}) > UserService | changeEmail -> Email change failed for user ID: {} - incorrect password", currentTime.get(), userId);
-            throw new InvalidPasswordException("Password is incorrect");
+        if (user.getMail().equalsIgnoreCase(newEmail)) {
+            throw new EmailChangeException("New email cannot be the same as current email");
         }
-
-        if (userRepository.existsBymail(newEmail)) {
-            log.warn(" ({}) > UserService | changeEmail -> Email change failed for user ID: {} - email already exists: {}", currentTime.get(), userId, newEmail);
+        if (keycloakAdminService.existsByEmail(newEmail)) {
             throw new UserAlreadyExistsException("Email already in use: " + newEmail);
         }
 
-        if (user.getMail().equals(newEmail)) {
-            throw new EmailChangeException("New email cannot be the same as current email");
-        }
-
         try {
-            String oldEmail = user.getMail();
+            keycloakUserService.verifyCredentials(user.getMail(), password);
             user.setMail(newEmail);
-            userRepository.save(user);
-            log.info(" ({}) > UserService | changeEmail -> Email changed successfully for user ID: {} from {} to {}", currentTime.get(), userId, oldEmail, newEmail);
-        } catch (Exception e) {
+            keycloakAdminService.updateProfile(user);
+        } catch (UserAlreadyExistsException | EmailChangeException exception) {
+            throw exception;
+        } catch (Exception exception) {
             throw new EmailChangeException("Failed to change email for user: " + userId);
         }
     }

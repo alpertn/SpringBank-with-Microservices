@@ -1,0 +1,9 @@
+{
+    "method":  "GET",
+    "url":  "http://localhost:8095/api/user-service/v1/admin/findbyemail?email=e2e.admin.target.20260516222643-wihrmy@springbank.test",
+    "expected":  [
+                     200
+                 ],
+    "headers":  "Authorization",
+    "body":  null
+}

@@ -1,0 +1,177 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20260517021229
+Username: monte\alper
+RunAs User: monte\alper
+Configuration Name: 
+Machine: MONTE (Microsoft Windows NT 10.0.26200.0)
+Host Application: powershell.exe -NoProfile -ExecutionPolicy Bypass -Command $p=$env:SELF; $c=Get-Content -Raw -LiteralPath $p; $m='# POWERSHELL_PAYLOAD'; $i=$c.LastIndexOf($m); if($i -lt 0){throw 'PowerShell payload not found'}; $s=$c.Substring($i + $m.Length); Invoke-Expression $s
+Process ID: 21300
+PSVersion: 5.1.26100.7462
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7462
+BuildVersion: 10.0.26100.7462
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+[INFO] RunId=20260517021229-m6a4bs
+[INFO] Test modu=full (varsayilan full kapsam; 1 dakikayi asan parca SKIP yazilip sonraki teste gecilir)
+[INFO] Timeoutlar: HTTP=60 sn, long-running-skip=60 sn, wait-cap=60 sn
+[INFO] Tum loglar: C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260517021229-m6a4bs
+
+==== Kubernetes ve servis on kontrolleri ====
+[OK]   kubectl context: docker-desktop
+[OK]   Kubernetes API cevap veriyor
+[OK]   namespace var: banking-microservices
+[OK]   tum deployment'lar available condition beklemesi tamam
+[OK]   deployment ready: postgres (1)
+[OK]   deployment ready: redis (1)
+[OK]   deployment ready: mongodb (1)
+[OK]   deployment ready: elasticsearch (1)
+[OK]   deployment ready: zookeeper (1)
+[OK]   deployment ready: kafka (1)
+[OK]   deployment ready: keycloak (1)
+[OK]   deployment ready: user-service (1)
+[OK]   deployment ready: money-service (1)
+[OK]   deployment ready: money-service-command (1)
+[OK]   deployment ready: money-service-query (1)
+[OK]   deployment ready: transaction-service (1)
+[OK]   deployment ready: fraud-service (1)
+[OK]   deployment ready: gateway (1)
+[OK]   service var: postgres
+[OK]   service var: redis
+[OK]   service var: mongodb
+[OK]   service var: elasticsearch
+[OK]   service var: zookeeper
+[OK]   service var: kafka
+[OK]   service var: keycloak
+[OK]   service var: user-service
+[OK]   service var: money-service
+[OK]   service var: money-service-command
+[OK]   service var: money-service-query
+[OK]   service var: transaction-service
+[OK]   service var: fraud-service
+[OK]   service var: gateway
+
+==== Gateway erisimi ====
+[OK]   gateway static login.html HTTP 200
+[OK]   static / HTTP 200
+[OK]   static /index.html HTTP 200
+[OK]   static /login.html HTTP 200
+[OK]   static /register.html HTTP 200
+[OK]   static /dashboard.html HTTP 200
+[OK]   static /deposit.html HTTP 200
+[OK]   static /withdraw.html HTTP 200
+[OK]   static /transfer.html HTTP 200
+[OK]   static /transactions.html HTTP 200
+[OK]   static /admin.html HTTP 200
+
+==== Public health endpointleri ====
+[OK]   money-service health unauthenticated/security HTTP 401
+[OK]   user-service liveness HTTP 200
+[OK]   user-service liveness HTTP 200 satisfied
+[OK]   money-service liveness HTTP 200
+[OK]   money-service liveness HTTP 200 satisfied
+[OK]   transaction-service liveness HTTP 200
+[OK]   transaction-service liveness HTTP 200 satisfied
+[OK]   fraud-service liveness HTTP 200
+[OK]   fraud-service liveness HTTP 200 satisfied
+[OK]   money-service-command internal health HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: money-service-command."
+[OK]   money-service-query internal health HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: money-service-query."
+
+==== Kafka topic ve altyapi kontrolleri ====
+[OK]   Kafka topic var: banking-microservices.user.created.v1
+[OK]   Kafka topic var: banking-microservices.money.account.created.v1
+[INFO] Kafka topic henuz yok, akista uretildiginde tekrar dogrulanacak: banking-microservices.money.account.create-failed.v1
+[OK]   Kafka topic var: banking-microservices.transaction.created.v1
+[OK]   Kafka topic var: banking-microservices.transaction.completed.v1
+[OK]   Kafka topic var: banking-microservices.transaction.failed.v1
+[OK]   Kafka topic var: banking-microservices.transaction.money-blocked.v1
+[OK]   Kafka topic var: banking-microservices.transaction.user-validation.request.v1
+[OK]   Kafka topic var: banking-microservices.transaction.user-validation.success.v1
+[OK]   Kafka topic var: banking-microservices.transaction.fraud.checked.v1
+[OK]   Kafka topic var: banking-microservices.transaction.saga.created.v1
+[OK]   Kafka topic var: banking-microservices.transaction.saga.money.completed.v1
+[INFO] Kafka topic henuz yok, akista uretildiginde tekrar dogrulanacak: banking-microservices.transaction.saga.money.failed.v1
+[OK]   Kafka topic var: banking-microservices.transaction.money-blocked.v1
+PS>TerminatingError(Add-Content): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: İşlem, başka bir işlem tarafından kullanıldığından 'C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260517021229-m6a4bs\all-logs.txt' dosyasına erişemiyor."
+PS>TerminatingError(Add-Content): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: İşlem, başka bir işlem tarafından kullanıldığından 'C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260517021229-m6a4bs\all-logs.txt' dosyasına erişemiyor."
+
+==== Register, login, token decode ====
+[OK]   register user1 HTTP 200
+[OK]   register user2 HTTP 200
+[OK]   user1 login HTTP 200
+[OK]   user1 access_token alindi
+[OK]   user2 login HTTP 200
+[OK]   user2 access_token alindi
+[OK]   admin login HTTP 200
+[OK]   admin access_token alindi
+[OK]   user1 JWT sub: 95fc80d4-08c5-47d2-8697-9f7796b0562b
+[OK]   user2 JWT sub: 9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8
+[OK]   admin JWT ADMIN role iceriyor
+[OK]   refresh token user1 HTTP 200
+[OK]   register user Kafka offset advanced banking-microservices.user.created.v1 40 -> 42
+[OK]   register user1 create-user event Kafka mesaj icerigi bulundu topic=banking-microservices.user.created.v1 needle=95fc80d4-08c5-47d2-8697-9f7796b0562b
+[OK]   register user2 create-user event Kafka mesaj icerigi bulundu topic=banking-microservices.user.created.v1 needle=9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8
+
+==== Keycloak DB dogrulamasi ====
+[OK]   Keycloak DB user1 kaydi var
+[OK]   Keycloak DB user2 kaydi var
+
+==== User admin endpointleri ====
+[OK]   user admin total HTTP 200
+[OK]   user admin roles HTTP 200
+PS>TerminatingError(Add-Content): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: İşlem, başka bir işlem tarafından kullanıldığından 'C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260517021229-m6a4bs\all-logs.txt' dosyasına erişemiyor."
+[OK]   user admin active HTTP 200
+[OK]   user admin findbyemail user1 HTTP 200
+[OK]   user1 DB id bulundu: 95fc80d4-08c5-47d2-8697-9f7796b0562b
+[OK]   user get self by id HTTP 200
+[OK]   user admin findbykeycloakuuid user1 HTTP 200
+[OK]   user admin search name HTTP 200
+[OK]   user admin allusers HTTP 200
+
+==== User self-service profil mutasyon endpointleri ====
+[OK]   user2 change-email HTTP 200
+[OK]   user2 change-password HTTP 200
+[OK]   user2 after self-service mutations login HTTP 200
+[OK]   user2 after self-service mutations access_token alindi
+[OK]   register admin mutation target HTTP 200
+[OK]   user admin findbyemail mutation target HTTP 200
+[OK]   admin mutation target DB id bulundu: 06cc4e4f-ae01-40cb-822f-79b6b715aa95
+[OK]   user admin updaterole target USER HTTP 200
+[OK]   user admin deactivate target HTTP 200
+[OK]   user admin activate target HTTP 200
+[OK]   user admin reset-password target HTTP 200
+PS>TerminatingError(Add-Content): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: İşlem, başka bir işlem tarafından kullanıldığından 'C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260517021229-m6a4bs\all-logs.txt' dosyasına erişemiyor."
+[OK]   admin target after reset login HTTP 200
+[OK]   admin target after reset access_token alindi
+[OK]   user admin updateuser target HTTP 200
+[OK]   user admin deleteuser target HTTP 200
+
+==== Money account create ve DB dogrulamasi ====
+[OK]   money create user1 HTTP 200
+[OK]   money create user2 HTTP 200
+[OK]   user1 balance-info HTTP 200
+[OK]   user2 balance-info HTTP 200
+[OK]   user1 IBAN var: TR2874854ICT5JAD55SFROTOKP
+[OK]   user2 IBAN var: TR2964057F1UFMYCTJVJ7NNNN9
+[OK]   getUserIbanWithUserId user1 HTTP 200
+[OK]   Postgres banking_money user1 money kaydi var
+[OK]   Postgres banking_money user2 money kaydi var
+[OK]   money account create Kafka offset advanced banking-microservices.money.account.created.v1 40 -> 43
+[OK]   money account created user1 event Kafka mesaj icerigi bulundu topic=banking-microservices.money.account.created.v1 needle=95fc80d4-08c5-47d2-8697-9f7796b0562b
+[OK]   money account created user2 event Kafka mesaj icerigi bulundu topic=banking-microservices.money.account.created.v1 needle=9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8
+
+==== Money direct deposit/withdraw endpointleri ====
+[OK]   money direct depositByUserId user2 HTTP 200
+[OK]   user2 after direct deposit balance-info HTTP 200
+[OK]   user2 direct deposit balance 200 satisfied
+[OK]   money direct withdrawByUserId user2 HTTP 200
+[OK]   user2 after direct withdraw balance-info HTTP 200
+[OK]   user2 direct withdraw balance 0 satisfied
+
+==== Deposit, withdraw, transfer E2E ====

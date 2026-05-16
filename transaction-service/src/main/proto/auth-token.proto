@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.banking_microservices.user_service.grpc";
+option java_outer_classname = "AuthTokenProto";
+
+package auth.v1;
+
+message TokenDecodeRequest {
+  string token = 1;
+}
+
+message TokenDetailsResponse {
+  string subject = 1;
+  string preferred_username = 2;
+  string email = 3;
+  string given_name = 4;
+  string family_name = 5;
+  string issuer = 6;
+  string audience_json = 7;
+  repeated string realm_roles = 8;
+  string header_json = 9;
+  string claims_json = 10;
+  string issued_at = 11;
+  string expires_at = 12;
+  string jwt_id = 13;
+  string token_type = 14;
+  string session_state = 15;
+  string scope = 16;
+}
+
+service AuthTokenGrpcService {
+  rpc DecodeToken(TokenDecodeRequest) returns (TokenDetailsResponse);
+}

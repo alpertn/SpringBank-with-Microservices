@@ -1,0 +1,9 @@
+{
+    "method":  "POST",
+    "url":  "http://localhost:8095/api/user-service/v1/admin/users/40fdeaab-2966-45d3-89fe-b378f0f2b769/deactivate",
+    "expected":  [
+                     200
+                 ],
+    "headers":  "Authorization",
+    "body":  null
+}

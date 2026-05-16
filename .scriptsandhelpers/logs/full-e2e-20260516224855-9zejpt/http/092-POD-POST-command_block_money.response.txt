@@ -1,0 +1,1 @@
+{"timestamp":"2026-05-16T19:52:33.160Z","status":400,"error":"Bad Request","path":"/api/money-service-command/v1/accounts/block-money"}

@@ -1,0 +1,12 @@
+{
+    "method":  "POST",
+    "url":  "http://localhost:8095/api/user-service/v1/auth/login",
+    "expected":  [
+                     200
+                 ],
+    "headers":  "",
+    "body":  {
+                 "password":  "Test1234!",
+                 "email":  "e2e.alpha.20260516224855-9zejpt@springbank.test"
+             }
+}

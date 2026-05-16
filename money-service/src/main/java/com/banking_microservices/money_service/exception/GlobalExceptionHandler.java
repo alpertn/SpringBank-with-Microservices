@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SaveUserException.class)
     public ResponseEntity<ErrorResponseDto> handleSaveUserException(SaveUserException e, WebRequest webRequest) {
         log.warn("SaveUserException. Error {} Path {}", e.getMessage(), webRequest.getDescription(true));
-        return build(HttpStatus.BAD_REQUEST, "User Save Failed", e.getMessage(), webRequest);
+        return build(HttpStatus.INTERNAL_SERVER_ERROR, "User Save Failed", e.getMessage(), webRequest);
     }
 
     @ExceptionHandler(NegativeNumberException.class)

@@ -1,31 +1,37 @@
 server:
   port: ${TRANSACTION_SERVICE_PORT_NUMBER:8083}
 
+grpc:
+  client:
+    user-service-token:
+      address: ${USER_SERVICE_GRPC_ADDRESS:static://localhost:9194}
+      negotiationType: plaintext
+
 kafka:
   topics:
     transaction:
       # SENDER: transaction-service bu topic'e gönderir; fraud-service ve money-service dinler.
       # LISTENER: transaction-service bu topic'i artık DİNLEMİYOR çünkü kendi gönderdiği topic'i
       #           dinlemek sonsuz döngüye yol açar. created.v1 yalnızca fraud-service tarafından dinlenir.
-      sender: ${KAFKA_TRANSACTION_TOPIC_SENDER:banking-microservices.transaction.transaction-service.created.v1}
-      error: ${KAFKA_TRANSACTION_TOPIC_ERROR:banking-microservices.transaction.transaction-service.error.v1}
+      sender: ${KAFKA_TRANSACTION_CREATED_TOPIC:banking-microservices.transaction.created.v1}
+      error: ${KAFKA_TRANSACTION_FAILED_TOPIC:banking-microservices.transaction.failed.v1}
       blockmoney:
-        listener: ${KAFKA_TRANSACTION_BLOCKMONEY_LISTENER:banking-microservices.transaction.money-service.block-money.success.v1}
+        listener: ${KAFKA_TRANSACTION_MONEY_BLOCKED_TOPIC:banking-microservices.transaction.money-blocked.v1}
       user-validation:
-        listener: ${KAFKA_TRANSACTION_USERVALIDATION_LISTENER:banking-microservices.transaction.user-service.user-validation.success.v1}
+        listener: ${KAFKA_TRANSACTION_USER_VALIDATION_SUCCESS_TOPIC:banking-microservices.transaction.user-validation.success.v1}
       logger:
         # Düzeltme: Kafka topicPattern regex kullanır. Nokta (.) regex'te özel karakter,
         # literal nokta için \. kullanılmalı. Bu nedenle pattern'de \\. yazılır.
         listener: ${KAFKA_TRANSACTION_LOGGER_LISTENER:banking-microservices\.transaction\..*}
       result:
-        listener: ${KAFKA_TRANSACTION_RESULT_LISTENER:banking-microservices.transaction.result.success.v1}
+        listener: ${KAFKA_TRANSACTION_COMPLETED_TOPIC:banking-microservices.transaction.completed.v1}
 
         # Saga
 
       saga:
-        listener: ${KAFKA_TRANSACTION_SAGA_TRANSACTION-SERVICE_CREATED:banking-microservices.transaction.saga.transaction-service.created.v1}
-        sender: ${KAFKA_TRANSACTION_SAGA_MONEY-SERVICE_SUCCESS:banking-microservices.transaction.saga.money-service.success.v1}
-        error: ${KAFKA_TRANSACTION_SAGA_MONEY-SERVICE_ERROR:banking-microservices.transaction.saga.money-service.error.v1}
+        listener: ${KAFKA_TRANSACTION_SAGA_CREATED_TOPIC:banking-microservices.transaction.saga.created.v1}
+        sender: ${KAFKA_TRANSACTION_SAGA_MONEY_COMPLETED_TOPIC:banking-microservices.transaction.saga.money.completed.v1}
+        error: ${KAFKA_TRANSACTION_SAGA_MONEY_FAILED_TOPIC:banking-microservices.transaction.saga.money.failed.v1}
 spring:
   application:
     name: transaction-service

@@ -24,7 +24,18 @@ public class BlockMoneyService {
     public void blockFunds(KafkaTransactionTopicMessageDto dto) {
         // sadece DB islemi try icerisinde. Kafka gonderimi disarida.
         try {
-            repository.decrementAndBlockByIban(dto.getSenderIban(), dto.getMoney());
+            int updatedRowCount = repository.decrementAndBlockByIban(dto.getSenderIban(), dto.getMoney());
+            if (updatedRowCount == 0) {
+                errorHandler.sendErrorAndThrow(
+                        dto,
+                        "Sender IBAN not found or insufficient balance for block operation.",
+                        new DecramentAndBlockMoneyException(
+                                "Block money failed for iban=" + dto.getSenderIban()
+                        )
+                );
+            }
+        } catch (DecramentAndBlockMoneyException exception) {
+            throw exception;
         } catch (Exception e) {
             log.error(" ({}) > BlockMoneyService | blockFunds -> Para bloke edilirken hata olustu! Hata: {}", currentTime.get(), e.getMessage());
             errorHandler.sendErrorAndThrow(dto, "An Exception with decrement money and block money with iban.", new DecramentAndBlockMoneyException("An exception with Decrement Money And Block money with Iban number. Iban = " + dto.getSenderIban()));

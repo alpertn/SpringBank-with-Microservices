@@ -1,0 +1,1 @@
+{"message":"senderIban must not be blank","errorCode":"VALIDATION_ERROR","timestamp":"2026-05-16T20:04:40.866700993"}

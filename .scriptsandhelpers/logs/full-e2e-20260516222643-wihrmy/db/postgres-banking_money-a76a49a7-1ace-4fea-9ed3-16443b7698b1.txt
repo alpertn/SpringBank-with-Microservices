@@ -1,0 +1,3 @@
+SQL: select money || '|' || blocked_money from money where user_id='3c551fd5-a8d0-465a-a55a-89801e4234dd' or keycloak_user_uuid='3c551fd5-a8d0-465a-a55a-89801e4234dd' limit 1;
+RESULT:
+0.00|0.00

@@ -60,7 +60,7 @@ metadata:
   name: user-service
   namespace: banking-microservices
 spec:
-  replicas: 2 # baslangic podlari
+  replicas: 1 # baslangic podlari
   selector:
     matchLabels:
       app: user-service # olusturulan tum portlar ubnun altinda olusturulacak namespace bu olacak
@@ -71,10 +71,11 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: SpringBankWithMicroservices/user-service:1.0.0
+          image: springbankwithmicroservices/user-service:1.0.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8081
+            - containerPort: 9194
           resources: # Podun calisacagi cpu ve memory scaling
             requests: # Pod minimum ozellikleri
               memory: "256Mi" # min 256mb ram.
@@ -92,41 +93,46 @@ spec:
               value: banking_admin
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
               value: update
-
-            # Port Numarasi
             - name: USER_SERVICE_PORT_NUMBER
               value: "8081"
+            - name: USER_SERVICE_GRPC_PORT
+              value: "9194"
             # Kafka
             - name: SPRING_APPLICATION_JSON
               value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
               value: kafka:9092
+            - name: SPRING_DATA_REDIS_HOST
+              value: redis
+            - name: SPRING_DATA_REDIS_PORT
+              value: "6379"
+            - name: KEYCLOAK_SERVER_URL
+              value: http://keycloak:8080
+            - name: KEYCLOAK_REALM
+              value: banking
+            - name: KEYCLOAK_CLIENT_ID
+              value: banking-app
+            - name: KEYCLOAK_CLIENT_SECRET
+              value: Iopu5gL8VfLtIX39701gkwd6iCd7gKW6
+            - name: KEYCLOAK_ADMIN_USERNAME
+              value: alper123
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              value: alper123A
             # Kafka Topic
-            # Create User
-            - name: KAFKA_AUTH_SERVICE_CREATE_USER_LISTENER
-              value: banking-microservices.create-user.auth-service.progress.v1
-            - name: KAFKA_CREATE_USER_SENDER
-              value: banking-microservices.username-validation.user-service.progress.v1
-            - name: KAFKA_CREATE_USER_LISTENER
-              value: banking-microservices.create-user.money-service.success.v1
-            - name: KAFKA_CREATE_USER_ERROR
-              value: banking-microservices.create-user.money-service.error.v1
-            # Username Validation
-            - name: KAFKA_USERNAME_VALIDATION_SENDER
-              value: banking-microservices.username-validation.user-service.success.v1
-            - name: KAFKA_USERNAME_VALIDATION_LISTENER
-              value: banking-microservices.username-validation.money-service.progress.v1 # banking-microservices.transaction.money-service.block-money.success.v1
-            - name: KAFKA_USERNAME_VALIDATION_ERROR
-              value: banking-microservices.username-validation.money-service.error.v1
+            - name: KAFKA_USER_CREATED_TOPIC
+              value: banking-microservices.user.created.v1
+            - name: KAFKA_MONEY_ACCOUNT_CREATED_TOPIC
+              value: banking-microservices.money.account.created.v1
+            - name: KAFKA_MONEY_ACCOUNT_CREATE_FAILED_TOPIC
+              value: banking-microservices.money.account.create-failed.v1
             # Transaction Validation
-            # Diyagram Adim 2: block-money.user-validation.v1'i dinle (user-service icin ozel topic)
-            - name: KAFKA_TRANSACTION_USERNAME_VALIDATION_LISTENER
-              value: banking-microservices.transaction.money-service.block-money.user-validation.v1
-            - name: KAFKA_TRANSACTION_USERNAME_VALIDATION_SENDER
-              value: banking-microservices.transaction.user-service.user-validation.success.v1
+            - name: KAFKA_TRANSACTION_USER_VALIDATION_REQUEST_TOPIC
+              value: banking-microservices.transaction.user-validation.request.v1
+            - name: KAFKA_TRANSACTION_USER_VALIDATION_SUCCESS_TOPIC
+              value: banking-microservices.transaction.user-validation.success.v1
             # DÜZELTME: Eski topic (user-validation.error.v1) dinlenmiyordu
-            - name: KAFKA_TRANSACTION_USERNAME_VALIDATION_ERROR
-              value: banking-microservices.transaction.transaction-service.error.v1
+            - name: KAFKA_TRANSACTION_FAILED_TOPIC
+              value: banking-microservices.transaction.failed.v1
             # Kafka Consumer Fix: auto-offset-reset=earliest + StringDeserializer
             - name: SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET
               value: earliest
@@ -147,8 +153,12 @@ spec:
   selector:
     app: user-service
   ports:
-    - port: 8081
+    - name: http
+      port: 8081
       targetPort: 8081
+    - name: grpc
+      port: 9194
+      targetPort: 9194
 
 ---
 
@@ -163,7 +173,7 @@ spec:
     kind: Deployment
     name: user-service # user-service nin pod sayisini degistiricek
   minReplicas: 1 # Minimum pod
-  maxReplicas: 3 # Max pods
+  maxReplicas: 1 # Max pods
   metrics: # Hangi metriklere gore scaling yapacak.
     - type: Resource # resource tip metrics ornek cpu ram
       resource:
@@ -190,7 +200,7 @@ metadata:
   name: money-service
   namespace: banking-microservices
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: money-service
@@ -201,7 +211,7 @@ spec:
     spec:
       containers:
         - name: money-service
-          image: SpringBankWithMicroservices/money-service:1.0.0
+          image: springbankwithmicroservices/money-service:1.0.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8082
@@ -232,35 +242,24 @@ spec:
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
               value: kafka:9092
             # Kafka Topic
-            - name: KAFKA_CREATE_USER_SENDER
-              value: banking-microservices.create-user.money-service.success.v1
-            - name: KAFKA_CREATE_USER_LISTENER
-              value: banking-microservices.username-validation.user-service.progress.v1
-            - name: KAFKA_CREATE_USER_ERROR
-              value: banking-microservices.create-user.money-service.error.v1
-            # Diyagram Adim 1: money-service created.v1'i dinler (eski: user-validation.success.v1)
-            - name: KAFKA_TRANSACTION_TOPIC_LISTENER
-              value: banking-microservices.transaction.transaction-service.created.v1
-            - name: KAFKA_TRANSACTION_TOPIC_SENDER
-              value: banking-microservices.transaction.transaction-service.success.v1
-            - name: KAFKA_TRANSACTION_TOPIC_ERROR
-              value: banking-microservices.transaction.transaction-service.error.v1
-            - name: KAFKA_USERNAME_VALIDATION_SENDER
-              value: banking-microservices.username-validation.money-service.progress.v1
-            - name: KAFKA_USERNAME_VALIDATION_LISTENER
-              value: banking-microservices.username-validation.user-service.success.v1
-            - name: KAFKA_TRANSACTION_BLOCKUSER_LISTENER
-              value: banking-microservices.transaction.transaction-service.created.v1
-            - name: KAFKA_TRANSACTION_BLOCKUSER_SENDER
-              value: banking-microservices.transaction.money-service.block-money.success.v1
-            # Yeni: user-service icin ozel block-money validation topic
-            - name: KAFKA_TRANSACTION_BLOCKMONEY_USERVALIDATION_SENDER
-              value: banking-microservices.transaction.money-service.block-money.user-validation.v1
-            # Diyagram Adim 4 (YENi): fraud-checked.v1'i dinler - TRANSFER gercek para hareketi
-            - name: KAFKA_TRANSACTION_TRANSFER_EXECUTE_LISTENER
-              value: banking-microservices.transaction.fraud-service.checked.v1
-            - name: KAFKA_TRANSACTION_RESULT_SENDER
-              value: banking-microservices.transaction.result.success.v1
+            - name: KAFKA_MONEY_ACCOUNT_CREATED_TOPIC
+              value: banking-microservices.money.account.created.v1
+            - name: KAFKA_USER_CREATED_TOPIC
+              value: banking-microservices.user.created.v1
+            - name: KAFKA_MONEY_ACCOUNT_CREATE_FAILED_TOPIC
+              value: banking-microservices.money.account.create-failed.v1
+            - name: KAFKA_TRANSACTION_CREATED_TOPIC
+              value: banking-microservices.transaction.created.v1
+            - name: KAFKA_TRANSACTION_COMPLETED_TOPIC
+              value: banking-microservices.transaction.completed.v1
+            - name: KAFKA_TRANSACTION_FAILED_TOPIC
+              value: banking-microservices.transaction.failed.v1
+            - name: KAFKA_TRANSACTION_MONEY_BLOCKED_TOPIC
+              value: banking-microservices.transaction.money-blocked.v1
+            - name: KAFKA_TRANSACTION_USER_VALIDATION_REQUEST_TOPIC
+              value: banking-microservices.transaction.user-validation.request.v1
+            - name: KAFKA_TRANSACTION_FRAUD_CHECKED_TOPIC
+              value: banking-microservices.transaction.fraud.checked.v1
             # Redis
             - name: REDIS_HOST
               value: redis
@@ -269,13 +268,13 @@ spec:
 
             # Saga
             # Sender
-            - name: KAFKA_TRANSACTION_SAGA_TRANSACTION-SERVICE_CREATED
-              value: banking-microservices.transaction.saga.transaction-service.created.v1
+            - name: KAFKA_TRANSACTION_SAGA_CREATED_TOPIC
+              value: banking-microservices.transaction.saga.created.v1
             # Listener (listen Money-service)
-            - name: KAFKA_TRANSACTION_SAGA_MONEY-SERVICE_SUCCESS
-              value: banking-microservices.transaction.saga.money-service.success.v1
-            - name: KAFKA_TRANSACTION_SAGA_MONEY-SERVICE_ERROR
-              value: banking-microservices.transaction.saga.money-service.error.v1
+            - name: KAFKA_TRANSACTION_SAGA_MONEY_COMPLETED_TOPIC
+              value: banking-microservices.transaction.saga.money.completed.v1
+            - name: KAFKA_TRANSACTION_SAGA_MONEY_FAILED_TOPIC
+              value: banking-microservices.transaction.saga.money.failed.v1
 
 ---
 
@@ -304,7 +303,7 @@ spec:
     kind: Deployment
     name: money-service
   minReplicas: 1
-  maxReplicas: 3
+  maxReplicas: 1
   metrics:
     - type: Resource
       resource:
@@ -335,7 +334,7 @@ spec:
 # AKIS:
 # command request gelir
 #   -> Postgres'e write edilir
-#     -> her basarili state degisikligi banking-microservices.transaction.money-service.block-money.success.v1 topic'ine basilir
+#     -> her basarili state degisikligi banking-microservices.transaction.money-blocked.v1 topic'ine basilir
 #       -> money-service-query bu event'i okuyup kendi read database'lerini gunceller
 # Ayrica query servisine gRPC ile "projection sync registration" gonderilir.
 
@@ -345,7 +344,7 @@ metadata:
   name: money-service-command
   namespace: banking-microservices
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: money-service-command
@@ -356,7 +355,7 @@ spec:
     spec:
       containers:
         - name: money-service-command
-          image: SpringBankWithMicroservices/money-service-command:1.0.0
+          image: springbankwithmicroservices/money-service-command:1.0.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8092
@@ -381,7 +380,7 @@ spec:
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
               value: kafka:9092
             - name: MONEY_SERVICE_PROJECTION_TOPIC
-              value: banking-microservices.transaction.money-service.block-money.success.v1
+              value: banking-microservices.transaction.money-blocked.v1
             - name: MONEY_SERVICE_QUERY_GRPC_ADDRESS
               value: static://money-service-query:9193
 
@@ -420,7 +419,7 @@ spec:
     kind: Deployment
     name: money-service-command
   minReplicas: 1
-  maxReplicas: 3
+  maxReplicas: 1
   metrics:
     - type: Resource
       resource:
@@ -445,7 +444,7 @@ spec:
 # Bu servis sadece read-side olarak ayrildi ve tum query sorumlulugu buraya verildi.
 #
 # BU SERVIS NE YAPAR?
-# Kafka'dan banking-microservices.transaction.money-service.block-money.success.v1 topic'ini dinler.
+# Kafka'dan banking-microservices.transaction.money-blocked.v1 topic'ini dinler.
 # Gelen event'leri MongoDB'ye read model olarak yazar, Elasticsearch'e de arama indexi olarak kopyalar.
 #
 # AKIS:
@@ -464,7 +463,7 @@ metadata:
   name: money-service-query
   namespace: banking-microservices
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: money-service-query
@@ -475,7 +474,7 @@ spec:
     spec:
       containers:
         - name: money-service-query
-          image: SpringBankWithMicroservices/money-service-query:1.0.0
+          image: springbankwithmicroservices/money-service-query:1.0.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8093
@@ -501,7 +500,7 @@ spec:
             - name: SPRING_ELASTICSEARCH_URIS
               value: http://elasticsearch:9200
             - name: MONEY_SERVICE_PROJECTION_TOPIC
-              value: banking-microservices.transaction.money-service.block-money.success.v1
+              value: banking-microservices.transaction.money-blocked.v1
 
 ---
 
@@ -544,7 +543,7 @@ spec:
     kind: Deployment
     name: money-service-query
   minReplicas: 1
-  maxReplicas: 3
+  maxReplicas: 1
   metrics:
     - type: Resource
       resource:
@@ -571,7 +570,7 @@ metadata:
   name: transaction-service
   namespace: banking-microservices
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: transaction-service
@@ -582,7 +581,7 @@ spec:
     spec:
       containers:
         - name: transaction-service
-          image: SpringBankWithMicroservices/transaction-service:1.0.0
+          image: springbankwithmicroservices/transaction-service:1.0.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8083
@@ -607,37 +606,37 @@ spec:
             # PORT
             - name: TRANSACTION_SERVICE_PORT_NUMBER
               value: "8083"
+            - name: USER_SERVICE_GRPC_ADDRESS
+              value: static://user-service:9194
             # Kafka
             - name: SPRING_APPLICATION_JSON
               value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
               value: kafka:9092
-            - name: KAFKA_TRANSACTION_TOPIC_SENDER
-              value: banking-microservices.transaction.transaction-service.created.v1
-            - name: KAFKA_TRANSACTION_TOPIC_ERROR
-              value: banking-microservices.transaction.transaction-service.error.v1
-            - name: KAFKA_TRANSACTION_USERVALIDATION_LISTENER
-              # Diyagram: user-validation.success.v1 user-service'ten fraud-service'e gider.
-              # transaction-service bu topic'i sadece STATUS LOG icin izler.
-              value: banking-microservices.transaction.user-service.user-validation.success.v1
+            - name: KAFKA_TRANSACTION_CREATED_TOPIC
+              value: banking-microservices.transaction.created.v1
+            - name: KAFKA_TRANSACTION_FAILED_TOPIC
+              value: banking-microservices.transaction.failed.v1
+            - name: KAFKA_TRANSACTION_USER_VALIDATION_SUCCESS_TOPIC
+              value: banking-microservices.transaction.user-validation.success.v1
             # Düzeltme: topicPattern regex syntax - nokta literal için \\.  kullanılmali
             - name: KAFKA_TRANSACTION_LOGGER_LISTENER
               value: 'banking-microservices\.transaction\..*'
-            - name: KAFKA_TRANSACTION_RESULT_LISTENER
-              value: banking-microservices.transaction.result.success.v1
+            - name: KAFKA_TRANSACTION_COMPLETED_TOPIC
+              value: banking-microservices.transaction.completed.v1
             # Money-service'den gelen para bloke başarı bildirimi (TRANSFER için)
-            - name: KAFKA_TRANSACTION_BLOCKMONEY_LISTENER
-              value: banking-microservices.transaction.money-service.block-money.success.v1
+            - name: KAFKA_TRANSACTION_MONEY_BLOCKED_TOPIC
+              value: banking-microservices.transaction.money-blocked.v1
 
             # Saga
             # Sender
-            - name: KAFKA_TRANSACTION_SAGA_TRANSACTION-SERVICE_CREATED
-              value: banking-microservices.transaction.saga.transaction-service.created.v1
+            - name: KAFKA_TRANSACTION_SAGA_CREATED_TOPIC
+              value: banking-microservices.transaction.saga.created.v1
             # Listener (listen Money-service)
-            - name: KAFKA_TRANSACTION_SAGA_MONEY-SERVICE_SUCCESS
-              value: banking-microservices.transaction.saga.money-service.success.v1
-            - name: KAFKA_TRANSACTION_SAGA_MONEY-SERVICE_ERROR
-              value: banking-microservices.transaction.saga.money-service.error.v1
+            - name: KAFKA_TRANSACTION_SAGA_MONEY_COMPLETED_TOPIC
+              value: banking-microservices.transaction.saga.money.completed.v1
+            - name: KAFKA_TRANSACTION_SAGA_MONEY_FAILED_TOPIC
+              value: banking-microservices.transaction.saga.money.failed.v1
 
 ---
 
@@ -666,123 +665,7 @@ spec:
     kind: Deployment
     name: transaction-service
   minReplicas: 1
-  maxReplicas: 3
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 50
-    - type: Resource
-      resource:
-        name: memory
-        target:
-          type: Utilization
-          averageUtilization: 60
-
----
-
-#
-#Auth-service --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: auth-service
-  namespace: banking-microservices
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: auth-service
-  template:
-    metadata:
-      labels:
-        app: auth-service
-    spec:
-      containers:
-        - name: auth-service
-          image: SpringBankWithMicroservices/auth-service:1.0.0
-          imagePullPolicy: IfNotPresent
-          ports:
-            - containerPort: 8084
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "250m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
-          env:
-            # Postgres
-            - name: USER_SERVICE_URL
-              value: http://user-service:8081
-            - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://postgres:5432/banking_auth
-            - name: SPRING_DATASOURCE_USERNAME
-              value: banking_admin
-            - name: SPRING_DATASOURCE_PASSWORD
-              value: banking_admin
-            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
-              value: update
-            # Redis
-            - name: SPRING_DATA_REDIS_PORT
-              value: "6379"
-            - name: SPRING_DATA_REDIS_HOST
-              value: redis
-            # Keycloack-
-            - name: KEYCLOAK_SERVER_URL
-              value: http://keycloak:8080
-            - name: KEYCLOAK_REALM
-              value: banking
-            - name: KEYCLOAK_CLIENT_ID
-              value: banking-app
-            - name: KEYCLOAK_CLIENT_SECRET
-              value: Iopu5gL8VfLtIX39701gkwd6iCd7gKW6
-            - name: KEYCLOAK_ADMIN_USERNAME
-              value: alper123
-            - name: KEYCLOAK_ADMIN_PASSWORD
-              value: alper123A
-
-            - name: AUTH_SERVICE_PORT_NUMBER
-              value: "8084"
-            - name: SPRING_APPLICATION_JSON
-              value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'
-            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-              value: kafka:9092
-            - name: KAFKA_CREATEUSER_SENDER
-              value: banking-microservices.create-user.auth-service.progress.v1
-
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: auth-service
-  namespace: banking-microservices
-spec:
-  selector:
-    app: auth-service
-  ports:
-    - port: 8084
-      targetPort: 8084
-
----
-
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: auth-service-hpa
-  namespace: banking-microservices
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: auth-service
-  minReplicas: 1
-  maxReplicas: 3
+  maxReplicas: 1
   metrics:
     - type: Resource
       resource:
@@ -809,7 +692,7 @@ metadata:
   name: gateway
   namespace: banking-microservices
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: gateway
@@ -821,7 +704,7 @@ spec:
       serviceAccountName: gateway-log-reader
       containers:
         - name: gateway
-          image: SpringBankWithMicroservices/gateway:1.0.0
+          image: springbankwithmicroservices/gateway:1.0.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8095
@@ -835,8 +718,6 @@ spec:
           env:
             - name: USER_SERVICE_URL # SERVICE DISCOVERY ICIN
               value: http://user-service:8081
-            - name: AUTH_SERVICE_URL
-              value: http://auth-service:8084 # SERVICE DISCOVERY ICIN
             - name: MONEY_SERVICE_URL
               value: http://money-service:8082 # SERVICE DISCOVERY ICIN
             - name: TRANSACTION_SERVICE_URL
@@ -860,6 +741,8 @@ spec:
             # Port
             - name: GATEWAY_PORT_NUMBER
               value: "8095"
+            - name: TEST_LOG_ROOT
+              value: /tmp/springbank-test-logs
 
 ---
 
@@ -889,7 +772,7 @@ spec:
     kind: Deployment
     name: gateway
   minReplicas: 1
-  maxReplicas: 3
+  maxReplicas: 1
   metrics:
     - type: Resource
       resource:
@@ -916,7 +799,7 @@ metadata:
   name: fraud-service
   namespace: banking-microservices
 spec:
-  replicas: 2 # Max pod sayisi
+  replicas: 1 # Max pod sayisi
   selector:
     matchLabels:
       app: fraud-service # Sadece fraud service imagesi icin.
@@ -927,7 +810,7 @@ spec:
     spec:
       containers:
         - name: fraud-service
-          image: SpringBankWithMicroservices/fraud-service:1.0.0
+          image: springbankwithmicroservices/fraud-service:1.0.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8085
@@ -958,13 +841,12 @@ spec:
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
               value: kafka:9092
             # Kafka Topic
-            # Diyagram Adim 3: user-validation.success.v1'i dinler (eski: created.v1)
-            - name: KAFKA_TRANSACTION_TOPIC_LISTENER
-              value: banking-microservices.transaction.user-service.user-validation.success.v1
-            - name: KAFKA_TRANSACTION_TOPIC_SENDER
-              value: banking-microservices.transaction.fraud-service.checked.v1
-            - name: KAFKA_TRANSACTION_TOPIC_ERROR
-              value: banking-microservices.transaction.transaction-service.error.v1
+            - name: KAFKA_TRANSACTION_USER_VALIDATION_SUCCESS_TOPIC
+              value: banking-microservices.transaction.user-validation.success.v1
+            - name: KAFKA_TRANSACTION_FRAUD_CHECKED_TOPIC
+              value: banking-microservices.transaction.fraud.checked.v1
+            - name: KAFKA_TRANSACTION_FAILED_TOPIC
+              value: banking-microservices.transaction.failed.v1
 
 ---
 
@@ -993,7 +875,7 @@ spec:
     kind: Deployment
     name: fraud-service
   minReplicas: 1
-  maxReplicas: 3
+  maxReplicas: 1
   metrics:
     - type: Resource
       resource:

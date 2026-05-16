@@ -1,0 +1,4 @@
+TOPIC: banking-microservices.transaction.fraud.checked.v1
+RAW:
+banking-microservices.transaction.fraud.checked.v1:0:0
+SUM: 0

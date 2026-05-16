@@ -1,0 +1,576 @@
+
+[23:56:12][elapsed=429ms / 0.429s / 0.007m][kubectl][START] config current-context
+COMMAND:
+kubectl config current-context
+START_ELAPSED_TOTAL: 427ms / 0.427s / 0.007m
+--------------------------------------------------------------------------------
+[23:56:12][elapsed=546ms / 0.546s / 0.009m][kubectl][OK] config current-context
+COMMAND:
+kubectl config current-context
+DURATION: 112ms / 0.112s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+docker-desktop
+--------------------------------------------------------------------------------
+[23:56:12][elapsed=553ms / 0.553s / 0.009m][kubectl][INFO] config current-context
+{"timestamp":"2026-05-16T23:56:12.1968289+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"config current-context","data":{"duration":"112ms / 0.112s / 0.002m","exitCode":0,"command":"kubectl config current-context","allowFail":false,"output":"docker-desktop"}}
+--------------------------------------------------------------------------------
+[23:56:12][elapsed=565ms / 0.565s / 0.009m][kubectl][START] --request-timeout=10s cluster-info
+COMMAND:
+kubectl --request-timeout=10s cluster-info
+START_ELAPSED_TOTAL: 565ms / 0.565s / 0.009m
+--------------------------------------------------------------------------------
+[23:56:12][elapsed=713ms / 0.713s / 0.012m][kubectl][OK] --request-timeout=10s cluster-info
+COMMAND:
+kubectl --request-timeout=10s cluster-info
+DURATION: 146ms / 0.146s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+Kubernetes control plane is running at https://kubernetes.docker.internal:6443
+CoreDNS is running at https://kubernetes.docker.internal:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+--------------------------------------------------------------------------------
+[23:56:12][elapsed=716ms / 0.716s / 0.012m][kubectl][INFO] --request-timeout=10s cluster-info
+{"timestamp":"2026-05-16T23:56:12.3597073+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"--request-timeout=10s cluster-info","data":{"duration":"146ms / 0.146s / 0.002m","exitCode":0,"command":"kubectl --request-timeout=10s cluster-info","allowFail":false,"output":"Kubernetes control plane is running at https://kubernetes.docker.internal:6443\nCoreDNS is running at https://kubernetes.docker.internal:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy\n\nTo further debug and diagnose cluster problems, use \u0027kubectl cluster-info dump\u0027."}}
+--------------------------------------------------------------------------------
+[23:56:12][elapsed=722ms / 0.722s / 0.012m][kubectl][START] get namespace banking-microservices
+COMMAND:
+kubectl get namespace banking-microservices
+START_ELAPSED_TOTAL: 722ms / 0.722s / 0.012m
+--------------------------------------------------------------------------------
+[23:56:12][elapsed=850ms / 0.85s / 0.014m][kubectl][OK] get namespace banking-microservices
+COMMAND:
+kubectl get namespace banking-microservices
+DURATION: 127ms / 0.127s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME                    STATUS   AGE
+banking-microservices   Active   110m
+--------------------------------------------------------------------------------
+[23:56:12][elapsed=853ms / 0.853s / 0.014m][kubectl][INFO] get namespace banking-microservices
+{"timestamp":"2026-05-16T23:56:12.4972024+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"get namespace banking-microservices","data":{"duration":"127ms / 0.127s / 0.002m","exitCode":0,"command":"kubectl get namespace banking-microservices","allowFail":false,"output":"NAME                    STATUS   AGE\nbanking-microservices   Active   110m"}}
+--------------------------------------------------------------------------------
+[23:56:12][elapsed=859ms / 0.859s / 0.014m][kubectl][START] -n banking-microservices wait --for=condition=available deployment --all --timeout=600s
+COMMAND:
+kubectl -n banking-microservices wait --for=condition=available deployment --all --timeout=600s
+START_ELAPSED_TOTAL: 858ms / 0.858s / 0.014m
+--------------------------------------------------------------------------------
+[23:56:14][elapsed=2479ms / 2.479s / 0.041m][kubectl][OK] -n banking-microservices wait --for=condition=available deployment --all --timeout=600s
+COMMAND:
+kubectl -n banking-microservices wait --for=condition=available deployment --all --timeout=600s
+DURATION: 1620ms / 1.62s / 0.027m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+deployment.apps/elasticsearch condition met
+deployment.apps/fraud-service condition met
+deployment.apps/gateway condition met
+deployment.apps/kafka condition met
+deployment.apps/keycloak condition met
+deployment.apps/money-service condition met
+deployment.apps/money-service-command condition met
+deployment.apps/money-service-query condition met
+deployment.apps/mongodb condition met
+deployment.apps/postgres condition met
+deployment.apps/redis condition met
+deployment.apps/transaction-service condition met
+deployment.apps/user-service condition met
+deployment.apps/zookeeper condition met
+--------------------------------------------------------------------------------
+[23:56:14][elapsed=2481ms / 2.481s / 0.041m][kubectl][INFO] -n banking-microservices wait --for=condition=available deployment --all --timeout=600s
+{"timestamp":"2026-05-16T23:56:14.1254928+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices wait --for=condition=available deployment --all --timeout=600s","data":{"duration":"1620ms / 1.62s / 0.027m","exitCode":0,"command":"kubectl -n banking-microservices wait --for=condition=available deployment --all --timeout=600s","allowFail":false,"output":"deployment.apps/elasticsearch condition met\ndeployment.apps/fraud-service condition met\ndeployment.apps/gateway condition met\ndeployment.apps/kafka condition met\ndeployment.apps/keycloak condition met\ndeployment.apps/money-service condition met\ndeployment.apps/money-service-command condition met\ndeployment.apps/money-service-query condition met\ndeployment.apps/mongodb condition met\ndeployment.apps/postgres condition met\ndeployment.apps/redis condition met\ndeployment.apps/transaction-service condition met\ndeployment.apps/user-service condition met\ndeployment.apps/zookeeper condition met"}}
+--------------------------------------------------------------------------------
+[23:56:14][elapsed=2486ms / 2.486s / 0.041m][kubectl][START] -n banking-microservices get deploy postgres -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy postgres -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 2486ms / 2.486s / 0.041m
+--------------------------------------------------------------------------------
+[23:56:14][elapsed=2619ms / 2.619s / 0.044m][kubectl][OK] -n banking-microservices get deploy postgres -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy postgres -o jsonpath={.status.readyReplicas}
+DURATION: 132ms / 0.132s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[23:56:14][elapsed=2623ms / 2.623s / 0.044m][kubectl][INFO] -n banking-microservices get deploy postgres -o jsonpath={.status.readyReplicas}
+{"timestamp":"2026-05-16T23:56:14.2674754+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get deploy postgres -o jsonpath={.status.readyReplicas}","data":{"duration":"132ms / 0.132s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get deploy postgres -o jsonpath={.status.readyReplicas}","allowFail":true,"output":"1"}}
+--------------------------------------------------------------------------------
+[23:56:14][elapsed=2645ms / 2.645s / 0.044m][kubectl][START] -n banking-microservices get deploy redis -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy redis -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 2645ms / 2.645s / 0.044m
+--------------------------------------------------------------------------------
+[23:56:14][elapsed=2761ms / 2.761s / 0.046m][kubectl][OK] -n banking-microservices get deploy redis -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy redis -o jsonpath={.status.readyReplicas}
+DURATION: 115ms / 0.115s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[23:56:14][elapsed=2764ms / 2.764s / 0.046m][kubectl][INFO] -n banking-microservices get deploy redis -o jsonpath={.status.readyReplicas}
+{"timestamp":"2026-05-16T23:56:14.4078440+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get deploy redis -o jsonpath={.status.readyReplicas}","data":{"duration":"115ms / 0.115s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get deploy redis -o jsonpath={.status.readyReplicas}","allowFail":true,"output":"1"}}
+--------------------------------------------------------------------------------
+[23:56:14][elapsed=2769ms / 2.769s / 0.046m][kubectl][START] -n banking-microservices get deploy mongodb -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy mongodb -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 2767ms / 2.767s / 0.046m
+--------------------------------------------------------------------------------
+[23:56:14][elapsed=2878ms / 2.878s / 0.048m][kubectl][OK] -n banking-microservices get deploy mongodb -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy mongodb -o jsonpath={.status.readyReplicas}
+DURATION: 110ms / 0.11s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[23:56:14][elapsed=2881ms / 2.881s / 0.048m][kubectl][INFO] -n banking-microservices get deploy mongodb -o jsonpath={.status.readyReplicas}
+{"timestamp":"2026-05-16T23:56:14.5255325+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get deploy mongodb -o jsonpath={.status.readyReplicas}","data":{"duration":"110ms / 0.11s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get deploy mongodb -o jsonpath={.status.readyReplicas}","allowFail":true,"output":"1"}}
+--------------------------------------------------------------------------------
+[23:56:14][elapsed=2891ms / 2.891s / 0.048m][kubectl][START] -n banking-microservices get deploy elasticsearch -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy elasticsearch -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 2891ms / 2.891s / 0.048m
+--------------------------------------------------------------------------------
+[23:56:14][elapsed=3028ms / 3.028s / 0.05m][kubectl][OK] -n banking-microservices get deploy elasticsearch -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy elasticsearch -o jsonpath={.status.readyReplicas}
+DURATION: 137ms / 0.137s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[23:56:14][elapsed=3032ms / 3.032s / 0.051m][kubectl][INFO] -n banking-microservices get deploy elasticsearch -o jsonpath={.status.readyReplicas}
+{"timestamp":"2026-05-16T23:56:14.6751775+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get deploy elasticsearch -o jsonpath={.status.readyReplicas}","data":{"duration":"137ms / 0.137s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get deploy elasticsearch -o jsonpath={.status.readyReplicas}","allowFail":true,"output":"1"}}
+--------------------------------------------------------------------------------
+[23:56:14][elapsed=3038ms / 3.038s / 0.051m][kubectl][START] -n banking-microservices get deploy zookeeper -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy zookeeper -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 3037ms / 3.037s / 0.051m
+--------------------------------------------------------------------------------
+[23:56:14][elapsed=3162ms / 3.162s / 0.053m][kubectl][OK] -n banking-microservices get deploy zookeeper -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy zookeeper -o jsonpath={.status.readyReplicas}
+DURATION: 124ms / 0.124s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[23:56:14][elapsed=3166ms / 3.166s / 0.053m][kubectl][INFO] -n banking-microservices get deploy zookeeper -o jsonpath={.status.readyReplicas}
+{"timestamp":"2026-05-16T23:56:14.8093608+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get deploy zookeeper -o jsonpath={.status.readyReplicas}","data":{"duration":"124ms / 0.124s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get deploy zookeeper -o jsonpath={.status.readyReplicas}","allowFail":true,"output":"1"}}
+--------------------------------------------------------------------------------
+[23:56:14][elapsed=3173ms / 3.173s / 0.053m][kubectl][START] -n banking-microservices get deploy kafka -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy kafka -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 3173ms / 3.173s / 0.053m
+--------------------------------------------------------------------------------
+[23:56:14][elapsed=3297ms / 3.297s / 0.055m][kubectl][OK] -n banking-microservices get deploy kafka -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy kafka -o jsonpath={.status.readyReplicas}
+DURATION: 123ms / 0.123s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[23:56:14][elapsed=3299ms / 3.299s / 0.055m][kubectl][INFO] -n banking-microservices get deploy kafka -o jsonpath={.status.readyReplicas}
+{"timestamp":"2026-05-16T23:56:14.9434959+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get deploy kafka -o jsonpath={.status.readyReplicas}","data":{"duration":"123ms / 0.123s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get deploy kafka -o jsonpath={.status.readyReplicas}","allowFail":true,"output":"1"}}
+--------------------------------------------------------------------------------
+[23:56:14][elapsed=3304ms / 3.304s / 0.055m][kubectl][START] -n banking-microservices get deploy keycloak -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy keycloak -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 3304ms / 3.304s / 0.055m
+--------------------------------------------------------------------------------
+[23:56:15][elapsed=3422ms / 3.422s / 0.057m][kubectl][OK] -n banking-microservices get deploy keycloak -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy keycloak -o jsonpath={.status.readyReplicas}
+DURATION: 117ms / 0.117s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[23:56:15][elapsed=3424ms / 3.424s / 0.057m][kubectl][INFO] -n banking-microservices get deploy keycloak -o jsonpath={.status.readyReplicas}
+{"timestamp":"2026-05-16T23:56:15.0691513+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get deploy keycloak -o jsonpath={.status.readyReplicas}","data":{"duration":"117ms / 0.117s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get deploy keycloak -o jsonpath={.status.readyReplicas}","allowFail":true,"output":"1"}}
+--------------------------------------------------------------------------------
+[23:56:15][elapsed=3432ms / 3.432s / 0.057m][kubectl][START] -n banking-microservices get deploy user-service -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy user-service -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 3432ms / 3.432s / 0.057m
+--------------------------------------------------------------------------------
+[23:56:15][elapsed=3554ms / 3.554s / 0.059m][kubectl][OK] -n banking-microservices get deploy user-service -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy user-service -o jsonpath={.status.readyReplicas}
+DURATION: 121ms / 0.121s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+2
+--------------------------------------------------------------------------------
+[23:56:15][elapsed=3556ms / 3.556s / 0.059m][kubectl][INFO] -n banking-microservices get deploy user-service -o jsonpath={.status.readyReplicas}
+{"timestamp":"2026-05-16T23:56:15.2003275+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get deploy user-service -o jsonpath={.status.readyReplicas}","data":{"duration":"121ms / 0.121s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get deploy user-service -o jsonpath={.status.readyReplicas}","allowFail":true,"output":"2"}}
+--------------------------------------------------------------------------------
+[23:56:15][elapsed=3559ms / 3.559s / 0.059m][kubectl][START] -n banking-microservices get deploy money-service -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy money-service -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 3559ms / 3.559s / 0.059m
+--------------------------------------------------------------------------------
+[23:56:15][elapsed=3681ms / 3.681s / 0.061m][kubectl][OK] -n banking-microservices get deploy money-service -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy money-service -o jsonpath={.status.readyReplicas}
+DURATION: 121ms / 0.121s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+2
+--------------------------------------------------------------------------------
+[23:56:15][elapsed=3684ms / 3.684s / 0.061m][kubectl][INFO] -n banking-microservices get deploy money-service -o jsonpath={.status.readyReplicas}
+{"timestamp":"2026-05-16T23:56:15.3286050+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get deploy money-service -o jsonpath={.status.readyReplicas}","data":{"duration":"121ms / 0.121s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get deploy money-service -o jsonpath={.status.readyReplicas}","allowFail":true,"output":"2"}}
+--------------------------------------------------------------------------------
+[23:56:15][elapsed=3693ms / 3.693s / 0.062m][kubectl][START] -n banking-microservices get deploy money-service-command -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy money-service-command -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 3693ms / 3.693s / 0.062m
+--------------------------------------------------------------------------------
+[23:56:15][elapsed=3817ms / 3.817s / 0.064m][kubectl][OK] -n banking-microservices get deploy money-service-command -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy money-service-command -o jsonpath={.status.readyReplicas}
+DURATION: 125ms / 0.125s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+2
+--------------------------------------------------------------------------------
+[23:56:15][elapsed=3821ms / 3.821s / 0.064m][kubectl][INFO] -n banking-microservices get deploy money-service-command -o jsonpath={.status.readyReplicas}
+{"timestamp":"2026-05-16T23:56:15.4647127+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get deploy money-service-command -o jsonpath={.status.readyReplicas}","data":{"duration":"125ms / 0.125s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get deploy money-service-command -o jsonpath={.status.readyReplicas}","allowFail":true,"output":"2"}}
+--------------------------------------------------------------------------------
+[23:56:15][elapsed=3827ms / 3.827s / 0.064m][kubectl][START] -n banking-microservices get deploy money-service-query -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy money-service-query -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 3826ms / 3.826s / 0.064m
+--------------------------------------------------------------------------------
+[23:56:15][elapsed=3948ms / 3.948s / 0.066m][kubectl][OK] -n banking-microservices get deploy money-service-query -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy money-service-query -o jsonpath={.status.readyReplicas}
+DURATION: 122ms / 0.122s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+2
+--------------------------------------------------------------------------------
+[23:56:15][elapsed=3952ms / 3.952s / 0.066m][kubectl][INFO] -n banking-microservices get deploy money-service-query -o jsonpath={.status.readyReplicas}
+{"timestamp":"2026-05-16T23:56:15.5964697+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get deploy money-service-query -o jsonpath={.status.readyReplicas}","data":{"duration":"122ms / 0.122s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get deploy money-service-query -o jsonpath={.status.readyReplicas}","allowFail":true,"output":"2"}}
+--------------------------------------------------------------------------------
+[23:56:15][elapsed=3958ms / 3.958s / 0.066m][kubectl][START] -n banking-microservices get deploy transaction-service -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy transaction-service -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 3957ms / 3.957s / 0.066m
+--------------------------------------------------------------------------------
+[23:56:15][elapsed=4074ms / 4.074s / 0.068m][kubectl][OK] -n banking-microservices get deploy transaction-service -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy transaction-service -o jsonpath={.status.readyReplicas}
+DURATION: 116ms / 0.116s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+2
+--------------------------------------------------------------------------------
+[23:56:15][elapsed=4076ms / 4.076s / 0.068m][kubectl][INFO] -n banking-microservices get deploy transaction-service -o jsonpath={.status.readyReplicas}
+{"timestamp":"2026-05-16T23:56:15.7203070+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get deploy transaction-service -o jsonpath={.status.readyReplicas}","data":{"duration":"116ms / 0.116s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get deploy transaction-service -o jsonpath={.status.readyReplicas}","allowFail":true,"output":"2"}}
+--------------------------------------------------------------------------------
+[23:56:15][elapsed=4080ms / 4.08s / 0.068m][kubectl][START] -n banking-microservices get deploy fraud-service -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy fraud-service -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 4080ms / 4.08s / 0.068m
+--------------------------------------------------------------------------------
+[23:56:15][elapsed=4170ms / 4.17s / 0.069m][kubectl][OK] -n banking-microservices get deploy fraud-service -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy fraud-service -o jsonpath={.status.readyReplicas}
+DURATION: 89ms / 0.089s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+2
+--------------------------------------------------------------------------------
+[23:56:15][elapsed=4173ms / 4.173s / 0.07m][kubectl][INFO] -n banking-microservices get deploy fraud-service -o jsonpath={.status.readyReplicas}
+{"timestamp":"2026-05-16T23:56:15.8175094+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get deploy fraud-service -o jsonpath={.status.readyReplicas}","data":{"duration":"89ms / 0.089s / 0.001m","exitCode":0,"command":"kubectl -n banking-microservices get deploy fraud-service -o jsonpath={.status.readyReplicas}","allowFail":true,"output":"2"}}
+--------------------------------------------------------------------------------
+[23:56:15][elapsed=4179ms / 4.179s / 0.07m][kubectl][START] -n banking-microservices get deploy gateway -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy gateway -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 4178ms / 4.178s / 0.07m
+--------------------------------------------------------------------------------
+[23:56:15][elapsed=4278ms / 4.278s / 0.071m][kubectl][OK] -n banking-microservices get deploy gateway -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl -n banking-microservices get deploy gateway -o jsonpath={.status.readyReplicas}
+DURATION: 100ms / 0.1s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+2
+--------------------------------------------------------------------------------
+[23:56:15][elapsed=4302ms / 4.302s / 0.072m][kubectl][INFO] -n banking-microservices get deploy gateway -o jsonpath={.status.readyReplicas}
+{"timestamp":"2026-05-16T23:56:15.9456045+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get deploy gateway -o jsonpath={.status.readyReplicas}","data":{"duration":"100ms / 0.1s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get deploy gateway -o jsonpath={.status.readyReplicas}","allowFail":true,"output":"2"}}
+--------------------------------------------------------------------------------
+[23:56:15][elapsed=4306ms / 4.306s / 0.072m][kubectl][START] -n banking-microservices get svc postgres
+COMMAND:
+kubectl -n banking-microservices get svc postgres
+START_ELAPSED_TOTAL: 4306ms / 4.306s / 0.072m
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=4416ms / 4.416s / 0.074m][kubectl][OK] -n banking-microservices get svc postgres
+COMMAND:
+kubectl -n banking-microservices get svc postgres
+DURATION: 110ms / 0.11s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME       TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+postgres   ClusterIP   10.103.225.1   <none>        5432/TCP   110m
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=4418ms / 4.418s / 0.074m][kubectl][INFO] -n banking-microservices get svc postgres
+{"timestamp":"2026-05-16T23:56:16.0625595+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get svc postgres","data":{"duration":"110ms / 0.11s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get svc postgres","allowFail":false,"output":"NAME       TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE\npostgres   ClusterIP   10.103.225.1   \u003cnone\u003e        5432/TCP   110m"}}
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=4423ms / 4.423s / 0.074m][kubectl][START] -n banking-microservices get svc redis
+COMMAND:
+kubectl -n banking-microservices get svc redis
+START_ELAPSED_TOTAL: 4423ms / 4.423s / 0.074m
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=4514ms / 4.514s / 0.075m][kubectl][OK] -n banking-microservices get svc redis
+COMMAND:
+kubectl -n banking-microservices get svc redis
+DURATION: 92ms / 0.092s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME    TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+redis   ClusterIP   10.99.203.130   <none>        6379/TCP   110m
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=4517ms / 4.517s / 0.075m][kubectl][INFO] -n banking-microservices get svc redis
+{"timestamp":"2026-05-16T23:56:16.1611422+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get svc redis","data":{"duration":"92ms / 0.092s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get svc redis","allowFail":false,"output":"NAME    TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE\nredis   ClusterIP   10.99.203.130   \u003cnone\u003e        6379/TCP   110m"}}
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=4520ms / 4.52s / 0.075m][kubectl][START] -n banking-microservices get svc mongodb
+COMMAND:
+kubectl -n banking-microservices get svc mongodb
+START_ELAPSED_TOTAL: 4520ms / 4.52s / 0.075m
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=4611ms / 4.611s / 0.077m][kubectl][OK] -n banking-microservices get svc mongodb
+COMMAND:
+kubectl -n banking-microservices get svc mongodb
+DURATION: 91ms / 0.091s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)     AGE
+mongodb   ClusterIP   10.111.167.143   <none>        27017/TCP   110m
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=4613ms / 4.613s / 0.077m][kubectl][INFO] -n banking-microservices get svc mongodb
+{"timestamp":"2026-05-16T23:56:16.2570737+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get svc mongodb","data":{"duration":"91ms / 0.091s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get svc mongodb","allowFail":false,"output":"NAME      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)     AGE\nmongodb   ClusterIP   10.111.167.143   \u003cnone\u003e        27017/TCP   110m"}}
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=4617ms / 4.617s / 0.077m][kubectl][START] -n banking-microservices get svc elasticsearch
+COMMAND:
+kubectl -n banking-microservices get svc elasticsearch
+START_ELAPSED_TOTAL: 4616ms / 4.616s / 0.077m
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=4709ms / 4.709s / 0.078m][kubectl][OK] -n banking-microservices get svc elasticsearch
+COMMAND:
+kubectl -n banking-microservices get svc elasticsearch
+DURATION: 92ms / 0.092s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME            TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+elasticsearch   ClusterIP   10.103.26.16   <none>        9200/TCP   110m
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=4712ms / 4.712s / 0.079m][kubectl][INFO] -n banking-microservices get svc elasticsearch
+{"timestamp":"2026-05-16T23:56:16.3560060+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get svc elasticsearch","data":{"duration":"92ms / 0.092s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get svc elasticsearch","allowFail":false,"output":"NAME            TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE\nelasticsearch   ClusterIP   10.103.26.16   \u003cnone\u003e        9200/TCP   110m"}}
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=4715ms / 4.715s / 0.079m][kubectl][START] -n banking-microservices get svc zookeeper
+COMMAND:
+kubectl -n banking-microservices get svc zookeeper
+START_ELAPSED_TOTAL: 4715ms / 4.715s / 0.079m
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=4828ms / 4.828s / 0.08m][kubectl][OK] -n banking-microservices get svc zookeeper
+COMMAND:
+kubectl -n banking-microservices get svc zookeeper
+DURATION: 112ms / 0.112s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME        TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+zookeeper   ClusterIP   10.109.103.136   <none>        2181/TCP   110m
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=4830ms / 4.83s / 0.081m][kubectl][INFO] -n banking-microservices get svc zookeeper
+{"timestamp":"2026-05-16T23:56:16.4750923+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get svc zookeeper","data":{"duration":"112ms / 0.112s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get svc zookeeper","allowFail":false,"output":"NAME        TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE\nzookeeper   ClusterIP   10.109.103.136   \u003cnone\u003e        2181/TCP   110m"}}
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=4836ms / 4.836s / 0.081m][kubectl][START] -n banking-microservices get svc kafka
+COMMAND:
+kubectl -n banking-microservices get svc kafka
+START_ELAPSED_TOTAL: 4836ms / 4.836s / 0.081m
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=4941ms / 4.941s / 0.082m][kubectl][OK] -n banking-microservices get svc kafka
+COMMAND:
+kubectl -n banking-microservices get svc kafka
+DURATION: 105ms / 0.105s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME    TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+kafka   ClusterIP   10.105.97.238   <none>        9092/TCP   110m
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=4947ms / 4.947s / 0.082m][kubectl][INFO] -n banking-microservices get svc kafka
+{"timestamp":"2026-05-16T23:56:16.5884216+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get svc kafka","data":{"duration":"105ms / 0.105s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get svc kafka","allowFail":false,"output":"NAME    TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE\nkafka   ClusterIP   10.105.97.238   \u003cnone\u003e        9092/TCP   110m"}}
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=4953ms / 4.953s / 0.083m][kubectl][START] -n banking-microservices get svc keycloak
+COMMAND:
+kubectl -n banking-microservices get svc keycloak
+START_ELAPSED_TOTAL: 4953ms / 4.953s / 0.083m
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=5073ms / 5.073s / 0.085m][kubectl][OK] -n banking-microservices get svc keycloak
+COMMAND:
+kubectl -n banking-microservices get svc keycloak
+DURATION: 119ms / 0.119s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME       TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+keycloak   LoadBalancer   10.101.90.119   localhost     8080:31037/TCP   110m
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=5076ms / 5.076s / 0.085m][kubectl][INFO] -n banking-microservices get svc keycloak
+{"timestamp":"2026-05-16T23:56:16.7207663+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get svc keycloak","data":{"duration":"119ms / 0.119s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get svc keycloak","allowFail":false,"output":"NAME       TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE\nkeycloak   LoadBalancer   10.101.90.119   localhost     8080:31037/TCP   110m"}}
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=5085ms / 5.085s / 0.085m][kubectl][START] -n banking-microservices get svc user-service
+COMMAND:
+kubectl -n banking-microservices get svc user-service
+START_ELAPSED_TOTAL: 5082ms / 5.082s / 0.085m
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=5204ms / 5.204s / 0.087m][kubectl][OK] -n banking-microservices get svc user-service
+COMMAND:
+kubectl -n banking-microservices get svc user-service
+DURATION: 121ms / 0.121s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME           TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
+user-service   ClusterIP   10.108.182.142   <none>        8081/TCP,9194/TCP   110m
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=5206ms / 5.206s / 0.087m][kubectl][INFO] -n banking-microservices get svc user-service
+{"timestamp":"2026-05-16T23:56:16.8508504+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get svc user-service","data":{"duration":"121ms / 0.121s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get svc user-service","allowFail":false,"output":"NAME           TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE\nuser-service   ClusterIP   10.108.182.142   \u003cnone\u003e        8081/TCP,9194/TCP   110m"}}
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=5211ms / 5.211s / 0.087m][kubectl][START] -n banking-microservices get svc money-service
+COMMAND:
+kubectl -n banking-microservices get svc money-service
+START_ELAPSED_TOTAL: 5211ms / 5.211s / 0.087m
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=5311ms / 5.311s / 0.089m][kubectl][OK] -n banking-microservices get svc money-service
+COMMAND:
+kubectl -n banking-microservices get svc money-service
+DURATION: 100ms / 0.1s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+money-service   ClusterIP   10.97.191.135   <none>        8082/TCP   110m
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=5314ms / 5.314s / 0.089m][kubectl][INFO] -n banking-microservices get svc money-service
+{"timestamp":"2026-05-16T23:56:16.9580673+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get svc money-service","data":{"duration":"100ms / 0.1s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get svc money-service","allowFail":false,"output":"NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE\nmoney-service   ClusterIP   10.97.191.135   \u003cnone\u003e        8082/TCP   110m"}}
+--------------------------------------------------------------------------------
+[23:56:16][elapsed=5319ms / 5.319s / 0.089m][kubectl][START] -n banking-microservices get svc money-service-command
+COMMAND:
+kubectl -n banking-microservices get svc money-service-command
+START_ELAPSED_TOTAL: 5319ms / 5.319s / 0.089m
+--------------------------------------------------------------------------------
+[23:56:17][elapsed=5430ms / 5.43s / 0.091m][kubectl][OK] -n banking-microservices get svc money-service-command
+COMMAND:
+kubectl -n banking-microservices get svc money-service-command
+DURATION: 112ms / 0.112s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME                    TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+money-service-command   ClusterIP   10.99.178.70   <none>        8092/TCP   110m
+--------------------------------------------------------------------------------
+[23:56:17][elapsed=5433ms / 5.433s / 0.091m][kubectl][INFO] -n banking-microservices get svc money-service-command
+{"timestamp":"2026-05-16T23:56:17.0776396+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get svc money-service-command","data":{"duration":"112ms / 0.112s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get svc money-service-command","allowFail":false,"output":"NAME                    TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE\nmoney-service-command   ClusterIP   10.99.178.70   \u003cnone\u003e        8092/TCP   110m"}}
+--------------------------------------------------------------------------------
+[23:56:17][elapsed=5441ms / 5.441s / 0.091m][kubectl][START] -n banking-microservices get svc money-service-query
+COMMAND:
+kubectl -n banking-microservices get svc money-service-query
+START_ELAPSED_TOTAL: 5440ms / 5.44s / 0.091m
+--------------------------------------------------------------------------------
+[23:56:17][elapsed=5556ms / 5.556s / 0.093m][kubectl][OK] -n banking-microservices get svc money-service-query
+COMMAND:
+kubectl -n banking-microservices get svc money-service-query
+DURATION: 115ms / 0.115s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME                  TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)             AGE
+money-service-query   ClusterIP   10.97.130.183   <none>        8093/TCP,9193/TCP   110m
+--------------------------------------------------------------------------------
+[23:56:17][elapsed=5558ms / 5.558s / 0.093m][kubectl][INFO] -n banking-microservices get svc money-service-query
+{"timestamp":"2026-05-16T23:56:17.2025133+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get svc money-service-query","data":{"duration":"115ms / 0.115s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get svc money-service-query","allowFail":false,"output":"NAME                  TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)             AGE\nmoney-service-query   ClusterIP   10.97.130.183   \u003cnone\u003e        8093/TCP,9193/TCP   110m"}}
+--------------------------------------------------------------------------------
+[23:56:17][elapsed=5564ms / 5.564s / 0.093m][kubectl][START] -n banking-microservices get svc transaction-service
+COMMAND:
+kubectl -n banking-microservices get svc transaction-service
+START_ELAPSED_TOTAL: 5562ms / 5.562s / 0.093m
+--------------------------------------------------------------------------------
+[23:56:17][elapsed=5695ms / 5.695s / 0.095m][kubectl][OK] -n banking-microservices get svc transaction-service
+COMMAND:
+kubectl -n banking-microservices get svc transaction-service
+DURATION: 133ms / 0.133s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME                  TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+transaction-service   ClusterIP   10.98.36.234   <none>        8083/TCP   110m
+--------------------------------------------------------------------------------
+[23:56:17][elapsed=5697ms / 5.697s / 0.095m][kubectl][INFO] -n banking-microservices get svc transaction-service
+{"timestamp":"2026-05-16T23:56:17.3418274+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get svc transaction-service","data":{"duration":"133ms / 0.133s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get svc transaction-service","allowFail":false,"output":"NAME                  TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE\ntransaction-service   ClusterIP   10.98.36.234   \u003cnone\u003e        8083/TCP   110m"}}
+--------------------------------------------------------------------------------
+[23:56:17][elapsed=5701ms / 5.701s / 0.095m][kubectl][START] -n banking-microservices get svc fraud-service
+COMMAND:
+kubectl -n banking-microservices get svc fraud-service
+START_ELAPSED_TOTAL: 5701ms / 5.701s / 0.095m
+--------------------------------------------------------------------------------
+[23:56:17][elapsed=5831ms / 5.831s / 0.097m][kubectl][OK] -n banking-microservices get svc fraud-service
+COMMAND:
+kubectl -n banking-microservices get svc fraud-service
+DURATION: 129ms / 0.129s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+fraud-service   ClusterIP   10.106.246.99   <none>        8085/TCP   110m
+--------------------------------------------------------------------------------
+[23:56:17][elapsed=5833ms / 5.833s / 0.097m][kubectl][INFO] -n banking-microservices get svc fraud-service
+{"timestamp":"2026-05-16T23:56:17.4775730+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get svc fraud-service","data":{"duration":"129ms / 0.129s / 0.002m","exitCode":0,"command":"kubectl -n banking-microservices get svc fraud-service","allowFail":false,"output":"NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE\nfraud-service   ClusterIP   10.106.246.99   \u003cnone\u003e        8085/TCP   110m"}}
+--------------------------------------------------------------------------------
+[23:56:17][elapsed=5839ms / 5.839s / 0.097m][kubectl][START] -n banking-microservices get svc gateway
+COMMAND:
+kubectl -n banking-microservices get svc gateway
+START_ELAPSED_TOTAL: 5837ms / 5.837s / 0.097m
+--------------------------------------------------------------------------------
+[23:56:17][elapsed=5993ms / 5.993s / 0.1m][kubectl][OK] -n banking-microservices get svc gateway
+COMMAND:
+kubectl -n banking-microservices get svc gateway
+DURATION: 155ms / 0.155s / 0.003m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME      TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+gateway   LoadBalancer   10.101.55.142   localhost     8095:32057/TCP   110m
+--------------------------------------------------------------------------------
+[23:56:17][elapsed=5996ms / 5.996s / 0.1m][kubectl][INFO] -n banking-microservices get svc gateway
+{"timestamp":"2026-05-16T23:56:17.6400756+03:00","runId":"20260516235611-5072ba","type":"kubectl","label":"-n banking-microservices get svc gateway","data":{"duration":"155ms / 0.155s / 0.003m","exitCode":0,"command":"kubectl -n banking-microservices get svc gateway","allowFail":false,"output":"NAME      TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE\ngateway   LoadBalancer   10.101.55.142   localhost     8095:32057/TCP   110m"}}
+--------------------------------------------------------------------------------

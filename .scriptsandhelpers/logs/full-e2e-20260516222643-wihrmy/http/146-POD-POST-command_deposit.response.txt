@@ -1,0 +1,1 @@
+{"timestamp":"2026-05-16T19:35:55.162Z","status":400,"error":"Bad Request","path":"/api/money-service-command/v1/accounts/deposit"}

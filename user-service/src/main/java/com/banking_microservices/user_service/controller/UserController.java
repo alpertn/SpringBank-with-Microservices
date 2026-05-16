@@ -2,14 +2,13 @@ package com.banking_microservices.user_service.controller;
 
 import com.banking_microservices.user_service.dto.user.ChangeEmailRequestDto;
 import com.banking_microservices.user_service.dto.user.ChangePasswordRequestDto;
+import com.banking_microservices.user_service.models.Users;
 import com.banking_microservices.user_service.service.UserService;
 import com.google.gson.GsonBuilder;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.banking_microservices.user_service.dto.user.UsersDto;
 import com.google.gson.Gson;
 
 @RestController
@@ -24,22 +23,22 @@ public class UserController {
         this.userService = userService;
     }
 
-//    @PostMapping("/createuser")
-//    public ResponseEntity<UsersDto> createUser(@Valid @RequestBody UsersDto usersDto) {
-//        log.info("createuser endpointine gelen request {}", gson.toJson(usersDto));
-//        return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUser(usersDto));
-//    }
+    @GetMapping("/{userId}")
+    public ResponseEntity<Users> getUser(@PathVariable String userId) {
+        log.info("user endpoint request {}", userId);
+        return ResponseEntity.ok(userService.findUserById(userId));
+    }
 
-//    @PostMapping("/{userId}/change-password")
-//    public ResponseEntity<?> changePassword(@PathVariable String userId, @Valid @RequestBody ChangePasswordRequestDto requestDto) {
-//        userService.changePassword(userId, requestDto.getCurrentPassword(), requestDto.getNewPassword());
-//        return ResponseEntity.ok().build();
-//    }
-//
-//    @PostMapping("/{userId}/change-email")
-//    public ResponseEntity<?> changeEmail(@PathVariable String userId, @Valid @RequestBody ChangeEmailRequestDto requestDto) {
-//        userService.changeEmail(userId, requestDto.getNewEmail(), requestDto.getPassword());
-//        return ResponseEntity.ok().build();
-//    }
+    @PostMapping("/{userId}/change-password")
+    public ResponseEntity<Void> changePassword(@PathVariable String userId, @Valid @RequestBody ChangePasswordRequestDto requestDto) {
+        userService.changePassword(userId, requestDto.getCurrentPassword(), requestDto.getNewPassword());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{userId}/change-email")
+    public ResponseEntity<Void> changeEmail(@PathVariable String userId, @Valid @RequestBody ChangeEmailRequestDto requestDto) {
+        userService.changeEmail(userId, requestDto.getNewEmail(), requestDto.getPassword());
+        return ResponseEntity.ok().build();
+    }
 
 }

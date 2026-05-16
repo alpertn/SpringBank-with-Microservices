@@ -1,0 +1,4 @@
+TOPIC: banking-microservices.transaction.user-validation.success.v1
+RAW:
+banking-microservices.transaction.user-validation.success.v1:0:2
+SUM: 2

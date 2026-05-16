@@ -1,0 +1,11 @@
+{
+    "method":  "POST",
+    "url":  "http://localhost:8095/api/money-service/v1/accounts/getUserIbanWithUserId",
+    "expected":  [
+                     200
+                 ],
+    "headers":  "Authorization",
+    "body":  {
+                 "userId":  "cb1ce50e-5dd5-4833-8224-357b5b83cf4e"
+             }
+}

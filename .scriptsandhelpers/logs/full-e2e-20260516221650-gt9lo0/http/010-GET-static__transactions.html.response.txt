@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpringBank – İşlem Geçmişi</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+<div class="app-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon"><i class="ph ph-bank"></i></div>
+      <div class="sidebar-logo-text">Spring<span>Bank</span></div>
+    </div>
+    <div class="sidebar-user">
+      <div class="sidebar-user-avatar" id="user-avatar"><i class="ph ph-user"></i></div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="user-name">...</div>
+        <div class="sidebar-user-role" id="user-role">Müşteri</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">ANA MENÜ</div>
+      <a href="/dashboard.html" class="nav-item"><span class="nav-item-icon"><i class="ph ph-squares-four"></i></span> Özet</a>
+      <a href="/transfer.html" class="nav-item"><span class="nav-item-icon"><i class="ph ph-arrows-left-right"></i></span> Transfer</a>
+      <a href="/deposit.html" class="nav-item"><span class="nav-item-icon"><i class="ph ph-arrow-down-left"></i></span> Para Yatır</a>
+      <a href="/withdraw.html" class="nav-item"><span class="nav-item-icon"><i class="ph ph-arrow-up-right"></i></span> Para Çek</a>
+      <div class="nav-section-title">HESAP</div>
+      <a href="/transactions.html" class="nav-item active"><span class="nav-item-icon"><i class="ph ph-list-dashes"></i></span> İşlem Geçmişi</a>
+      <div class="nav-section-title" id="admin-section" style="display:none">YÖNETİM</div>
+      <a href="/admin.html" class="nav-item" id="admin-link" style="display:none"><span class="nav-item-icon"><i class="ph ph-shield-gear"></i></span> Yönetim Paneli</a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="logout-btn" id="logout-btn"><i class="ph ph-sign-out"></i> Çıkış Yap</button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div class="page-header" style="margin-bottom:0">
+        <h1 class="page-title">İşlem Geçmişi</h1>
+        <p class="page-subtitle">Tüm hesap hareketlerinizi bu bölümden inceleyebilirsiniz.</p>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-secondary btn-sm" onclick="loadTransactions()"><i class="ph ph-arrows-clockwise"></i> Listeyi Yenile</button>
+      </div>
+    </div>
+
+    <!-- Filtreler vs -->
+    <div class="card" style="margin-bottom:24px;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+        <div style="display:flex; gap:16px; flex:1;">
+          <div style="flex:1; max-width:240px;">
+             <label class="form-label">Arama</label>
+             <div style="position:relative">
+               <i class="ph ph-magnifying-glass" style="position:absolute; left:12px; top:12px; color:var(--text-muted); font-size:16px;"></i>
+               <input type="text" id="search-tx" class="form-control" placeholder="Açıklama, isim ara..." style="padding-left:36px;">
+             </div>
+          </div>
+          <div style="flex:1; max-width:180px;">
+             <label class="form-label">Durum</label>
+             <select id="filter-status" class="form-control">
+               <option value="ALL">Tümü</option>
+               <option value="SUCCESS">Başarılı</option>
+               <option value="BLOCKED">Blokeli / Beklemede</option>
+               <option value="ERROR">Hatalı / İptal</option>
+             </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="table-wrapper" id="transactions-wrapper">
+        <div class="empty-state">
+          <div class="spinner"></div>
+          <div class="empty-state-text" style="margin-top:12px">İşlemleriniz yükleniyor...</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/transactions.js"></script>
+</body>
+</html>
+

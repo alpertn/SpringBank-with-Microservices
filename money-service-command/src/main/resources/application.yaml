@@ -1,0 +1,40 @@
+server:
+  port: ${MONEY_SERVICE_COMMAND_PORT:8092}
+
+spring:
+  application:
+    name: money-service-command
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/banking_money_command}
+    username: ${SPRING_DATASOURCE_USERNAME:banking_admin}
+    password: ${SPRING_DATASOURCE_PASSWORD:local_password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+money-service:
+  topics:
+    # Write database'de basarili olan her state degisikligi bu topic'e basilir.
+    # Query-service bu topic'i okuyup kendi MongoDB + Elasticsearch read modelini gunceller.
+    projection-sync: ${MONEY_SERVICE_PROJECTION_TOPIC:banking-microservices.transaction.money-blocked.v1}
+
+management:
+  endpoints:
+    web:
+      base-path: /api/money-service-command/actuator
+      exposure:
+        include: health,info
+
+logging:
+  pattern:
+    console: "%-5level --- [money-service-command] : %msg%n"

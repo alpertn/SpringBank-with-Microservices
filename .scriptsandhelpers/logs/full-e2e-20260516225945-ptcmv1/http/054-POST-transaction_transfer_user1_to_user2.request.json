@@ -1,0 +1,17 @@
+{
+    "method":  "POST",
+    "url":  "http://localhost:8095/api/transaction-service/v1/transactions/create",
+    "expected":  [
+                     201
+                 ],
+    "headers":  "X-User-KeycloakUUID,Authorization",
+    "body":  {
+                 "senderIban":  "TR08614424XFUP320W7JZWFY5G",
+                 "receiverSurname":  "Tester",
+                 "receiverIban":  "TR2298160MYNKEYCF5Z2BDBE4G",
+                 "amount":  1000,
+                 "description":  "E2E transfer 20260516225945-ptcmv1",
+                 "transactionType":  "TRANSFER",
+                 "receiverName":  "E2EBeta"
+             }
+}

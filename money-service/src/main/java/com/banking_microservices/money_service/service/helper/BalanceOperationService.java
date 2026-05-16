@@ -26,6 +26,8 @@ public class BalanceOperationService {
     public void depositMoneyById(String id, BigDecimal amount) {
         log.info(" ({}) > BalanceOperationService | depositMoneyById -> Para yatirma istegi. ID: {}, Miktar: {}", currentTime.get(), id, amount);
 
+        validatePositiveAmount(amount, "Deposit amount must be positive");
+
         int result = userMoneyRepository.incrementBalanceById(id, amount);
         if (result == 0) {
             log.error(" ({}) > BalanceOperationService | depositMoneyById -> Para yatirma basarisiz. ID bulunamadi! {}", currentTime.get(), id);
@@ -39,9 +41,7 @@ public class BalanceOperationService {
     public void depositMoneyByIban(String iban, BigDecimal amount) {
         log.info(" ({}) > BalanceOperationService | depositMoneyByIban -> Para yatirma istegi. IBAN: {}, Miktar: {}", currentTime.get(), iban, amount);
 
-        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new NegativeNumberException("Deposit amount must be positive");
-        }
+        validatePositiveAmount(amount, "Deposit amount must be positive");
 
         int result = userMoneyRepository.incrementBalanceByIban(iban, amount);
         if (result == 0) {
@@ -56,9 +56,7 @@ public class BalanceOperationService {
     public void depositMoneyByUserId(String userId, BigDecimal amount) {
         log.info(" ({}) > BalanceOperationService | depositMoneyByUserId -> Para yatirma istegi. UserId: {}, Miktar: {}", currentTime.get(), userId, amount);
 
-        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new NegativeNumberException("Deposit amount must be positive");
-        }
+        validatePositiveAmount(amount, "Deposit amount must be positive");
 
         int result = userMoneyRepository.incrementBalanceByUserId(userId, amount);
         if (result == 0) {
@@ -72,6 +70,8 @@ public class BalanceOperationService {
     @Transactional
     public void withdrawMoneyById(String id, BigDecimal amount) {
         log.info(" ({}) > BalanceOperationService | withdrawMoneyById -> Para cekme istegi. ID: {}, Miktar: {}", currentTime.get(), id, amount);
+
+        validatePositiveAmount(amount, "Withdraw amount must be positive");
 
         BigDecimal currentBalance = userMoneyRepository.findBalanceById(id).orElseThrow(() -> {
             log.warn(" ({}) > BalanceOperationService | withdrawMoneyById -> Bakiye bilgisi bulunamadi! ID: {}", currentTime.get(), id);
@@ -96,6 +96,8 @@ public class BalanceOperationService {
     public void withdrawMoneyByIban(String iban, BigDecimal amount) {
         log.info(" ({}) > BalanceOperationService | withdrawMoneyByIban -> Para cekme istegi. IBAN: {}, Miktar: {}", currentTime.get(), iban, amount);
 
+        validatePositiveAmount(amount, "Withdraw amount must be positive");
+
         BigDecimal currentBalance = userMoneyRepository.findBalanceByIban(iban).orElseThrow(() -> {
             log.warn(" ({}) > BalanceOperationService | withdrawMoneyByIban -> Bakiye bilgisi bulunamadi! IBAN: {}", currentTime.get(), iban);
             return new IbanNotFoundException("Balance info not found for IBAN: " + iban);
@@ -119,9 +121,11 @@ public class BalanceOperationService {
     public void withdrawMoneyByUserId(String userId, BigDecimal amount) {
         log.info(" ({}) > BalanceOperationService | withdrawMoneyByUserId -> Para cekme istegi. UserId: {}, Miktar: {}", currentTime.get(), userId, amount);
 
+        validatePositiveAmount(amount, "Withdraw amount must be positive");
+
         BigDecimal currentBalance = userMoneyRepository.findBalanceByUserId(userId).orElseThrow(() -> {
             log.warn(" ({}) > BalanceOperationService | withdrawMoneyByUserId -> Bakiye bilgisi bulunamadi! UserId: {}", currentTime.get(), userId);
-            return new MoneyNotAvaibleException("Balance info not found for User ID: " + userId);
+            return new UserNotFoundException("Balance info not found for User ID: " + userId);
         });
 
         if (currentBalance.compareTo(amount) < 0) {
@@ -142,6 +146,8 @@ public class BalanceOperationService {
     public void withdrawBlockedMoneyByIban(String iban, BigDecimal amount) {
         log.info(" ({}) > BalanceOperationService | withdrawBlockedMoneyByIban -> Blokeli bakiyeden para cekme istegi. IBAN: {}, Miktar: {}", currentTime.get(), iban, amount);
 
+        validatePositiveAmount(amount, "Blocked withdraw amount must be positive");
+
         int result = userMoneyRepository.decrementBlockedByIban(iban, amount);
         if (result == 0) {
             log.error(" ({}) > BalanceOperationService | withdrawBlockedMoneyByIban -> Blokeli bakiyeden para cekme basarisiz (Bakiye yetersiz veya IBAN hatali)! IBAN: {}", currentTime.get(), iban);
@@ -149,5 +155,11 @@ public class BalanceOperationService {
         }
 
         log.info(" ({}) > BalanceOperationService | withdrawBlockedMoneyByIban -> Blokeli bakiyeden para cekme basarili. IBAN: {}", currentTime.get(), iban);
+    }
+
+    private void validatePositiveAmount(BigDecimal amount, String message) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new NegativeNumberException(message);
+        }
     }
 }

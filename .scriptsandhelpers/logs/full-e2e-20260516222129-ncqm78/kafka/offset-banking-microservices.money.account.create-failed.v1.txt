@@ -1,0 +1,4 @@
+TOPIC: banking-microservices.money.account.create-failed.v1
+RAW:
+command terminated with exit code 1
+SUM: 0

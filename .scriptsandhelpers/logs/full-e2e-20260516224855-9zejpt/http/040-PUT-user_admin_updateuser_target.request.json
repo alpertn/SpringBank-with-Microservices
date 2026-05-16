@@ -1,0 +1,19 @@
+{
+    "method":  "PUT",
+    "url":  "http://localhost:8095/api/user-service/v1/admin/updateuser",
+    "expected":  [
+                     200
+                 ],
+    "headers":  "Authorization",
+    "body":  {
+                 "id":  "971c2249-61da-4eef-959a-84a7bae6c533",
+                 "keycloakUUID":  "971c2249-61da-4eef-959a-84a7bae6c533",
+                 "mail":  "e2e.admin.target.20260516224855-9zejpt@springbank.test",
+                 "password":  "",
+                 "name":  "E2EAdminUpdated",
+                 "surname":  "Tester",
+                 "role":  "USER",
+                 "active":  true,
+                 "createdAt":  "2026-05-16T19:50:06.762"
+             }
+}

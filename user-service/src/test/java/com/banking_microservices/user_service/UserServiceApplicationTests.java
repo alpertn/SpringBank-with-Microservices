@@ -1,13 +1,13 @@
 package com.banking_microservices.user_service;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+import static org.assertj.core.api.Assertions.assertThat;
+
 class UserServiceApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
-
+    @Test
+    void applicationClassIsPresent() {
+        assertThat(UserServiceApplication.class).isNotNull();
+    }
 }

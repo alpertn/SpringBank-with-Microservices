@@ -1,0 +1,3 @@
+SQL: select money || '|' || blocked_money from money_accounts where user_id='cmd-user-a-20260516225945-ptcmv1' limit 1;
+RESULT:
+

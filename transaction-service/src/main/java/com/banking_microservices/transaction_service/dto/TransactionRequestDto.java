@@ -34,4 +34,6 @@ public class TransactionRequestDto {
     private String receiverSurname;
 
     private String description;
+
+    private TokenDetailsDto tokenDetails;
 }

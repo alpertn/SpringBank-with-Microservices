@@ -23,4 +23,6 @@ public class Transaction {
 
     private String description;
 
+    private TokenDetailsDto tokenDetails;
+
 }

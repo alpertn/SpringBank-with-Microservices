@@ -1,0 +1,144 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20260517003713
+Username: monte\alper
+RunAs User: monte\alper
+Configuration Name: 
+Machine: MONTE (Microsoft Windows NT 10.0.26200.0)
+Host Application: powershell.exe -NoProfile -ExecutionPolicy Bypass -Command $p=$env:SELF; $c=Get-Content -Raw -LiteralPath $p; $m='# POWERSHELL_PAYLOAD'; $i=$c.LastIndexOf($m); if($i -lt 0){throw 'PowerShell payload not found'}; $s=$c.Substring($i + $m.Length); Invoke-Expression $s
+Process ID: 11128
+PSVersion: 5.1.26100.7462
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7462
+BuildVersion: 10.0.26100.7462
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+[INFO] RunId=20260517003713-vbcn9s
+[INFO] Test modu=dev (dev=monolit gibi hizli dogrulama, full=tum Kafka/DB/pod/regression)
+[INFO] Timeoutlar: HTTP=15 sn, step=120 sn, wait-cap=120 sn
+[INFO] Tum loglar: C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260517003713-vbcn9s
+
+==== Kubernetes ve servis on kontrolleri ====
+[OK]   kubectl context: docker-desktop
+[OK]   Kubernetes API cevap veriyor
+[OK]   namespace var: banking-microservices
+[OK]   tum deployment'lar available condition beklemesi tamam
+[OK]   deployment ready: postgres (1)
+[OK]   deployment ready: kafka (1)
+[OK]   deployment ready: keycloak (1)
+[OK]   deployment ready: user-service (2)
+[OK]   deployment ready: money-service (2)
+[OK]   deployment ready: transaction-service (2)
+[OK]   deployment ready: gateway (2)
+[OK]   service var: postgres
+[OK]   service var: kafka
+[OK]   service var: keycloak
+[OK]   service var: user-service
+[OK]   service var: money-service
+[OK]   service var: transaction-service
+[OK]   service var: gateway
+
+==== Gateway erisimi ====
+[OK]   gateway static login.html HTTP 200
+[OK]   static /login.html HTTP 200
+[OK]   static /register.html HTTP 200
+[OK]   static /dashboard.html HTTP 200
+[OK]   static /transactions.html HTTP 200
+[OK]   static /admin.html HTTP 200
+
+==== Public health endpointleri ====
+[OK]   money-service health unauthenticated/security HTTP 401
+[OK]   user-service liveness HTTP 200
+[OK]   user-service liveness HTTP 200 satisfied
+[OK]   money-service liveness HTTP 200
+[OK]   transaction-service liveness HTTP 200
+[OK]   fraud-service liveness HTTP 200
+[INFO] DEV-MONOLITH hizli mod: CQRS command/query internal health kontrolleri atlandi. Full kapsam icin: .scriptsandhelpers\test-everything.bat full
+True
+
+==== Kafka topic ve altyapi kontrolleri ====
+[INFO] DEV-MONOLITH hizli mod: Kafka topic listeleme ve offset snapshot atlandi. Full kapsam icin: .scriptsandhelpers\test-everything.bat full
+True
+
+==== Register, login, token decode ====
+[OK]   register user1 HTTP 200
+[OK]   register user2 HTTP 200
+[OK]   user1 login HTTP 200
+[OK]   user1 access_token alindi
+[OK]   user2 login HTTP 200
+[OK]   user2 access_token alindi
+[OK]   admin login HTTP 200
+[OK]   admin access_token alindi
+[OK]   user1 JWT sub: d355c310-f1be-4727-a747-9c48c17d6083
+[OK]   user2 JWT sub: 157ecfc0-c21c-4be3-b00b-3ccbd6136f08
+[OK]   admin JWT ADMIN role iceriyor
+[OK]   refresh token user1 HTTP 200
+[INFO] DEV-MONOLITH hizli mod: register sonrasi Kafka user.created detay kontrolu atlandi. Full kapsam icin: .scriptsandhelpers\test-everything.bat full
+True
+
+==== Keycloak DB dogrulamasi ====
+[OK]   Keycloak DB user1 kaydi var
+[OK]   Keycloak DB user2 kaydi var
+
+==== User admin endpointleri ====
+[OK]   user admin total HTTP 200
+[OK]   user admin roles HTTP 200
+[OK]   user admin active HTTP 200
+[OK]   user admin findbyemail user1 HTTP 200
+[OK]   user1 DB id bulundu: d355c310-f1be-4727-a747-9c48c17d6083
+[OK]   user get self by id HTTP 200
+[OK]   user admin findbykeycloakuuid user1 HTTP 200
+[OK]   user admin search name HTTP 200
+[OK]   user admin allusers HTTP 200
+[OK]   register admin mutation target HTTP 200
+[OK]   user admin findbyemail mutation target HTTP 200
+[OK]   admin mutation target DB id bulundu: 6be43683-4d16-4fa7-ab7d-4eba972eaa20
+[OK]   user admin updaterole target USER HTTP 200
+[OK]   user admin deactivate target HTTP 200
+[OK]   user admin activate target HTTP 200
+[OK]   user admin reset-password target HTTP 200
+[OK]   admin target after reset login HTTP 200
+[OK]   admin target after reset access_token alindi
+[OK]   user admin updateuser target HTTP 200
+[OK]   user admin deleteuser target HTTP 200
+
+==== Money account create ve DB dogrulamasi ====
+[OK]   money create user1 HTTP 200
+[OK]   money create user2 HTTP 200
+[OK]   user1 balance-info HTTP 200
+[OK]   user2 balance-info HTTP 200
+[OK]   user1 IBAN var: TR9599972DO9AF6K9CTJAQVK0D
+[OK]   user2 IBAN var: TR74769306OWAFIYTKQBI7AOCL
+[OK]   getUserIbanWithUserId user1 HTTP 200
+[OK]   Postgres banking_money user1 money kaydi var
+[OK]   Postgres banking_money user2 money kaydi var
+[INFO] DEV-MONOLITH hizli mod: money account Kafka detay kontrolu atlandi. Full kapsam icin: .scriptsandhelpers\test-everything.bat full
+True
+
+==== Money direct deposit/withdraw endpointleri ====
+[OK]   money direct depositByUserId user2 HTTP 200
+[OK]   user2 after direct deposit balance-info HTTP 200
+[OK]   user2 direct deposit balance 200 satisfied
+[OK]   money direct withdrawByUserId user2 HTTP 200
+[OK]   user2 after direct withdraw balance-info HTTP 200
+[OK]   user2 direct withdraw balance 0 satisfied
+
+==== Deposit, withdraw, transfer E2E ====
+[INFO] DEV-MONOLITH hizli mod: transaction Kafka offset snapshot atlandi. Full kapsam icin: .scriptsandhelpers\test-everything.bat full
+True
+[OK]   transaction deposit user1 HTTP 201
+[OK]   user1 after deposit balance-info HTTP 200
+[OK]   user1 balance >= 5000 after deposit satisfied
+PS>TerminatingError(curl.exe): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: curl: (28) Operation timed out after 15006 milliseconds with 0 bytes received"
+PS>TerminatingError(curl.exe): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: curl: (28) Operation timed out after 15006 milliseconds with 0 bytes received"
+[FAIL] Script exception: curl: (28) Operation timed out after 15006 milliseconds with 0 bytes received
+at Invoke-Checked, <No file>: line 177
+at <ScriptBlock>, <No file>: line 659
+at <ScriptBlock>, <No file>: line 1
+**********************
+Windows PowerShell transcript end
+End time: 20260517003833
+**********************

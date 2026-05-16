@@ -1,0 +1,4 @@
+TOPIC: banking-microservices.transaction.money-blocked.v1
+RAW:
+banking-microservices.transaction.money-blocked.v1:0:1
+SUM: 1

@@ -1,6 +1,9 @@
 package com.banking_microservices.transaction_service.model;
 
+import com.banking_microservices.transaction_service.config.TokenDetailsConverter;
+import com.banking_microservices.transaction_service.dto.TokenDetailsDto;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
@@ -90,6 +93,10 @@ public class TransactionEntity {
     @Builder.Default
     @Enumerated(EnumType.STRING)
     private TransferStatus transferStatus = TransferStatus.CREATED;
+
+    @Convert(converter = TokenDetailsConverter.class)
+    @Column(columnDefinition = "TEXT")
+    private TokenDetailsDto tokenDetails;
 
     @PrePersist
     protected void onCreate() {

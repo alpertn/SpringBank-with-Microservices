@@ -1,0 +1,9 @@
+{
+    "method":  "GET",
+    "url":  "http://localhost:8095/deposit.html",
+    "expected":  [
+                     200
+                 ],
+    "headers":  "",
+    "body":  null
+}

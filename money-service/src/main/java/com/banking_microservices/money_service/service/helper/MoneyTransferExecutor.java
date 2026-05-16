@@ -37,9 +37,7 @@ public class MoneyTransferExecutor {
         dto.setStatus(TransactionStatus.COMPLETED);
         dto.setStatusDescription(TransactionStatus.COMPLETED.getDescription());
 
-        // Kafkaya COMPLETED bildir. result topic'e gonderilir — transaction-service bu topic'i dinliyor.
-        // NOT: sendTransactionSuccess() → transaction-service.success.v1 topic'ine gider ama
-        //      transaction-service bu topic'i DINLEMIYOR! sendResult() → result.success.v1 kullanilmali.
+        // Kafkaya COMPLETED bildir. transaction.completed.v1 topic'i transaction-service tarafindan dinlenir.
         try {
             log.info(" ({}) > MoneyTransferExecutor | execute -> Transfer complete RESULT topic'e gonderiliyor. EventUUID: {}", currentTime.get(), dto.getEventUUID());
             kafkaSender.sendResult(dto.getEventUUID(), dto);

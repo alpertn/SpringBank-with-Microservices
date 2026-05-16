@@ -1,0 +1,4 @@
+TOPIC: banking-microservices.money.account.created.v1
+RAW:
+banking-microservices.money.account.created.v1:0:13
+SUM: 13

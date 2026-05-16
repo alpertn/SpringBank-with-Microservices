@@ -1,0 +1,33 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20260517014910
+Username: monte\alper
+RunAs User: monte\alper
+Configuration Name: 
+Machine: MONTE (Microsoft Windows NT 10.0.26200.0)
+Host Application: powershell.exe -NoProfile -ExecutionPolicy Bypass -Command $p=$env:SELF; $c=Get-Content -Raw -LiteralPath $p; $m='# POWERSHELL_PAYLOAD'; $i=$c.LastIndexOf($m); if($i -lt 0){throw 'PowerShell payload not found'}; $s=$c.Substring($i + $m.Length); Invoke-Expression $s
+Process ID: 13228
+PSVersion: 5.1.26100.7462
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7462
+BuildVersion: 10.0.26100.7462
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+[INFO] RunId=20260517014910-84vqas
+[INFO] Test modu=dev (varsayilan full kapsam; 1 dakikayi asan parca SKIP yazilip sonraki teste gecilir)
+[INFO] Timeoutlar: HTTP=60 sn, long-running-skip=60 sn, wait-cap=60 sn
+[INFO] Tum loglar: C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260517014910-84vqas
+
+==== Kubernetes ve servis on kontrolleri ====
+PS>TerminatingError(): "kubectl --request-timeout=60s config current-context failed: docker-desktop"
+[FAIL] Script exception: kubectl --request-timeout=60s config current-context failed: docker-desktop
+at Kube, <No file>: line 429
+at <ScriptBlock>, <No file>: line 607
+at <ScriptBlock>, <No file>: line 1
+**********************
+Windows PowerShell transcript end
+End time: 20260517014911
+**********************

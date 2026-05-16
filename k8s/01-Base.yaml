@@ -31,20 +31,20 @@ metadata:
 data:
   # Postgres .sql ı gordugudne ve postgres'ı tanimladigimizda otomatik olarak calistirir GRANT ALL PRIVILEGES ON DATABASE full yetki verir dblere
   init-databases.sql: |
-    CREATE DATABASE banking_auth;
-    CREATE DATABASE banking_users;
     CREATE DATABASE banking_money;
     CREATE DATABASE banking_money_command;
     CREATE DATABASE banking_transactions;
     CREATE DATABASE banking_fraud;
+    CREATE DATABASE banking_keycloak;
+    CREATE DATABASE banking_users;
     CREATE DATABASE banking;
 
-    GRANT ALL PRIVILEGES ON DATABASE banking_auth TO banking_admin;
-    GRANT ALL PRIVILEGES ON DATABASE banking_users TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking_money TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking_money_command TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking_transactions TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking_fraud TO banking_admin;
+    GRANT ALL PRIVILEGES ON DATABASE banking_keycloak TO banking_admin;
+    GRANT ALL PRIVILEGES ON DATABASE banking_users TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking TO banking_admin;
 ---
 #
@@ -260,9 +260,7 @@ spec:
               name: elasticsearch-data
       volumes:
         - name: elasticsearch-data
-          hostPath:
-            path: /data/banking_elasticsearch
-            type: DirectoryOrCreate
+          emptyDir: {}
 
 ---
 
@@ -386,6 +384,72 @@ spec:
 # KEYCLOAK ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #
 
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-realm-config
+  namespace: banking-microservices
+data:
+  banking-realm.json: |
+    {
+      "realm": "banking",
+      "enabled": true,
+      "accessTokenLifespan": 300,
+      "roles": {
+        "realm": [
+          {
+            "name": "USER",
+            "description": "Default banking customer role"
+          },
+          {
+            "name": "ADMIN",
+            "description": "Banking administration role"
+          }
+        ]
+      },
+      "clients": [
+        {
+          "clientId": "banking-app",
+          "name": "SpringBank application client",
+          "enabled": true,
+          "protocol": "openid-connect",
+          "publicClient": false,
+          "secret": "Iopu5gL8VfLtIX39701gkwd6iCd7gKW6",
+          "standardFlowEnabled": true,
+          "directAccessGrantsEnabled": true,
+          "serviceAccountsEnabled": true,
+          "redirectUris": [
+            "*"
+          ],
+          "webOrigins": [
+            "*"
+          ]
+        }
+      ],
+      "users": [
+        {
+          "username": "admin@springbank.local",
+          "email": "admin@springbank.local",
+          "firstName": "SpringBank",
+          "lastName": "Admin",
+          "enabled": true,
+          "emailVerified": true,
+          "credentials": [
+            {
+              "type": "password",
+              "value": "SpringBankAdmin123!",
+              "temporary": false
+            }
+          ],
+          "realmRoles": [
+            "ADMIN"
+          ]
+        }
+      ]
+    }
+
+---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -404,7 +468,7 @@ spec:
       containers:
         - name: keycloak
           image: quay.io/keycloak/keycloak:23.0
-          args: ["start-dev"]
+          args: ["start-dev", "--import-realm"]
           ports:
             - containerPort: 8080
           env:
@@ -416,6 +480,21 @@ spec:
               value: "true"
             - name: KC_HOSTNAME_STRICT
               value: "false"
+            - name: KC_DB
+              value: postgres
+            - name: KC_DB_URL
+              value: jdbc:postgresql://postgres:5432/banking_keycloak
+            - name: KC_DB_USERNAME
+              value: banking_admin
+            - name: KC_DB_PASSWORD
+              value: banking_admin
+          volumeMounts:
+            - name: keycloak-realm-config
+              mountPath: /opt/keycloak/data/import
+      volumes:
+        - name: keycloak-realm-config
+          configMap:
+            name: keycloak-realm-config
 
 ---
 

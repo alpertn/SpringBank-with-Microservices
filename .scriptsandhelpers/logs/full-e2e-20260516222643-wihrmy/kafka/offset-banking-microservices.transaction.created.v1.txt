@@ -1,0 +1,4 @@
+TOPIC: banking-microservices.transaction.created.v1
+RAW:
+banking-microservices.transaction.created.v1:0:3
+SUM: 3

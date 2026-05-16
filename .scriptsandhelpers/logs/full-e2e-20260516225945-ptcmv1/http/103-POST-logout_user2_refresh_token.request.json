@@ -1,0 +1,12 @@
+{
+    "method":  "POST",
+    "url":  "http://localhost:8095/api/user-service/v1/auth/logout",
+    "expected":  [
+                     200,
+                     204
+                 ],
+    "headers":  "",
+    "body":  {
+                 "refreshToken":  "eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI1NmU2MzhlOS1kMzM5LTQxNGEtODY2OS01YzJmODdiMzBjZWQifQ.eyJleHAiOjE3Nzg5NjM0OTEsImlhdCI6MTc3ODk2MTY5MSwianRpIjoiMzllOWEwMDMtNjg5OS00NjJhLWE2ZTgtNWE5NzM2NzY2NzllIiwiaXNzIjoiaHR0cDovL2tleWNsb2FrOjgwODAvcmVhbG1zL2JhbmtpbmciLCJhdWQiOiJodHRwOi8va2V5Y2xvYWs6ODA4MC9yZWFsbXMvYmFua2luZyIsInN1YiI6IjU0YjliOTNjLTg3ZjItNGM5Mi04YzY1LTQ2MmM5MDA1ZGNmMyIsInR5cCI6IlJlZnJlc2giLCJhenAiOiJiYW5raW5nLWFwcCIsInNlc3Npb25fc3RhdGUiOiI1MmQyYTE2My0wMDgyLTQ0NDktYTFkNS02ZGExZWM4MWE1NzMiLCJzY29wZSI6ImVtYWlsIHByb2ZpbGUiLCJzaWQiOiI1MmQyYTE2My0wMDgyLTQ0NDktYTFkNS02ZGExZWM4MWE1NzMifQ.Yy1oWyam9Q6EqweUU9-jFIxl_wP7TPJBJe7DWcq8N8Y"
+             }
+}

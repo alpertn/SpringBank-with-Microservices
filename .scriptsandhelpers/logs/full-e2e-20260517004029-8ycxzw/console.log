@@ -1,0 +1,186 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20260517004029
+Username: monte\alper
+RunAs User: monte\alper
+Configuration Name: 
+Machine: MONTE (Microsoft Windows NT 10.0.26200.0)
+Host Application: powershell.exe -NoProfile -ExecutionPolicy Bypass -Command $p=$env:SELF; $c=Get-Content -Raw -LiteralPath $p; $m='# POWERSHELL_PAYLOAD'; $i=$c.LastIndexOf($m); if($i -lt 0){throw 'PowerShell payload not found'}; $s=$c.Substring($i + $m.Length); Invoke-Expression $s
+Process ID: 15512
+PSVersion: 5.1.26100.7462
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7462
+BuildVersion: 10.0.26100.7462
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+[INFO] RunId=20260517004029-8ycxzw
+[INFO] Test modu=dev (dev=monolit gibi hizli dogrulama, full=tum Kafka/DB/pod/regression)
+[INFO] Timeoutlar: HTTP=30 sn, step=120 sn, wait-cap=120 sn
+[INFO] Tum loglar: C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260517004029-8ycxzw
+
+==== Kubernetes ve servis on kontrolleri ====
+[OK]   kubectl context: docker-desktop
+[OK]   Kubernetes API cevap veriyor
+[OK]   namespace var: banking-microservices
+[OK]   tum deployment'lar available condition beklemesi tamam
+[OK]   deployment ready: postgres (1)
+[OK]   deployment ready: kafka (1)
+[OK]   deployment ready: keycloak (1)
+[OK]   deployment ready: user-service (2)
+[OK]   deployment ready: money-service (2)
+[OK]   deployment ready: transaction-service (2)
+[OK]   deployment ready: gateway (2)
+[OK]   service var: postgres
+[OK]   service var: kafka
+[OK]   service var: keycloak
+[OK]   service var: user-service
+[OK]   service var: money-service
+[OK]   service var: transaction-service
+[OK]   service var: gateway
+
+==== Gateway erisimi ====
+[OK]   gateway static login.html HTTP 200
+[OK]   static /login.html HTTP 200
+[OK]   static /register.html HTTP 200
+[OK]   static /dashboard.html HTTP 200
+[OK]   static /transactions.html HTTP 200
+[OK]   static /admin.html HTTP 200
+
+==== Public health endpointleri ====
+[OK]   money-service health unauthenticated/security HTTP 401
+[OK]   user-service liveness HTTP 200
+[OK]   user-service liveness HTTP 200 satisfied
+[OK]   money-service liveness HTTP 200
+[OK]   transaction-service liveness HTTP 200
+[OK]   fraud-service liveness HTTP 200
+[INFO] DEV-MONOLITH hizli mod: CQRS command/query internal health kontrolleri atlandi. Full kapsam icin: .scriptsandhelpers\test-everything.bat full
+True
+
+==== Kafka topic ve altyapi kontrolleri ====
+[INFO] DEV-MONOLITH hizli mod: Kafka topic listeleme ve offset snapshot atlandi. Full kapsam icin: .scriptsandhelpers\test-everything.bat full
+True
+
+==== Register, login, token decode ====
+[OK]   register user1 HTTP 200
+[OK]   register user2 HTTP 200
+[OK]   user1 login HTTP 200
+[OK]   user1 access_token alindi
+[OK]   user2 login HTTP 200
+[OK]   user2 access_token alindi
+[OK]   admin login HTTP 200
+[OK]   admin access_token alindi
+[OK]   user1 JWT sub: a5ed2202-8db5-4af6-8693-45503ffab2fd
+[OK]   user2 JWT sub: 9d821051-03d6-408d-8272-7105e6fbc61a
+[OK]   admin JWT ADMIN role iceriyor
+[OK]   refresh token user1 HTTP 200
+[INFO] DEV-MONOLITH hizli mod: register sonrasi Kafka user.created detay kontrolu atlandi. Full kapsam icin: .scriptsandhelpers\test-everything.bat full
+True
+
+==== Keycloak DB dogrulamasi ====
+[OK]   Keycloak DB user1 kaydi var
+[OK]   Keycloak DB user2 kaydi var
+
+==== User admin endpointleri ====
+[OK]   user admin total HTTP 200
+[OK]   user admin roles HTTP 200
+[OK]   user admin active HTTP 200
+[OK]   user admin findbyemail user1 HTTP 200
+[OK]   user1 DB id bulundu: a5ed2202-8db5-4af6-8693-45503ffab2fd
+[OK]   user get self by id HTTP 200
+[OK]   user admin findbykeycloakuuid user1 HTTP 200
+[OK]   user admin search name HTTP 200
+[OK]   user admin allusers HTTP 200
+[INFO] DEV-MONOLITH hizli mod: admin kullanici mutate/deactivate/reset/delete regression akisi atlandi. Full kapsam icin: .scriptsandhelpers\test-everything.bat full
+True
+
+==== Money account create ve DB dogrulamasi ====
+[OK]   money create user1 HTTP 200
+[OK]   money create user2 HTTP 200
+[OK]   user1 balance-info HTTP 200
+[OK]   user2 balance-info HTTP 200
+[OK]   user1 IBAN var: TR6203420J3X5C1WVNCHH4EBAI
+[OK]   user2 IBAN var: TR40859547YWS5VQSPC9X3X0M9
+[OK]   getUserIbanWithUserId user1 HTTP 200
+[OK]   Postgres banking_money user1 money kaydi var
+[OK]   Postgres banking_money user2 money kaydi var
+[INFO] DEV-MONOLITH hizli mod: money account Kafka detay kontrolu atlandi. Full kapsam icin: .scriptsandhelpers\test-everything.bat full
+True
+
+==== Money direct deposit/withdraw endpointleri ====
+[OK]   money direct depositByUserId user2 HTTP 200
+[OK]   user2 after direct deposit balance-info HTTP 200
+[OK]   user2 direct deposit balance 200 satisfied
+[OK]   money direct withdrawByUserId user2 HTTP 200
+[OK]   user2 after direct withdraw balance-info HTTP 200
+[OK]   user2 direct withdraw balance 0 satisfied
+
+==== Deposit, withdraw, transfer E2E ====
+[INFO] DEV-MONOLITH hizli mod: transaction Kafka offset snapshot atlandi. Full kapsam icin: .scriptsandhelpers\test-everything.bat full
+True
+[OK]   transaction deposit user1 HTTP 201
+[OK]   user1 after deposit balance-info HTTP 200
+[OK]   user1 balance >= 5000 after deposit satisfied
+[OK]   transaction withdraw user1 HTTP 201
+[OK]   user1 after withdraw balance-info HTTP 200
+[OK]   user1 balance 4500 after withdraw satisfied
+[OK]   transaction transfer user1 to user2 HTTP 201
+[OK]   user1 after transfer balance-info HTTP 200
+[OK]   user2 after transfer balance-info HTTP 200
+[OK]   user1 after transfer balance-info HTTP 200
+[OK]   user2 after transfer balance-info HTTP 200
+[OK]   transfer balances user1=3500 user2=1000 satisfied
+[OK]   user1 final balance-info HTTP 200
+[OK]   user2 final balance-info HTTP 200
+[OK]   Final user1 money 3500
+[OK]   Final user2 money 1000
+[OK]   Final user1 blockedmoney 0
+[OK]   Final user2 blockedmoney 0
+[OK]   DB user1 money/blocked dogru: 3500.00|0.00
+[OK]   DB user2 money/blocked dogru: 1000.00|0.00
+
+==== Transaction endpointleri ve DB dogrulamasi ====
+[OK]   transaction history user1 HTTP 200
+[OK]   transaction history user2 HTTP 200
+[OK]   user1 transaction history >= 3
+[OK]   user2 transaction history >= 1
+[OK]   transaction errors endpoint HTTP 200
+[OK]   transaction daterange HTTP 200
+[OK]   DB transfer event_uuid var: c2f9caeb-1e42-46ec-87f7-54127cc5092f
+[OK]   DB transfer status COMPLETED
+[OK]   transaction byid HTTP 200
+[INFO] DEV-MONOLITH hizli mod: transaction Kafka topic icerik kontrolleri atlandi. Full kapsam icin: .scriptsandhelpers\test-everything.bat full
+True
+
+==== Dev monolith admin ve frontend smoke ====
+[OK]   admin refresh before dev smoke login HTTP 200
+[OK]   admin refresh before dev smoke access_token alindi
+[OK]   dev money admin summary HTTP 200
+[OK]   dev transaction admin summary HTTP 200
+[OK]   dev gateway test logs runs HTTP 200
+[OK]   dev admin panel html HTTP 200
+[OK]   dev transactions html HTTP 200
+
+==== Dev kullanici islem geri cek smoke ====
+[OK]   dev cancel smoke deposit HTTP 201
+[OK]   user1 before cancel smoke balance-info HTTP 200
+[OK]   user1 before cancel smoke balance-info HTTP 200
+[OK]   dev cancel smoke deposit applied satisfied
+[OK]   dev cancel smoke event bulundu: dbf4ea13-df6e-4183-acff-60ded08a7031
+[FAIL] dev user transaction cancel HTTP 500 expected 200 body={"time":"2026-05-16T21:41:42.792114151","status":500,"error":"Internal Server Error","message":"could not execute statement [ERROR: new row for relation \"transactions\" violates check constraint \"transactions_status_check\"\n  Detail: Failing row contains (2262f358-e94d-4488-9d52-ecdcaca384cb, DEV cancel smoke 20260517004029-8ycxzw, f, Kullanici tarafindan geri cekildi, dbf4ea13-df6e-4183-acff-60ded08a7031, f, 2026-05-16 21:41:34.762176, 10.00, null, null, null, null, null, e2e.alpha.20260517004029-8ycxzw@springbank.test, null, E2EAlpha, Tester, a5ed2202-8db5-4af6-8693-45503ffab2fd, REVERSED, Islem geri alindi, {\"subject\":\"a5ed2202-8db5-4af6-8693-45503ffab2fd\",\"preferredUser..., DEPOSIT, FAILED, f).] [update transactions set description=?,error=?,error_description=?,event_id=?,is_money_blocked=?,money=?,receiver_email=?,receiver_iban=?,receiver_name=?,receiver_surname=?,receiver_user_id=?,sender_email=?,sender_iban=?,sender_name=?,sender_surname=?,sender_user_id=?,status=?,status_description=?,token_details=?,transaction_type=?,transfer_status=?,user_validation=? where id=?]; SQL [update transactions set description=?,error=?,error_description=?,event_id=?,is_money_blocked=?,money=?,receiver_email=?,receiver_iban=?,receiver_name=?,receiver_surname=?,receiver_user_id=?,sender_email=?,sender_iban=?,sender_name=?,sender_surname=?,sender_user_id=?,status=?,status_description=?,token_details=?,transaction_type=?,transfer_status=?,user_validation=? where id=?]; constraint [transactions_status_check]","path":"uri=/api/transaction-service/v1/transactions/cancel"} curl= 500
+[FAIL] dev cancel status dogru: COMPLETED
+
+==== Logout ====
+[OK]   logout user2 refresh token HTTP 200
+
+==== Son ozet ====
+
+DEV MONOLITH TESTLERINDE HATA VAR. Pass=110 Fail=2 RunId=20260517004029-8ycxzw Duration=75784ms / 75.784s / 1.263m
+ - dev user transaction cancel HTTP 500 expected 200 body={"time":"2026-05-16T21:41:42.792114151","status":500,"error":"Internal Server Error","message":"could not execute statement [ERROR: new row for relation \"transactions\" violates check constraint \"transactions_status_check\"\n  Detail: Failing row contains (2262f358-e94d-4488-9d52-ecdcaca384cb, DEV cancel smoke 20260517004029-8ycxzw, f, Kullanici tarafindan geri cekildi, dbf4ea13-df6e-4183-acff-60ded08a7031, f, 2026-05-16 21:41:34.762176, 10.00, null, null, null, null, null, e2e.alpha.20260517004029-8ycxzw@springbank.test, null, E2EAlpha, Tester, a5ed2202-8db5-4af6-8693-45503ffab2fd, REVERSED, Islem geri alindi, {\"subject\":\"a5ed2202-8db5-4af6-8693-45503ffab2fd\",\"preferredUser..., DEPOSIT, FAILED, f).] [update transactions set description=?,error=?,error_description=?,event_id=?,is_money_blocked=?,money=?,receiver_email=?,receiver_iban=?,receiver_name=?,receiver_surname=?,receiver_user_id=?,sender_email=?,sender_iban=?,sender_name=?,sender_surname=?,sender_user_id=?,status=?,status_description=?,token_details=?,transaction_type=?,transfer_status=?,user_validation=? where id=?]; SQL [update transactions set description=?,error=?,error_description=?,event_id=?,is_money_blocked=?,money=?,receiver_email=?,receiver_iban=?,receiver_name=?,receiver_surname=?,receiver_user_id=?,sender_email=?,sender_iban=?,sender_name=?,sender_surname=?,sender_user_id=?,status=?,status_description=?,token_details=?,transaction_type=?,transfer_status=?,user_validation=? where id=?]; constraint [transactions_status_check]","path":"uri=/api/transaction-service/v1/transactions/cancel"} curl= 500
+ - dev cancel status dogru: COMPLETED
+**********************
+Windows PowerShell transcript end
+End time: 20260517004145
+**********************

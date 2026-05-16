@@ -1,0 +1,1609 @@
+
+[02:12:29][elapsed=234ms / 0.234s / 0.004m][kubectl][START] --request-timeout=60s config current-context
+COMMAND:
+kubectl --request-timeout=60s config current-context
+START_ELAPSED_TOTAL: 234ms / 0.234s / 0.004m
+--------------------------------------------------------------------------------
+[02:12:29][elapsed=366ms / 0.366s / 0.006m][kubectl][OK] --request-timeout=60s config current-context
+COMMAND:
+kubectl --request-timeout=60s config current-context
+DURATION: 72ms / 0.072s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+docker-desktop
+--------------------------------------------------------------------------------
+[02:12:29][elapsed=377ms / 0.377s / 0.006m][kubectl][START] --request-timeout=10s cluster-info
+COMMAND:
+kubectl --request-timeout=10s cluster-info
+START_ELAPSED_TOTAL: 377ms / 0.377s / 0.006m
+--------------------------------------------------------------------------------
+[02:12:29][elapsed=492ms / 0.492s / 0.008m][kubectl][OK] --request-timeout=10s cluster-info
+COMMAND:
+kubectl --request-timeout=10s cluster-info
+DURATION: 107ms / 0.107s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+Kubernetes control plane is running at https://kubernetes.docker.internal:6443
+CoreDNS is running at https://kubernetes.docker.internal:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+--------------------------------------------------------------------------------
+[02:12:29][elapsed=499ms / 0.499s / 0.008m][kubectl][START] --request-timeout=60s get namespace banking-microservices
+COMMAND:
+kubectl --request-timeout=60s get namespace banking-microservices
+START_ELAPSED_TOTAL: 497ms / 0.497s / 0.008m
+--------------------------------------------------------------------------------
+[02:12:29][elapsed=608ms / 0.608s / 0.01m][kubectl][OK] --request-timeout=60s get namespace banking-microservices
+COMMAND:
+kubectl --request-timeout=60s get namespace banking-microservices
+DURATION: 103ms / 0.103s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME                    STATUS   AGE
+banking-microservices   Active   4h6m
+--------------------------------------------------------------------------------
+[02:12:29][elapsed=614ms / 0.614s / 0.01m][kubectl][START] --request-timeout=60s -n banking-microservices wait --for=condition=available deployment --all --timeout=600s
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices wait --for=condition=available deployment --all --timeout=600s
+START_ELAPSED_TOTAL: 614ms / 0.614s / 0.01m
+--------------------------------------------------------------------------------
+[02:12:31][elapsed=2137ms / 2.137s / 0.036m][kubectl][OK] --request-timeout=60s -n banking-microservices wait --for=condition=available deployment --all --timeout=600s
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices wait --for=condition=available deployment --all --timeout=600s
+DURATION: 1514ms / 1.514s / 0.025m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+deployment.apps/elasticsearch condition met
+deployment.apps/fraud-service condition met
+deployment.apps/gateway condition met
+deployment.apps/kafka condition met
+deployment.apps/keycloak condition met
+deployment.apps/money-service condition met
+deployment.apps/money-service-command condition met
+deployment.apps/money-service-query condition met
+deployment.apps/mongodb condition met
+deployment.apps/postgres condition met
+deployment.apps/redis condition met
+deployment.apps/transaction-service condition met
+deployment.apps/user-service condition met
+deployment.apps/zookeeper condition met
+--------------------------------------------------------------------------------
+[02:12:31][elapsed=2151ms / 2.151s / 0.036m][kubectl][START] --request-timeout=60s -n banking-microservices get deploy postgres -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy postgres -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 2151ms / 2.151s / 0.036m
+--------------------------------------------------------------------------------
+[02:12:31][elapsed=2271ms / 2.271s / 0.038m][kubectl][OK] --request-timeout=60s -n banking-microservices get deploy postgres -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy postgres -o jsonpath={.status.readyReplicas}
+DURATION: 112ms / 0.112s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[02:12:31][elapsed=2313ms / 2.313s / 0.039m][kubectl][START] --request-timeout=60s -n banking-microservices get deploy redis -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy redis -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 2283ms / 2.283s / 0.038m
+--------------------------------------------------------------------------------
+[02:12:31][elapsed=2402ms / 2.402s / 0.04m][kubectl][OK] --request-timeout=60s -n banking-microservices get deploy redis -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy redis -o jsonpath={.status.readyReplicas}
+DURATION: 82ms / 0.082s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[02:12:31][elapsed=2407ms / 2.407s / 0.04m][kubectl][START] --request-timeout=60s -n banking-microservices get deploy mongodb -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy mongodb -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 2406ms / 2.406s / 0.04m
+--------------------------------------------------------------------------------
+[02:12:31][elapsed=2493ms / 2.493s / 0.042m][kubectl][OK] --request-timeout=60s -n banking-microservices get deploy mongodb -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy mongodb -o jsonpath={.status.readyReplicas}
+DURATION: 82ms / 0.082s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[02:12:31][elapsed=2495ms / 2.495s / 0.042m][kubectl][START] --request-timeout=60s -n banking-microservices get deploy elasticsearch -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy elasticsearch -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 2495ms / 2.495s / 0.042m
+--------------------------------------------------------------------------------
+[02:12:31][elapsed=2580ms / 2.58s / 0.043m][kubectl][OK] --request-timeout=60s -n banking-microservices get deploy elasticsearch -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy elasticsearch -o jsonpath={.status.readyReplicas}
+DURATION: 79ms / 0.079s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[02:12:31][elapsed=2584ms / 2.584s / 0.043m][kubectl][START] --request-timeout=60s -n banking-microservices get deploy zookeeper -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy zookeeper -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 2584ms / 2.584s / 0.043m
+--------------------------------------------------------------------------------
+[02:12:32][elapsed=2667ms / 2.667s / 0.044m][kubectl][OK] --request-timeout=60s -n banking-microservices get deploy zookeeper -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy zookeeper -o jsonpath={.status.readyReplicas}
+DURATION: 79ms / 0.079s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[02:12:32][elapsed=2670ms / 2.67s / 0.045m][kubectl][START] --request-timeout=60s -n banking-microservices get deploy kafka -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy kafka -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 2670ms / 2.67s / 0.045m
+--------------------------------------------------------------------------------
+[02:12:32][elapsed=2769ms / 2.769s / 0.046m][kubectl][OK] --request-timeout=60s -n banking-microservices get deploy kafka -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy kafka -o jsonpath={.status.readyReplicas}
+DURATION: 96ms / 0.096s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[02:12:32][elapsed=2774ms / 2.774s / 0.046m][kubectl][START] --request-timeout=60s -n banking-microservices get deploy keycloak -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy keycloak -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 2774ms / 2.774s / 0.046m
+--------------------------------------------------------------------------------
+[02:12:32][elapsed=2880ms / 2.88s / 0.048m][kubectl][OK] --request-timeout=60s -n banking-microservices get deploy keycloak -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy keycloak -o jsonpath={.status.readyReplicas}
+DURATION: 100ms / 0.1s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[02:12:32][elapsed=2883ms / 2.883s / 0.048m][kubectl][START] --request-timeout=60s -n banking-microservices get deploy user-service -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy user-service -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 2883ms / 2.883s / 0.048m
+--------------------------------------------------------------------------------
+[02:12:32][elapsed=2989ms / 2.989s / 0.05m][kubectl][OK] --request-timeout=60s -n banking-microservices get deploy user-service -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy user-service -o jsonpath={.status.readyReplicas}
+DURATION: 99ms / 0.099s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[02:12:32][elapsed=2992ms / 2.992s / 0.05m][kubectl][START] --request-timeout=60s -n banking-microservices get deploy money-service -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy money-service -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 2992ms / 2.992s / 0.05m
+--------------------------------------------------------------------------------
+[02:12:32][elapsed=3090ms / 3.09s / 0.051m][kubectl][OK] --request-timeout=60s -n banking-microservices get deploy money-service -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy money-service -o jsonpath={.status.readyReplicas}
+DURATION: 93ms / 0.093s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[02:12:32][elapsed=3094ms / 3.094s / 0.052m][kubectl][START] --request-timeout=60s -n banking-microservices get deploy money-service-command -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy money-service-command -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 3094ms / 3.094s / 0.052m
+--------------------------------------------------------------------------------
+[02:12:32][elapsed=3182ms / 3.182s / 0.053m][kubectl][OK] --request-timeout=60s -n banking-microservices get deploy money-service-command -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy money-service-command -o jsonpath={.status.readyReplicas}
+DURATION: 84ms / 0.084s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[02:12:32][elapsed=3186ms / 3.186s / 0.053m][kubectl][START] --request-timeout=60s -n banking-microservices get deploy money-service-query -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy money-service-query -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 3186ms / 3.186s / 0.053m
+--------------------------------------------------------------------------------
+[02:12:32][elapsed=3267ms / 3.267s / 0.054m][kubectl][OK] --request-timeout=60s -n banking-microservices get deploy money-service-query -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy money-service-query -o jsonpath={.status.readyReplicas}
+DURATION: 76ms / 0.076s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[02:12:32][elapsed=3270ms / 3.27s / 0.055m][kubectl][START] --request-timeout=60s -n banking-microservices get deploy transaction-service -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy transaction-service -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 3270ms / 3.27s / 0.055m
+--------------------------------------------------------------------------------
+[02:12:32][elapsed=3357ms / 3.357s / 0.056m][kubectl][OK] --request-timeout=60s -n banking-microservices get deploy transaction-service -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy transaction-service -o jsonpath={.status.readyReplicas}
+DURATION: 84ms / 0.084s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[02:12:32][elapsed=3360ms / 3.36s / 0.056m][kubectl][START] --request-timeout=60s -n banking-microservices get deploy fraud-service -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy fraud-service -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 3360ms / 3.36s / 0.056m
+--------------------------------------------------------------------------------
+[02:12:32][elapsed=3437ms / 3.437s / 0.057m][kubectl][OK] --request-timeout=60s -n banking-microservices get deploy fraud-service -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy fraud-service -o jsonpath={.status.readyReplicas}
+DURATION: 73ms / 0.073s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[02:12:32][elapsed=3444ms / 3.444s / 0.057m][kubectl][START] --request-timeout=60s -n banking-microservices get deploy gateway -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy gateway -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 3444ms / 3.444s / 0.057m
+--------------------------------------------------------------------------------
+[02:12:32][elapsed=3525ms / 3.525s / 0.059m][kubectl][OK] --request-timeout=60s -n banking-microservices get deploy gateway -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy gateway -o jsonpath={.status.readyReplicas}
+DURATION: 77ms / 0.077s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[02:12:32][elapsed=3528ms / 3.528s / 0.059m][kubectl][START] --request-timeout=60s -n banking-microservices get svc postgres
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc postgres
+START_ELAPSED_TOTAL: 3528ms / 3.528s / 0.059m
+--------------------------------------------------------------------------------
+[02:12:32][elapsed=3610ms / 3.61s / 0.06m][kubectl][OK] --request-timeout=60s -n banking-microservices get svc postgres
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc postgres
+DURATION: 78ms / 0.078s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME       TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+postgres   ClusterIP   10.103.225.1   <none>        5432/TCP   4h6m
+--------------------------------------------------------------------------------
+[02:12:32][elapsed=3613ms / 3.613s / 0.06m][kubectl][START] --request-timeout=60s -n banking-microservices get svc redis
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc redis
+START_ELAPSED_TOTAL: 3613ms / 3.613s / 0.06m
+--------------------------------------------------------------------------------
+[02:12:33][elapsed=3693ms / 3.693s / 0.062m][kubectl][OK] --request-timeout=60s -n banking-microservices get svc redis
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc redis
+DURATION: 76ms / 0.076s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME    TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+redis   ClusterIP   10.99.203.130   <none>        6379/TCP   4h6m
+--------------------------------------------------------------------------------
+[02:12:33][elapsed=3696ms / 3.696s / 0.062m][kubectl][START] --request-timeout=60s -n banking-microservices get svc mongodb
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc mongodb
+START_ELAPSED_TOTAL: 3696ms / 3.696s / 0.062m
+--------------------------------------------------------------------------------
+[02:12:33][elapsed=3777ms / 3.777s / 0.063m][kubectl][OK] --request-timeout=60s -n banking-microservices get svc mongodb
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc mongodb
+DURATION: 78ms / 0.078s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)     AGE
+mongodb   ClusterIP   10.111.167.143   <none>        27017/TCP   4h6m
+--------------------------------------------------------------------------------
+[02:12:33][elapsed=3780ms / 3.78s / 0.063m][kubectl][START] --request-timeout=60s -n banking-microservices get svc elasticsearch
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc elasticsearch
+START_ELAPSED_TOTAL: 3780ms / 3.78s / 0.063m
+--------------------------------------------------------------------------------
+[02:12:33][elapsed=3860ms / 3.86s / 0.064m][kubectl][OK] --request-timeout=60s -n banking-microservices get svc elasticsearch
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc elasticsearch
+DURATION: 78ms / 0.078s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME            TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+elasticsearch   ClusterIP   10.103.26.16   <none>        9200/TCP   4h6m
+--------------------------------------------------------------------------------
+[02:12:33][elapsed=3864ms / 3.864s / 0.064m][kubectl][START] --request-timeout=60s -n banking-microservices get svc zookeeper
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc zookeeper
+START_ELAPSED_TOTAL: 3864ms / 3.864s / 0.064m
+--------------------------------------------------------------------------------
+[02:12:33][elapsed=3941ms / 3.941s / 0.066m][kubectl][OK] --request-timeout=60s -n banking-microservices get svc zookeeper
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc zookeeper
+DURATION: 74ms / 0.074s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME        TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+zookeeper   ClusterIP   10.109.103.136   <none>        2181/TCP   4h6m
+--------------------------------------------------------------------------------
+[02:12:33][elapsed=3945ms / 3.945s / 0.066m][kubectl][START] --request-timeout=60s -n banking-microservices get svc kafka
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc kafka
+START_ELAPSED_TOTAL: 3944ms / 3.944s / 0.066m
+--------------------------------------------------------------------------------
+[02:12:33][elapsed=4025ms / 4.025s / 0.067m][kubectl][OK] --request-timeout=60s -n banking-microservices get svc kafka
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc kafka
+DURATION: 78ms / 0.078s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME    TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+kafka   ClusterIP   10.105.97.238   <none>        9092/TCP   4h6m
+--------------------------------------------------------------------------------
+[02:12:33][elapsed=4029ms / 4.029s / 0.067m][kubectl][START] --request-timeout=60s -n banking-microservices get svc keycloak
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc keycloak
+START_ELAPSED_TOTAL: 4029ms / 4.029s / 0.067m
+--------------------------------------------------------------------------------
+[02:12:33][elapsed=4123ms / 4.123s / 0.069m][kubectl][OK] --request-timeout=60s -n banking-microservices get svc keycloak
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc keycloak
+DURATION: 91ms / 0.091s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME       TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+keycloak   LoadBalancer   10.101.90.119   localhost     8080:31037/TCP   4h6m
+--------------------------------------------------------------------------------
+[02:12:33][elapsed=4129ms / 4.129s / 0.069m][kubectl][START] --request-timeout=60s -n banking-microservices get svc user-service
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc user-service
+START_ELAPSED_TOTAL: 4129ms / 4.129s / 0.069m
+--------------------------------------------------------------------------------
+[02:12:33][elapsed=4211ms / 4.211s / 0.07m][kubectl][OK] --request-timeout=60s -n banking-microservices get svc user-service
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc user-service
+DURATION: 77ms / 0.077s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME           TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
+user-service   ClusterIP   10.108.182.142   <none>        8081/TCP,9194/TCP   4h6m
+--------------------------------------------------------------------------------
+[02:12:33][elapsed=4214ms / 4.214s / 0.07m][kubectl][START] --request-timeout=60s -n banking-microservices get svc money-service
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc money-service
+START_ELAPSED_TOTAL: 4214ms / 4.214s / 0.07m
+--------------------------------------------------------------------------------
+[02:12:33][elapsed=4293ms / 4.293s / 0.072m][kubectl][OK] --request-timeout=60s -n banking-microservices get svc money-service
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc money-service
+DURATION: 75ms / 0.075s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+money-service   ClusterIP   10.97.191.135   <none>        8082/TCP   4h6m
+--------------------------------------------------------------------------------
+[02:12:33][elapsed=4296ms / 4.296s / 0.072m][kubectl][START] --request-timeout=60s -n banking-microservices get svc money-service-command
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc money-service-command
+START_ELAPSED_TOTAL: 4296ms / 4.296s / 0.072m
+--------------------------------------------------------------------------------
+[02:12:33][elapsed=4375ms / 4.375s / 0.073m][kubectl][OK] --request-timeout=60s -n banking-microservices get svc money-service-command
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc money-service-command
+DURATION: 76ms / 0.076s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME                    TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+money-service-command   ClusterIP   10.99.178.70   <none>        8092/TCP   4h6m
+--------------------------------------------------------------------------------
+[02:12:33][elapsed=4379ms / 4.379s / 0.073m][kubectl][START] --request-timeout=60s -n banking-microservices get svc money-service-query
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc money-service-query
+START_ELAPSED_TOTAL: 4379ms / 4.379s / 0.073m
+--------------------------------------------------------------------------------
+[02:12:33][elapsed=4463ms / 4.463s / 0.074m][kubectl][OK] --request-timeout=60s -n banking-microservices get svc money-service-query
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc money-service-query
+DURATION: 80ms / 0.08s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME                  TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)             AGE
+money-service-query   ClusterIP   10.97.130.183   <none>        8093/TCP,9193/TCP   4h6m
+--------------------------------------------------------------------------------
+[02:12:33][elapsed=4464ms / 4.464s / 0.074m][kubectl][START] --request-timeout=60s -n banking-microservices get svc transaction-service
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc transaction-service
+START_ELAPSED_TOTAL: 4464ms / 4.464s / 0.074m
+--------------------------------------------------------------------------------
+[02:12:33][elapsed=4544ms / 4.544s / 0.076m][kubectl][OK] --request-timeout=60s -n banking-microservices get svc transaction-service
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc transaction-service
+DURATION: 77ms / 0.077s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME                  TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+transaction-service   ClusterIP   10.98.36.234   <none>        8083/TCP   4h6m
+--------------------------------------------------------------------------------
+[02:12:33][elapsed=4547ms / 4.547s / 0.076m][kubectl][START] --request-timeout=60s -n banking-microservices get svc fraud-service
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc fraud-service
+START_ELAPSED_TOTAL: 4547ms / 4.547s / 0.076m
+--------------------------------------------------------------------------------
+[02:12:33][elapsed=4627ms / 4.627s / 0.077m][kubectl][OK] --request-timeout=60s -n banking-microservices get svc fraud-service
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc fraud-service
+DURATION: 75ms / 0.075s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+fraud-service   ClusterIP   10.106.246.99   <none>        8085/TCP   4h6m
+--------------------------------------------------------------------------------
+[02:12:33][elapsed=4629ms / 4.629s / 0.077m][kubectl][START] --request-timeout=60s -n banking-microservices get svc gateway
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc gateway
+START_ELAPSED_TOTAL: 4629ms / 4.629s / 0.077m
+--------------------------------------------------------------------------------
+[02:12:34][elapsed=4725ms / 4.725s / 0.079m][kubectl][OK] --request-timeout=60s -n banking-microservices get svc gateway
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc gateway
+DURATION: 77ms / 0.077s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME      TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+gateway   LoadBalancer   10.101.55.142   localhost     8095:32057/TCP   4h6m
+--------------------------------------------------------------------------------
+[02:12:34][elapsed=5495ms / 5.495s / 0.092m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 5495ms / 5.495s / 0.092m
+--------------------------------------------------------------------------------
+[02:12:34][elapsed=5595ms / 5.595s / 0.093m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+DURATION: 99ms / 0.099s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+gateway-748599b696-7ttk6
+--------------------------------------------------------------------------------
+[02:12:34][elapsed=5603ms / 5.603s / 0.093m][kubectl][START] -n banking-microservices exec gateway-748599b696-7ttk6 -- sh -lc curl -sS -X 'GET' -w '\n%{http_code}' 'http://money-service-command:8092/api/money-service-command/v1/accounts/health'
+COMMAND:
+kubectl -n banking-microservices exec gateway-748599b696-7ttk6 -- sh -lc curl -sS -X 'GET' -w '\n%{http_code}' 'http://money-service-command:8092/api/money-service-command/v1/accounts/health'
+START_ELAPSED_TOTAL: 5601ms / 5.601s / 0.093m
+--------------------------------------------------------------------------------
+[02:12:35][elapsed=6297ms / 6.297s / 0.105m][kubectl][OK] -n banking-microservices exec gateway-748599b696-7ttk6 -- sh -lc curl -sS -X 'GET' -w '\n%{http_code}' 'http://money-service-command:8092/api/money-service-command/v1/accounts/health'
+COMMAND:
+kubectl -n banking-microservices exec gateway-748599b696-7ttk6 -- sh -lc curl -sS -X 'GET' -w '\n%{http_code}' 'http://money-service-command:8092/api/money-service-command/v1/accounts/health'
+DURATION: 689ms / 0.689s / 0.011m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+money-service-command is healthy
+200
+--------------------------------------------------------------------------------
+[02:12:35][elapsed=6339ms / 6.339s / 0.106m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 6339ms / 6.339s / 0.106m
+--------------------------------------------------------------------------------
+[02:12:35][elapsed=6440ms / 6.44s / 0.107m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+DURATION: 93ms / 0.093s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+gateway-748599b696-7ttk6
+--------------------------------------------------------------------------------
+[02:12:35][elapsed=6443ms / 6.443s / 0.107m][kubectl][START] -n banking-microservices exec gateway-748599b696-7ttk6 -- sh -lc curl -sS -X 'GET' -w '\n%{http_code}' 'http://money-service-query:8093/api/money-service-query/v1/accounts/health'
+COMMAND:
+kubectl -n banking-microservices exec gateway-748599b696-7ttk6 -- sh -lc curl -sS -X 'GET' -w '\n%{http_code}' 'http://money-service-query:8093/api/money-service-query/v1/accounts/health'
+START_ELAPSED_TOTAL: 6443ms / 6.443s / 0.107m
+--------------------------------------------------------------------------------
+[02:12:36][elapsed=6817ms / 6.817s / 0.114m][kubectl][OK] -n banking-microservices exec gateway-748599b696-7ttk6 -- sh -lc curl -sS -X 'GET' -w '\n%{http_code}' 'http://money-service-query:8093/api/money-service-query/v1/accounts/health'
+COMMAND:
+kubectl -n banking-microservices exec gateway-748599b696-7ttk6 -- sh -lc curl -sS -X 'GET' -w '\n%{http_code}' 'http://money-service-query:8093/api/money-service-query/v1/accounts/health'
+DURATION: 366ms / 0.366s / 0.006m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+money-service-query is healthy
+200
+--------------------------------------------------------------------------------
+[02:12:36][elapsed=6825ms / 6.825s / 0.114m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 6825ms / 6.825s / 0.114m
+--------------------------------------------------------------------------------
+[02:12:36][elapsed=6916ms / 6.916s / 0.115m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 84ms / 0.084s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:12:36][elapsed=6918ms / 6.918s / 0.115m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-topics --bootstrap-server kafka:9092 --list
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-topics --bootstrap-server kafka:9092 --list
+START_ELAPSED_TOTAL: 6918ms / 6.918s / 0.115m
+--------------------------------------------------------------------------------
+[02:12:38][elapsed=9030ms / 9.03s / 0.151m][kubectl][OK] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-topics --bootstrap-server kafka:9092 --list
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-topics --bootstrap-server kafka:9092 --list
+DURATION: 2108ms / 2.108s / 0.035m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+__consumer_offsets
+banking-microservices.money.account.created.v1
+banking-microservices.money.projection-sync.v1
+banking-microservices.transaction.completed.v1
+banking-microservices.transaction.created.v1
+banking-microservices.transaction.failed.v1
+banking-microservices.transaction.fraud.checked.v1
+banking-microservices.transaction.money-blocked.v1
+banking-microservices.transaction.saga.created.v1
+banking-microservices.transaction.saga.money.completed.v1
+banking-microservices.transaction.user-validation.request.v1
+banking-microservices.transaction.user-validation.success.v1
+banking-microservices.user.created.v1
+--------------------------------------------------------------------------------
+[02:12:38][elapsed=9076ms / 9.076s / 0.151m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 9076ms / 9.076s / 0.151m
+--------------------------------------------------------------------------------
+[02:12:38][elapsed=9183ms / 9.183s / 0.153m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 101ms / 0.101s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:12:38][elapsed=9183ms / 9.183s / 0.153m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.user.created.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.user.created.v1 --time -1
+START_ELAPSED_TOTAL: 9183ms / 9.183s / 0.153m
+--------------------------------------------------------------------------------
+[02:12:40][elapsed=10673ms / 10.673s / 0.178m][kubectl][OK] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.user.created.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.user.created.v1 --time -1
+DURATION: 1486ms / 1.486s / 0.025m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+banking-microservices.user.created.v1:0:40
+--------------------------------------------------------------------------------
+[02:12:40][elapsed=10693ms / 10.693s / 0.178m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 10692ms / 10.692s / 0.178m
+--------------------------------------------------------------------------------
+[02:12:40][elapsed=10792ms / 10.792s / 0.18m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 94ms / 0.094s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:12:40][elapsed=10795ms / 10.795s / 0.18m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.created.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.created.v1 --time -1
+START_ELAPSED_TOTAL: 10795ms / 10.795s / 0.18m
+--------------------------------------------------------------------------------
+[02:12:41][elapsed=12630ms / 12.63s / 0.211m][kubectl][OK] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.created.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.created.v1 --time -1
+DURATION: 1830ms / 1.83s / 0.031m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+banking-microservices.money.account.created.v1:0:40
+--------------------------------------------------------------------------------
+[02:12:42][elapsed=12753ms / 12.753s / 0.213m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 12753ms / 12.753s / 0.213m
+--------------------------------------------------------------------------------
+[02:12:42][elapsed=12841ms / 12.841s / 0.214m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 85ms / 0.085s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:12:42][elapsed=12845ms / 12.845s / 0.214m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.create-failed.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.create-failed.v1 --time -1
+START_ELAPSED_TOTAL: 12845ms / 12.845s / 0.214m
+--------------------------------------------------------------------------------
+[02:12:43][elapsed=14383ms / 14.383s / 0.24m][kubectl][FAIL] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.create-failed.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.create-failed.v1 --time -1
+DURATION: 1532ms / 1.532s / 0.026m
+EXIT_CODE: 1
+ALLOW_FAIL: True
+OUTPUT:
+Error occurred: Could not match any topic-partitions with the specified filters
+
+command terminated with exit code 1
+--------------------------------------------------------------------------------
+[02:12:43][elapsed=14500ms / 14.5s / 0.242m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 14500ms / 14.5s / 0.242m
+--------------------------------------------------------------------------------
+[02:12:43][elapsed=14591ms / 14.591s / 0.243m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 87ms / 0.087s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:12:43][elapsed=14593ms / 14.593s / 0.243m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.created.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.created.v1 --time -1
+START_ELAPSED_TOTAL: 14593ms / 14.593s / 0.243m
+--------------------------------------------------------------------------------
+[02:12:45][elapsed=16346ms / 16.346s / 0.272m][kubectl][OK] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.created.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.created.v1 --time -1
+DURATION: 1749ms / 1.749s / 0.029m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+banking-microservices.transaction.created.v1:0:52
+--------------------------------------------------------------------------------
+[02:12:45][elapsed=16353ms / 16.353s / 0.273m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 16353ms / 16.353s / 0.273m
+--------------------------------------------------------------------------------
+[02:12:45][elapsed=16441ms / 16.441s / 0.274m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 83ms / 0.083s / 0.001m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:12:45][elapsed=16443ms / 16.443s / 0.274m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.completed.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.completed.v1 --time -1
+START_ELAPSED_TOTAL: 16443ms / 16.443s / 0.274m
+--------------------------------------------------------------------------------
+[02:12:47][elapsed=17940ms / 17.94s / 0.299m][kubectl][OK] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.completed.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.completed.v1 --time -1
+DURATION: 1492ms / 1.492s / 0.025m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+banking-microservices.transaction.completed.v1:0:47
+--------------------------------------------------------------------------------
+[02:12:47][elapsed=17945ms / 17.945s / 0.299m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 17945ms / 17.945s / 0.299m
+--------------------------------------------------------------------------------
+[02:12:47][elapsed=18070ms / 18.07s / 0.301m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 118ms / 0.118s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:12:47][elapsed=18075ms / 18.075s / 0.301m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.failed.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.failed.v1 --time -1
+START_ELAPSED_TOTAL: 18075ms / 18.075s / 0.301m
+--------------------------------------------------------------------------------
+[02:12:49][elapsed=20037ms / 20.037s / 0.334m][kubectl][OK] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.failed.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.failed.v1 --time -1
+DURATION: 1955ms / 1.955s / 0.033m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+banking-microservices.transaction.failed.v1:0:7
+--------------------------------------------------------------------------------
+[02:12:49][elapsed=20050ms / 20.05s / 0.334m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 20050ms / 20.05s / 0.334m
+--------------------------------------------------------------------------------
+[02:12:49][elapsed=20189ms / 20.189s / 0.336m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 130ms / 0.13s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:12:49][elapsed=20195ms / 20.195s / 0.337m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.money-blocked.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.money-blocked.v1 --time -1
+START_ELAPSED_TOTAL: 20194ms / 20.194s / 0.337m
+--------------------------------------------------------------------------------
+[02:12:52][elapsed=23442ms / 23.442s / 0.391m][kubectl][OK] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.money-blocked.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.money-blocked.v1 --time -1
+DURATION: 3241ms / 3.241s / 0.054m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+banking-microservices.transaction.money-blocked.v1:0:12
+--------------------------------------------------------------------------------
+[02:12:52][elapsed=23454ms / 23.454s / 0.391m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 23452ms / 23.452s / 0.391m
+--------------------------------------------------------------------------------
+[02:12:52][elapsed=23582ms / 23.582s / 0.393m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 121ms / 0.121s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:12:52][elapsed=23590ms / 23.59s / 0.393m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.user-validation.request.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.user-validation.request.v1 --time -1
+START_ELAPSED_TOTAL: 23590ms / 23.59s / 0.393m
+--------------------------------------------------------------------------------
+[02:12:55][elapsed=26004ms / 26.004s / 0.433m][kubectl][OK] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.user-validation.request.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.user-validation.request.v1 --time -1
+DURATION: 2407ms / 2.407s / 0.04m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+banking-microservices.transaction.user-validation.request.v1:0:12
+--------------------------------------------------------------------------------
+[02:12:55][elapsed=26014ms / 26.014s / 0.434m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 26014ms / 26.014s / 0.434m
+--------------------------------------------------------------------------------
+[02:12:55][elapsed=26165ms / 26.165s / 0.436m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 143ms / 0.143s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:12:55][elapsed=26170ms / 26.17s / 0.436m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.user-validation.success.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.user-validation.success.v1 --time -1
+START_ELAPSED_TOTAL: 26169ms / 26.169s / 0.436m
+--------------------------------------------------------------------------------
+[02:12:57][elapsed=28400ms / 28.4s / 0.473m][kubectl][OK] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.user-validation.success.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.user-validation.success.v1 --time -1
+DURATION: 2221ms / 2.221s / 0.037m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+banking-microservices.transaction.user-validation.success.v1:0:11
+--------------------------------------------------------------------------------
+[02:12:57][elapsed=28408ms / 28.408s / 0.473m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 28408ms / 28.408s / 0.473m
+--------------------------------------------------------------------------------
+[02:12:57][elapsed=28516ms / 28.516s / 0.475m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 103ms / 0.103s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:12:57][elapsed=28519ms / 28.519s / 0.475m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.fraud.checked.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.fraud.checked.v1 --time -1
+START_ELAPSED_TOTAL: 28519ms / 28.519s / 0.475m
+--------------------------------------------------------------------------------
+[02:13:00][elapsed=30769ms / 30.769s / 0.513m][kubectl][OK] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.fraud.checked.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.fraud.checked.v1 --time -1
+DURATION: 2009ms / 2.009s / 0.033m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+banking-microservices.transaction.fraud.checked.v1:0:11
+--------------------------------------------------------------------------------
+[02:13:00][elapsed=30774ms / 30.774s / 0.513m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 30774ms / 30.774s / 0.513m
+--------------------------------------------------------------------------------
+[02:13:01][elapsed=32379ms / 32.379s / 0.54m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 1592ms / 1.592s / 0.027m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:13:01][elapsed=32385ms / 32.385s / 0.54m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.saga.created.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.saga.created.v1 --time -1
+START_ELAPSED_TOTAL: 32384ms / 32.384s / 0.54m
+--------------------------------------------------------------------------------
+[02:13:04][elapsed=35466ms / 35.466s / 0.591m][kubectl][OK] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.saga.created.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.saga.created.v1 --time -1
+DURATION: 3044ms / 3.044s / 0.051m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+banking-microservices.transaction.saga.created.v1:0:0
+--------------------------------------------------------------------------------
+[02:13:04][elapsed=35517ms / 35.517s / 0.592m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 35517ms / 35.517s / 0.592m
+--------------------------------------------------------------------------------
+[02:13:06][elapsed=37424ms / 37.424s / 0.624m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 1888ms / 1.888s / 0.031m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:13:06][elapsed=37434ms / 37.434s / 0.624m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.saga.money.completed.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.saga.money.completed.v1 --time -1
+START_ELAPSED_TOTAL: 37433ms / 37.433s / 0.624m
+--------------------------------------------------------------------------------
+[02:13:08][elapsed=39619ms / 39.619s / 0.66m][kubectl][OK] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.saga.money.completed.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.saga.money.completed.v1 --time -1
+DURATION: 2174ms / 2.174s / 0.036m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+banking-microservices.transaction.saga.money.completed.v1:0:10
+--------------------------------------------------------------------------------
+[02:13:08][elapsed=39628ms / 39.628s / 0.66m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 39628ms / 39.628s / 0.66m
+--------------------------------------------------------------------------------
+[02:13:09][elapsed=39978ms / 39.978s / 0.666m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 346ms / 0.346s / 0.006m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:13:09][elapsed=39985ms / 39.985s / 0.666m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.saga.money.failed.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.saga.money.failed.v1 --time -1
+START_ELAPSED_TOTAL: 39985ms / 39.985s / 0.666m
+--------------------------------------------------------------------------------
+[02:13:10][elapsed=41597ms / 41.597s / 0.693m][kubectl][FAIL] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.saga.money.failed.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.saga.money.failed.v1 --time -1
+DURATION: 1603ms / 1.603s / 0.027m
+EXIT_CODE: 1
+ALLOW_FAIL: True
+OUTPUT:
+Error occurred: Could not match any topic-partitions with the specified filters
+
+command terminated with exit code 1
+--------------------------------------------------------------------------------
+[02:13:10][elapsed=41607ms / 41.607s / 0.693m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 41607ms / 41.607s / 0.693m
+--------------------------------------------------------------------------------
+[02:13:11][elapsed=41777ms / 41.777s / 0.696m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 158ms / 0.158s / 0.003m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:13:11][elapsed=41782ms / 41.782s / 0.696m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.money-blocked.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.money-blocked.v1 --time -1
+START_ELAPSED_TOTAL: 41782ms / 41.782s / 0.696m
+--------------------------------------------------------------------------------
+[02:13:12][elapsed=43374ms / 43.374s / 0.723m][kubectl][OK] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.money-blocked.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.money-blocked.v1 --time -1
+DURATION: 1583ms / 1.583s / 0.026m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+banking-microservices.transaction.money-blocked.v1:0:12
+--------------------------------------------------------------------------------
+[02:13:21][elapsed=52339ms / 52.339s / 0.872m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 52338ms / 52.338s / 0.872m
+--------------------------------------------------------------------------------
+[02:13:21][elapsed=52612ms / 52.612s / 0.877m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 258ms / 0.258s / 0.004m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:13:21][elapsed=52616ms / 52.616s / 0.877m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.user.created.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.user.created.v1 --time -1
+START_ELAPSED_TOTAL: 52615ms / 52.615s / 0.877m
+--------------------------------------------------------------------------------
+[02:13:23][elapsed=54027ms / 54.027s / 0.9m][kubectl][OK] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.user.created.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.user.created.v1 --time -1
+DURATION: 1403ms / 1.403s / 0.023m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+banking-microservices.user.created.v1:0:42
+--------------------------------------------------------------------------------
+[02:13:23][elapsed=54050ms / 54.05s / 0.901m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 54049ms / 54.049s / 0.901m
+--------------------------------------------------------------------------------
+[02:13:23][elapsed=54163ms / 54.163s / 0.903m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 107ms / 0.107s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:13:23][elapsed=54170ms / 54.17s / 0.903m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- sh -lc kafka-console-consumer --bootstrap-server kafka:9092 --topic banking-microservices.user.created.v1 --from-beginning --timeout-ms 5000 2>/dev/null || true
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- sh -lc kafka-console-consumer --bootstrap-server kafka:9092 --topic banking-microservices.user.created.v1 --from-beginning --timeout-ms 5000 2>/dev/null || true
+START_ELAPSED_TOTAL: 54166ms / 54.166s / 0.903m
+--------------------------------------------------------------------------------
+[02:13:33][elapsed=63688ms / 63.688s / 1.061m][kubectl][OK] -n banking-microservices exec kafka-7456dfc675-6j2lg -- sh -lc kafka-console-consumer --bootstrap-server kafka:9092 --topic banking-microservices.user.created.v1 --from-beginning --timeout-ms 5000 2>/dev/null || true
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- sh -lc kafka-console-consumer --bootstrap-server kafka:9092 --topic banking-microservices.user.created.v1 --from-beginning --timeout-ms 5000 2>/dev/null || true
+DURATION: 9511ms / 9.511s / 0.159m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+"7b920dd6-a421-4df7-8dc8-aef4a47c56c3"
+"a0cdcc62-8a77-440b-8bdb-86fadb2c18f0"
+"661438b5-5a59-45a2-86e9-513c2366807b"
+"d1e6fc59-c080-4fdc-b647-3b35d1f8d782"
+"cb1ce50e-5dd5-4833-8224-357b5b83cf4e"
+"d822ea18-f495-4837-aed6-a85b55987ff4"
+"40fdeaab-2966-45d3-89fe-b378f0f2b769"
+"9be57278-0a67-453d-86da-472faf6f68ad"
+"3c551fd5-a8d0-465a-a55a-89801e4234dd"
+"4111da0f-b973-414f-8495-ac3706110af1"
+"9b8c8f96-99eb-4bf4-9792-38eac77cd575"
+"03d83707-4d19-438d-8859-2099fb0d47a5"
+"971c2249-61da-4eef-959a-84a7bae6c533"
+"75cdda7c-9be6-4b07-8414-94c420545f02"
+"54b9b93c-87f2-4c92-8c65-462c9005dcf3"
+"ee151fc1-5118-4139-aec1-37189357b311"
+"4fcf63c7-dc84-4997-ba4c-1d6843bb8f07"
+"d355c310-f1be-4727-a747-9c48c17d6083"
+"157ecfc0-c21c-4be3-b00b-3ccbd6136f08"
+"6be43683-4d16-4fa7-ab7d-4eba972eaa20"
+"b646a1ae-38a7-44f6-9d7e-2b04f45f1906"
+"effff247-f255-431a-a830-8a2d3ba8f07d"
+"a5ed2202-8db5-4af6-8693-45503ffab2fd"
+"9d821051-03d6-408d-8272-7105e6fbc61a"
+"be21a915-bf03-41fa-b584-899e66037270"
+"5b273b40-8eb3-4976-b9db-94f51a339e67"
+"2931f50a-81a1-45b2-8d5b-b3b34329fbdc"
+"bb1c14aa-22a3-45e7-a148-dd5403c12ebb"
+"21f062b8-6963-4c0f-a77c-31058dea9427"
+"2901a20d-3c92-4b14-aad5-529f33fa1d50"
+"e56901ca-afc3-4674-9597-d2562f7593cb"
+"e9dae81a-90b7-4bb7-b551-60ee57a4f290"
+"27e80ad4-2f58-4558-826e-ff03061ae7cf"
+"57786981-3bef-4d44-adc0-e8676a397549"
+"4d5e2d0a-1388-4903-a533-659ef5f31d22"
+"f0ffbdca-5287-4dcb-a0ea-49c16e2ff515"
+"4a7e6bb2-ea38-4a23-b59b-aa9bd4f8f0ac"
+"381c8df9-77ff-48d3-8647-d926747cd0ad"
+"5217079a-83c3-4592-b6c2-4ffe2ffe7b1e"
+"c6a101a4-0981-4e78-8a97-258e9d2223ce"
+"95fc80d4-08c5-47d2-8697-9f7796b0562b"
+"9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8"
+--------------------------------------------------------------------------------
+[02:13:33][elapsed=63726ms / 63.726s / 1.062m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 63726ms / 63.726s / 1.062m
+--------------------------------------------------------------------------------
+[02:13:33][elapsed=64170ms / 64.17s / 1.069m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 427ms / 0.427s / 0.007m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:13:33][elapsed=64177ms / 64.177s / 1.07m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- sh -lc kafka-console-consumer --bootstrap-server kafka:9092 --topic banking-microservices.user.created.v1 --from-beginning --timeout-ms 5000 2>/dev/null || true
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- sh -lc kafka-console-consumer --bootstrap-server kafka:9092 --topic banking-microservices.user.created.v1 --from-beginning --timeout-ms 5000 2>/dev/null || true
+START_ELAPSED_TOTAL: 64176ms / 64.176s / 1.07m
+--------------------------------------------------------------------------------
+[02:13:43][elapsed=73785ms / 73.785s / 1.23m][kubectl][OK] -n banking-microservices exec kafka-7456dfc675-6j2lg -- sh -lc kafka-console-consumer --bootstrap-server kafka:9092 --topic banking-microservices.user.created.v1 --from-beginning --timeout-ms 5000 2>/dev/null || true
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- sh -lc kafka-console-consumer --bootstrap-server kafka:9092 --topic banking-microservices.user.created.v1 --from-beginning --timeout-ms 5000 2>/dev/null || true
+DURATION: 9600ms / 9.6s / 0.16m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+"7b920dd6-a421-4df7-8dc8-aef4a47c56c3"
+"a0cdcc62-8a77-440b-8bdb-86fadb2c18f0"
+"661438b5-5a59-45a2-86e9-513c2366807b"
+"d1e6fc59-c080-4fdc-b647-3b35d1f8d782"
+"cb1ce50e-5dd5-4833-8224-357b5b83cf4e"
+"d822ea18-f495-4837-aed6-a85b55987ff4"
+"40fdeaab-2966-45d3-89fe-b378f0f2b769"
+"9be57278-0a67-453d-86da-472faf6f68ad"
+"3c551fd5-a8d0-465a-a55a-89801e4234dd"
+"4111da0f-b973-414f-8495-ac3706110af1"
+"9b8c8f96-99eb-4bf4-9792-38eac77cd575"
+"03d83707-4d19-438d-8859-2099fb0d47a5"
+"971c2249-61da-4eef-959a-84a7bae6c533"
+"75cdda7c-9be6-4b07-8414-94c420545f02"
+"54b9b93c-87f2-4c92-8c65-462c9005dcf3"
+"ee151fc1-5118-4139-aec1-37189357b311"
+"4fcf63c7-dc84-4997-ba4c-1d6843bb8f07"
+"d355c310-f1be-4727-a747-9c48c17d6083"
+"157ecfc0-c21c-4be3-b00b-3ccbd6136f08"
+"6be43683-4d16-4fa7-ab7d-4eba972eaa20"
+"b646a1ae-38a7-44f6-9d7e-2b04f45f1906"
+"effff247-f255-431a-a830-8a2d3ba8f07d"
+"a5ed2202-8db5-4af6-8693-45503ffab2fd"
+"9d821051-03d6-408d-8272-7105e6fbc61a"
+"be21a915-bf03-41fa-b584-899e66037270"
+"5b273b40-8eb3-4976-b9db-94f51a339e67"
+"2931f50a-81a1-45b2-8d5b-b3b34329fbdc"
+"bb1c14aa-22a3-45e7-a148-dd5403c12ebb"
+"21f062b8-6963-4c0f-a77c-31058dea9427"
+"2901a20d-3c92-4b14-aad5-529f33fa1d50"
+"e56901ca-afc3-4674-9597-d2562f7593cb"
+"e9dae81a-90b7-4bb7-b551-60ee57a4f290"
+"27e80ad4-2f58-4558-826e-ff03061ae7cf"
+"57786981-3bef-4d44-adc0-e8676a397549"
+"4d5e2d0a-1388-4903-a533-659ef5f31d22"
+"f0ffbdca-5287-4dcb-a0ea-49c16e2ff515"
+"4a7e6bb2-ea38-4a23-b59b-aa9bd4f8f0ac"
+"381c8df9-77ff-48d3-8647-d926747cd0ad"
+"5217079a-83c3-4592-b6c2-4ffe2ffe7b1e"
+"c6a101a4-0981-4e78-8a97-258e9d2223ce"
+"95fc80d4-08c5-47d2-8697-9f7796b0562b"
+"9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8"
+--------------------------------------------------------------------------------
+[02:13:43][elapsed=73810ms / 73.81s / 1.23m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 73810ms / 73.81s / 1.23m
+--------------------------------------------------------------------------------
+[02:13:43][elapsed=74437ms / 74.437s / 1.241m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+DURATION: 620ms / 0.62s / 0.01m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+postgres-dc8bdbd65-pp9ph
+--------------------------------------------------------------------------------
+[02:13:43][elapsed=74441ms / 74.441s / 1.241m][kubectl][START] -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_keycloak -t -A -c select count(*) from user_entity where lower(email)=lower('e2e.alpha.20260517021229-m6a4bs@springbank.test');
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_keycloak -t -A -c select count(*) from user_entity where lower(email)=lower('e2e.alpha.20260517021229-m6a4bs@springbank.test');
+START_ELAPSED_TOTAL: 74441ms / 74.441s / 1.241m
+--------------------------------------------------------------------------------
+[02:13:44][elapsed=74992ms / 74.992s / 1.25m][kubectl][OK] -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_keycloak -t -A -c select count(*) from user_entity where lower(email)=lower('e2e.alpha.20260517021229-m6a4bs@springbank.test');
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_keycloak -t -A -c select count(*) from user_entity where lower(email)=lower('e2e.alpha.20260517021229-m6a4bs@springbank.test');
+DURATION: 540ms / 0.54s / 0.009m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[02:13:44][elapsed=74993ms / 74.993s / 1.25m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 74993ms / 74.993s / 1.25m
+--------------------------------------------------------------------------------
+[02:13:44][elapsed=75464ms / 75.464s / 1.258m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+DURATION: 457ms / 0.457s / 0.008m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+postgres-dc8bdbd65-pp9ph
+--------------------------------------------------------------------------------
+[02:13:44][elapsed=75470ms / 75.47s / 1.258m][kubectl][START] -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_keycloak -t -A -c select count(*) from user_entity where lower(email)=lower('e2e.beta.20260517021229-m6a4bs@springbank.test');
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_keycloak -t -A -c select count(*) from user_entity where lower(email)=lower('e2e.beta.20260517021229-m6a4bs@springbank.test');
+START_ELAPSED_TOTAL: 75470ms / 75.47s / 1.258m
+--------------------------------------------------------------------------------
+[02:13:45][elapsed=75740ms / 75.74s / 1.262m][kubectl][OK] -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_keycloak -t -A -c select count(*) from user_entity where lower(email)=lower('e2e.beta.20260517021229-m6a4bs@springbank.test');
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_keycloak -t -A -c select count(*) from user_entity where lower(email)=lower('e2e.beta.20260517021229-m6a4bs@springbank.test');
+DURATION: 262ms / 0.262s / 0.004m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[02:13:58][elapsed=88874ms / 88.874s / 1.481m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 88874ms / 88.874s / 1.481m
+--------------------------------------------------------------------------------
+[02:13:59][elapsed=89952ms / 89.952s / 1.499m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+DURATION: 1059ms / 1.059s / 0.018m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+postgres-dc8bdbd65-pp9ph
+--------------------------------------------------------------------------------
+[02:13:59][elapsed=89960ms / 89.96s / 1.499m][kubectl][START] -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_money -t -A -c select count(*) from money where user_id='95fc80d4-08c5-47d2-8697-9f7796b0562b' or keycloak_user_uuid='95fc80d4-08c5-47d2-8697-9f7796b0562b';
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_money -t -A -c select count(*) from money where user_id='95fc80d4-08c5-47d2-8697-9f7796b0562b' or keycloak_user_uuid='95fc80d4-08c5-47d2-8697-9f7796b0562b';
+START_ELAPSED_TOTAL: 89958ms / 89.958s / 1.499m
+--------------------------------------------------------------------------------
+[02:13:59][elapsed=90243ms / 90.243s / 1.504m][kubectl][OK] -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_money -t -A -c select count(*) from money where user_id='95fc80d4-08c5-47d2-8697-9f7796b0562b' or keycloak_user_uuid='95fc80d4-08c5-47d2-8697-9f7796b0562b';
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_money -t -A -c select count(*) from money where user_id='95fc80d4-08c5-47d2-8697-9f7796b0562b' or keycloak_user_uuid='95fc80d4-08c5-47d2-8697-9f7796b0562b';
+DURATION: 279ms / 0.279s / 0.005m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[02:13:59][elapsed=90252ms / 90.252s / 1.504m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 90250ms / 90.25s / 1.504m
+--------------------------------------------------------------------------------
+[02:13:59][elapsed=90507ms / 90.507s / 1.508m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+DURATION: 246ms / 0.246s / 0.004m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+postgres-dc8bdbd65-pp9ph
+--------------------------------------------------------------------------------
+[02:13:59][elapsed=90510ms / 90.51s / 1.508m][kubectl][START] -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_money -t -A -c select count(*) from money where user_id='9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8' or keycloak_user_uuid='9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8';
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_money -t -A -c select count(*) from money where user_id='9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8' or keycloak_user_uuid='9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8';
+START_ELAPSED_TOTAL: 90510ms / 90.51s / 1.508m
+--------------------------------------------------------------------------------
+[02:14:00][elapsed=90873ms / 90.873s / 1.515m][kubectl][OK] -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_money -t -A -c select count(*) from money where user_id='9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8' or keycloak_user_uuid='9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8';
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_money -t -A -c select count(*) from money where user_id='9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8' or keycloak_user_uuid='9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8';
+DURATION: 348ms / 0.348s / 0.006m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[02:14:00][elapsed=90888ms / 90.888s / 1.515m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 90888ms / 90.888s / 1.515m
+--------------------------------------------------------------------------------
+[02:14:00][elapsed=91202ms / 91.202s / 1.52m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 309ms / 0.309s / 0.005m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:14:00][elapsed=91207ms / 91.207s / 1.52m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.created.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.created.v1 --time -1
+START_ELAPSED_TOTAL: 91207ms / 91.207s / 1.52m
+--------------------------------------------------------------------------------
+[02:14:02][elapsed=92830ms / 92.83s / 1.547m][kubectl][OK] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.created.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.created.v1 --time -1
+DURATION: 1618ms / 1.618s / 0.027m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+banking-microservices.money.account.created.v1:0:43
+--------------------------------------------------------------------------------
+[02:14:02][elapsed=92836ms / 92.836s / 1.547m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 92836ms / 92.836s / 1.547m
+--------------------------------------------------------------------------------
+[02:14:02][elapsed=93151ms / 93.151s / 1.553m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 306ms / 0.306s / 0.005m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:14:02][elapsed=93160ms / 93.16s / 1.553m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- sh -lc kafka-console-consumer --bootstrap-server kafka:9092 --topic banking-microservices.money.account.created.v1 --from-beginning --timeout-ms 5000 2>/dev/null || true
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- sh -lc kafka-console-consumer --bootstrap-server kafka:9092 --topic banking-microservices.money.account.created.v1 --from-beginning --timeout-ms 5000 2>/dev/null || true
+START_ELAPSED_TOTAL: 93160ms / 93.16s / 1.553m
+--------------------------------------------------------------------------------
+[02:14:11][elapsed=102513ms / 102.513s / 1.709m][kubectl][OK] -n banking-microservices exec kafka-7456dfc675-6j2lg -- sh -lc kafka-console-consumer --bootstrap-server kafka:9092 --topic banking-microservices.money.account.created.v1 --from-beginning --timeout-ms 5000 2>/dev/null || true
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- sh -lc kafka-console-consumer --bootstrap-server kafka:9092 --topic banking-microservices.money.account.created.v1 --from-beginning --timeout-ms 5000 2>/dev/null || true
+DURATION: 9345ms / 9.345s / 0.156m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+{"eventUUID":"7b920dd6-a421-4df7-8dc8-aef4a47c56c3","keycloakUserUUID":"7b920dd6-a421-4df7-8dc8-aef4a47c56c3","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"7b920dd6-a421-4df7-8dc8-aef4a47c56c3","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:20:49.728271616","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"a0cdcc62-8a77-440b-8bdb-86fadb2c18f0","keycloakUserUUID":"a0cdcc62-8a77-440b-8bdb-86fadb2c18f0","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"a0cdcc62-8a77-440b-8bdb-86fadb2c18f0","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:20:50.515502122","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"661438b5-5a59-45a2-86e9-513c2366807b","keycloakUserUUID":"661438b5-5a59-45a2-86e9-513c2366807b","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"661438b5-5a59-45a2-86e9-513c2366807b","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:22:00.412027802","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"d1e6fc59-c080-4fdc-b647-3b35d1f8d782","keycloakUserUUID":"d1e6fc59-c080-4fdc-b647-3b35d1f8d782","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"d1e6fc59-c080-4fdc-b647-3b35d1f8d782","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:22:00.599250682","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"cb1ce50e-5dd5-4833-8224-357b5b83cf4e","keycloakUserUUID":"cb1ce50e-5dd5-4833-8224-357b5b83cf4e","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"cb1ce50e-5dd5-4833-8224-357b5b83cf4e","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:24:07.803691542","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"d822ea18-f495-4837-aed6-a85b55987ff4","keycloakUserUUID":"d822ea18-f495-4837-aed6-a85b55987ff4","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"d822ea18-f495-4837-aed6-a85b55987ff4","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:24:08.183691846","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"40fdeaab-2966-45d3-89fe-b378f0f2b769","keycloakUserUUID":"40fdeaab-2966-45d3-89fe-b378f0f2b769","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"40fdeaab-2966-45d3-89fe-b378f0f2b769","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:25:32.090950505","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"9be57278-0a67-453d-86da-472faf6f68ad","keycloakUserUUID":"9be57278-0a67-453d-86da-472faf6f68ad","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"9be57278-0a67-453d-86da-472faf6f68ad","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:27:14.418524427","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"3c551fd5-a8d0-465a-a55a-89801e4234dd","keycloakUserUUID":"3c551fd5-a8d0-465a-a55a-89801e4234dd","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"3c551fd5-a8d0-465a-a55a-89801e4234dd","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:27:14.603286847","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"4111da0f-b973-414f-8495-ac3706110af1","keycloakUserUUID":"4111da0f-b973-414f-8495-ac3706110af1","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"4111da0f-b973-414f-8495-ac3706110af1","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:28:16.162350555","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"9b8c8f96-99eb-4bf4-9792-38eac77cd575","keycloakUserUUID":"9b8c8f96-99eb-4bf4-9792-38eac77cd575","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"9b8c8f96-99eb-4bf4-9792-38eac77cd575","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:49:29.825960220","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"03d83707-4d19-438d-8859-2099fb0d47a5","keycloakUserUUID":"03d83707-4d19-438d-8859-2099fb0d47a5","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"03d83707-4d19-438d-8859-2099fb0d47a5","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:49:33.266516226","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"971c2249-61da-4eef-959a-84a7bae6c533","keycloakUserUUID":"971c2249-61da-4eef-959a-84a7bae6c533","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"971c2249-61da-4eef-959a-84a7bae6c533","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:50:06.837514274","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"75cdda7c-9be6-4b07-8414-94c420545f02","keycloakUserUUID":"75cdda7c-9be6-4b07-8414-94c420545f02","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"75cdda7c-9be6-4b07-8414-94c420545f02","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T20:01:22.523450329","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"54b9b93c-87f2-4c92-8c65-462c9005dcf3","keycloakUserUUID":"54b9b93c-87f2-4c92-8c65-462c9005dcf3","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"54b9b93c-87f2-4c92-8c65-462c9005dcf3","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T20:01:22.944719537","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"ee151fc1-5118-4139-aec1-37189357b311","keycloakUserUUID":"ee151fc1-5118-4139-aec1-37189357b311","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"ee151fc1-5118-4139-aec1-37189357b311","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T20:01:57.262471668","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"4fcf63c7-dc84-4997-ba4c-1d6843bb8f07","keycloakUserUUID":"4fcf63c7-dc84-4997-ba4c-1d6843bb8f07","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"4fcf63c7-dc84-4997-ba4c-1d6843bb8f07","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:16:59.666833305","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"d355c310-f1be-4727-a747-9c48c17d6083","keycloakUserUUID":"d355c310-f1be-4727-a747-9c48c17d6083","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"d355c310-f1be-4727-a747-9c48c17d6083","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:37:41.755402682","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"157ecfc0-c21c-4be3-b00b-3ccbd6136f08","keycloakUserUUID":"157ecfc0-c21c-4be3-b00b-3ccbd6136f08","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"157ecfc0-c21c-4be3-b00b-3ccbd6136f08","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:37:43.320726897","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"6be43683-4d16-4fa7-ab7d-4eba972eaa20","keycloakUserUUID":"6be43683-4d16-4fa7-ab7d-4eba972eaa20","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"6be43683-4d16-4fa7-ab7d-4eba972eaa20","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:38:02.518771633","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"b646a1ae-38a7-44f6-9d7e-2b04f45f1906","keycloakUserUUID":"b646a1ae-38a7-44f6-9d7e-2b04f45f1906","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"b646a1ae-38a7-44f6-9d7e-2b04f45f1906","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:39:36.858889498","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"effff247-f255-431a-a830-8a2d3ba8f07d","keycloakUserUUID":"effff247-f255-431a-a830-8a2d3ba8f07d","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"effff247-f255-431a-a830-8a2d3ba8f07d","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:39:37.126564199","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"a5ed2202-8db5-4af6-8693-45503ffab2fd","keycloakUserUUID":"a5ed2202-8db5-4af6-8693-45503ffab2fd","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"a5ed2202-8db5-4af6-8693-45503ffab2fd","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:40:40.387849050","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"9d821051-03d6-408d-8272-7105e6fbc61a","keycloakUserUUID":"9d821051-03d6-408d-8272-7105e6fbc61a","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"9d821051-03d6-408d-8272-7105e6fbc61a","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:40:40.764304555","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"be21a915-bf03-41fa-b584-899e66037270","keycloakUserUUID":"be21a915-bf03-41fa-b584-899e66037270","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"be21a915-bf03-41fa-b584-899e66037270","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:44:26.881260739","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"5b273b40-8eb3-4976-b9db-94f51a339e67","keycloakUserUUID":"5b273b40-8eb3-4976-b9db-94f51a339e67","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"5b273b40-8eb3-4976-b9db-94f51a339e67","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:44:27.380042287","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"2931f50a-81a1-45b2-8d5b-b3b34329fbdc","keycloakUserUUID":"2931f50a-81a1-45b2-8d5b-b3b34329fbdc","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"2931f50a-81a1-45b2-8d5b-b3b34329fbdc","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:53:30.256185821","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"bb1c14aa-22a3-45e7-a148-dd5403c12ebb","keycloakUserUUID":"bb1c14aa-22a3-45e7-a148-dd5403c12ebb","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"bb1c14aa-22a3-45e7-a148-dd5403c12ebb","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:53:31.086340616","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"21f062b8-6963-4c0f-a77c-31058dea9427","keycloakUserUUID":"21f062b8-6963-4c0f-a77c-31058dea9427","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"21f062b8-6963-4c0f-a77c-31058dea9427","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T22:14:06.913261239","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"2901a20d-3c92-4b14-aad5-529f33fa1d50","keycloakUserUUID":"2901a20d-3c92-4b14-aad5-529f33fa1d50","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"2901a20d-3c92-4b14-aad5-529f33fa1d50","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T22:14:07.206718579","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"e56901ca-afc3-4674-9597-d2562f7593cb","keycloakUserUUID":"e56901ca-afc3-4674-9597-d2562f7593cb","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"e56901ca-afc3-4674-9597-d2562f7593cb","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T22:50:03.258265338","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"e9dae81a-90b7-4bb7-b551-60ee57a4f290","keycloakUserUUID":"e9dae81a-90b7-4bb7-b551-60ee57a4f290","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"e9dae81a-90b7-4bb7-b551-60ee57a4f290","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T22:50:03.809158539","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"27e80ad4-2f58-4558-826e-ff03061ae7cf","keycloakUserUUID":"27e80ad4-2f58-4558-826e-ff03061ae7cf","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"27e80ad4-2f58-4558-826e-ff03061ae7cf","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T22:51:22.386122748","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"57786981-3bef-4d44-adc0-e8676a397549","keycloakUserUUID":"57786981-3bef-4d44-adc0-e8676a397549","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"57786981-3bef-4d44-adc0-e8676a397549","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T22:51:22.494011595","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"4d5e2d0a-1388-4903-a533-659ef5f31d22","keycloakUserUUID":"4d5e2d0a-1388-4903-a533-659ef5f31d22","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"4d5e2d0a-1388-4903-a533-659ef5f31d22","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:02:44.224326785","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"f0ffbdca-5287-4dcb-a0ea-49c16e2ff515","keycloakUserUUID":"f0ffbdca-5287-4dcb-a0ea-49c16e2ff515","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"f0ffbdca-5287-4dcb-a0ea-49c16e2ff515","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:02:44.308299347","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"4a7e6bb2-ea38-4a23-b59b-aa9bd4f8f0ac","keycloakUserUUID":"4a7e6bb2-ea38-4a23-b59b-aa9bd4f8f0ac","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"4a7e6bb2-ea38-4a23-b59b-aa9bd4f8f0ac","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:04:14.524481330","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"381c8df9-77ff-48d3-8647-d926747cd0ad","keycloakUserUUID":"381c8df9-77ff-48d3-8647-d926747cd0ad","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"381c8df9-77ff-48d3-8647-d926747cd0ad","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:04:14.624471944","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"5217079a-83c3-4592-b6c2-4ffe2ffe7b1e","keycloakUserUUID":"5217079a-83c3-4592-b6c2-4ffe2ffe7b1e","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"5217079a-83c3-4592-b6c2-4ffe2ffe7b1e","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:04:51.486807852","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"c6a101a4-0981-4e78-8a97-258e9d2223ce","keycloakUserUUID":"c6a101a4-0981-4e78-8a97-258e9d2223ce","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"c6a101a4-0981-4e78-8a97-258e9d2223ce","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:04:51.587421177","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"95fc80d4-08c5-47d2-8697-9f7796b0562b","keycloakUserUUID":"95fc80d4-08c5-47d2-8697-9f7796b0562b","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"95fc80d4-08c5-47d2-8697-9f7796b0562b","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:13:12.935164310","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8","keycloakUserUUID":"9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:13:13.073606419","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"06cc4e4f-ae01-40cb-822f-79b6b715aa95","keycloakUserUUID":"06cc4e4f-ae01-40cb-822f-79b6b715aa95","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"06cc4e4f-ae01-40cb-822f-79b6b715aa95","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:13:46.518771047","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+--------------------------------------------------------------------------------
+[02:14:11][elapsed=102528ms / 102.528s / 1.709m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 102528ms / 102.528s / 1.709m
+--------------------------------------------------------------------------------
+[02:14:12][elapsed=102935ms / 102.935s / 1.716m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 398ms / 0.398s / 0.007m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:14:12][elapsed=102939ms / 102.939s / 1.716m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- sh -lc kafka-console-consumer --bootstrap-server kafka:9092 --topic banking-microservices.money.account.created.v1 --from-beginning --timeout-ms 5000 2>/dev/null || true
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- sh -lc kafka-console-consumer --bootstrap-server kafka:9092 --topic banking-microservices.money.account.created.v1 --from-beginning --timeout-ms 5000 2>/dev/null || true
+START_ELAPSED_TOTAL: 102939ms / 102.939s / 1.716m
+--------------------------------------------------------------------------------
+[02:14:21][elapsed=112362ms / 112.362s / 1.873m][kubectl][OK] -n banking-microservices exec kafka-7456dfc675-6j2lg -- sh -lc kafka-console-consumer --bootstrap-server kafka:9092 --topic banking-microservices.money.account.created.v1 --from-beginning --timeout-ms 5000 2>/dev/null || true
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- sh -lc kafka-console-consumer --bootstrap-server kafka:9092 --topic banking-microservices.money.account.created.v1 --from-beginning --timeout-ms 5000 2>/dev/null || true
+DURATION: 9418ms / 9.418s / 0.157m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+{"eventUUID":"7b920dd6-a421-4df7-8dc8-aef4a47c56c3","keycloakUserUUID":"7b920dd6-a421-4df7-8dc8-aef4a47c56c3","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"7b920dd6-a421-4df7-8dc8-aef4a47c56c3","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:20:49.728271616","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"a0cdcc62-8a77-440b-8bdb-86fadb2c18f0","keycloakUserUUID":"a0cdcc62-8a77-440b-8bdb-86fadb2c18f0","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"a0cdcc62-8a77-440b-8bdb-86fadb2c18f0","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:20:50.515502122","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"661438b5-5a59-45a2-86e9-513c2366807b","keycloakUserUUID":"661438b5-5a59-45a2-86e9-513c2366807b","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"661438b5-5a59-45a2-86e9-513c2366807b","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:22:00.412027802","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"d1e6fc59-c080-4fdc-b647-3b35d1f8d782","keycloakUserUUID":"d1e6fc59-c080-4fdc-b647-3b35d1f8d782","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"d1e6fc59-c080-4fdc-b647-3b35d1f8d782","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:22:00.599250682","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"cb1ce50e-5dd5-4833-8224-357b5b83cf4e","keycloakUserUUID":"cb1ce50e-5dd5-4833-8224-357b5b83cf4e","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"cb1ce50e-5dd5-4833-8224-357b5b83cf4e","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:24:07.803691542","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"d822ea18-f495-4837-aed6-a85b55987ff4","keycloakUserUUID":"d822ea18-f495-4837-aed6-a85b55987ff4","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"d822ea18-f495-4837-aed6-a85b55987ff4","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:24:08.183691846","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"40fdeaab-2966-45d3-89fe-b378f0f2b769","keycloakUserUUID":"40fdeaab-2966-45d3-89fe-b378f0f2b769","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"40fdeaab-2966-45d3-89fe-b378f0f2b769","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:25:32.090950505","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"9be57278-0a67-453d-86da-472faf6f68ad","keycloakUserUUID":"9be57278-0a67-453d-86da-472faf6f68ad","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"9be57278-0a67-453d-86da-472faf6f68ad","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:27:14.418524427","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"3c551fd5-a8d0-465a-a55a-89801e4234dd","keycloakUserUUID":"3c551fd5-a8d0-465a-a55a-89801e4234dd","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"3c551fd5-a8d0-465a-a55a-89801e4234dd","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:27:14.603286847","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"4111da0f-b973-414f-8495-ac3706110af1","keycloakUserUUID":"4111da0f-b973-414f-8495-ac3706110af1","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"4111da0f-b973-414f-8495-ac3706110af1","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:28:16.162350555","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"9b8c8f96-99eb-4bf4-9792-38eac77cd575","keycloakUserUUID":"9b8c8f96-99eb-4bf4-9792-38eac77cd575","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"9b8c8f96-99eb-4bf4-9792-38eac77cd575","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:49:29.825960220","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"03d83707-4d19-438d-8859-2099fb0d47a5","keycloakUserUUID":"03d83707-4d19-438d-8859-2099fb0d47a5","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"03d83707-4d19-438d-8859-2099fb0d47a5","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:49:33.266516226","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"971c2249-61da-4eef-959a-84a7bae6c533","keycloakUserUUID":"971c2249-61da-4eef-959a-84a7bae6c533","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"971c2249-61da-4eef-959a-84a7bae6c533","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:50:06.837514274","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"75cdda7c-9be6-4b07-8414-94c420545f02","keycloakUserUUID":"75cdda7c-9be6-4b07-8414-94c420545f02","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"75cdda7c-9be6-4b07-8414-94c420545f02","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T20:01:22.523450329","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"54b9b93c-87f2-4c92-8c65-462c9005dcf3","keycloakUserUUID":"54b9b93c-87f2-4c92-8c65-462c9005dcf3","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"54b9b93c-87f2-4c92-8c65-462c9005dcf3","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T20:01:22.944719537","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"ee151fc1-5118-4139-aec1-37189357b311","keycloakUserUUID":"ee151fc1-5118-4139-aec1-37189357b311","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"ee151fc1-5118-4139-aec1-37189357b311","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T20:01:57.262471668","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"4fcf63c7-dc84-4997-ba4c-1d6843bb8f07","keycloakUserUUID":"4fcf63c7-dc84-4997-ba4c-1d6843bb8f07","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"4fcf63c7-dc84-4997-ba4c-1d6843bb8f07","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:16:59.666833305","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"d355c310-f1be-4727-a747-9c48c17d6083","keycloakUserUUID":"d355c310-f1be-4727-a747-9c48c17d6083","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"d355c310-f1be-4727-a747-9c48c17d6083","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:37:41.755402682","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"157ecfc0-c21c-4be3-b00b-3ccbd6136f08","keycloakUserUUID":"157ecfc0-c21c-4be3-b00b-3ccbd6136f08","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"157ecfc0-c21c-4be3-b00b-3ccbd6136f08","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:37:43.320726897","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"6be43683-4d16-4fa7-ab7d-4eba972eaa20","keycloakUserUUID":"6be43683-4d16-4fa7-ab7d-4eba972eaa20","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"6be43683-4d16-4fa7-ab7d-4eba972eaa20","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:38:02.518771633","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"b646a1ae-38a7-44f6-9d7e-2b04f45f1906","keycloakUserUUID":"b646a1ae-38a7-44f6-9d7e-2b04f45f1906","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"b646a1ae-38a7-44f6-9d7e-2b04f45f1906","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:39:36.858889498","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"effff247-f255-431a-a830-8a2d3ba8f07d","keycloakUserUUID":"effff247-f255-431a-a830-8a2d3ba8f07d","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"effff247-f255-431a-a830-8a2d3ba8f07d","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:39:37.126564199","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"a5ed2202-8db5-4af6-8693-45503ffab2fd","keycloakUserUUID":"a5ed2202-8db5-4af6-8693-45503ffab2fd","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"a5ed2202-8db5-4af6-8693-45503ffab2fd","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:40:40.387849050","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"9d821051-03d6-408d-8272-7105e6fbc61a","keycloakUserUUID":"9d821051-03d6-408d-8272-7105e6fbc61a","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"9d821051-03d6-408d-8272-7105e6fbc61a","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:40:40.764304555","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"be21a915-bf03-41fa-b584-899e66037270","keycloakUserUUID":"be21a915-bf03-41fa-b584-899e66037270","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"be21a915-bf03-41fa-b584-899e66037270","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:44:26.881260739","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"5b273b40-8eb3-4976-b9db-94f51a339e67","keycloakUserUUID":"5b273b40-8eb3-4976-b9db-94f51a339e67","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"5b273b40-8eb3-4976-b9db-94f51a339e67","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:44:27.380042287","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"2931f50a-81a1-45b2-8d5b-b3b34329fbdc","keycloakUserUUID":"2931f50a-81a1-45b2-8d5b-b3b34329fbdc","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"2931f50a-81a1-45b2-8d5b-b3b34329fbdc","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:53:30.256185821","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"bb1c14aa-22a3-45e7-a148-dd5403c12ebb","keycloakUserUUID":"bb1c14aa-22a3-45e7-a148-dd5403c12ebb","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"bb1c14aa-22a3-45e7-a148-dd5403c12ebb","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:53:31.086340616","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"21f062b8-6963-4c0f-a77c-31058dea9427","keycloakUserUUID":"21f062b8-6963-4c0f-a77c-31058dea9427","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"21f062b8-6963-4c0f-a77c-31058dea9427","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T22:14:06.913261239","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"2901a20d-3c92-4b14-aad5-529f33fa1d50","keycloakUserUUID":"2901a20d-3c92-4b14-aad5-529f33fa1d50","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"2901a20d-3c92-4b14-aad5-529f33fa1d50","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T22:14:07.206718579","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"e56901ca-afc3-4674-9597-d2562f7593cb","keycloakUserUUID":"e56901ca-afc3-4674-9597-d2562f7593cb","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"e56901ca-afc3-4674-9597-d2562f7593cb","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T22:50:03.258265338","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"e9dae81a-90b7-4bb7-b551-60ee57a4f290","keycloakUserUUID":"e9dae81a-90b7-4bb7-b551-60ee57a4f290","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"e9dae81a-90b7-4bb7-b551-60ee57a4f290","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T22:50:03.809158539","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"27e80ad4-2f58-4558-826e-ff03061ae7cf","keycloakUserUUID":"27e80ad4-2f58-4558-826e-ff03061ae7cf","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"27e80ad4-2f58-4558-826e-ff03061ae7cf","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T22:51:22.386122748","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"57786981-3bef-4d44-adc0-e8676a397549","keycloakUserUUID":"57786981-3bef-4d44-adc0-e8676a397549","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"57786981-3bef-4d44-adc0-e8676a397549","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T22:51:22.494011595","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"4d5e2d0a-1388-4903-a533-659ef5f31d22","keycloakUserUUID":"4d5e2d0a-1388-4903-a533-659ef5f31d22","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"4d5e2d0a-1388-4903-a533-659ef5f31d22","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:02:44.224326785","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"f0ffbdca-5287-4dcb-a0ea-49c16e2ff515","keycloakUserUUID":"f0ffbdca-5287-4dcb-a0ea-49c16e2ff515","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"f0ffbdca-5287-4dcb-a0ea-49c16e2ff515","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:02:44.308299347","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"4a7e6bb2-ea38-4a23-b59b-aa9bd4f8f0ac","keycloakUserUUID":"4a7e6bb2-ea38-4a23-b59b-aa9bd4f8f0ac","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"4a7e6bb2-ea38-4a23-b59b-aa9bd4f8f0ac","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:04:14.524481330","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"381c8df9-77ff-48d3-8647-d926747cd0ad","keycloakUserUUID":"381c8df9-77ff-48d3-8647-d926747cd0ad","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"381c8df9-77ff-48d3-8647-d926747cd0ad","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:04:14.624471944","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"5217079a-83c3-4592-b6c2-4ffe2ffe7b1e","keycloakUserUUID":"5217079a-83c3-4592-b6c2-4ffe2ffe7b1e","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"5217079a-83c3-4592-b6c2-4ffe2ffe7b1e","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:04:51.486807852","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"c6a101a4-0981-4e78-8a97-258e9d2223ce","keycloakUserUUID":"c6a101a4-0981-4e78-8a97-258e9d2223ce","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"c6a101a4-0981-4e78-8a97-258e9d2223ce","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:04:51.587421177","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"95fc80d4-08c5-47d2-8697-9f7796b0562b","keycloakUserUUID":"95fc80d4-08c5-47d2-8697-9f7796b0562b","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"95fc80d4-08c5-47d2-8697-9f7796b0562b","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:13:12.935164310","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8","keycloakUserUUID":"9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:13:13.073606419","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"06cc4e4f-ae01-40cb-822f-79b6b715aa95","keycloakUserUUID":"06cc4e4f-ae01-40cb-822f-79b6b715aa95","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"06cc4e4f-ae01-40cb-822f-79b6b715aa95","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:13:46.518771047","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+--------------------------------------------------------------------------------
+[02:14:22][elapsed=112855ms / 112.855s / 1.881m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 112855ms / 112.855s / 1.881m
+--------------------------------------------------------------------------------
+[02:14:22][elapsed=113067ms / 113.067s / 1.884m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 202ms / 0.202s / 0.003m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:14:22][elapsed=113074ms / 113.074s / 1.885m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.user.created.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.user.created.v1 --time -1
+START_ELAPSED_TOTAL: 113074ms / 113.074s / 1.885m
+--------------------------------------------------------------------------------
+[02:14:23][elapsed=114390ms / 114.39s / 1.906m][kubectl][OK] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.user.created.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.user.created.v1 --time -1
+DURATION: 1308ms / 1.308s / 0.022m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+banking-microservices.user.created.v1:0:43
+--------------------------------------------------------------------------------
+[02:14:23][elapsed=114399ms / 114.399s / 1.907m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 114396ms / 114.396s / 1.907m
+--------------------------------------------------------------------------------
+[02:14:24][elapsed=114741ms / 114.741s / 1.912m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 331ms / 0.331s / 0.006m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:14:24][elapsed=114744ms / 114.744s / 1.912m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.created.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.created.v1 --time -1
+START_ELAPSED_TOTAL: 114744ms / 114.744s / 1.912m
+--------------------------------------------------------------------------------
+[02:14:25][elapsed=116191ms / 116.191s / 1.937m][kubectl][OK] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.created.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.created.v1 --time -1
+DURATION: 1438ms / 1.438s / 0.024m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+banking-microservices.money.account.created.v1:0:43
+--------------------------------------------------------------------------------
+[02:14:25][elapsed=116200ms / 116.2s / 1.937m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 116200ms / 116.2s / 1.937m
+--------------------------------------------------------------------------------
+[02:14:25][elapsed=116433ms / 116.433s / 1.941m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 227ms / 0.227s / 0.004m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:14:25][elapsed=116438ms / 116.438s / 1.941m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.create-failed.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.create-failed.v1 --time -1
+START_ELAPSED_TOTAL: 116438ms / 116.438s / 1.941m
+--------------------------------------------------------------------------------
+[02:14:27][elapsed=117948ms / 117.948s / 1.966m][kubectl][FAIL] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.create-failed.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.create-failed.v1 --time -1
+DURATION: 1501ms / 1.501s / 0.025m
+EXIT_CODE: 1
+ALLOW_FAIL: True
+OUTPUT:
+Error occurred: Could not match any topic-partitions with the specified filters
+
+command terminated with exit code 1
+--------------------------------------------------------------------------------
+[02:14:27][elapsed=117957ms / 117.957s / 1.966m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 117957ms / 117.957s / 1.966m
+--------------------------------------------------------------------------------
+[02:14:27][elapsed=118353ms / 118.353s / 1.973m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 388ms / 0.388s / 0.006m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:14:27][elapsed=118359ms / 118.359s / 1.973m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.created.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.created.v1 --time -1
+START_ELAPSED_TOTAL: 118359ms / 118.359s / 1.973m
+--------------------------------------------------------------------------------
+[02:14:28][elapsed=119634ms / 119.634s / 1.994m][kubectl][OK] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.created.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.created.v1 --time -1
+DURATION: 1268ms / 1.268s / 0.021m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+banking-microservices.transaction.created.v1:0:52
+--------------------------------------------------------------------------------
+[02:14:28][elapsed=119641ms / 119.641s / 1.994m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 119641ms / 119.641s / 1.994m
+--------------------------------------------------------------------------------
+[02:14:29][elapsed=119968ms / 119.968s / 1.999m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 305ms / 0.305s / 0.005m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:14:29][elapsed=119974ms / 119.974s / 2m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.completed.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.completed.v1 --time -1
+START_ELAPSED_TOTAL: 119974ms / 119.974s / 2m
+--------------------------------------------------------------------------------
+[02:14:30][elapsed=121422ms / 121.422s / 2.024m][kubectl][OK] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.completed.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.completed.v1 --time -1
+DURATION: 1440ms / 1.44s / 0.024m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+banking-microservices.transaction.completed.v1:0:47
+--------------------------------------------------------------------------------
+[02:14:30][elapsed=121433ms / 121.433s / 2.024m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 121433ms / 121.433s / 2.024m
+--------------------------------------------------------------------------------
+[02:14:31][elapsed=121905ms / 121.905s / 2.032m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 467ms / 0.467s / 0.008m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:14:31][elapsed=121913ms / 121.913s / 2.032m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.failed.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.failed.v1 --time -1
+START_ELAPSED_TOTAL: 121913ms / 121.913s / 2.032m
+--------------------------------------------------------------------------------
+[02:14:32][elapsed=123309ms / 123.309s / 2.055m][kubectl][OK] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.failed.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.failed.v1 --time -1
+DURATION: 1389ms / 1.389s / 0.023m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+banking-microservices.transaction.failed.v1:0:7
+--------------------------------------------------------------------------------
+[02:14:32][elapsed=123320ms / 123.32s / 2.055m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 123320ms / 123.32s / 2.055m
+--------------------------------------------------------------------------------
+[02:14:32][elapsed=123551ms / 123.551s / 2.059m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=kafka -o jsonpath={.items[0].metadata.name}
+DURATION: 225ms / 0.225s / 0.004m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+kafka-7456dfc675-6j2lg
+--------------------------------------------------------------------------------
+[02:14:32][elapsed=123555ms / 123.555s / 2.059m][kubectl][START] -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.money-blocked.v1 --time -1
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.money-blocked.v1 --time -1
+START_ELAPSED_TOTAL: 123555ms / 123.555s / 2.059m
+--------------------------------------------------------------------------------

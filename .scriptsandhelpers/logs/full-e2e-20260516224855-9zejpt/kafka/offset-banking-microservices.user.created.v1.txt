@@ -1,0 +1,4 @@
+TOPIC: banking-microservices.user.created.v1
+RAW:
+banking-microservices.user.created.v1:0:13
+SUM: 13

@@ -1,0 +1,27 @@
+
+[01:49:11][elapsed=438ms / 0.438s / 0.007m][kubectl][START] --request-timeout=60s config current-context
+COMMAND:
+kubectl --request-timeout=60s config current-context
+START_ELAPSED_TOTAL: 438ms / 0.438s / 0.007m
+--------------------------------------------------------------------------------
+[01:49:11][elapsed=1151ms / 1.151s / 0.019m][kubectl][FAIL] --request-timeout=60s config current-context
+COMMAND:
+kubectl --request-timeout=60s config current-context
+DURATION: 561ms / 0.561s / 0.009m
+EXIT_CODE: 
+OUTPUT:
+docker-desktop
+--------------------------------------------------------------------------------
+[01:49:12][elapsed=1518ms / 1.518s / 0.025m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 1518ms / 1.518s / 0.025m
+--------------------------------------------------------------------------------
+[01:49:12][elapsed=1841ms / 1.841s / 0.031m][kubectl][FAIL] --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+DURATION: 312ms / 0.312s / 0.005m
+EXIT_CODE: 
+OUTPUT:
+gateway-7b8bd58d89-qx2tq
+--------------------------------------------------------------------------------

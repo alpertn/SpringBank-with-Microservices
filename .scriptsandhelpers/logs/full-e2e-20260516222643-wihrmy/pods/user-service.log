@@ -1,0 +1,400 @@
+	at org.springframework.kafka.listener.adapter.HandlerAdapter.invoke(HandlerAdapter.java:80)
+	at org.springframework.kafka.listener.adapter.MessagingMessageListenerAdapter.invokeHandler(MessagingMessageListenerAdapter.java:488)
+	at org.springframework.kafka.listener.adapter.MessagingMessageListenerAdapter.invoke(MessagingMessageListenerAdapter.java:425)
+	at org.springframework.kafka.listener.adapter.RecordMessagingMessageListenerAdapter.onMessage(RecordMessagingMessageListenerAdapter.java:92)
+	at org.springframework.kafka.listener.adapter.RecordMessagingMessageListenerAdapter.onMessage(RecordMessagingMessageListenerAdapter.java:52)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeOnMessage(KafkaMessageListenerContainer.java:2898)
+	... 10 common frames omitted
+Caused by: java.lang.reflect.InaccessibleObjectException: Unable to make field private final java.time.LocalDate java.time.LocalDateTime.date accessible: module java.base does not "opens java.time" to unnamed module @402bba4f
+	at java.base/java.lang.reflect.AccessibleObject.throwInaccessibleObjectException(Unknown Source)
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(Unknown Source)
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(Unknown Source)
+	at java.base/java.lang.reflect.Field.checkCanSetAccessible(Unknown Source)
+	at java.base/java.lang.reflect.Field.setAccessible(Unknown Source)
+	at com.google.gson.internal.reflect.ReflectionHelper.makeAccessible(ReflectionHelper.java:68)
+	... 33 common frames omitted
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] :  (19:24) > AuthController | login -> {
+  "email": "e2e.beta.20260516222335-263qxf@springbank.test",
+  "password": "Test1234!"
+}
+INFO  --- [user-service] :  (19:24) > KeycloakUserService | login -> Request:
+{
+  "email": "e2e.beta.20260516222335-263qxf@springbank.test",
+  "password": "Test1234!"
+}
+INFO  --- [user-service] :  (19:24) > AuthController | login -> {
+  "email": "admin@springbank.local",
+  "password": "SpringBankAdmin123!"
+}
+INFO  --- [user-service] :  (19:24) > KeycloakUserService | login -> Request:
+{
+  "email": "admin@springbank.local",
+  "password": "SpringBankAdmin123!"
+}
+INFO  --- [user-service] : Record in retry and not yet recovered
+ERROR --- [user-service] : Backoff FixedBackOffExecution[interval=0, currentAttempts=10, maxAttempts=9] exhausted for banking-microservices.money.account.created.v1-0@5
+org.springframework.kafka.listener.ListenerExecutionFailedException: Listener method 'public void com.banking_microservices.user_service.kafka.KafkaListenerService.listenCreateUserTopic(java.lang.String)' threw exception
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.decorateException(KafkaMessageListenerContainer.java:3007)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeOnMessage(KafkaMessageListenerContainer.java:2911)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.invokeOnMessage(KafkaMessageListenerContainer.java:2877)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeRecordListener(KafkaMessageListenerContainer.java:2787)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeWithRecords(KafkaMessageListenerContainer.java:2629)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.invokeRecordListener(KafkaMessageListenerContainer.java:2523)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.invokeListener(KafkaMessageListenerContainer.java:2161)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.invokeIfHaveRecords(KafkaMessageListenerContainer.java:1538)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.pollAndInvoke(KafkaMessageListenerContainer.java:1476)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.run(KafkaMessageListenerContainer.java:1345)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncRun.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+	Suppressed: org.springframework.kafka.listener.ListenerExecutionFailedException: Restored Stack Trace
+		at org.springframework.kafka.listener.adapter.MessagingMessageListenerAdapter.invokeHandler(MessagingMessageListenerAdapter.java:513)
+		at org.springframework.kafka.listener.adapter.MessagingMessageListenerAdapter.invoke(MessagingMessageListenerAdapter.java:425)
+		at org.springframework.kafka.listener.adapter.RecordMessagingMessageListenerAdapter.onMessage(RecordMessagingMessageListenerAdapter.java:92)
+		at org.springframework.kafka.listener.adapter.RecordMessagingMessageListenerAdapter.onMessage(RecordMessagingMessageListenerAdapter.java:52)
+		at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeOnMessage(KafkaMessageListenerContainer.java:2898)
+Caused by: com.google.gson.JsonIOException: Failed making field 'java.time.LocalDateTime#date' accessible; either increase its visibility or write a custom TypeAdapter for its declaring type.
+See https://github.com/google/gson/blob/main/Troubleshooting.md#reflection-inaccessible
+	at com.google.gson.internal.reflect.ReflectionHelper.makeAccessible(ReflectionHelper.java:76)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.getBoundFields(ReflectiveTypeAdapterFactory.java:389)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.create(ReflectiveTypeAdapterFactory.java:165)
+	at com.google.gson.Gson.getAdapter(Gson.java:627)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.createBoundField(ReflectiveTypeAdapterFactory.java:205)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.getBoundFields(ReflectiveTypeAdapterFactory.java:396)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.create(ReflectiveTypeAdapterFactory.java:165)
+	at com.google.gson.Gson.getAdapter(Gson.java:627)
+	at com.google.gson.Gson.fromJson(Gson.java:1357)
+	at com.google.gson.Gson.fromJson(Gson.java:1259)
+	at com.google.gson.Gson.fromJson(Gson.java:1169)
+	at com.google.gson.Gson.fromJson(Gson.java:1106)
+	at com.banking_microservices.user_service.kafka.KafkaListenerService.listenCreateUserTopic(KafkaListenerService.java:35)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at org.springframework.messaging.handler.invocation.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:168)
+	at org.springframework.kafka.listener.adapter.KotlinAwareInvocableHandlerMethod.doInvoke(KotlinAwareInvocableHandlerMethod.java:48)
+	at org.springframework.messaging.handler.invocation.InvocableHandlerMethod.invoke(InvocableHandlerMethod.java:119)
+	at org.springframework.kafka.listener.adapter.HandlerAdapter.invoke(HandlerAdapter.java:80)
+	at org.springframework.kafka.listener.adapter.MessagingMessageListenerAdapter.invokeHandler(MessagingMessageListenerAdapter.java:488)
+	at org.springframework.kafka.listener.adapter.MessagingMessageListenerAdapter.invoke(MessagingMessageListenerAdapter.java:425)
+	at org.springframework.kafka.listener.adapter.RecordMessagingMessageListenerAdapter.onMessage(RecordMessagingMessageListenerAdapter.java:92)
+	at org.springframework.kafka.listener.adapter.RecordMessagingMessageListenerAdapter.onMessage(RecordMessagingMessageListenerAdapter.java:52)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeOnMessage(KafkaMessageListenerContainer.java:2898)
+	... 10 common frames omitted
+Caused by: java.lang.reflect.InaccessibleObjectException: Unable to make field private final java.time.LocalDate java.time.LocalDateTime.date accessible: module java.base does not "opens java.time" to unnamed module @402bba4f
+	at java.base/java.lang.reflect.AccessibleObject.throwInaccessibleObjectException(Unknown Source)
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(Unknown Source)
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(Unknown Source)
+	at java.base/java.lang.reflect.Field.checkCanSetAccessible(Unknown Source)
+	at java.base/java.lang.reflect.Field.setAccessible(Unknown Source)
+	at com.google.gson.internal.reflect.ReflectionHelper.makeAccessible(ReflectionHelper.java:68)
+	... 33 common frames omitted
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+ERROR --- [user-service] : Backoff FixedBackOffExecution[interval=0, currentAttempts=10, maxAttempts=9] exhausted for banking-microservices.money.account.created.v1-0@6
+org.springframework.kafka.listener.ListenerExecutionFailedException: Listener method 'public void com.banking_microservices.user_service.kafka.KafkaListenerService.listenCreateUserTopic(java.lang.String)' threw exception
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.decorateException(KafkaMessageListenerContainer.java:3007)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeOnMessage(KafkaMessageListenerContainer.java:2911)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.invokeOnMessage(KafkaMessageListenerContainer.java:2877)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeRecordListener(KafkaMessageListenerContainer.java:2787)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeWithRecords(KafkaMessageListenerContainer.java:2629)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.invokeRecordListener(KafkaMessageListenerContainer.java:2523)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.invokeListener(KafkaMessageListenerContainer.java:2161)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.invokeIfHaveRecords(KafkaMessageListenerContainer.java:1538)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.pollAndInvoke(KafkaMessageListenerContainer.java:1476)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.run(KafkaMessageListenerContainer.java:1345)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncRun.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+	Suppressed: org.springframework.kafka.listener.ListenerExecutionFailedException: Restored Stack Trace
+		at org.springframework.kafka.listener.adapter.MessagingMessageListenerAdapter.invokeHandler(MessagingMessageListenerAdapter.java:513)
+		at org.springframework.kafka.listener.adapter.MessagingMessageListenerAdapter.invoke(MessagingMessageListenerAdapter.java:425)
+		at org.springframework.kafka.listener.adapter.RecordMessagingMessageListenerAdapter.onMessage(RecordMessagingMessageListenerAdapter.java:92)
+		at org.springframework.kafka.listener.adapter.RecordMessagingMessageListenerAdapter.onMessage(RecordMessagingMessageListenerAdapter.java:52)
+		at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeOnMessage(KafkaMessageListenerContainer.java:2898)
+Caused by: com.google.gson.JsonIOException: Failed making field 'java.time.LocalDateTime#date' accessible; either increase its visibility or write a custom TypeAdapter for its declaring type.
+See https://github.com/google/gson/blob/main/Troubleshooting.md#reflection-inaccessible
+	at com.google.gson.internal.reflect.ReflectionHelper.makeAccessible(ReflectionHelper.java:76)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.getBoundFields(ReflectiveTypeAdapterFactory.java:389)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.create(ReflectiveTypeAdapterFactory.java:165)
+	at com.google.gson.Gson.getAdapter(Gson.java:627)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.createBoundField(ReflectiveTypeAdapterFactory.java:205)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.getBoundFields(ReflectiveTypeAdapterFactory.java:396)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.create(ReflectiveTypeAdapterFactory.java:165)
+	at com.google.gson.Gson.getAdapter(Gson.java:627)
+	at com.google.gson.Gson.fromJson(Gson.java:1357)
+	at com.google.gson.Gson.fromJson(Gson.java:1259)
+	at com.google.gson.Gson.fromJson(Gson.java:1169)
+	at com.google.gson.Gson.fromJson(Gson.java:1106)
+	at com.banking_microservices.user_service.kafka.KafkaListenerService.listenCreateUserTopic(KafkaListenerService.java:35)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at org.springframework.messaging.handler.invocation.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:168)
+	at org.springframework.kafka.listener.adapter.KotlinAwareInvocableHandlerMethod.doInvoke(KotlinAwareInvocableHandlerMethod.java:48)
+	at org.springframework.messaging.handler.invocation.InvocableHandlerMethod.invoke(InvocableHandlerMethod.java:119)
+	at org.springframework.kafka.listener.adapter.HandlerAdapter.invoke(HandlerAdapter.java:80)
+	at org.springframework.kafka.listener.adapter.MessagingMessageListenerAdapter.invokeHandler(MessagingMessageListenerAdapter.java:488)
+	at org.springframework.kafka.listener.adapter.MessagingMessageListenerAdapter.invoke(MessagingMessageListenerAdapter.java:425)
+	at org.springframework.kafka.listener.adapter.RecordMessagingMessageListenerAdapter.onMessage(RecordMessagingMessageListenerAdapter.java:92)
+	at org.springframework.kafka.listener.adapter.RecordMessagingMessageListenerAdapter.onMessage(RecordMessagingMessageListenerAdapter.java:52)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeOnMessage(KafkaMessageListenerContainer.java:2898)
+	... 10 common frames omitted
+Caused by: java.lang.reflect.InaccessibleObjectException: Unable to make field private final java.time.LocalDate java.time.LocalDateTime.date accessible: module java.base does not "opens java.time" to unnamed module @402bba4f
+	at java.base/java.lang.reflect.AccessibleObject.throwInaccessibleObjectException(Unknown Source)
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(Unknown Source)
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(Unknown Source)
+	at java.base/java.lang.reflect.Field.checkCanSetAccessible(Unknown Source)
+	at java.base/java.lang.reflect.Field.setAccessible(Unknown Source)
+	at com.google.gson.internal.reflect.ReflectionHelper.makeAccessible(ReflectionHelper.java:68)
+	... 33 common frames omitted
+INFO  --- [user-service] :  (19:27) > AuthController | register -> {
+  "email": "e2e.alpha.20260516222643-wihrmy@springbank.test",
+  "name": "E2EAlpha",
+  "surname": "Tester",
+  "password": "Test1234!"
+}
+INFO  --- [user-service] :  (19:27) > KeycloakAdminService | createUser -> User created: 9be57278-0a67-453d-86da-472faf6f68ad
+INFO  --- [user-service] :  (19:27) > KafkaSender | sendCreateUser -> Kafkaya mesaj gonderilmek uzere alindi. UserId: 9be57278-0a67-453d-86da-472faf6f68ad
+INFO  --- [user-service] :  (19:27) > KafkaSender | sendCreateUser -> Kafkaya mesaj gonderildi. UserId: 9be57278-0a67-453d-86da-472faf6f68ad
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+ERROR --- [user-service] : Backoff FixedBackOffExecution[interval=0, currentAttempts=10, maxAttempts=9] exhausted for banking-microservices.money.account.created.v1-0@7
+org.springframework.kafka.listener.ListenerExecutionFailedException: Listener method 'public void com.banking_microservices.user_service.kafka.KafkaListenerService.listenCreateUserTopic(java.lang.String)' threw exception
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.decorateException(KafkaMessageListenerContainer.java:3007)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeOnMessage(KafkaMessageListenerContainer.java:2911)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.invokeOnMessage(KafkaMessageListenerContainer.java:2877)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeRecordListener(KafkaMessageListenerContainer.java:2787)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeWithRecords(KafkaMessageListenerContainer.java:2629)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.invokeRecordListener(KafkaMessageListenerContainer.java:2523)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.invokeListener(KafkaMessageListenerContainer.java:2161)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.invokeIfHaveRecords(KafkaMessageListenerContainer.java:1538)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.pollAndInvoke(KafkaMessageListenerContainer.java:1476)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.run(KafkaMessageListenerContainer.java:1345)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncRun.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+	Suppressed: org.springframework.kafka.listener.ListenerExecutionFailedException: Restored Stack Trace
+		at org.springframework.kafka.listener.adapter.MessagingMessageListenerAdapter.invokeHandler(MessagingMessageListenerAdapter.java:513)
+		at org.springframework.kafka.listener.adapter.MessagingMessageListenerAdapter.invoke(MessagingMessageListenerAdapter.java:425)
+		at org.springframework.kafka.listener.adapter.RecordMessagingMessageListenerAdapter.onMessage(RecordMessagingMessageListenerAdapter.java:92)
+		at org.springframework.kafka.listener.adapter.RecordMessagingMessageListenerAdapter.onMessage(RecordMessagingMessageListenerAdapter.java:52)
+		at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeOnMessage(KafkaMessageListenerContainer.java:2898)
+Caused by: com.google.gson.JsonIOException: Failed making field 'java.time.LocalDateTime#date' accessible; either increase its visibility or write a custom TypeAdapter for its declaring type.
+See https://github.com/google/gson/blob/main/Troubleshooting.md#reflection-inaccessible
+	at com.google.gson.internal.reflect.ReflectionHelper.makeAccessible(ReflectionHelper.java:76)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.getBoundFields(ReflectiveTypeAdapterFactory.java:389)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.create(ReflectiveTypeAdapterFactory.java:165)
+	at com.google.gson.Gson.getAdapter(Gson.java:627)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.createBoundField(ReflectiveTypeAdapterFactory.java:205)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.getBoundFields(ReflectiveTypeAdapterFactory.java:396)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.create(ReflectiveTypeAdapterFactory.java:165)
+	at com.google.gson.Gson.getAdapter(Gson.java:627)
+	at com.google.gson.Gson.fromJson(Gson.java:1357)
+	at com.google.gson.Gson.fromJson(Gson.java:1259)
+	at com.google.gson.Gson.fromJson(Gson.java:1169)
+	at com.google.gson.Gson.fromJson(Gson.java:1106)
+	at com.banking_microservices.user_service.kafka.KafkaListenerService.listenCreateUserTopic(KafkaListenerService.java:35)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at org.springframework.messaging.handler.invocation.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:168)
+	at org.springframework.kafka.listener.adapter.KotlinAwareInvocableHandlerMethod.doInvoke(KotlinAwareInvocableHandlerMethod.java:48)
+	at org.springframework.messaging.handler.invocation.InvocableHandlerMethod.invoke(InvocableHandlerMethod.java:119)
+	at org.springframework.kafka.listener.adapter.HandlerAdapter.invoke(HandlerAdapter.java:80)
+	at org.springframework.kafka.listener.adapter.MessagingMessageListenerAdapter.invokeHandler(MessagingMessageListenerAdapter.java:488)
+	at org.springframework.kafka.listener.adapter.MessagingMessageListenerAdapter.invoke(MessagingMessageListenerAdapter.java:425)
+	at org.springframework.kafka.listener.adapter.RecordMessagingMessageListenerAdapter.onMessage(RecordMessagingMessageListenerAdapter.java:92)
+	at org.springframework.kafka.listener.adapter.RecordMessagingMessageListenerAdapter.onMessage(RecordMessagingMessageListenerAdapter.java:52)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeOnMessage(KafkaMessageListenerContainer.java:2898)
+	... 10 common frames omitted
+Caused by: java.lang.reflect.InaccessibleObjectException: Unable to make field private final java.time.LocalDate java.time.LocalDateTime.date accessible: module java.base does not "opens java.time" to unnamed module @402bba4f
+	at java.base/java.lang.reflect.AccessibleObject.throwInaccessibleObjectException(Unknown Source)
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(Unknown Source)
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(Unknown Source)
+	at java.base/java.lang.reflect.Field.checkCanSetAccessible(Unknown Source)
+	at java.base/java.lang.reflect.Field.setAccessible(Unknown Source)
+	at com.google.gson.internal.reflect.ReflectionHelper.makeAccessible(ReflectionHelper.java:68)
+	... 33 common frames omitted
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] :  (19:27) > AuthController | login -> {
+  "email": "e2e.alpha.20260516222643-wihrmy@springbank.test",
+  "password": "Test1234!"
+}
+INFO  --- [user-service] :  (19:27) > KeycloakUserService | login -> Request:
+{
+  "email": "e2e.alpha.20260516222643-wihrmy@springbank.test",
+  "password": "Test1234!"
+}
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] :  (19:27) > AuthController | login -> {
+  "email": "e2e.beta.20260516222643-wihrmy@springbank.test",
+  "password": "Test1234!"
+}
+INFO  --- [user-service] :  (19:27) > KeycloakUserService | login -> Request:
+{
+  "email": "e2e.beta.20260516222643-wihrmy@springbank.test",
+  "password": "Test1234!"
+}
+INFO  --- [user-service] :  (19:27) > AuthController | refresh -> request received
+INFO  --- [user-service] : Record in retry and not yet recovered
+ERROR --- [user-service] : Backoff FixedBackOffExecution[interval=0, currentAttempts=10, maxAttempts=9] exhausted for banking-microservices.money.account.created.v1-0@8
+org.springframework.kafka.listener.ListenerExecutionFailedException: Listener method 'public void com.banking_microservices.user_service.kafka.KafkaListenerService.listenCreateUserTopic(java.lang.String)' threw exception
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.decorateException(KafkaMessageListenerContainer.java:3007)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeOnMessage(KafkaMessageListenerContainer.java:2911)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.invokeOnMessage(KafkaMessageListenerContainer.java:2877)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeRecordListener(KafkaMessageListenerContainer.java:2787)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeWithRecords(KafkaMessageListenerContainer.java:2629)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.invokeRecordListener(KafkaMessageListenerContainer.java:2523)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.invokeListener(KafkaMessageListenerContainer.java:2161)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.invokeIfHaveRecords(KafkaMessageListenerContainer.java:1538)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.pollAndInvoke(KafkaMessageListenerContainer.java:1476)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.run(KafkaMessageListenerContainer.java:1345)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncRun.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+	Suppressed: org.springframework.kafka.listener.ListenerExecutionFailedException: Restored Stack Trace
+		at org.springframework.kafka.listener.adapter.MessagingMessageListenerAdapter.invokeHandler(MessagingMessageListenerAdapter.java:513)
+		at org.springframework.kafka.listener.adapter.MessagingMessageListenerAdapter.invoke(MessagingMessageListenerAdapter.java:425)
+		at org.springframework.kafka.listener.adapter.RecordMessagingMessageListenerAdapter.onMessage(RecordMessagingMessageListenerAdapter.java:92)
+		at org.springframework.kafka.listener.adapter.RecordMessagingMessageListenerAdapter.onMessage(RecordMessagingMessageListenerAdapter.java:52)
+		at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeOnMessage(KafkaMessageListenerContainer.java:2898)
+Caused by: com.google.gson.JsonIOException: Failed making field 'java.time.LocalDateTime#date' accessible; either increase its visibility or write a custom TypeAdapter for its declaring type.
+See https://github.com/google/gson/blob/main/Troubleshooting.md#reflection-inaccessible
+	at com.google.gson.internal.reflect.ReflectionHelper.makeAccessible(ReflectionHelper.java:76)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.getBoundFields(ReflectiveTypeAdapterFactory.java:389)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.create(ReflectiveTypeAdapterFactory.java:165)
+	at com.google.gson.Gson.getAdapter(Gson.java:627)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.createBoundField(ReflectiveTypeAdapterFactory.java:205)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.getBoundFields(ReflectiveTypeAdapterFactory.java:396)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.create(ReflectiveTypeAdapterFactory.java:165)
+	at com.google.gson.Gson.getAdapter(Gson.java:627)
+	at com.google.gson.Gson.fromJson(Gson.java:1357)
+	at com.google.gson.Gson.fromJson(Gson.java:1259)
+	at com.google.gson.Gson.fromJson(Gson.java:1169)
+	at com.google.gson.Gson.fromJson(Gson.java:1106)
+	at com.banking_microservices.user_service.kafka.KafkaListenerService.listenCreateUserTopic(KafkaListenerService.java:35)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at org.springframework.messaging.handler.invocation.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:168)
+	at org.springframework.kafka.listener.adapter.KotlinAwareInvocableHandlerMethod.doInvoke(KotlinAwareInvocableHandlerMethod.java:48)
+	at org.springframework.messaging.handler.invocation.InvocableHandlerMethod.invoke(InvocableHandlerMethod.java:119)
+	at org.springframework.kafka.listener.adapter.HandlerAdapter.invoke(HandlerAdapter.java:80)
+	at org.springframework.kafka.listener.adapter.MessagingMessageListenerAdapter.invokeHandler(MessagingMessageListenerAdapter.java:488)
+	at org.springframework.kafka.listener.adapter.MessagingMessageListenerAdapter.invoke(MessagingMessageListenerAdapter.java:425)
+	at org.springframework.kafka.listener.adapter.RecordMessagingMessageListenerAdapter.onMessage(RecordMessagingMessageListenerAdapter.java:92)
+	at org.springframework.kafka.listener.adapter.RecordMessagingMessageListenerAdapter.onMessage(RecordMessagingMessageListenerAdapter.java:52)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeOnMessage(KafkaMessageListenerContainer.java:2898)
+	... 10 common frames omitted
+Caused by: java.lang.reflect.InaccessibleObjectException: Unable to make field private final java.time.LocalDate java.time.LocalDateTime.date accessible: module java.base does not "opens java.time" to unnamed module @402bba4f
+	at java.base/java.lang.reflect.AccessibleObject.throwInaccessibleObjectException(Unknown Source)
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(Unknown Source)
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(Unknown Source)
+	at java.base/java.lang.reflect.Field.checkCanSetAccessible(Unknown Source)
+	at java.base/java.lang.reflect.Field.setAccessible(Unknown Source)
+	at com.google.gson.internal.reflect.ReflectionHelper.makeAccessible(ReflectionHelper.java:68)
+	... 33 common frames omitted
+INFO  --- [user-service] :  (19:28) > AdminController | findByKeycloakUUID -> Istek alindi. UUID : 9be57278-0a67-453d-86da-472faf6f68ad
+INFO  --- [user-service] :  (19:28) > AdminController | searchUsers -> Istek alindi. Query : E2EAlpha
+INFO  --- [user-service] :  (19:28) > AdminController | getAllUsers -> Istek alindi.
+INFO  --- [user-service] :  (19:28) > AuthController | register -> {
+  "email": "e2e.admin.target.20260516222643-wihrmy@springbank.test",
+  "name": "E2EAdminTarget",
+  "surname": "Tester",
+  "password": "Test1234!"
+}
+INFO  --- [user-service] :  (19:28) > KeycloakAdminService | createUser -> User created: 4111da0f-b973-414f-8495-ac3706110af1
+INFO  --- [user-service] :  (19:28) > KafkaSender | sendCreateUser -> Kafkaya mesaj gonderilmek uzere alindi. UserId: 4111da0f-b973-414f-8495-ac3706110af1
+INFO  --- [user-service] :  (19:28) > KafkaSender | sendCreateUser -> Kafkaya mesaj gonderildi. UserId: 4111da0f-b973-414f-8495-ac3706110af1
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+INFO  --- [user-service] : Record in retry and not yet recovered
+ERROR --- [user-service] : Backoff FixedBackOffExecution[interval=0, currentAttempts=10, maxAttempts=9] exhausted for banking-microservices.money.account.created.v1-0@9
+org.springframework.kafka.listener.ListenerExecutionFailedException: Listener method 'public void com.banking_microservices.user_service.kafka.KafkaListenerService.listenCreateUserTopic(java.lang.String)' threw exception
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.decorateException(KafkaMessageListenerContainer.java:3007)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeOnMessage(KafkaMessageListenerContainer.java:2911)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.invokeOnMessage(KafkaMessageListenerContainer.java:2877)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeRecordListener(KafkaMessageListenerContainer.java:2787)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeWithRecords(KafkaMessageListenerContainer.java:2629)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.invokeRecordListener(KafkaMessageListenerContainer.java:2523)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.invokeListener(KafkaMessageListenerContainer.java:2161)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.invokeIfHaveRecords(KafkaMessageListenerContainer.java:1538)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.pollAndInvoke(KafkaMessageListenerContainer.java:1476)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.run(KafkaMessageListenerContainer.java:1345)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncRun.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+	Suppressed: org.springframework.kafka.listener.ListenerExecutionFailedException: Restored Stack Trace
+		at org.springframework.kafka.listener.adapter.MessagingMessageListenerAdapter.invokeHandler(MessagingMessageListenerAdapter.java:513)
+		at org.springframework.kafka.listener.adapter.MessagingMessageListenerAdapter.invoke(MessagingMessageListenerAdapter.java:425)
+		at org.springframework.kafka.listener.adapter.RecordMessagingMessageListenerAdapter.onMessage(RecordMessagingMessageListenerAdapter.java:92)
+		at org.springframework.kafka.listener.adapter.RecordMessagingMessageListenerAdapter.onMessage(RecordMessagingMessageListenerAdapter.java:52)
+		at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeOnMessage(KafkaMessageListenerContainer.java:2898)
+Caused by: com.google.gson.JsonIOException: Failed making field 'java.time.LocalDateTime#date' accessible; either increase its visibility or write a custom TypeAdapter for its declaring type.
+See https://github.com/google/gson/blob/main/Troubleshooting.md#reflection-inaccessible
+	at com.google.gson.internal.reflect.ReflectionHelper.makeAccessible(ReflectionHelper.java:76)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.getBoundFields(ReflectiveTypeAdapterFactory.java:389)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.create(ReflectiveTypeAdapterFactory.java:165)
+	at com.google.gson.Gson.getAdapter(Gson.java:627)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.createBoundField(ReflectiveTypeAdapterFactory.java:205)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.getBoundFields(ReflectiveTypeAdapterFactory.java:396)
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory.create(ReflectiveTypeAdapterFactory.java:165)
+	at com.google.gson.Gson.getAdapter(Gson.java:627)
+	at com.google.gson.Gson.fromJson(Gson.java:1357)
+	at com.google.gson.Gson.fromJson(Gson.java:1259)
+	at com.google.gson.Gson.fromJson(Gson.java:1169)
+	at com.google.gson.Gson.fromJson(Gson.java:1106)
+	at com.banking_microservices.user_service.kafka.KafkaListenerService.listenCreateUserTopic(KafkaListenerService.java:35)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at org.springframework.messaging.handler.invocation.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:168)
+	at org.springframework.kafka.listener.adapter.KotlinAwareInvocableHandlerMethod.doInvoke(KotlinAwareInvocableHandlerMethod.java:48)
+	at org.springframework.messaging.handler.invocation.InvocableHandlerMethod.invoke(InvocableHandlerMethod.java:119)
+	at org.springframework.kafka.listener.adapter.HandlerAdapter.invoke(HandlerAdapter.java:80)
+	at org.springframework.kafka.listener.adapter.MessagingMessageListenerAdapter.invokeHandler(MessagingMessageListenerAdapter.java:488)
+	at org.springframework.kafka.listener.adapter.MessagingMessageListenerAdapter.invoke(MessagingMessageListenerAdapter.java:425)
+	at org.springframework.kafka.listener.adapter.RecordMessagingMessageListenerAdapter.onMessage(RecordMessagingMessageListenerAdapter.java:92)
+	at org.springframework.kafka.listener.adapter.RecordMessagingMessageListenerAdapter.onMessage(RecordMessagingMessageListenerAdapter.java:52)
+	at org.springframework.kafka.listener.KafkaMessageListenerContainer$ListenerConsumer.doInvokeOnMessage(KafkaMessageListenerContainer.java:2898)
+	... 10 common frames omitted
+Caused by: java.lang.reflect.InaccessibleObjectException: Unable to make field private final java.time.LocalDate java.time.LocalDateTime.date accessible: module java.base does not "opens java.time" to unnamed module @402bba4f
+	at java.base/java.lang.reflect.AccessibleObject.throwInaccessibleObjectException(Unknown Source)
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(Unknown Source)
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(Unknown Source)
+	at java.base/java.lang.reflect.Field.checkCanSetAccessible(Unknown Source)
+	at java.base/java.lang.reflect.Field.setAccessible(Unknown Source)
+	at com.google.gson.internal.reflect.ReflectionHelper.makeAccessible(ReflectionHelper.java:68)
+	... 33 common frames omitted
+INFO  --- [user-service] :  (19:28) > AdminController | searchByEmail -> Istek alindi. Email: e2e.admin.target.20260516222643-wihrmy@springbank.test
+INFO  --- [user-service] :  (19:28) > AdminController | changeRole -> Istek alindi. Id: 4111da0f-b973-414f-8495-ac3706110af1, Role: USER
+INFO  --- [user-service] :  (19:28) > AdminController | deactivateUser -> Istek alindi. ID: 4111da0f-b973-414f-8495-ac3706110af1
+INFO  --- [user-service] :  (19:28) > UserService | updateUserStatus -> ID: 4111da0f-b973-414f-8495-ac3706110af1, active: false
+INFO  --- [user-service] :  (19:28) > AdminController | activateUser -> Istek alindi. ID: 4111da0f-b973-414f-8495-ac3706110af1
+INFO  --- [user-service] :  (19:28) > UserService | updateUserStatus -> ID: 4111da0f-b973-414f-8495-ac3706110af1, active: true
+INFO  --- [user-service] :  (19:28) > AdminController | deleteUser -> Istek alindi. ID: 4111da0f-b973-414f-8495-ac3706110af1

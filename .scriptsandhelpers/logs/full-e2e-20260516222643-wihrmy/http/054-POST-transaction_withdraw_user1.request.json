@@ -1,0 +1,17 @@
+{
+    "method":  "POST",
+    "url":  "http://localhost:8095/api/transaction-service/v1/transactions/create",
+    "expected":  [
+                     201
+                 ],
+    "headers":  "X-User-KeycloakUUID,Authorization",
+    "body":  {
+                 "senderIban":  "TR05178718IYJSIY49GSSPIXJS",
+                 "receiverSurname":  null,
+                 "receiverIban":  null,
+                 "amount":  500,
+                 "description":  "E2E withdraw 20260516222643-wihrmy",
+                 "transactionType":  "WITHDRAW",
+                 "receiverName":  null
+             }
+}

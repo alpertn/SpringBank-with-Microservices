@@ -1,0 +1,138 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20260516222129
+Username: monte\alper
+RunAs User: monte\alper
+Configuration Name: 
+Machine: MONTE (Microsoft Windows NT 10.0.26200.0)
+Host Application: powershell.exe -NoProfile -ExecutionPolicy Bypass -Command $p=$env:SELF; $c=Get-Content -Raw -LiteralPath $p; $m='# POWERSHELL_PAYLOAD'; $i=$c.LastIndexOf($m); if($i -lt 0){throw 'PowerShell payload not found'}; $s=$c.Substring($i + $m.Length); Invoke-Expression $s
+Process ID: 14284
+PSVersion: 5.1.26100.7462
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7462
+BuildVersion: 10.0.26100.7462
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+[INFO] RunId=20260516222129-ncqm78
+[INFO] Tum loglar: C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260516222129-ncqm78
+
+==== Kubernetes ve servis on kontrolleri ====
+[OK]   kubectl context: docker-desktop
+[OK]   Kubernetes API cevap veriyor
+[OK]   namespace var: banking-microservices
+[OK]   tum deployment'lar available condition beklemesi tamam
+[OK]   deployment ready: postgres (1)
+[OK]   deployment ready: redis (1)
+[OK]   deployment ready: mongodb (1)
+[OK]   deployment ready: elasticsearch (1)
+[OK]   deployment ready: zookeeper (1)
+[OK]   deployment ready: kafka (1)
+[OK]   deployment ready: keycloak (1)
+[OK]   deployment ready: user-service (2)
+[OK]   deployment ready: money-service (2)
+[OK]   deployment ready: money-service-command (2)
+[OK]   deployment ready: money-service-query (2)
+[OK]   deployment ready: transaction-service (2)
+[OK]   deployment ready: fraud-service (2)
+[OK]   deployment ready: gateway (2)
+[OK]   service var: postgres
+[OK]   service var: redis
+[OK]   service var: mongodb
+[OK]   service var: elasticsearch
+[OK]   service var: zookeeper
+[OK]   service var: kafka
+[OK]   service var: keycloak
+[OK]   service var: user-service
+[OK]   service var: money-service
+[OK]   service var: money-service-command
+[OK]   service var: money-service-query
+[OK]   service var: transaction-service
+[OK]   service var: fraud-service
+[OK]   service var: gateway
+
+==== Gateway erisimi ====
+[OK]   gateway static login.html HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: ."
+[OK]   static / HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: ."
+[OK]   static /index.html HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: ."
+[OK]   static /login.html HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: ."
+[OK]   static /register.html HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: ."
+[OK]   static /dashboard.html HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: ."
+[OK]   static /deposit.html HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: ."
+[OK]   static /withdraw.html HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: ."
+[OK]   static /transfer.html HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: ."
+[OK]   static /transactions.html HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: ."
+[OK]   static /admin.html HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: ."
+
+==== Public health endpointleri ====
+[OK]   money-service health unauthenticated/security HTTP 401
+[OK]   user-service liveness HTTP 200
+[OK]   money-service liveness HTTP 200
+[OK]   transaction-service liveness HTTP 200
+[OK]   fraud-service liveness HTTP 200
+[OK]   money-service-command internal health HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: money-service-command."
+[OK]   money-service-query internal health HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: money-service-query."
+
+==== Kafka topic ve altyapi kontrolleri ====
+[OK]   Kafka topic var: banking-microservices.user.created.v1
+[OK]   Kafka topic var: banking-microservices.money.account.created.v1
+[INFO] Kafka topic henuz yok, akista uretildiginde tekrar dogrulanacak: banking-microservices.money.account.create-failed.v1
+[OK]   Kafka topic var: banking-microservices.transaction.created.v1
+[OK]   Kafka topic var: banking-microservices.transaction.completed.v1
+[OK]   Kafka topic var: banking-microservices.transaction.failed.v1
+[OK]   Kafka topic var: banking-microservices.transaction.money-blocked.v1
+[OK]   Kafka topic var: banking-microservices.transaction.user-validation.request.v1
+[OK]   Kafka topic var: banking-microservices.transaction.user-validation.success.v1
+[OK]   Kafka topic var: banking-microservices.transaction.fraud.checked.v1
+[OK]   Kafka topic var: banking-microservices.transaction.saga.created.v1
+[INFO] Kafka topic henuz yok, akista uretildiginde tekrar dogrulanacak: banking-microservices.transaction.saga.money.completed.v1
+[INFO] Kafka topic henuz yok, akista uretildiginde tekrar dogrulanacak: banking-microservices.transaction.saga.money.failed.v1
+[OK]   Kafka topic var: banking-microservices.transaction.money-blocked.v1
+PS>TerminatingError(kubectl.exe): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: command terminated with exit code 1"
+>> TerminatingError(kubectl.exe): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: command terminated with exit code 1"
+PS>TerminatingError(kubectl.exe): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: command terminated with exit code 1"
+>> TerminatingError(kubectl.exe): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: command terminated with exit code 1"
+PS>TerminatingError(kubectl.exe): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: command terminated with exit code 1"
+>> TerminatingError(kubectl.exe): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: command terminated with exit code 1"
+
+==== Register, login, token decode ====
+[OK]   register user1 HTTP 200
+[OK]   register user2 HTTP 200
+[OK]   user1 login HTTP 200
+[OK]   user1 access_token alindi
+[OK]   user2 login HTTP 200
+[OK]   user2 access_token alindi
+[OK]   admin login HTTP 200
+[OK]   admin access_token alindi
+[OK]   user1 JWT sub: 661438b5-5a59-45a2-86e9-513c2366807b
+[OK]   user2 JWT sub: d1e6fc59-c080-4fdc-b647-3b35d1f8d782
+[OK]   admin JWT ADMIN role iceriyor
+[OK]   refresh token user1 HTTP 200
+[OK]   register user Kafka offset advanced banking-microservices.user.created.v1 2 -> 4
+PS>TerminatingError(kubectl.exe): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: [2026-05-16 19:22:54,935] ERROR Error processing message, terminating consumer process:  (kafka.tools.ConsoleConsumer$)"
+>> TerminatingError(kubectl.exe): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: [2026-05-16 19:22:54,935] ERROR Error processing message, terminating consumer process:  (kafka.tools.ConsoleConsumer$)"
+>> TerminatingError(kubectl.exe): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: [2026-05-16 19:22:54,935] ERROR Error processing message, terminating consumer process:  (kafka.tools.ConsoleConsumer$)"
+[FAIL] Script exception: [2026-05-16 19:22:54,935] ERROR Error processing message, terminating consumer process:  (kafka.tools.ConsoleConsumer$)
+at Kube, <No file>: line 147
+at Kafka-ConsumeContains, <No file>: line 234
+at <ScriptBlock>, <No file>: line 373
+at <ScriptBlock>, <No file>: line 1
+**********************
+Windows PowerShell transcript end
+End time: 20260516222254
+**********************

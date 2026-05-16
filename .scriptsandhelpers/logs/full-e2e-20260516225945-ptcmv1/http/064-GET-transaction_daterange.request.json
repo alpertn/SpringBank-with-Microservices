@@ -1,0 +1,9 @@
+{
+    "method":  "GET",
+    "url":  "http://localhost:8095/api/transaction-service/v1/transactions/daterange?startDate=2026-05-15T23:03:13\u0026endDate=2026-05-17T23:03:13",
+    "expected":  [
+                     200
+                 ],
+    "headers":  "Authorization",
+    "body":  null
+}

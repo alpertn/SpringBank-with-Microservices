@@ -1,0 +1,64 @@
+
+[02:12:17][elapsed=589ms / 0.589s / 0.01m][general][INFO] RunId=20260517021217-f4v6g0
+
+--------------------------------------------------------------------------------
+[02:12:18][elapsed=639ms / 0.639s / 0.011m][general][INFO] Test modu=full (varsayilan full kapsam; 1 dakikayi asan parca SKIP yazilip sonraki teste gecilir)
+
+--------------------------------------------------------------------------------
+[02:12:18][elapsed=642ms / 0.642s / 0.011m][general][INFO] Timeoutlar: HTTP=60 sn, long-running-skip=60 sn, wait-cap=60 sn
+
+--------------------------------------------------------------------------------
+[02:12:18][elapsed=643ms / 0.643s / 0.011m][general][INFO] Tum loglar: C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260517021217-f4v6g0
+
+--------------------------------------------------------------------------------
+[02:12:18][elapsed=675ms / 0.675s / 0.011m][step][START] Kubernetes ve servis on kontrolleri
+MODE: full
+SKIP_LONG_RUNNING_SECONDS: 60
+--------------------------------------------------------------------------------
+[02:12:18][elapsed=709ms / 0.709s / 0.012m][kubectl][START] --request-timeout=60s config current-context
+COMMAND:
+kubectl --request-timeout=60s config current-context
+START_ELAPSED_TOTAL: 709ms / 0.709s / 0.012m
+--------------------------------------------------------------------------------
+[02:12:18][elapsed=927ms / 0.927s / 0.015m][kubectl][FAIL] --request-timeout=60s config current-context
+COMMAND:
+kubectl --request-timeout=60s config current-context
+DURATION: 101ms / 0.101s / 0.002m
+EXIT_CODE: 1
+OUTPUT:
+error: error loading config file "C:\Users\alper\.kube\config": open C:\Users\alper\.kube\config: Access is denied.
+--------------------------------------------------------------------------------
+[02:12:18][elapsed=962ms / 0.962s / 0.016m][general][FAIL] Script exception: kubectl --request-timeout=60s config current-context failed: error: error loading config file "C:\Users\alper\.kube\config": open C:\Users\alper\.kube\config: Access is denied.
+
+--------------------------------------------------------------------------------
+[02:12:18][elapsed=966ms / 0.966s / 0.016m][run][FAIL] exception-summary
+TOTAL_DURATION: 954ms / 0.954s / 0.016m
+MESSAGE: kubectl --request-timeout=60s config current-context failed: error: error loading config file "C:\Users\alper\.kube\config": open C:\Users\alper\.kube\config: Access is denied.
+STACK:
+at Kube, <No file>: line 436
+at <ScriptBlock>, <No file>: line 618
+at <ScriptBlock>, <No file>: line 1
+--------------------------------------------------------------------------------
+[02:12:18][elapsed=978ms / 0.978s / 0.016m][sync][START] gateway test log sync
+SOURCE: C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260517021217-f4v6g0
+TARGET: banking-microservices/gateway:/tmp/springbank-test-logs/full-e2e-20260517021217-f4v6g0
+--------------------------------------------------------------------------------
+[02:12:18][elapsed=982ms / 0.982s / 0.016m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 981ms / 0.981s / 0.016m
+--------------------------------------------------------------------------------
+[02:12:18][elapsed=1074ms / 1.074s / 0.018m][kubectl][FAIL] --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+DURATION: 87ms / 0.087s / 0.001m
+EXIT_CODE: 1
+OUTPUT:
+error: error loading config file "C:\Users\alper\.kube\config": open C:\Users\alper\.kube\config: Access is denied.
+--------------------------------------------------------------------------------
+[02:12:18][elapsed=1077ms / 1.077s / 0.018m][sync][WARN] gateway test log sync
+SOURCE: C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260517021217-f4v6g0
+TARGET: banking-microservices/gateway:/tmp/springbank-test-logs/full-e2e-20260517021217-f4v6g0
+DURATION: 100ms / 0.1s / 0.002m
+ERROR: kubectl --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name} failed: error: error loading config file "C:\Users\alper\.kube\config": open C:\Users\alper\.kube\config: Access is denied.
+--------------------------------------------------------------------------------

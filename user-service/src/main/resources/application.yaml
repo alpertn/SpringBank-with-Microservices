@@ -1,24 +1,20 @@
 server:
- port: ${USER_SERVICE_PORT_NUMBER:8081}
+  port: ${USER_SERVICE_PORT_NUMBER:8081}
+
+grpc:
+  server:
+    port: ${USER_SERVICE_GRPC_PORT:9194}
 
 kafka:
   topics:
     transaction:
-      listener: ${KAFKA_TRANSACTION_USERNAME_VALIDATION_LISTENER:banking-microservices.transaction.money-service.block-money.user-validation.v1}
-      sender: ${KAFKA_TRANSACTION_USERNAME_VALIDATION_SENDER:banking-microservices.transaction.user-service.user-validation.success.v1}
-      # DÜZELTME: Eski topic (user-validation.error.v1) hiçbir servis tarafından dinlenmiyordu.
-      # Transaction-service'in error listener'ı sadece transaction-service.error.v1'i dinliyor.
-      # Bu yüzden user-validation hataları buharlaşıyordu ve transaction CREATED'da kalıyordu.
-      error: ${KAFKA_TRANSACTION_USERNAME_VALIDATION_ERROR:banking-microservices.transaction.transaction-service.error.v1}
+      listener: ${KAFKA_TRANSACTION_USER_VALIDATION_REQUEST_TOPIC:banking-microservices.transaction.user-validation.request.v1}
+      sender: ${KAFKA_TRANSACTION_USER_VALIDATION_SUCCESS_TOPIC:banking-microservices.transaction.user-validation.success.v1}
+      error: ${KAFKA_TRANSACTION_FAILED_TOPIC:banking-microservices.transaction.failed.v1}
     create-user:
-      authservicelistener: ${KAFKA_AUTH_SERVICE_CREATE_USER_LISTENER:banking-microservices.create-user.auth-service.progress.v1}
-      sender: ${KAFKA_CREATE_USER_SENDER:banking-microservices.username-validation.user-service.progress.v1}
-      listener: ${KAFKA_CREATE_USER_LISTENER:banking-microservices.create-user.money-service.success.v1}
-      error: ${KAFKA_CREATE_USER_ERROR:banking-microservices.create-user.money-service.error.v1}
-    username-validation:
-      sender: ${KAFKA_USERNAME_VALIDATION_SENDER:banking-microservices.username-validation.user-service.success.v1}
-      listener: ${KAFKA_USERNAME_VALIDATION_LISTENER:banking-microservices.transaction.money-service.block-money.success.v1}
-      error: ${KAFKA_USERNAME_VALIDATION_ERROR:banking-microservices.username-validation.money-service.error.v1}
+      sender: ${KAFKA_USER_CREATED_TOPIC:banking-microservices.user.created.v1}
+      listener: ${KAFKA_MONEY_ACCOUNT_CREATED_TOPIC:banking-microservices.money.account.created.v1}
+      error: ${KAFKA_MONEY_ACCOUNT_CREATE_FAILED_TOPIC:banking-microservices.money.account.create-failed.v1}
 
 spring:
   application:
@@ -35,33 +31,30 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       properties:
         spring.json.use.type.headers: false
-  # Kubernetes Service Discovery
   cloud:
     kubernetes:
       discovery:
         enabled: true
-  # Veritabanı Ayarları
-  datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/banking_users}
-    username: ${SPRING_DATASOURCE_USERNAME:banking_admin}
-    password: ${SPRING_DATASOURCE_PASSWORD:local_password}
-    driver-class-name: org.postgresql.Driver
-    hikari:
-      maximum-pool-size: 10
-      minimum-idle: 5
-      max-lifetime: 580000
-      keepalive-time: 150000
-      connection-timeout: 20000
-  jpa:
-    hibernate:
-      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
-    show-sql: false
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
 
+keycloak:
+  server-url: ${KEYCLOAK_SERVER_URL:http://localhost:8080}
+  realm: ${KEYCLOAK_REALM:banking}
+  client-id: ${KEYCLOAK_CLIENT_ID:banking-app}
+  client-secret: ${KEYCLOAK_CLIENT_SECRET:secret123}
+  admin-username: ${KEYCLOAK_ADMIN_USERNAME:admin}
+  admin-password: ${KEYCLOAK_ADMIN_PASSWORD:admin}
+  bootstrap:
+    enabled: ${KEYCLOAK_BOOTSTRAP_ENABLED:true}
+    wait-timeout-seconds: ${KEYCLOAK_BOOTSTRAP_WAIT_TIMEOUT_SECONDS:180}
+    test-user-email: ${KEYCLOAK_BOOTSTRAP_TEST_USER_EMAIL:testuser@bank.com}
+    test-user-password: ${KEYCLOAK_BOOTSTRAP_TEST_USER_PASSWORD:pass123}
+    admin-user-email: ${KEYCLOAK_BOOTSTRAP_ADMIN_USER_EMAIL:admin@gmail.com}
+    admin-user-password: ${KEYCLOAK_BOOTSTRAP_ADMIN_USER_PASSWORD:admin123}
 
-# Monitoring (Opsiyonel ama tavsiye edilir)
 management:
   endpoints:
     web:
@@ -78,17 +71,15 @@ management:
       enabled: true
     readinessstate:
       enabled: true
-    redis:
-      enabled: false
     kafka:
       enabled: false
   security:
     enabled: false
 
-logging: # Bağlantı: Loglama. Varsa: Uygulama takibi. Yoksa: Karanlık.
-  pattern: # Bağlantı: Format. Varsa: Okunabilir. Yoksa: Karışık.
-    console: "%-5level --- [user-service] : %msg%n" # Bağlantı: Konsol Dizilimi. Varsa: Tarih başta, mesaj sonda. Yoksa: Varsayılan Spring logu.
-  level: # Bağlantı: Log Seviyesi. Varsa: Gürültü engellenir. Yoksa: Çok log basar.
-    root: INFO # Bağlantı: Genel Seviye. Varsa: Önemli bilgiler. Yoksa: Debug detayları.
+logging:
+  pattern:
+    console: "%-5level --- [user-service] : %msg%n"
+  level:
+    root: INFO
     org.apache.kafka: WARN
     org.springframework.kafka: INFO

@@ -31,12 +31,6 @@ public class KafkaSender {
     @Value("${kafka.topics.create-user.sender}")
     private String createUserTopic;
 
-    @Value("${kafka.topics.username-validation.sender}")
-    private String usernameValidationSuccessTopic;
-
-    @Value("${kafka.topics.username-validation.error}")
-    private String usernameValidationErrorTopic;
-
     @Value("${kafka.topics.transaction.sender}")
     private String transactionSenderTopic;
 
@@ -81,25 +75,4 @@ public class KafkaSender {
         }
     }
 
-    public void sendUsernameValidationSuccess(String key, KafkaTransactionTopicMessageDto dto) {
-        try {
-            log.info(" ({}) > KafkaSender | sendUsernameValidationSuccess -> Kafkaya mesaj gonderilmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
-            kafkaTemplate.send(usernameValidationSuccessTopic, key, dto);
-            log.info(" ({}) > KafkaSender | sendUsernameValidationSuccess -> Kafkaya mesaj gonderildi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(dto));
-        } catch (Exception e) {
-            log.warn(" ({}) > KafkaSender | sendUsernameValidationSuccess -> Kafkaya mesaj gonderilirken hata olustu. Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
-            throw new KafkaSendException("Kafka Send Exception. " + key + " " + dto);
-        }
-    }
-
-    public void sendUsernameValidationError(String key, KafkaTransactionTopicMessageDto dto) {
-        try {
-            log.info(" ({}) > KafkaSender | sendUsernameValidationError -> Kafkaya mesaj gonderilmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
-            kafkaTemplate.send(usernameValidationErrorTopic, key, dto);
-            log.info(" ({}) > KafkaSender | sendUsernameValidationError -> Kafkaya mesaj gonderildi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(dto));
-        } catch (Exception e) {
-            log.warn(" ({}) > KafkaSender | sendUsernameValidationError -> Kafkaya mesaj gonderilirken hata olustu. Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
-            throw new KafkaSendException("Kafka Send Exception. " + key + " " + dto);
-        }
-    }
 }

@@ -1,0 +1,431 @@
+
+[02:12:40][elapsed=10680ms / 10.68s / 0.178m][kafka][OK] offset:banking-microservices.user.created.v1
+COMMAND:
+kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.user.created.v1 --time -1
+DURATION: 1604ms / 1.604s / 0.027m
+TOPIC: banking-microservices.user.created.v1
+RAW:
+banking-microservices.user.created.v1:0:40
+SUM: 40
+--------------------------------------------------------------------------------
+[02:12:41][elapsed=12632ms / 12.632s / 0.211m][kafka][OK] offset:banking-microservices.money.account.created.v1
+COMMAND:
+kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.created.v1 --time -1
+DURATION: 1940ms / 1.94s / 0.032m
+TOPIC: banking-microservices.money.account.created.v1
+RAW:
+banking-microservices.money.account.created.v1:0:40
+SUM: 40
+--------------------------------------------------------------------------------
+[02:12:43][elapsed=14494ms / 14.494s / 0.242m][kafka][OK] offset:banking-microservices.money.account.create-failed.v1
+COMMAND:
+kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.create-failed.v1 --time -1
+DURATION: 1742ms / 1.742s / 0.029m
+TOPIC: banking-microservices.money.account.create-failed.v1
+RAW:
+Error occurred: Could not match any topic-partitions with the specified filters
+
+command terminated with exit code 1
+SUM: 0
+--------------------------------------------------------------------------------
+[02:12:45][elapsed=16349ms / 16.349s / 0.272m][kafka][OK] offset:banking-microservices.transaction.created.v1
+COMMAND:
+kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.created.v1 --time -1
+DURATION: 1850ms / 1.85s / 0.031m
+TOPIC: banking-microservices.transaction.created.v1
+RAW:
+banking-microservices.transaction.created.v1:0:52
+SUM: 52
+--------------------------------------------------------------------------------
+[02:12:47][elapsed=17944ms / 17.944s / 0.299m][kafka][OK] offset:banking-microservices.transaction.completed.v1
+COMMAND:
+kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.completed.v1 --time -1
+DURATION: 1590ms / 1.59s / 0.027m
+TOPIC: banking-microservices.transaction.completed.v1
+RAW:
+banking-microservices.transaction.completed.v1:0:47
+SUM: 47
+--------------------------------------------------------------------------------
+[02:12:49][elapsed=20043ms / 20.043s / 0.334m][kafka][OK] offset:banking-microservices.transaction.failed.v1
+COMMAND:
+kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.failed.v1 --time -1
+DURATION: 2098ms / 2.098s / 0.035m
+TOPIC: banking-microservices.transaction.failed.v1
+RAW:
+banking-microservices.transaction.failed.v1:0:7
+SUM: 7
+--------------------------------------------------------------------------------
+[02:12:52][elapsed=23447ms / 23.447s / 0.391m][kafka][OK] offset:banking-microservices.transaction.money-blocked.v1
+COMMAND:
+kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.money-blocked.v1 --time -1
+DURATION: 3398ms / 3.398s / 0.057m
+TOPIC: banking-microservices.transaction.money-blocked.v1
+RAW:
+banking-microservices.transaction.money-blocked.v1:0:12
+SUM: 12
+--------------------------------------------------------------------------------
+[02:12:55][elapsed=26010ms / 26.01s / 0.434m][kafka][OK] offset:banking-microservices.transaction.user-validation.request.v1
+COMMAND:
+kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.user-validation.request.v1 --time -1
+DURATION: 2558ms / 2.558s / 0.043m
+TOPIC: banking-microservices.transaction.user-validation.request.v1
+RAW:
+banking-microservices.transaction.user-validation.request.v1:0:12
+SUM: 12
+--------------------------------------------------------------------------------
+[02:12:57][elapsed=28405ms / 28.405s / 0.473m][kafka][OK] offset:banking-microservices.transaction.user-validation.success.v1
+COMMAND:
+kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.user-validation.success.v1 --time -1
+DURATION: 2388ms / 2.388s / 0.04m
+TOPIC: banking-microservices.transaction.user-validation.success.v1
+RAW:
+banking-microservices.transaction.user-validation.success.v1:0:11
+SUM: 11
+--------------------------------------------------------------------------------
+[02:13:00][elapsed=30774ms / 30.774s / 0.513m][kafka][OK] offset:banking-microservices.transaction.fraud.checked.v1
+COMMAND:
+kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.fraud.checked.v1 --time -1
+DURATION: 2368ms / 2.368s / 0.039m
+TOPIC: banking-microservices.transaction.fraud.checked.v1
+RAW:
+banking-microservices.transaction.fraud.checked.v1:0:11
+SUM: 11
+--------------------------------------------------------------------------------
+[02:13:04][elapsed=35512ms / 35.512s / 0.592m][kafka][OK] offset:banking-microservices.transaction.saga.created.v1
+COMMAND:
+kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.saga.created.v1 --time -1
+DURATION: 4737ms / 4.737s / 0.079m
+TOPIC: banking-microservices.transaction.saga.created.v1
+RAW:
+banking-microservices.transaction.saga.created.v1:0:0
+SUM: 0
+--------------------------------------------------------------------------------
+[02:13:08][elapsed=39623ms / 39.623s / 0.66m][kafka][OK] offset:banking-microservices.transaction.saga.money.completed.v1
+COMMAND:
+kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.saga.money.completed.v1 --time -1
+DURATION: 4107ms / 4.107s / 0.068m
+TOPIC: banking-microservices.transaction.saga.money.completed.v1
+RAW:
+banking-microservices.transaction.saga.money.completed.v1:0:10
+SUM: 10
+--------------------------------------------------------------------------------
+[02:13:10][elapsed=41602ms / 41.602s / 0.693m][kafka][OK] offset:banking-microservices.transaction.saga.money.failed.v1
+COMMAND:
+kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.saga.money.failed.v1 --time -1
+DURATION: 1974ms / 1.974s / 0.033m
+TOPIC: banking-microservices.transaction.saga.money.failed.v1
+RAW:
+Error occurred: Could not match any topic-partitions with the specified filters
+
+command terminated with exit code 1
+SUM: 0
+--------------------------------------------------------------------------------
+[02:13:12][elapsed=43374ms / 43.374s / 0.723m][kafka][OK] offset:banking-microservices.transaction.money-blocked.v1
+COMMAND:
+kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.money-blocked.v1 --time -1
+DURATION: 1768ms / 1.768s / 0.029m
+TOPIC: banking-microservices.transaction.money-blocked.v1
+RAW:
+banking-microservices.transaction.money-blocked.v1:0:12
+SUM: 12
+--------------------------------------------------------------------------------
+[02:13:23][elapsed=54031ms / 54.031s / 0.901m][kafka][OK] offset:banking-microservices.user.created.v1
+COMMAND:
+kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.user.created.v1 --time -1
+DURATION: 1692ms / 1.692s / 0.028m
+TOPIC: banking-microservices.user.created.v1
+RAW:
+banking-microservices.user.created.v1:0:42
+SUM: 42
+--------------------------------------------------------------------------------
+[02:13:23][elapsed=54166ms / 54.166s / 0.903m][kafka][START] register user1 create-user event
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- sh -lc "kafka-console-consumer --bootstrap-server kafka:9092 --topic banking-microservices.user.created.v1 --from-beginning --timeout-ms 5000 2>/dev/null || true"
+START_ELAPSED_TOTAL: 54049ms / 54.049s / 0.901m
+--------------------------------------------------------------------------------
+[02:13:33][elapsed=63721ms / 63.721s / 1.062m][kafka][OK] register user1 create-user event
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- sh -lc "kafka-console-consumer --bootstrap-server kafka:9092 --topic banking-microservices.user.created.v1 --from-beginning --timeout-ms 5000 2>/dev/null || true"
+DURATION: 9643ms / 9.643s / 0.161m
+TOPIC: banking-microservices.user.created.v1
+NEEDLE: 95fc80d4-08c5-47d2-8697-9f7796b0562b
+FOUND: True
+OUTPUT:
+"7b920dd6-a421-4df7-8dc8-aef4a47c56c3"
+"a0cdcc62-8a77-440b-8bdb-86fadb2c18f0"
+"661438b5-5a59-45a2-86e9-513c2366807b"
+"d1e6fc59-c080-4fdc-b647-3b35d1f8d782"
+"cb1ce50e-5dd5-4833-8224-357b5b83cf4e"
+"d822ea18-f495-4837-aed6-a85b55987ff4"
+"40fdeaab-2966-45d3-89fe-b378f0f2b769"
+"9be57278-0a67-453d-86da-472faf6f68ad"
+"3c551fd5-a8d0-465a-a55a-89801e4234dd"
+"4111da0f-b973-414f-8495-ac3706110af1"
+"9b8c8f96-99eb-4bf4-9792-38eac77cd575"
+"03d83707-4d19-438d-8859-2099fb0d47a5"
+"971c2249-61da-4eef-959a-84a7bae6c533"
+"75cdda7c-9be6-4b07-8414-94c420545f02"
+"54b9b93c-87f2-4c92-8c65-462c9005dcf3"
+"ee151fc1-5118-4139-aec1-37189357b311"
+"4fcf63c7-dc84-4997-ba4c-1d6843bb8f07"
+"d355c310-f1be-4727-a747-9c48c17d6083"
+"157ecfc0-c21c-4be3-b00b-3ccbd6136f08"
+"6be43683-4d16-4fa7-ab7d-4eba972eaa20"
+"b646a1ae-38a7-44f6-9d7e-2b04f45f1906"
+"effff247-f255-431a-a830-8a2d3ba8f07d"
+"a5ed2202-8db5-4af6-8693-45503ffab2fd"
+"9d821051-03d6-408d-8272-7105e6fbc61a"
+"be21a915-bf03-41fa-b584-899e66037270"
+"5b273b40-8eb3-4976-b9db-94f51a339e67"
+"2931f50a-81a1-45b2-8d5b-b3b34329fbdc"
+"bb1c14aa-22a3-45e7-a148-dd5403c12ebb"
+"21f062b8-6963-4c0f-a77c-31058dea9427"
+"2901a20d-3c92-4b14-aad5-529f33fa1d50"
+"e56901ca-afc3-4674-9597-d2562f7593cb"
+"e9dae81a-90b7-4bb7-b551-60ee57a4f290"
+"27e80ad4-2f58-4558-826e-ff03061ae7cf"
+"57786981-3bef-4d44-adc0-e8676a397549"
+"4d5e2d0a-1388-4903-a533-659ef5f31d22"
+"f0ffbdca-5287-4dcb-a0ea-49c16e2ff515"
+"4a7e6bb2-ea38-4a23-b59b-aa9bd4f8f0ac"
+"381c8df9-77ff-48d3-8647-d926747cd0ad"
+"5217079a-83c3-4592-b6c2-4ffe2ffe7b1e"
+"c6a101a4-0981-4e78-8a97-258e9d2223ce"
+"95fc80d4-08c5-47d2-8697-9f7796b0562b"
+"9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8"
+--------------------------------------------------------------------------------
+[02:13:33][elapsed=64173ms / 64.173s / 1.07m][kafka][START] register user2 create-user event
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- sh -lc "kafka-console-consumer --bootstrap-server kafka:9092 --topic banking-microservices.user.created.v1 --from-beginning --timeout-ms 5000 2>/dev/null || true"
+START_ELAPSED_TOTAL: 63725ms / 63.725s / 1.062m
+--------------------------------------------------------------------------------
+[02:13:43][elapsed=73796ms / 73.796s / 1.23m][kafka][OK] register user2 create-user event
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- sh -lc "kafka-console-consumer --bootstrap-server kafka:9092 --topic banking-microservices.user.created.v1 --from-beginning --timeout-ms 5000 2>/dev/null || true"
+DURATION: 10065ms / 10.065s / 0.168m
+TOPIC: banking-microservices.user.created.v1
+NEEDLE: 9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8
+FOUND: True
+OUTPUT:
+"7b920dd6-a421-4df7-8dc8-aef4a47c56c3"
+"a0cdcc62-8a77-440b-8bdb-86fadb2c18f0"
+"661438b5-5a59-45a2-86e9-513c2366807b"
+"d1e6fc59-c080-4fdc-b647-3b35d1f8d782"
+"cb1ce50e-5dd5-4833-8224-357b5b83cf4e"
+"d822ea18-f495-4837-aed6-a85b55987ff4"
+"40fdeaab-2966-45d3-89fe-b378f0f2b769"
+"9be57278-0a67-453d-86da-472faf6f68ad"
+"3c551fd5-a8d0-465a-a55a-89801e4234dd"
+"4111da0f-b973-414f-8495-ac3706110af1"
+"9b8c8f96-99eb-4bf4-9792-38eac77cd575"
+"03d83707-4d19-438d-8859-2099fb0d47a5"
+"971c2249-61da-4eef-959a-84a7bae6c533"
+"75cdda7c-9be6-4b07-8414-94c420545f02"
+"54b9b93c-87f2-4c92-8c65-462c9005dcf3"
+"ee151fc1-5118-4139-aec1-37189357b311"
+"4fcf63c7-dc84-4997-ba4c-1d6843bb8f07"
+"d355c310-f1be-4727-a747-9c48c17d6083"
+"157ecfc0-c21c-4be3-b00b-3ccbd6136f08"
+"6be43683-4d16-4fa7-ab7d-4eba972eaa20"
+"b646a1ae-38a7-44f6-9d7e-2b04f45f1906"
+"effff247-f255-431a-a830-8a2d3ba8f07d"
+"a5ed2202-8db5-4af6-8693-45503ffab2fd"
+"9d821051-03d6-408d-8272-7105e6fbc61a"
+"be21a915-bf03-41fa-b584-899e66037270"
+"5b273b40-8eb3-4976-b9db-94f51a339e67"
+"2931f50a-81a1-45b2-8d5b-b3b34329fbdc"
+"bb1c14aa-22a3-45e7-a148-dd5403c12ebb"
+"21f062b8-6963-4c0f-a77c-31058dea9427"
+"2901a20d-3c92-4b14-aad5-529f33fa1d50"
+"e56901ca-afc3-4674-9597-d2562f7593cb"
+"e9dae81a-90b7-4bb7-b551-60ee57a4f290"
+"27e80ad4-2f58-4558-826e-ff03061ae7cf"
+"57786981-3bef-4d44-adc0-e8676a397549"
+"4d5e2d0a-1388-4903-a533-659ef5f31d22"
+"f0ffbdca-5287-4dcb-a0ea-49c16e2ff515"
+"4a7e6bb2-ea38-4a23-b59b-aa9bd4f8f0ac"
+"381c8df9-77ff-48d3-8647-d926747cd0ad"
+"5217079a-83c3-4592-b6c2-4ffe2ffe7b1e"
+"c6a101a4-0981-4e78-8a97-258e9d2223ce"
+"95fc80d4-08c5-47d2-8697-9f7796b0562b"
+"9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8"
+--------------------------------------------------------------------------------
+[02:14:02][elapsed=92832ms / 92.832s / 1.547m][kafka][OK] offset:banking-microservices.money.account.created.v1
+COMMAND:
+kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.created.v1 --time -1
+DURATION: 1945ms / 1.945s / 0.032m
+TOPIC: banking-microservices.money.account.created.v1
+RAW:
+banking-microservices.money.account.created.v1:0:43
+SUM: 43
+--------------------------------------------------------------------------------
+[02:14:02][elapsed=93155ms / 93.155s / 1.553m][kafka][START] money account created user1 event
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- sh -lc "kafka-console-consumer --bootstrap-server kafka:9092 --topic banking-microservices.money.account.created.v1 --from-beginning --timeout-ms 5000 2>/dev/null || true"
+START_ELAPSED_TOTAL: 92836ms / 92.836s / 1.547m
+--------------------------------------------------------------------------------
+[02:14:11][elapsed=102523ms / 102.523s / 1.709m][kafka][OK] money account created user1 event
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- sh -lc "kafka-console-consumer --bootstrap-server kafka:9092 --topic banking-microservices.money.account.created.v1 --from-beginning --timeout-ms 5000 2>/dev/null || true"
+DURATION: 9679ms / 9.679s / 0.161m
+TOPIC: banking-microservices.money.account.created.v1
+NEEDLE: 95fc80d4-08c5-47d2-8697-9f7796b0562b
+FOUND: True
+OUTPUT:
+{"eventUUID":"7b920dd6-a421-4df7-8dc8-aef4a47c56c3","keycloakUserUUID":"7b920dd6-a421-4df7-8dc8-aef4a47c56c3","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"7b920dd6-a421-4df7-8dc8-aef4a47c56c3","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:20:49.728271616","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"a0cdcc62-8a77-440b-8bdb-86fadb2c18f0","keycloakUserUUID":"a0cdcc62-8a77-440b-8bdb-86fadb2c18f0","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"a0cdcc62-8a77-440b-8bdb-86fadb2c18f0","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:20:50.515502122","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"661438b5-5a59-45a2-86e9-513c2366807b","keycloakUserUUID":"661438b5-5a59-45a2-86e9-513c2366807b","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"661438b5-5a59-45a2-86e9-513c2366807b","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:22:00.412027802","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"d1e6fc59-c080-4fdc-b647-3b35d1f8d782","keycloakUserUUID":"d1e6fc59-c080-4fdc-b647-3b35d1f8d782","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"d1e6fc59-c080-4fdc-b647-3b35d1f8d782","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:22:00.599250682","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"cb1ce50e-5dd5-4833-8224-357b5b83cf4e","keycloakUserUUID":"cb1ce50e-5dd5-4833-8224-357b5b83cf4e","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"cb1ce50e-5dd5-4833-8224-357b5b83cf4e","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:24:07.803691542","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"d822ea18-f495-4837-aed6-a85b55987ff4","keycloakUserUUID":"d822ea18-f495-4837-aed6-a85b55987ff4","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"d822ea18-f495-4837-aed6-a85b55987ff4","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:24:08.183691846","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"40fdeaab-2966-45d3-89fe-b378f0f2b769","keycloakUserUUID":"40fdeaab-2966-45d3-89fe-b378f0f2b769","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"40fdeaab-2966-45d3-89fe-b378f0f2b769","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:25:32.090950505","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"9be57278-0a67-453d-86da-472faf6f68ad","keycloakUserUUID":"9be57278-0a67-453d-86da-472faf6f68ad","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"9be57278-0a67-453d-86da-472faf6f68ad","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:27:14.418524427","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"3c551fd5-a8d0-465a-a55a-89801e4234dd","keycloakUserUUID":"3c551fd5-a8d0-465a-a55a-89801e4234dd","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"3c551fd5-a8d0-465a-a55a-89801e4234dd","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:27:14.603286847","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"4111da0f-b973-414f-8495-ac3706110af1","keycloakUserUUID":"4111da0f-b973-414f-8495-ac3706110af1","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"4111da0f-b973-414f-8495-ac3706110af1","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:28:16.162350555","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"9b8c8f96-99eb-4bf4-9792-38eac77cd575","keycloakUserUUID":"9b8c8f96-99eb-4bf4-9792-38eac77cd575","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"9b8c8f96-99eb-4bf4-9792-38eac77cd575","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:49:29.825960220","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"03d83707-4d19-438d-8859-2099fb0d47a5","keycloakUserUUID":"03d83707-4d19-438d-8859-2099fb0d47a5","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"03d83707-4d19-438d-8859-2099fb0d47a5","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:49:33.266516226","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"971c2249-61da-4eef-959a-84a7bae6c533","keycloakUserUUID":"971c2249-61da-4eef-959a-84a7bae6c533","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"971c2249-61da-4eef-959a-84a7bae6c533","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:50:06.837514274","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"75cdda7c-9be6-4b07-8414-94c420545f02","keycloakUserUUID":"75cdda7c-9be6-4b07-8414-94c420545f02","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"75cdda7c-9be6-4b07-8414-94c420545f02","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T20:01:22.523450329","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"54b9b93c-87f2-4c92-8c65-462c9005dcf3","keycloakUserUUID":"54b9b93c-87f2-4c92-8c65-462c9005dcf3","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"54b9b93c-87f2-4c92-8c65-462c9005dcf3","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T20:01:22.944719537","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"ee151fc1-5118-4139-aec1-37189357b311","keycloakUserUUID":"ee151fc1-5118-4139-aec1-37189357b311","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"ee151fc1-5118-4139-aec1-37189357b311","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T20:01:57.262471668","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"4fcf63c7-dc84-4997-ba4c-1d6843bb8f07","keycloakUserUUID":"4fcf63c7-dc84-4997-ba4c-1d6843bb8f07","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"4fcf63c7-dc84-4997-ba4c-1d6843bb8f07","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:16:59.666833305","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"d355c310-f1be-4727-a747-9c48c17d6083","keycloakUserUUID":"d355c310-f1be-4727-a747-9c48c17d6083","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"d355c310-f1be-4727-a747-9c48c17d6083","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:37:41.755402682","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"157ecfc0-c21c-4be3-b00b-3ccbd6136f08","keycloakUserUUID":"157ecfc0-c21c-4be3-b00b-3ccbd6136f08","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"157ecfc0-c21c-4be3-b00b-3ccbd6136f08","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:37:43.320726897","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"6be43683-4d16-4fa7-ab7d-4eba972eaa20","keycloakUserUUID":"6be43683-4d16-4fa7-ab7d-4eba972eaa20","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"6be43683-4d16-4fa7-ab7d-4eba972eaa20","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:38:02.518771633","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"b646a1ae-38a7-44f6-9d7e-2b04f45f1906","keycloakUserUUID":"b646a1ae-38a7-44f6-9d7e-2b04f45f1906","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"b646a1ae-38a7-44f6-9d7e-2b04f45f1906","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:39:36.858889498","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"effff247-f255-431a-a830-8a2d3ba8f07d","keycloakUserUUID":"effff247-f255-431a-a830-8a2d3ba8f07d","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"effff247-f255-431a-a830-8a2d3ba8f07d","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:39:37.126564199","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"a5ed2202-8db5-4af6-8693-45503ffab2fd","keycloakUserUUID":"a5ed2202-8db5-4af6-8693-45503ffab2fd","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"a5ed2202-8db5-4af6-8693-45503ffab2fd","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:40:40.387849050","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"9d821051-03d6-408d-8272-7105e6fbc61a","keycloakUserUUID":"9d821051-03d6-408d-8272-7105e6fbc61a","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"9d821051-03d6-408d-8272-7105e6fbc61a","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:40:40.764304555","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"be21a915-bf03-41fa-b584-899e66037270","keycloakUserUUID":"be21a915-bf03-41fa-b584-899e66037270","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"be21a915-bf03-41fa-b584-899e66037270","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:44:26.881260739","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"5b273b40-8eb3-4976-b9db-94f51a339e67","keycloakUserUUID":"5b273b40-8eb3-4976-b9db-94f51a339e67","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"5b273b40-8eb3-4976-b9db-94f51a339e67","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:44:27.380042287","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"2931f50a-81a1-45b2-8d5b-b3b34329fbdc","keycloakUserUUID":"2931f50a-81a1-45b2-8d5b-b3b34329fbdc","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"2931f50a-81a1-45b2-8d5b-b3b34329fbdc","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:53:30.256185821","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"bb1c14aa-22a3-45e7-a148-dd5403c12ebb","keycloakUserUUID":"bb1c14aa-22a3-45e7-a148-dd5403c12ebb","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"bb1c14aa-22a3-45e7-a148-dd5403c12ebb","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:53:31.086340616","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"21f062b8-6963-4c0f-a77c-31058dea9427","keycloakUserUUID":"21f062b8-6963-4c0f-a77c-31058dea9427","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"21f062b8-6963-4c0f-a77c-31058dea9427","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T22:14:06.913261239","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"2901a20d-3c92-4b14-aad5-529f33fa1d50","keycloakUserUUID":"2901a20d-3c92-4b14-aad5-529f33fa1d50","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"2901a20d-3c92-4b14-aad5-529f33fa1d50","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T22:14:07.206718579","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"e56901ca-afc3-4674-9597-d2562f7593cb","keycloakUserUUID":"e56901ca-afc3-4674-9597-d2562f7593cb","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"e56901ca-afc3-4674-9597-d2562f7593cb","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T22:50:03.258265338","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"e9dae81a-90b7-4bb7-b551-60ee57a4f290","keycloakUserUUID":"e9dae81a-90b7-4bb7-b551-60ee57a4f290","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"e9dae81a-90b7-4bb7-b551-60ee57a4f290","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T22:50:03.809158539","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"27e80ad4-2f58-4558-826e-ff03061ae7cf","keycloakUserUUID":"27e80ad4-2f58-4558-826e-ff03061ae7cf","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"27e80ad4-2f58-4558-826e-ff03061ae7cf","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T22:51:22.386122748","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"57786981-3bef-4d44-adc0-e8676a397549","keycloakUserUUID":"57786981-3bef-4d44-adc0-e8676a397549","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"57786981-3bef-4d44-adc0-e8676a397549","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T22:51:22.494011595","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"4d5e2d0a-1388-4903-a533-659ef5f31d22","keycloakUserUUID":"4d5e2d0a-1388-4903-a533-659ef5f31d22","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"4d5e2d0a-1388-4903-a533-659ef5f31d22","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:02:44.224326785","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"f0ffbdca-5287-4dcb-a0ea-49c16e2ff515","keycloakUserUUID":"f0ffbdca-5287-4dcb-a0ea-49c16e2ff515","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"f0ffbdca-5287-4dcb-a0ea-49c16e2ff515","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:02:44.308299347","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"4a7e6bb2-ea38-4a23-b59b-aa9bd4f8f0ac","keycloakUserUUID":"4a7e6bb2-ea38-4a23-b59b-aa9bd4f8f0ac","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"4a7e6bb2-ea38-4a23-b59b-aa9bd4f8f0ac","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:04:14.524481330","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"381c8df9-77ff-48d3-8647-d926747cd0ad","keycloakUserUUID":"381c8df9-77ff-48d3-8647-d926747cd0ad","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"381c8df9-77ff-48d3-8647-d926747cd0ad","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:04:14.624471944","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"5217079a-83c3-4592-b6c2-4ffe2ffe7b1e","keycloakUserUUID":"5217079a-83c3-4592-b6c2-4ffe2ffe7b1e","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"5217079a-83c3-4592-b6c2-4ffe2ffe7b1e","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:04:51.486807852","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"c6a101a4-0981-4e78-8a97-258e9d2223ce","keycloakUserUUID":"c6a101a4-0981-4e78-8a97-258e9d2223ce","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"c6a101a4-0981-4e78-8a97-258e9d2223ce","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:04:51.587421177","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"95fc80d4-08c5-47d2-8697-9f7796b0562b","keycloakUserUUID":"95fc80d4-08c5-47d2-8697-9f7796b0562b","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"95fc80d4-08c5-47d2-8697-9f7796b0562b","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:13:12.935164310","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8","keycloakUserUUID":"9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:13:13.073606419","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"06cc4e4f-ae01-40cb-822f-79b6b715aa95","keycloakUserUUID":"06cc4e4f-ae01-40cb-822f-79b6b715aa95","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"06cc4e4f-ae01-40cb-822f-79b6b715aa95","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:13:46.518771047","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+--------------------------------------------------------------------------------
+[02:14:12][elapsed=102939ms / 102.939s / 1.716m][kafka][START] money account created user2 event
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- sh -lc "kafka-console-consumer --bootstrap-server kafka:9092 --topic banking-microservices.money.account.created.v1 --from-beginning --timeout-ms 5000 2>/dev/null || true"
+START_ELAPSED_TOTAL: 102527ms / 102.527s / 1.709m
+--------------------------------------------------------------------------------
+[02:14:21][elapsed=112377ms / 112.377s / 1.873m][kafka][OK] money account created user2 event
+COMMAND:
+kubectl -n banking-microservices exec kafka-7456dfc675-6j2lg -- sh -lc "kafka-console-consumer --bootstrap-server kafka:9092 --topic banking-microservices.money.account.created.v1 --from-beginning --timeout-ms 5000 2>/dev/null || true"
+DURATION: 9839ms / 9.839s / 0.164m
+TOPIC: banking-microservices.money.account.created.v1
+NEEDLE: 9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8
+FOUND: True
+OUTPUT:
+{"eventUUID":"7b920dd6-a421-4df7-8dc8-aef4a47c56c3","keycloakUserUUID":"7b920dd6-a421-4df7-8dc8-aef4a47c56c3","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"7b920dd6-a421-4df7-8dc8-aef4a47c56c3","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:20:49.728271616","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"a0cdcc62-8a77-440b-8bdb-86fadb2c18f0","keycloakUserUUID":"a0cdcc62-8a77-440b-8bdb-86fadb2c18f0","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"a0cdcc62-8a77-440b-8bdb-86fadb2c18f0","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:20:50.515502122","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"661438b5-5a59-45a2-86e9-513c2366807b","keycloakUserUUID":"661438b5-5a59-45a2-86e9-513c2366807b","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"661438b5-5a59-45a2-86e9-513c2366807b","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:22:00.412027802","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"d1e6fc59-c080-4fdc-b647-3b35d1f8d782","keycloakUserUUID":"d1e6fc59-c080-4fdc-b647-3b35d1f8d782","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"d1e6fc59-c080-4fdc-b647-3b35d1f8d782","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:22:00.599250682","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"cb1ce50e-5dd5-4833-8224-357b5b83cf4e","keycloakUserUUID":"cb1ce50e-5dd5-4833-8224-357b5b83cf4e","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"cb1ce50e-5dd5-4833-8224-357b5b83cf4e","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:24:07.803691542","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"d822ea18-f495-4837-aed6-a85b55987ff4","keycloakUserUUID":"d822ea18-f495-4837-aed6-a85b55987ff4","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"d822ea18-f495-4837-aed6-a85b55987ff4","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:24:08.183691846","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"40fdeaab-2966-45d3-89fe-b378f0f2b769","keycloakUserUUID":"40fdeaab-2966-45d3-89fe-b378f0f2b769","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"40fdeaab-2966-45d3-89fe-b378f0f2b769","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:25:32.090950505","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"9be57278-0a67-453d-86da-472faf6f68ad","keycloakUserUUID":"9be57278-0a67-453d-86da-472faf6f68ad","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"9be57278-0a67-453d-86da-472faf6f68ad","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:27:14.418524427","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"3c551fd5-a8d0-465a-a55a-89801e4234dd","keycloakUserUUID":"3c551fd5-a8d0-465a-a55a-89801e4234dd","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"3c551fd5-a8d0-465a-a55a-89801e4234dd","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:27:14.603286847","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"4111da0f-b973-414f-8495-ac3706110af1","keycloakUserUUID":"4111da0f-b973-414f-8495-ac3706110af1","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"4111da0f-b973-414f-8495-ac3706110af1","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:28:16.162350555","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"9b8c8f96-99eb-4bf4-9792-38eac77cd575","keycloakUserUUID":"9b8c8f96-99eb-4bf4-9792-38eac77cd575","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"9b8c8f96-99eb-4bf4-9792-38eac77cd575","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:49:29.825960220","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"03d83707-4d19-438d-8859-2099fb0d47a5","keycloakUserUUID":"03d83707-4d19-438d-8859-2099fb0d47a5","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"03d83707-4d19-438d-8859-2099fb0d47a5","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:49:33.266516226","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"971c2249-61da-4eef-959a-84a7bae6c533","keycloakUserUUID":"971c2249-61da-4eef-959a-84a7bae6c533","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"971c2249-61da-4eef-959a-84a7bae6c533","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T19:50:06.837514274","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"75cdda7c-9be6-4b07-8414-94c420545f02","keycloakUserUUID":"75cdda7c-9be6-4b07-8414-94c420545f02","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"75cdda7c-9be6-4b07-8414-94c420545f02","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T20:01:22.523450329","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"54b9b93c-87f2-4c92-8c65-462c9005dcf3","keycloakUserUUID":"54b9b93c-87f2-4c92-8c65-462c9005dcf3","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"54b9b93c-87f2-4c92-8c65-462c9005dcf3","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T20:01:22.944719537","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"ee151fc1-5118-4139-aec1-37189357b311","keycloakUserUUID":"ee151fc1-5118-4139-aec1-37189357b311","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"ee151fc1-5118-4139-aec1-37189357b311","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T20:01:57.262471668","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"4fcf63c7-dc84-4997-ba4c-1d6843bb8f07","keycloakUserUUID":"4fcf63c7-dc84-4997-ba4c-1d6843bb8f07","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"4fcf63c7-dc84-4997-ba4c-1d6843bb8f07","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:16:59.666833305","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"d355c310-f1be-4727-a747-9c48c17d6083","keycloakUserUUID":"d355c310-f1be-4727-a747-9c48c17d6083","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"d355c310-f1be-4727-a747-9c48c17d6083","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:37:41.755402682","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"157ecfc0-c21c-4be3-b00b-3ccbd6136f08","keycloakUserUUID":"157ecfc0-c21c-4be3-b00b-3ccbd6136f08","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"157ecfc0-c21c-4be3-b00b-3ccbd6136f08","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:37:43.320726897","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"6be43683-4d16-4fa7-ab7d-4eba972eaa20","keycloakUserUUID":"6be43683-4d16-4fa7-ab7d-4eba972eaa20","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"6be43683-4d16-4fa7-ab7d-4eba972eaa20","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:38:02.518771633","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"b646a1ae-38a7-44f6-9d7e-2b04f45f1906","keycloakUserUUID":"b646a1ae-38a7-44f6-9d7e-2b04f45f1906","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"b646a1ae-38a7-44f6-9d7e-2b04f45f1906","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:39:36.858889498","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"effff247-f255-431a-a830-8a2d3ba8f07d","keycloakUserUUID":"effff247-f255-431a-a830-8a2d3ba8f07d","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"effff247-f255-431a-a830-8a2d3ba8f07d","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:39:37.126564199","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"a5ed2202-8db5-4af6-8693-45503ffab2fd","keycloakUserUUID":"a5ed2202-8db5-4af6-8693-45503ffab2fd","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"a5ed2202-8db5-4af6-8693-45503ffab2fd","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:40:40.387849050","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"9d821051-03d6-408d-8272-7105e6fbc61a","keycloakUserUUID":"9d821051-03d6-408d-8272-7105e6fbc61a","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"9d821051-03d6-408d-8272-7105e6fbc61a","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:40:40.764304555","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"be21a915-bf03-41fa-b584-899e66037270","keycloakUserUUID":"be21a915-bf03-41fa-b584-899e66037270","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"be21a915-bf03-41fa-b584-899e66037270","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:44:26.881260739","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"5b273b40-8eb3-4976-b9db-94f51a339e67","keycloakUserUUID":"5b273b40-8eb3-4976-b9db-94f51a339e67","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"5b273b40-8eb3-4976-b9db-94f51a339e67","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:44:27.380042287","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"2931f50a-81a1-45b2-8d5b-b3b34329fbdc","keycloakUserUUID":"2931f50a-81a1-45b2-8d5b-b3b34329fbdc","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"2931f50a-81a1-45b2-8d5b-b3b34329fbdc","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:53:30.256185821","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"bb1c14aa-22a3-45e7-a148-dd5403c12ebb","keycloakUserUUID":"bb1c14aa-22a3-45e7-a148-dd5403c12ebb","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"bb1c14aa-22a3-45e7-a148-dd5403c12ebb","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T21:53:31.086340616","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"21f062b8-6963-4c0f-a77c-31058dea9427","keycloakUserUUID":"21f062b8-6963-4c0f-a77c-31058dea9427","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"21f062b8-6963-4c0f-a77c-31058dea9427","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T22:14:06.913261239","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"2901a20d-3c92-4b14-aad5-529f33fa1d50","keycloakUserUUID":"2901a20d-3c92-4b14-aad5-529f33fa1d50","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"2901a20d-3c92-4b14-aad5-529f33fa1d50","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T22:14:07.206718579","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"e56901ca-afc3-4674-9597-d2562f7593cb","keycloakUserUUID":"e56901ca-afc3-4674-9597-d2562f7593cb","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"e56901ca-afc3-4674-9597-d2562f7593cb","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T22:50:03.258265338","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"e9dae81a-90b7-4bb7-b551-60ee57a4f290","keycloakUserUUID":"e9dae81a-90b7-4bb7-b551-60ee57a4f290","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"e9dae81a-90b7-4bb7-b551-60ee57a4f290","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T22:50:03.809158539","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"27e80ad4-2f58-4558-826e-ff03061ae7cf","keycloakUserUUID":"27e80ad4-2f58-4558-826e-ff03061ae7cf","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"27e80ad4-2f58-4558-826e-ff03061ae7cf","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T22:51:22.386122748","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"57786981-3bef-4d44-adc0-e8676a397549","keycloakUserUUID":"57786981-3bef-4d44-adc0-e8676a397549","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"57786981-3bef-4d44-adc0-e8676a397549","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T22:51:22.494011595","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"4d5e2d0a-1388-4903-a533-659ef5f31d22","keycloakUserUUID":"4d5e2d0a-1388-4903-a533-659ef5f31d22","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"4d5e2d0a-1388-4903-a533-659ef5f31d22","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:02:44.224326785","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"f0ffbdca-5287-4dcb-a0ea-49c16e2ff515","keycloakUserUUID":"f0ffbdca-5287-4dcb-a0ea-49c16e2ff515","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"f0ffbdca-5287-4dcb-a0ea-49c16e2ff515","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:02:44.308299347","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"4a7e6bb2-ea38-4a23-b59b-aa9bd4f8f0ac","keycloakUserUUID":"4a7e6bb2-ea38-4a23-b59b-aa9bd4f8f0ac","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"4a7e6bb2-ea38-4a23-b59b-aa9bd4f8f0ac","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:04:14.524481330","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"381c8df9-77ff-48d3-8647-d926747cd0ad","keycloakUserUUID":"381c8df9-77ff-48d3-8647-d926747cd0ad","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"381c8df9-77ff-48d3-8647-d926747cd0ad","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:04:14.624471944","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"5217079a-83c3-4592-b6c2-4ffe2ffe7b1e","keycloakUserUUID":"5217079a-83c3-4592-b6c2-4ffe2ffe7b1e","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"5217079a-83c3-4592-b6c2-4ffe2ffe7b1e","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:04:51.486807852","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"c6a101a4-0981-4e78-8a97-258e9d2223ce","keycloakUserUUID":"c6a101a4-0981-4e78-8a97-258e9d2223ce","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"c6a101a4-0981-4e78-8a97-258e9d2223ce","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:04:51.587421177","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"95fc80d4-08c5-47d2-8697-9f7796b0562b","keycloakUserUUID":"95fc80d4-08c5-47d2-8697-9f7796b0562b","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"95fc80d4-08c5-47d2-8697-9f7796b0562b","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:13:12.935164310","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8","keycloakUserUUID":"9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:13:13.073606419","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+{"eventUUID":"06cc4e4f-ae01-40cb-822f-79b6b715aa95","keycloakUserUUID":"06cc4e4f-ae01-40cb-822f-79b6b715aa95","senderName":null,"senderSurname":null,"senderEmail":null,"receiverEmail":null,"receiverName":null,"receiverSurname":null,"senderUserId":"06cc4e4f-ae01-40cb-822f-79b6b715aa95","senderIban":null,"receiverUserId":null,"receiverIban":null,"money":null,"transactionType":"TRANSFER","description":null,"status":"CREATED","statusDescription":"İşleminiz alındı","error":false,"errorDescription":null,"isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:13:46.518771047","senderTransactionHistory":null,"receiverTransactionHistory":null,"tokenDetails":null}
+--------------------------------------------------------------------------------
+[02:14:23][elapsed=114391ms / 114.391s / 1.907m][kafka][OK] offset:banking-microservices.user.created.v1
+COMMAND:
+kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.user.created.v1 --time -1
+DURATION: 1536ms / 1.536s / 0.026m
+TOPIC: banking-microservices.user.created.v1
+RAW:
+banking-microservices.user.created.v1:0:43
+SUM: 43
+--------------------------------------------------------------------------------
+[02:14:25][elapsed=116195ms / 116.195s / 1.937m][kafka][OK] offset:banking-microservices.money.account.created.v1
+COMMAND:
+kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.created.v1 --time -1
+DURATION: 1799ms / 1.799s / 0.03m
+TOPIC: banking-microservices.money.account.created.v1
+RAW:
+banking-microservices.money.account.created.v1:0:43
+SUM: 43
+--------------------------------------------------------------------------------
+[02:14:27][elapsed=117953ms / 117.953s / 1.966m][kafka][OK] offset:banking-microservices.money.account.create-failed.v1
+COMMAND:
+kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.money.account.create-failed.v1 --time -1
+DURATION: 1753ms / 1.753s / 0.029m
+TOPIC: banking-microservices.money.account.create-failed.v1
+RAW:
+Error occurred: Could not match any topic-partitions with the specified filters
+
+command terminated with exit code 1
+SUM: 0
+--------------------------------------------------------------------------------
+[02:14:28][elapsed=119638ms / 119.638s / 1.994m][kafka][OK] offset:banking-microservices.transaction.created.v1
+COMMAND:
+kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.created.v1 --time -1
+DURATION: 1682ms / 1.682s / 0.028m
+TOPIC: banking-microservices.transaction.created.v1
+RAW:
+banking-microservices.transaction.created.v1:0:52
+SUM: 52
+--------------------------------------------------------------------------------
+[02:14:30][elapsed=121428ms / 121.428s / 2.024m][kafka][OK] offset:banking-microservices.transaction.completed.v1
+COMMAND:
+kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.completed.v1 --time -1
+DURATION: 1787ms / 1.787s / 0.03m
+TOPIC: banking-microservices.transaction.completed.v1
+RAW:
+banking-microservices.transaction.completed.v1:0:47
+SUM: 47
+--------------------------------------------------------------------------------
+[02:14:32][elapsed=123315ms / 123.315s / 2.055m][kafka][OK] offset:banking-microservices.transaction.failed.v1
+COMMAND:
+kafka-run-class kafka.tools.GetOffsetShell --broker-list kafka:9092 --topic banking-microservices.transaction.failed.v1 --time -1
+DURATION: 1882ms / 1.882s / 0.031m
+TOPIC: banking-microservices.transaction.failed.v1
+RAW:
+banking-microservices.transaction.failed.v1:0:7
+SUM: 7
+--------------------------------------------------------------------------------

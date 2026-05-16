@@ -1,0 +1,9 @@
+{
+    "method":  "GET",
+    "url":  "http://localhost:8095/api/transaction-service/v1/transactions/gettransactionhistorywithid?id=75cdda7c-9be6-4b07-8414-94c420545f02",
+    "expected":  [
+                     200
+                 ],
+    "headers":  "Authorization",
+    "body":  null
+}

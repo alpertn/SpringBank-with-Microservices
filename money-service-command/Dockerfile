@@ -1,19 +1,19 @@
 # -- Stage 1: Maven dependency cache ------------------------------------------------------------
-# pom.xml AYRI kopyalanir, dependency'ler once indirilir.
-# Boylece sadece pom.xml degistiginde dependency'ler yeniden indirilir.
-# Kaynak kod degistiginde bu layer Docker cache'den gelir ve build hizlanir.
-FROM maven:3.9.6-eclipse-temurin-21-alpine AS deps
+# Alpine yerine Debian-slim kullanilir: protoc binary glibc gerektirir, Alpine musl kullanir
+# protoc-gen-grpc-java .exe uzantili binary indirir, Debian'da calisir Alpine'de calistirilamaz
+FROM maven:3.9.6-eclipse-temurin-21 AS deps
 WORKDIR /app
 COPY pom.xml .
-# -B (batch mode): Maven'i CI/CD uyumlu interaktif olmayan modda calistirir.
-# dependency:go-offline: Build oncesi tum dependency ve plugin'leri indirir.
-RUN mvn dependency:go-offline -B
+# dependency'leri ve protoc binary'i indir (|| true: bazi artifact'lar eksik olabilir, devam et)
+RUN mvn dependency:go-offline -B || true
+# Protoc binary'lere calistirma izni ver (.exe = ELF binary, Linux'ta chmod +x gerekiyor)
+RUN find /root/.m2 -name "*.exe" -exec chmod +x {} \;
 
 # -- Stage 2: Build -----------------------------------------------------------------------------
 FROM deps AS build
 COPY src ./src
-# -o (offline): Stage 1'de inen dependency cache'ini kullanir.
-RUN mvn clean package -DskipTests -o
+# Protoc binary'lere tekrar izin ver, ardindan build et
+RUN find /root/.m2 -name "*.exe" -exec chmod +x {} \; && mvn clean package -DskipTests
 
 # -- Stage 3: Runtime ---------------------------------------------------------------------------
 # JRE-only image kullanilir; JDK araclari olmadigi icin image daha kucuk olur.
@@ -22,7 +22,6 @@ WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
 # Healthcheck command-side'in ayakta olup olmadigini kontrol eder.
-# Bu serviste garanti olan endpoint custom /health endpoint'idir.
 HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:8092/api/money-service-command/v1/accounts/health || exit 1
 

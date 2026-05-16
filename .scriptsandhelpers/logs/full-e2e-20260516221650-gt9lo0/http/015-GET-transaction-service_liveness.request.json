@@ -1,0 +1,9 @@
+{
+    "method":  "GET",
+    "url":  "http://localhost:8095/api/transaction-service/actuator/health/liveness",
+    "expected":  [
+                     200
+                 ],
+    "headers":  "",
+    "body":  null
+}

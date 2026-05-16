@@ -1,0 +1,12 @@
+{
+    "method":  "POST",
+    "url":  "http://localhost:8095/api/money-service/v1/accounts/depositByUserId",
+    "expected":  [
+                     200
+                 ],
+    "headers":  "Authorization",
+    "body":  {
+                 "amount":  200,
+                 "userId":  "54b9b93c-87f2-4c92-8c65-462c9005dcf3"
+             }
+}

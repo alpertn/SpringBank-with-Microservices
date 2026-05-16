@@ -1,0 +1,60 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.1)
+
+INFO  --- [money-service-command] : Starting MoneyServiceCommandApplication v0.0.1-SNAPSHOT using Java 21.0.11 with PID 1 (/app/app.jar started by root in /app)
+INFO  --- [money-service-command] : No active profile set, falling back to 1 default profile: "default"
+INFO  --- [money-service-command] : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+INFO  --- [money-service-command] : Finished Spring Data repository scanning in 699 ms. Found 1 JPA repository interface.
+INFO  --- [money-service-command] : Tomcat initialized with port 8092 (http)
+INFO  --- [money-service-command] : Starting service [Tomcat]
+INFO  --- [money-service-command] : Starting Servlet engine: [Apache Tomcat/11.0.15]
+INFO  --- [money-service-command] : Root WebApplicationContext: initialization completed in 22293 ms
+INFO  --- [money-service-command] : HHH008540: Processing PersistenceUnitInfo [name: default]
+INFO  --- [money-service-command] : HHH000001: Hibernate ORM core version 7.2.0.Final
+INFO  --- [money-service-command] : No LoadTimeWeaver setup: ignoring JPA class transformer
+INFO  --- [money-service-command] : HikariPool-1 - Starting...
+INFO  --- [money-service-command] : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@40b8158d
+INFO  --- [money-service-command] : HikariPool-1 - Start completed.
+WARN  --- [money-service-command] : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+INFO  --- [money-service-command] : HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://postgres:5432/banking_money_command]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 15.15
+	Default catalog/schema: banking_money_command/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+INFO  --- [money-service-command] : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+WARN  --- [money-service-command] : HHH000247: ErrorCode: 0, SQLState: 00000
+WARN  --- [money-service-command] : constraint "uk5ms5w3oy5886wiu7fqk272you" of relation "money_accounts" does not exist, skipping
+WARN  --- [money-service-command] : HHH000247: ErrorCode: 0, SQLState: 00000
+WARN  --- [money-service-command] : constraint "ukrn1exdam3httw5nxte1xggmhy" of relation "money_accounts" does not exist, skipping
+WARN  --- [money-service-command] : HHH000247: ErrorCode: 0, SQLState: 00000
+WARN  --- [money-service-command] : constraint "ukcr9yuhtbmh9x5hpb22gt0xtdn" of relation "money_accounts" does not exist, skipping
+INFO  --- [money-service-command] : Initialized JPA EntityManagerFactory for persistence unit 'default'
+INFO  --- [money-service-command] : Hibernate is in classpath; If applicable, HQL parser will be used.
+WARN  --- [money-service-command] : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+INFO  --- [money-service-command] : Exposing 2 endpoints beneath base path '/api/money-service-command/actuator'
+INFO  --- [money-service-command] : Tomcat started on port 8092 (http) with context path '/'
+INFO  --- [money-service-command] : Started MoneyServiceCommandApplication in 59.937 seconds (process running for 65.992)
+INFO  --- [money-service-command] : Initializing Spring DispatcherServlet 'dispatcherServlet'
+INFO  --- [money-service-command] : Initializing Servlet 'dispatcherServlet'
+INFO  --- [money-service-command] : Completed initialization in 20 ms
+WARN  --- [money-service-command] : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Unexpected character ('k' (code 107)): was expecting double-quote to start property name]
+WARN  --- [money-service-command] : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Unexpected character ('a' (code 97)): was expecting double-quote to start property name]
+WARN  --- [money-service-command] : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Unexpected character ('s' (code 115)): was expecting double-quote to start property name]
+WARN  --- [money-service-command] : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Unexpected character ('k' (code 107)): was expecting double-quote to start property name]
+WARN  --- [money-service-command] : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Unexpected character ('a' (code 97)): was expecting double-quote to start property name]
+WARN  --- [money-service-command] : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Unexpected character ('a' (code 97)): was expecting double-quote to start property name]
+WARN  --- [money-service-command] : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Unexpected character ('s' (code 115)): was expecting double-quote to start property name]

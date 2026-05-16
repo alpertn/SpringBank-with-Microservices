@@ -1,0 +1,17 @@
+{
+    "method":  "POST",
+    "url":  "http://localhost:8095/api/transaction-service/v1/transactions/create",
+    "expected":  [
+                     201
+                 ],
+    "headers":  "X-User-KeycloakUUID,Authorization",
+    "body":  {
+                 "senderIban":  null,
+                 "receiverSurname":  null,
+                 "receiverIban":  null,
+                 "amount":  5000,
+                 "description":  "E2E deposit 20260516222643-wihrmy",
+                 "transactionType":  "DEPOSIT",
+                 "receiverName":  null
+             }
+}

@@ -1,0 +1,1 @@
+{"id":"b6a004bd-0a1a-4a94-8da6-ea41b10a7746","userId":"d822ea18-f495-4837-aed6-a85b55987ff4","keycloakUserUUID":"d822ea18-f495-4837-aed6-a85b55987ff4","userIban":"TR8814806AT55VBLII6OXJNB4V","money":0.00,"blockedMoney":0.00}

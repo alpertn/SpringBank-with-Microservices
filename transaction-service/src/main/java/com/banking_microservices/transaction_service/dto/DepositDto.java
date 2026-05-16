@@ -17,4 +17,5 @@ public class DepositDto {
     @NotNull
     private BigDecimal amount;
     private String description;
+    private TokenDetailsDto tokenDetails;
 }

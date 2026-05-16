@@ -38,6 +38,12 @@ public class UserMoneyService {
     public UserMoney generateUser(String userId) {
         log.info(" ({}) > UserMoneyService | generateUser -> generateUser istegi alindi. UserId: {}", currentTime.get(), userId);
 
+        if (userMoneyRepository.existsByUserId(userId)) {
+            log.info(" ({}) > UserMoneyService | generateUser -> Kullanici icin money hesabi zaten var. UserId: {}", currentTime.get(), userId);
+            return userMoneyRepository.findByUserId(userId)
+                    .orElseThrow(() -> new SaveUserException("Existing user money account could not be loaded " + userId));
+        }
+
         UserMoney userMoney = UserMoney.builder()
                 .userId(userId)
                 .keycloakUserUUID(userId)

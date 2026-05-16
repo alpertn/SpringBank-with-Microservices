@@ -1675,6 +1675,7 @@
           class="nav-badge" id="errBadge" style="display:none">!</span></button>
       <button class="nav-item" data-page="health"><i class="ph ph-heartbeat"></i> Sistem Sağlığı</button>
       <button class="nav-item" data-page="logs"><i class="ph ph-terminal-window"></i> Canlı Loglar</button>
+      <button class="nav-item" data-page="testlogs"><i class="ph ph-list-checks"></i> Test Loglari</button>
       <button class="nav-item" data-page="activity"><i class="ph ph-clipboard-text"></i> Aktivite Log</button>
     </nav>
 
@@ -2285,7 +2286,6 @@
           style="background:linear-gradient(135deg,#026CB6,#0C9A5D);color:#fff;border-color:transparent;">🔍 Tüm
           Servisler</button>
         <button class="log-svc-btn" data-svc="gateway">🌐 Gateway</button>
-        <button class="log-svc-btn" data-svc="auth-service">🔐 Auth</button>
         <button class="log-svc-btn" data-svc="user-service">👤 User</button>
         <button class="log-svc-btn" data-svc="money-service">💰 Money</button>
         <button class="log-svc-btn" data-svc="transaction-service">↔ Transaction</button>
@@ -2314,6 +2314,42 @@
     </div>
 
     <!-- ═══════════════ 8. ACTIVITY LOG ═══════════════ -->
+    <div class="page-wrap" id="page-testlogs">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Test Loglari</div>
+          <div class="section-sub">test-everything.bat ciktilari ve all-logs.txt denetimi</div>
+        </div>
+        <div class="section-actions">
+          <button class="btn btn-outline btn-sm" id="btnRefreshTestLogs"><i class="ph ph-arrow-clockwise"></i> Yenile</button>
+        </div>
+      </div>
+      <div class="table-card">
+        <div class="table-toolbar" style="gap:10px;flex-wrap:wrap;">
+          <select id="testLogRunSelect" class="role-select" style="min-width:280px;"></select>
+          <button class="log-layout-btn test-log-mode-btn active" data-file="all-logs"><i class="ph ph-file-text"></i> all-logs.txt</button>
+          <button class="log-layout-btn test-log-mode-btn" data-file="http"><i class="ph ph-globe"></i> HTTP</button>
+          <button class="log-layout-btn test-log-mode-btn" data-file="kafka"><i class="ph ph-queue"></i> Kafka</button>
+          <button class="log-layout-btn test-log-mode-btn" data-file="db"><i class="ph ph-database"></i> DB</button>
+          <button class="log-layout-btn test-log-mode-btn" data-file="pods"><i class="ph ph-cube"></i> Pods</button>
+          <select id="testLogFileSelect" class="role-select">
+            <option value="all-logs">all-logs.txt</option>
+            <option value="http">http.txt</option>
+            <option value="kafka">kafka.txt</option>
+            <option value="db">db.txt</option>
+            <option value="pods">pods.txt</option>
+            <option value="kubectl">kubectl.txt</option>
+            <option value="console">console.log</option>
+            <option value="audit">audit.jsonl</option>
+          </select>
+        </div>
+        <div id="testLogRunMeta" style="padding:12px 16px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);font-size:12px;color:var(--text-muted);background:var(--surface2);">
+          Run bilgisi yukleniyor...
+        </div>
+        <pre id="test-log-terminal" style="margin:0;min-height:520px;max-height:70vh;overflow:auto;background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;font-size:12px;line-height:1.55;white-space:pre-wrap;">Test loglari hazir.</pre>
+      </div>
+    </div>
+
     <div class="page-wrap" id="page-activity">
       <div class="section-header">
         <div>
@@ -2410,7 +2446,7 @@
       </div>
     </div>
   </div>
-
+  <script src="js/api.js"></script>
   <script src="js/admin.js"></script>
 </body>
 

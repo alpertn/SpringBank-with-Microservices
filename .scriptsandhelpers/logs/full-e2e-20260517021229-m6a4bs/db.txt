@@ -1,0 +1,37 @@
+
+[02:13:44][elapsed=74993ms / 74.993s / 1.25m][db][OK] postgres:banking_keycloak
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_keycloak -t -A -c "select count(*) from user_entity where lower(email)=lower('e2e.alpha.20260517021229-m6a4bs@springbank.test');"
+DURATION: 1184ms / 1.184s / 0.02m
+SQL:
+select count(*) from user_entity where lower(email)=lower('e2e.alpha.20260517021229-m6a4bs@springbank.test');
+RESULT:
+1
+--------------------------------------------------------------------------------
+[02:13:45][elapsed=75744ms / 75.744s / 1.262m][db][OK] postgres:banking_keycloak
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_keycloak -t -A -c "select count(*) from user_entity where lower(email)=lower('e2e.beta.20260517021229-m6a4bs@springbank.test');"
+DURATION: 751ms / 0.751s / 0.013m
+SQL:
+select count(*) from user_entity where lower(email)=lower('e2e.beta.20260517021229-m6a4bs@springbank.test');
+RESULT:
+1
+--------------------------------------------------------------------------------
+[02:13:59][elapsed=90246ms / 90.246s / 1.504m][db][OK] postgres:banking_money
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_money -t -A -c "select count(*) from money where user_id='95fc80d4-08c5-47d2-8697-9f7796b0562b' or keycloak_user_uuid='95fc80d4-08c5-47d2-8697-9f7796b0562b';"
+DURATION: 1371ms / 1.371s / 0.023m
+SQL:
+select count(*) from money where user_id='95fc80d4-08c5-47d2-8697-9f7796b0562b' or keycloak_user_uuid='95fc80d4-08c5-47d2-8697-9f7796b0562b';
+RESULT:
+1
+--------------------------------------------------------------------------------
+[02:14:00][elapsed=90877ms / 90.877s / 1.515m][db][OK] postgres:banking_money
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_money -t -A -c "select count(*) from money where user_id='9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8' or keycloak_user_uuid='9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8';"
+DURATION: 625ms / 0.625s / 0.01m
+SQL:
+select count(*) from money where user_id='9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8' or keycloak_user_uuid='9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8';
+RESULT:
+1
+--------------------------------------------------------------------------------

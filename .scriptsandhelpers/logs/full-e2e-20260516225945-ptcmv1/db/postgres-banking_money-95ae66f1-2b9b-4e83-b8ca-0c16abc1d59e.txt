@@ -1,0 +1,3 @@
+SQL: select count(*) from money where user_id='75cdda7c-9be6-4b07-8414-94c420545f02' or keycloak_user_uuid='75cdda7c-9be6-4b07-8414-94c420545f02';
+RESULT:
+1

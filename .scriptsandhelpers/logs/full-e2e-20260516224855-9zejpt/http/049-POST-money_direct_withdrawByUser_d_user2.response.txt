@@ -1,0 +1,1 @@
+{"message":"Para çekme başarılı","status":"success"}

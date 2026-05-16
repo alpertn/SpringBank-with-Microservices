@@ -47,13 +47,12 @@ public class SecurityConfig {
                                 "/deposit.html", "/withdraw.html", "/transactions.html",
                                 "/css/**", "/js/**", "/favicon.ico", "/images/**", "/fonts/**")
                         .permitAll() // Tüm statik HTML sayfaları public — auth, API katmanında yapılır.
-                        .pathMatchers("/api/auth-service/**").permitAll() // login register public
+                        .pathMatchers("/api/user-service/v1/auth/**").permitAll() // new auth path
                         .pathMatchers("/actuator/health", "/actuator/info").permitAll() // gateway health check public
                         // Servis actuator health endpoint'leri - admin paneli için permitAll
                         .pathMatchers("/api/user-service/actuator/**").permitAll()
                         .pathMatchers("/api/money-service/actuator/**").permitAll()
                         .pathMatchers("/api/transaction-service/actuator/**").permitAll()
-                        .pathMatchers("/api/auth-service/actuator/**").permitAll()
                         .pathMatchers("/api/fraud-service/actuator/**").permitAll()
                         .pathMatchers("/api/user-service/v1/admin/**").hasRole("ADMIN")
                         .pathMatchers("/api/money-service/v1/admin/**").hasRole("ADMIN")

@@ -1,6 +1,8 @@
 package com.banking_microservices.transaction_service.dto;
 
+import com.banking_microservices.transaction_service.config.TokenDetailsConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -67,5 +69,9 @@ public class TransactionHistory {
     @Column(name = "th_status")
     @Builder.Default
     private String status = "PROGRESS";
+
+    @Convert(converter = TokenDetailsConverter.class)
+    @Column(name = "th_token_details", columnDefinition = "TEXT")
+    private TokenDetailsDto tokenDetails;
 
 }

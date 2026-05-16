@@ -1,0 +1,1 @@
+money-service-query is healthy

@@ -3,6 +3,7 @@ package com.banking_microservices.transaction_service.service;
 import com.banking_microservices.transaction_service.dto.TransactionHistory;
 import com.banking_microservices.transaction_service.dto.TransactionRequestDto;
 import com.banking_microservices.transaction_service.dto.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.transaction_service.dto.TokenDetailsDto;
 import com.banking_microservices.transaction_service.dto.enums.SagaStatus;
 import com.banking_microservices.transaction_service.dto.enums.TransactionStatus;
 import com.banking_microservices.transaction_service.dto.enums.TransactionType;
@@ -78,6 +79,7 @@ public class TransactionService {
                 .userValidation(topicMessage.getUserValidation())
                 .localDateTime(topicMessage.getLocalDateTime())
                 .transferStatus(mapToTransferStatus(topicMessage.getStatus()))
+                .tokenDetails(topicMessage.getTokenDetails())
                 .build();
 
         try {
@@ -94,7 +96,7 @@ public class TransactionService {
 
     @Transactional
     public void createTransaction(TransactionRequestDto transactionDto, String senderUserId, String senderMail,
-            String senderName, String senderSurname) {
+            String senderName, String senderSurname, TokenDetailsDto tokenDetails) {
         log.info(" ({}) > TransactionService | createTransaction -> Metoda veri geldi. Dto:\n{}, UserId: {}",
                 currentTime.get(), gson.toJson(transactionDto), senderUserId);
 
@@ -132,12 +134,12 @@ public class TransactionService {
                 newEventUUID, senderUserId, senderMail, senderName, senderSurname,
                 senderIban, receiverIban, receiverName, receiverSurname,
                 transactionDto.getAmount(), transactionDto.getDescription(), txType,
-                senderUserId);
+                senderUserId, tokenDetails);
 
         TransactionEntity transactionModel = buildTransactionEntity(
                 newEventUUID, senderUserId, senderMail, senderName, senderSurname,
                 senderIban, receiverIban, receiverName, receiverSurname,
-                transactionDto.getAmount(), transactionDto.getDescription(), txType);
+                transactionDto.getAmount(), transactionDto.getDescription(), txType, tokenDetails);
 
         try {
             transactionRepository.save(transactionModel);
@@ -177,27 +179,14 @@ public class TransactionService {
     public List<TransactionEntity> getTransactionHistory(String userId) {
         log.info(" ({}) > TransactionService | getTransactionHistory -> methoduna istek geldi {}", currentTime.get(),
                 userId);
-        try {
-            return transactionRepository.findBySenderUserIdOrReceiverUserIdOrderByLocalDateTimeDesc(userId, userId);
-        } catch (Exception e) {
-            log.warn(" ({}) > TransactionService | getTransactionHistory -> Hatasi {} Hata : {}", currentTime.get(),
-                    userId, e.getMessage());
-            throw new TransactionNotFoundException("TransactionEntity Not Found" + e.getMessage());
-        }
+        return transactionRepository.findBySenderUserIdOrReceiverUserIdOrderByLocalDateTimeDesc(userId, userId);
     }
 
     public List<TransactionEntity> getTransactionsByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
         log.info(
                 " ({}) > TransactionService | getTransactionsByDateRange -> methoduna istek geldi startDate {} endDate {}",
                 currentTime.get(), startDate, endDate);
-        try {
-            return transactionRepository.findByLocalDateTimeBetweenOrderByLocalDateTimeDesc(startDate, endDate);
-        } catch (Exception e) {
-            log.warn(
-                    " ({}) > TransactionService | getTransactionsByDateRange -> StartDate : {} EndDate : {} Exception : {}",
-                    currentTime.get(), startDate, endDate, e.getMessage());
-            throw new TransactionNotFoundException("TransactionEntity Not Found" + e.getMessage());
-        }
+        return transactionRepository.findByLocalDateTimeBetweenOrderByLocalDateTimeDesc(startDate, endDate);
     }
 
     public List<TransactionEntity> getErrorLogs() {
@@ -261,6 +250,9 @@ public class TransactionService {
         if (dto.getUserValidation() != null) {
             entity.setUserValidation(dto.getUserValidation());
         }
+        if (dto.getTokenDetails() != null) {
+            entity.setTokenDetails(dto.getTokenDetails());
+        }
 
         try {
             transactionRepository.save(entity);
@@ -276,7 +268,8 @@ public class TransactionService {
     private KafkaTransactionTopicMessageDto buildKafkaDto(
             String eventUUID, String senderUserId, String senderEmail, String senderName, String senderSurname,
             String senderIban, String receiverIban, String receiverName, String receiverSurname,
-            BigDecimal money, String description, TransactionType transactionType, String keycloakUUID) {
+            BigDecimal money, String description, TransactionType transactionType, String keycloakUUID,
+            TokenDetailsDto tokenDetails) {
         return KafkaTransactionTopicMessageDto.builder()
                 .eventUUID(eventUUID)
                 .senderUserId(senderUserId)
@@ -293,13 +286,14 @@ public class TransactionService {
                 .keycloakUserUUID(keycloakUUID)
                 .status(TransactionStatus.CREATED)
                 .statusDescription(TransactionStatus.CREATED.getDescription())
+                .tokenDetails(tokenDetails)
                 .build();
     }
 
     private TransactionEntity buildTransactionEntity(
             String eventId, String senderUserId, String senderEmail, String senderName, String senderSurname,
             String senderIban, String receiverIban, String receiverName, String receiverSurname,
-            BigDecimal money, String description, TransactionType transactionType) {
+            BigDecimal money, String description, TransactionType transactionType, TokenDetailsDto tokenDetails) {
         return TransactionEntity.builder()
                 .eventId(eventId)
                 .senderUserId(senderUserId)
@@ -316,6 +310,7 @@ public class TransactionService {
                 .status(TransactionStatus.CREATED)
                 .statusDescription(TransactionStatus.CREATED.getDescription())
                 .transferStatus(TransferStatus.CREATED)
+                .tokenDetails(tokenDetails)
                 .build();
     }
 
@@ -330,12 +325,61 @@ public class TransactionService {
             return TransferStatus.SENT_TO_MONEY;
         } else if (status == TransactionStatus.COMPLETED) {
             return TransferStatus.COMPLETED;
+        } else if (status == TransactionStatus.CANCELLED || status == TransactionStatus.REVERSED) {
+            return TransferStatus.FAILED;
         } else if (status == TransactionStatus.BLOCK_MONEY_FAILED || status == TransactionStatus.DEPOSIT_FAILED
                 || status == TransactionStatus.WITHDRAW_FAILED || status == TransactionStatus.FAILED) {
             return TransferStatus.FAILED;
         } else {
             return TransferStatus.CREATED;
         }
+    }
+
+    @Transactional
+    public TransactionEntity cancelTransaction(String eventUUID, String requesterUserId, boolean adminRequest) {
+        log.info(" ({}) > TransactionService | cancelTransaction -> EventUUID: {}, Requester: {}, Admin: {}",
+                currentTime.get(), eventUUID, requesterUserId, adminRequest);
+
+        if (eventUUID == null || eventUUID.isBlank()) {
+            throw new TransactionNotFoundException("EventUUID bos olamaz.");
+        }
+
+        TransactionEntity transaction = transactionRepository.findByEventId(eventUUID).orElseThrow(() -> {
+            log.warn(" ({}) > TransactionService | cancelTransaction -> Transaction bulunamadi! EventUUID: {}",
+                    currentTime.get(), eventUUID);
+            return new TransactionNotFoundException("Transaction not found : " + eventUUID);
+        });
+
+        if (!adminRequest && (requesterUserId == null || requesterUserId.isBlank()
+                || !requesterUserId.equals(transaction.getSenderUserId()))) {
+            throw new TransactionNotFoundException("Bu islemi geri cekme yetkiniz yok.");
+        }
+
+        if (TransactionStatus.CANCELLED.equals(transaction.getStatus())
+                || TransactionStatus.REVERSED.equals(transaction.getStatus())) {
+            return transaction;
+        }
+
+        if (TransactionStatus.COMPLETED.equals(transaction.getStatus())) {
+            if (!sagaEventsRepository.existsByKafkaEventUUID(eventUUID)) {
+                createSagaEvent(eventUUID);
+            }
+            transaction.setStatus(TransactionStatus.REVERSED);
+            transaction.setStatusDescription(TransactionStatus.REVERSED.getDescription());
+            transaction.setError(false);
+            transaction.setErrorDescription(adminRequest ? "Admin tarafindan geri alindi" : "Kullanici tarafindan geri cekildi");
+        } else {
+            transaction.setStatus(TransactionStatus.CANCELLED);
+            transaction.setStatusDescription(TransactionStatus.CANCELLED.getDescription());
+            transaction.setError(false);
+            transaction.setErrorDescription(adminRequest ? "Admin tarafindan iptal edildi" : "Kullanici tarafindan iptal edildi");
+        }
+
+        transaction.setTransferStatus(mapToTransferStatus(transaction.getStatus()));
+        TransactionEntity saved = transactionRepository.save(transaction);
+        log.info(" ({}) > TransactionService | cancelTransaction -> Status guncellendi. EventUUID: {}, Status: {}",
+                currentTime.get(), eventUUID, saved.getStatus());
+        return saved;
     }
 
 
@@ -360,13 +404,32 @@ public class TransactionService {
                 .transactionHistory(
                         TransactionHistory.builder()
                                 .eventId(transaction.getEventId())
+                                .receiverName(transaction.getReceiverName())
+                                .receiverSurname(transaction.getReceiverSurname())
                                 .description(transaction.getDescription())
                                 .money(transaction.getMoney())
                                 .senderUserId(transaction.getSenderUserId())
                                 .receiverUserId(transaction.getReceiverUserId())
+                                .senderIban(transaction.getSenderIban())
+                                .receiverIban(transaction.getReceiverIban())
+                                .transactionType(transaction.getTransactionType() == null ? null : transaction.getTransactionType().name())
+                                .localDateTime(transaction.getLocalDateTime())
+                                .error(transaction.getError())
+                                .errorDescription(transaction.getErrorDescription())
+                                .userValidation(transaction.getUserValidation())
+                                .status(transaction.getStatus() == null ? null : transaction.getStatus().name())
+                                .tokenDetails(transaction.getTokenDetails())
                                 .build()
                 )
                 .build();
+
+        try {
+            sagaEvent = sagaEventsRepository.save(sagaEvent);
+            log.info(" ({}) > TransactionService | createSagaEvent -> Saga event veritabanina kaydedildi. UUID: {}", currentTime.get(), sagaEvent.getUUID());
+        } catch (Exception e) {
+            log.error(" ({}) > TransactionService | createSagaEvent -> Saga event veritabanina kaydedilemedi! UUID: {}, Hata: {}", currentTime.get(), sagaEvent.getUUID(), e.getMessage());
+            throw new SagaEventDatabaseSaveException("An Exception With Save Database saga Event Model. " + e.getMessage());
+        }
 
         try {
             kafkaSender.sendSagaEvent(sagaEvent);
@@ -374,14 +437,6 @@ public class TransactionService {
         } catch (Exception e) {
             log.error(" ({}) > TransactionService | createSagaEvent -> Saga event Kafkaya gonderilemedi! UUID: {}, Hata: {}", currentTime.get(), sagaEvent.getUUID(), e.getMessage());
             throw new SagaEventDatabaseSaveException("Saga event Kafka gonderimi basarisiz: " + e.getMessage());
-        }
-
-        try {
-            sagaEventsRepository.save(sagaEvent);
-            log.info(" ({}) > TransactionService | createSagaEvent -> Saga event veritabanina kaydedildi. UUID: {}", currentTime.get(), sagaEvent.getUUID());
-        } catch (Exception e) {
-            log.error(" ({}) > TransactionService | createSagaEvent -> Saga event veritabanina kaydedilemedi! UUID: {}, Hata: {}", currentTime.get(), sagaEvent.getUUID(), e.getMessage());
-            throw new SagaEventDatabaseSaveException("An Exception With Save Database saga Event Model. " + e.getMessage());
         }
 
     }
@@ -437,12 +492,7 @@ public class TransactionService {
 
     public List<SagaEvents> getAllSagaEvents() {
         log.info(" ({}) > TransactionService | getAllSagaEvents -> Tum saga eventler sorgulanıyor.", currentTime.get());
-        try {
-            return sagaEventsRepository.findAll();
-        } catch (Exception e) {
-            log.error(" ({}) > TransactionService | getAllSagaEvents -> Sorgulama hatasi: {}", currentTime.get(), e.getMessage());
-            throw new SagaEventNotFoundException("Saga events could not be listed: " + e.getMessage());
-        }
+        return sagaEventsRepository.findAll();
     }
 
     public boolean sagaExistsByKafkaEventUUID(String kafkaEventUUID) {

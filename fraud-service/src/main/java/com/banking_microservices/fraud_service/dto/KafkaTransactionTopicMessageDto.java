@@ -87,4 +87,7 @@ public class KafkaTransactionTopicMessageDto {
 
     @Builder.Default
     private List<TransactionEntity> receiverTransactionHistory = null;
+
+    @Builder.Default
+    private TokenDetailsDto tokenDetails = null;
 }

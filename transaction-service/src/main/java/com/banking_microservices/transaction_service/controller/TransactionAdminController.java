@@ -299,4 +299,19 @@ public class TransactionAdminController {
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @PostMapping("/transactions/reverse")
+    public ResponseEntity<?> reverseTransaction(@RequestParam String eventUUID) {
+        log.info(" ({}) > TransactionAdminController | reverseTransaction -> Istek alindi. EventUUID: {}",
+                currentTime.get(), eventUUID);
+
+        if (eventUUID == null || eventUUID.isBlank()) {
+            log.warn(" ({}) > TransactionAdminController | reverseTransaction -> EventUUID null veya bos!",
+                    currentTime.get());
+            return ResponseEntity.badRequest().body(Map.of("error", "EventUUID bos olamaz."));
+        }
+
+        TransactionEntity transaction = transactionService.cancelTransaction(eventUUID, null, true);
+        return ResponseEntity.ok(transaction);
+    }
 }

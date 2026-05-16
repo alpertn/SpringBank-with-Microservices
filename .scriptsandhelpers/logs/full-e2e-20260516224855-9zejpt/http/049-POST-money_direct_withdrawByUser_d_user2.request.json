@@ -1,0 +1,12 @@
+{
+    "method":  "POST",
+    "url":  "http://localhost:8095/api/money-service/v1/accounts/withdrawByUserId",
+    "expected":  [
+                     200
+                 ],
+    "headers":  "Authorization",
+    "body":  {
+                 "amount":  200,
+                 "userId":  "03d83707-4d19-438d-8859-2099fb0d47a5"
+             }
+}

@@ -1,0 +1,3 @@
+SQL: select id || '|' || event_id || '|' || status from transactions where sender_user_id='9be57278-0a67-453d-86da-472faf6f68ad' and transaction_type='TRANSFER' order by created_at desc limit 1;
+RESULT:
+15dbc8db-d56a-4f51-a6b6-197a23d51895|1b2c95e8-70d6-49fa-a9bc-074537f28509|BLOCK_MONEY

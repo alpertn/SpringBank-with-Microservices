@@ -1,0 +1,326 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20260516224855
+Username: monte\alper
+RunAs User: monte\alper
+Configuration Name: 
+Machine: MONTE (Microsoft Windows NT 10.0.26200.0)
+Host Application: powershell.exe -NoProfile -ExecutionPolicy Bypass -Command $p=$env:SELF; $c=Get-Content -Raw -LiteralPath $p; $m='# POWERSHELL_PAYLOAD'; $i=$c.LastIndexOf($m); if($i -lt 0){throw 'PowerShell payload not found'}; $s=$c.Substring($i + $m.Length); Invoke-Expression $s
+Process ID: 14916
+PSVersion: 5.1.26100.7462
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7462
+BuildVersion: 10.0.26100.7462
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+[INFO] RunId=20260516224855-9zejpt
+[INFO] Tum loglar: C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260516224855-9zejpt
+
+==== Kubernetes ve servis on kontrolleri ====
+[OK]   kubectl context: docker-desktop
+[OK]   Kubernetes API cevap veriyor
+[OK]   namespace var: banking-microservices
+[OK]   tum deployment'lar available condition beklemesi tamam
+[OK]   deployment ready: postgres (1)
+[OK]   deployment ready: redis (1)
+[OK]   deployment ready: mongodb (1)
+[OK]   deployment ready: elasticsearch (1)
+[OK]   deployment ready: zookeeper (1)
+[OK]   deployment ready: kafka (1)
+[OK]   deployment ready: keycloak (1)
+[OK]   deployment ready: user-service (2)
+[OK]   deployment ready: money-service (2)
+[OK]   deployment ready: money-service-command (2)
+[OK]   deployment ready: money-service-query (2)
+[OK]   deployment ready: transaction-service (2)
+[OK]   deployment ready: fraud-service (2)
+[OK]   deployment ready: gateway (2)
+[OK]   service var: postgres
+[OK]   service var: redis
+[OK]   service var: mongodb
+[OK]   service var: elasticsearch
+[OK]   service var: zookeeper
+[OK]   service var: kafka
+[OK]   service var: keycloak
+[OK]   service var: user-service
+[OK]   service var: money-service
+[OK]   service var: money-service-command
+[OK]   service var: money-service-query
+[OK]   service var: transaction-service
+[OK]   service var: fraud-service
+[OK]   service var: gateway
+
+==== Gateway erisimi ====
+[OK]   gateway static login.html HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: ."
+[OK]   static / HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: ."
+[OK]   static /index.html HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: ."
+[OK]   static /login.html HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: ."
+[OK]   static /register.html HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: ."
+[OK]   static /dashboard.html HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: ."
+[OK]   static /deposit.html HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: ."
+[OK]   static /withdraw.html HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: ."
+[OK]   static /transfer.html HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: ."
+[OK]   static /transactions.html HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: ."
+[OK]   static /admin.html HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: ."
+
+==== Public health endpointleri ====
+[OK]   money-service health unauthenticated/security HTTP 401
+[FAIL] user-service liveness HTTP 500 expected 200 body={"timestamp":"2026-05-16T19:49:02.730+00:00","path":"/api/user-service/actuator/health/liveness","status":500,"error":"Internal Server Error","requestId":"cbbed0b5-146"} curl= 500
+[OK]   money-service liveness HTTP 200
+[OK]   transaction-service liveness HTTP 200
+[OK]   fraud-service liveness HTTP 200
+[OK]   money-service-command internal health HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: money-service-command."
+[OK]   money-service-query internal health HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: money-service-query."
+
+==== Kafka topic ve altyapi kontrolleri ====
+[OK]   Kafka topic var: banking-microservices.user.created.v1
+[OK]   Kafka topic var: banking-microservices.money.account.created.v1
+[INFO] Kafka topic henuz yok, akista uretildiginde tekrar dogrulanacak: banking-microservices.money.account.create-failed.v1
+[OK]   Kafka topic var: banking-microservices.transaction.created.v1
+[OK]   Kafka topic var: banking-microservices.transaction.completed.v1
+[OK]   Kafka topic var: banking-microservices.transaction.failed.v1
+[OK]   Kafka topic var: banking-microservices.transaction.money-blocked.v1
+[OK]   Kafka topic var: banking-microservices.transaction.user-validation.request.v1
+[OK]   Kafka topic var: banking-microservices.transaction.user-validation.success.v1
+[OK]   Kafka topic var: banking-microservices.transaction.fraud.checked.v1
+[OK]   Kafka topic var: banking-microservices.transaction.saga.created.v1
+[INFO] Kafka topic henuz yok, akista uretildiginde tekrar dogrulanacak: banking-microservices.transaction.saga.money.completed.v1
+[INFO] Kafka topic henuz yok, akista uretildiginde tekrar dogrulanacak: banking-microservices.transaction.saga.money.failed.v1
+[OK]   Kafka topic var: banking-microservices.transaction.money-blocked.v1
+PS>TerminatingError(kubectl.exe): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: command terminated with exit code 1"
+>> TerminatingError(kubectl.exe): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: command terminated with exit code 1"
+PS>TerminatingError(kubectl.exe): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: command terminated with exit code 1"
+>> TerminatingError(kubectl.exe): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: command terminated with exit code 1"
+PS>TerminatingError(kubectl.exe): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: command terminated with exit code 1"
+>> TerminatingError(kubectl.exe): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: command terminated with exit code 1"
+
+==== Register, login, token decode ====
+[OK]   register user1 HTTP 200
+[OK]   register user2 HTTP 200
+[OK]   user1 login HTTP 200
+[OK]   user1 access_token alindi
+[OK]   user2 login HTTP 200
+[OK]   user2 access_token alindi
+[OK]   admin login HTTP 200
+[OK]   admin access_token alindi
+[OK]   user1 JWT sub: 9b8c8f96-99eb-4bf4-9792-38eac77cd575
+[OK]   user2 JWT sub: 03d83707-4d19-438d-8859-2099fb0d47a5
+[OK]   admin JWT ADMIN role iceriyor
+[OK]   refresh token user1 HTTP 200
+[OK]   register user Kafka offset advanced banking-microservices.user.created.v1 10 -> 12
+[OK]   register user1 create-user event Kafka mesaj icerigi bulundu topic=banking-microservices.user.created.v1 needle=9b8c8f96-99eb-4bf4-9792-38eac77cd575
+[OK]   register user2 create-user event Kafka mesaj icerigi bulundu topic=banking-microservices.user.created.v1 needle=03d83707-4d19-438d-8859-2099fb0d47a5
+
+==== Keycloak DB dogrulamasi ====
+[OK]   Keycloak DB user1 kaydi var
+[OK]   Keycloak DB user2 kaydi var
+
+==== User admin endpointleri ====
+[OK]   user admin total HTTP 200
+[OK]   user admin roles HTTP 200
+[OK]   user admin active HTTP 200
+[OK]   user admin findbyemail user1 HTTP 200
+[OK]   user1 DB id bulundu: 9b8c8f96-99eb-4bf4-9792-38eac77cd575
+[OK]   user get self by id HTTP 200
+[OK]   user admin findbykeycloakuuid user1 HTTP 200
+[OK]   user admin search name HTTP 200
+[OK]   user admin allusers HTTP 200
+[OK]   register admin mutation target HTTP 200
+[OK]   user admin findbyemail mutation target HTTP 200
+[OK]   admin mutation target DB id bulundu: 971c2249-61da-4eef-959a-84a7bae6c533
+[OK]   user admin updaterole target USER HTTP 200
+[OK]   user admin deactivate target HTTP 200
+[OK]   user admin activate target HTTP 200
+[OK]   user admin reset-password target HTTP 200
+[OK]   admin target after reset login HTTP 200
+[OK]   admin target after reset access_token alindi
+[OK]   user admin updateuser target HTTP 200
+[OK]   user admin deleteuser target HTTP 200
+
+==== Money account create ve DB dogrulamasi ====
+[OK]   money create user1 HTTP 200
+[OK]   money create user2 HTTP 200
+[OK]   user1 balance-info HTTP 200
+[OK]   user2 balance-info HTTP 200
+[OK]   user1 IBAN var: TR4531613EKO6V3HV1RBHS4UJ2
+[OK]   user2 IBAN var: TR8746948BSRJX152UW5A6JTFU
+[OK]   getUserIbanWithUserId user1 HTTP 200
+[OK]   Postgres banking_money user1 money kaydi var
+[OK]   Postgres banking_money user2 money kaydi var
+[OK]   money account create Kafka offset advanced banking-microservices.money.account.created.v1 10 -> 13
+[OK]   money account created user1 event Kafka mesaj icerigi bulundu topic=banking-microservices.money.account.created.v1 needle=9b8c8f96-99eb-4bf4-9792-38eac77cd575
+[OK]   money account created user2 event Kafka mesaj icerigi bulundu topic=banking-microservices.money.account.created.v1 needle=03d83707-4d19-438d-8859-2099fb0d47a5
+
+==== Money direct deposit/withdraw endpointleri ====
+[OK]   money direct depositByUserId user2 HTTP 200
+[OK]   user2 after direct deposit balance-info HTTP 200
+[OK]   user2 direct deposit balance 200 satisfied
+[OK]   money direct withdrawByUserId user2 HTTP 200
+[OK]   user2 after direct withdraw balance-info HTTP 200
+[OK]   user2 direct withdraw balance 0 satisfied
+
+==== Deposit, withdraw, transfer E2E ====
+PS>TerminatingError(kubectl.exe): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: command terminated with exit code 1"
+>> TerminatingError(kubectl.exe): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: command terminated with exit code 1"
+PS>TerminatingError(kubectl.exe): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: command terminated with exit code 1"
+>> TerminatingError(kubectl.exe): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: command terminated with exit code 1"
+PS>TerminatingError(kubectl.exe): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: command terminated with exit code 1"
+>> TerminatingError(kubectl.exe): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: command terminated with exit code 1"
+[OK]   transaction deposit user1 HTTP 201
+[OK]   user1 after deposit balance-info HTTP 200
+[OK]   user1 balance >= 5000 after deposit satisfied
+[OK]   transaction withdraw user1 HTTP 201
+[OK]   user1 after withdraw balance-info HTTP 200
+[OK]   user1 balance 4500 after withdraw satisfied
+[OK]   transaction transfer user1 to user2 HTTP 201
+[OK]   user1 after transfer balance-info HTTP 200
+[OK]   user2 after transfer balance-info HTTP 200
+[OK]   user1 after transfer balance-info HTTP 200
+[OK]   user2 after transfer balance-info HTTP 200
+[OK]   transfer balances user1=3500 user2=1000 satisfied
+[OK]   user1 final balance-info HTTP 200
+[OK]   user2 final balance-info HTTP 200
+[OK]   Final user1 money 3500
+[OK]   Final user2 money 1000
+[OK]   Final user1 blockedmoney 0
+[OK]   Final user2 blockedmoney 0
+[OK]   DB user1 money/blocked dogru: 3500.00|0.00
+[OK]   DB user2 money/blocked dogru: 1000.00|0.00
+
+==== Transaction endpointleri ve DB dogrulamasi ====
+[OK]   transaction history user1 HTTP 200
+[OK]   transaction history user2 HTTP 200
+[OK]   user1 transaction history >= 3
+[OK]   user2 transaction history >= 1
+[OK]   transaction errors endpoint HTTP 200
+[OK]   transaction daterange HTTP 200
+[OK]   DB transfer event_uuid var: be47819c-26c0-4e2f-b042-8de7ddc34bdf
+[OK]   DB transfer status COMPLETED
+[OK]   transaction byid HTTP 200
+[OK]   transaction create Kafka offset advanced banking-microservices.transaction.created.v1 3 -> 6
+[OK]   transaction block/projection Kafka offset advanced banking-microservices.transaction.money-blocked.v1 1 -> 2
+[OK]   transaction user validation request Kafka offset advanced banking-microservices.transaction.user-validation.request.v1 1 -> 2
+[OK]   transaction user validation success Kafka offset advanced banking-microservices.transaction.user-validation.success.v1 0 -> 1
+[OK]   transaction fraud checked Kafka offset advanced banking-microservices.transaction.fraud.checked.v1 0 -> 1
+[OK]   transaction completed Kafka offset advanced banking-microservices.transaction.completed.v1 2 -> 5
+[OK]   transaction.created eventUUID Kafka mesaj icerigi bulundu topic=banking-microservices.transaction.created.v1 needle=be47819c-26c0-4e2f-b042-8de7ddc34bdf
+[OK]   transaction.money-blocked eventUUID Kafka mesaj icerigi bulundu topic=banking-microservices.transaction.money-blocked.v1 needle=be47819c-26c0-4e2f-b042-8de7ddc34bdf
+[OK]   user-validation.request eventUUID Kafka mesaj icerigi bulundu topic=banking-microservices.transaction.user-validation.request.v1 needle=be47819c-26c0-4e2f-b042-8de7ddc34bdf
+[OK]   user-validation.success eventUUID Kafka mesaj icerigi bulundu topic=banking-microservices.transaction.user-validation.success.v1 needle=be47819c-26c0-4e2f-b042-8de7ddc34bdf
+[OK]   fraud.checked eventUUID Kafka mesaj icerigi bulundu topic=banking-microservices.transaction.fraud.checked.v1 needle=be47819c-26c0-4e2f-b042-8de7ddc34bdf
+[OK]   transaction.completed eventUUID Kafka mesaj icerigi bulundu topic=banking-microservices.transaction.completed.v1 needle=be47819c-26c0-4e2f-b042-8de7ddc34bdf
+
+==== Admin money/transaction/saga/gateway endpointleri ====
+[OK]   admin refresh before admin endpoints login HTTP 200
+[OK]   admin refresh before admin endpoints access_token alindi
+[OK]   money admin summary HTTP 200
+[OK]   money admin count HTTP 200
+[OK]   money admin accounts HTTP 200
+[OK]   money admin top HTTP 200
+[OK]   money admin account byiban HTTP 200
+[OK]   money admin distribution HTTP 200
+[OK]   transaction admin summary HTTP 200
+[OK]   transaction admin daily HTTP 200
+[OK]   transaction admin stuck HTTP 200
+[OK]   transaction admin byiban HTTP 200
+[OK]   transaction admin errors analysis HTTP 200
+[OK]   transaction admin count HTTP 200
+[OK]   transaction admin top by volume HTTP 200
+[OK]   saga all HTTP 200
+[OK]   saga exists before/manual HTTP 200
+[FAIL] saga create manual existing tx HTTP 500 expected 201 body={"time":"2026-05-16T19:52:25.487329887","status":500,"error":"SagaEventDatabaseSaveException","message":"Saga event Kafka gonderimi basarisiz: DeÄŸerler BoÅŸ olamaz. SagaEvents(UUID=null, kafkaEventUUID=be47819c-26c0-4e2f-b042-8de7ddc34bdf, status=CREATED, errorDescripton=null, transactionHistory=TransactionHistory(id=null, eventId=be47819c-26c0-4e2f-b042-8de7ddc34bdf, receiverName=null, receiverSurname=null, senderUserId=9b8c8f96-99eb-4bf4-9792-38eac77cd575, receiverUserId=03d83707-4d19-438d-8859-2099fb0d47a5, senderIban=null, receiverIban=null, money=1000.00, transactionType=null, description=E2E transfer 20260516224855-9zejpt, localDateTime=null, error=false, errorDescription=null, userValidation=false, status=PROGRESS, tokenDetails=TokenDetailsDto(subject=9b8c8f96-99eb-4bf4-9792-38eac77cd575, preferredUsername=e2e.alpha.20260516224855-9zejpt@springbank.test, email=e2e.alpha.20260516224855-9zejpt@springbank.test, givenName=E2EAlpha, familyName=Tester, issuer=http://keycloak:8080/realms/banking, audienceJson=\"account\", realmRoles=[default-roles-banking, offline_access, uma_authorization, USER], headerJson={\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}, claimsJson={\"exp\":1778961281,\"iat\":1778960981,\"jti\":\"5d8b2efa-716e-42e8-a0a7-bcaec41b20c2\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"9b8c8f96-99eb-4bf4-9792-38eac77cd575\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"639f8201-f64b-4736-b241-3644bf68c129\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"639f8201-f64b-4736-b241-3644bf68c129\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260516224855-9zejpt@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260516224855-9zejpt@springbank.test\"}, issuedAt=1778960981, expiresAt=1778961281, jwtId=5d8b2efa-716e-42e8-a0a7-bcaec41b20c2, tokenType=Bearer, sessionState=639f8201-f64b-4736-b241-3644bf68c129, scope=email profile)))","path":"uri=/api/transaction-service/v1/saga/create"} curl= 500
+[OK]   saga exists after/manual HTTP 200
+[FAIL] saga exists true after manual create
+[FAIL] saga status by transaction after/manual HTTP 404 expected 200 body={"time":"2026-05-16T19:52:28.59281876","status":404,"error":"SagaEventNotFoundException","message":"Saga event not found with kafkaEventUUID: be47819c-26c0-4e2f-b042-8de7ddc34bdf","path":"uri=/api/transaction-service/v1/saga/status/by-transaction"} curl= 404
+[OK]   transaction admin manual saga bad request validation HTTP 400
+[OK]   gateway recent logs HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: INFO."
+
+==== CQRS command/query servisleri internal gercek akisi ====
+[FAIL] command create account 1 HTTP 400 expected 201 body={"timestamp":"2026-05-16T19:52:31.706Z","status":400,"error":"Bad Request","path":"/api/money-service-command/v1/accounts"}
+[FAIL] command create account 2 HTTP 400 expected 201 body={"timestamp":"2026-05-16T19:52:32.148Z","status":400,"error":"Bad Request","path":"/api/money-service-command/v1/accounts"}
+[FAIL] command deposit HTTP 400 expected 200 body={"timestamp":"2026-05-16T19:52:32.526Z","status":400,"error":"Bad Request","path":"/api/money-service-command/v1/accounts/deposit"}
+[FAIL] command withdraw HTTP 400 expected 200 body={"timestamp":"2026-05-16T19:52:32.850Z","status":400,"error":"Bad Request","path":"/api/money-service-command/v1/accounts/withdraw"}
+[FAIL] command block money HTTP 400 expected 200 body={"timestamp":"2026-05-16T19:52:33.160Z","status":400,"error":"Bad Request","path":"/api/money-service-command/v1/accounts/block-money"}
+[FAIL] command execute transfer HTTP 400 expected 200 body={"timestamp":"2026-05-16T19:52:33.498Z","status":400,"error":"Bad Request","path":"/api/money-service-command/v1/accounts/transfer"}
+[FAIL] command DB sender money/blocked dogru:
+[FAIL] command DB receiver money/blocked dogru:
+[FAIL] query by user command sender HTTP 500 expected 200 body={"timestamp":"2026-05-16T19:53:04.430Z","status":500,"error":"Internal Server Error","path":"/api/money-service-query/v1/accounts/user/cmd-user-a-20260516224855-9zejpt"}
+[FAIL] query by user command receiver HTTP 500 expected 200 body={"timestamp":"2026-05-16T19:53:34.949Z","status":500,"error":"Internal Server Error","path":"/api/money-service-query/v1/accounts/user/cmd-user-b-20260516224855-9zejpt"}
+[FAIL] query by user command sender HTTP 500 expected 200 body={"timestamp":"2026-05-16T19:54:10.445Z","status":500,"error":"Internal Server Error","path":"/api/money-service-query/v1/accounts/user/cmd-user-a-20260516224855-9zejpt"}
+[FAIL] query by user command receiver HTTP 500 expected 200 body={"timestamp":"2026-05-16T19:54:40.819Z","status":500,"error":"Internal Server Error","path":"/api/money-service-query/v1/accounts/user/cmd-user-b-20260516224855-9zejpt"}
+[FAIL] money-service-query projection balances timed out. Last=False
+[FAIL] query by iban receiver HTTP 404 expected 200 body={"timestamp":"2026-05-16T19:54:46.234Z","status":404,"error":"Not Found","path":"/api/money-service-query/v1/accounts/iban/"}
+[FAIL] query search HTTP 500 expected 200 body={"timestamp":"2026-05-16T19:54:46.695Z","status":500,"error":"Internal Server Error","path":"/api/money-service-query/v1/accounts/search"}
+[FAIL] CQRS projection publish Kafka offset advanced banking-microservices.transaction.money-blocked.v1 2 -> 2
+[FAIL] CQRS projection receiver event Kafka mesaj icerigi bulundu topic=banking-microservices.transaction.money-blocked.v1 needle=cmd-user-b-20260516224855-9zejpt
+[FAIL] Mongo projection receiver balance 750: MISSING
+[OK]   Elasticsearch money-accounts search HTTP 404
+[FAIL] Elasticsearch money-accounts index searchable
+
+==== Negatif/error senaryolari ====
+[OK]   user1 refresh before negative scenario login HTTP 200
+[OK]   user1 refresh before negative scenario access_token alindi
+[OK]   insufficient transfer accepted into saga HTTP 201
+[OK]   insufficient funds eventually records error satisfied
+[OK]   negative transfer failed event Kafka offset advanced banking-microservices.transaction.failed.v1 0 -> 2
+[OK]   errors after negative scenario HTTP 200
+
+==== Servis loglari ====
+[OK]   user-service pod log icinde '20260516224855-9zejpt' bulundu
+[OK]   money-service pod log icinde '20260516224855-9zejpt' bulundu
+[OK]   transaction-service pod log icinde '20260516224855-9zejpt' bulundu
+[INFO] fraud-service pod log icinde 'be47819c-26c0-4e2f-b042-8de7ddc34bdf' bulunamadi; log kaydedildi
+[INFO] money-service-command pod log icinde 'cmd-user-b-20260516224855-9zejpt' bulunamadi; log kaydedildi
+[INFO] money-service-query pod log icinde 'cmd-user-b-20260516224855-9zejpt' bulunamadi; log kaydedildi
+[INFO] gateway pod log icinde '20260516224855-9zejpt' bulunamadi; log kaydedildi
+
+==== Logout ====
+[OK]   logout user2 refresh token HTTP 200
+
+==== Son ozet ====
+
+TESTLERDE HATA VAR. Pass=187 Fail=23 RunId=20260516224855-9zejpt
+ - user-service liveness HTTP 500 expected 200 body={"timestamp":"2026-05-16T19:49:02.730+00:00","path":"/api/user-service/actuator/health/liveness","status":500,"error":"Internal Server Error","requestId":"cbbed0b5-146"} curl= 500
+ - saga create manual existing tx HTTP 500 expected 201 body={"time":"2026-05-16T19:52:25.487329887","status":500,"error":"SagaEventDatabaseSaveException","message":"Saga event Kafka gonderimi basarisiz: DeÄŸerler BoÅŸ olamaz. SagaEvents(UUID=null, kafkaEventUUID=be47819c-26c0-4e2f-b042-8de7ddc34bdf, status=CREATED, errorDescripton=null, transactionHistory=TransactionHistory(id=null, eventId=be47819c-26c0-4e2f-b042-8de7ddc34bdf, receiverName=null, receiverSurname=null, senderUserId=9b8c8f96-99eb-4bf4-9792-38eac77cd575, receiverUserId=03d83707-4d19-438d-8859-2099fb0d47a5, senderIban=null, receiverIban=null, money=1000.00, transactionType=null, description=E2E transfer 20260516224855-9zejpt, localDateTime=null, error=false, errorDescription=null, userValidation=false, status=PROGRESS, tokenDetails=TokenDetailsDto(subject=9b8c8f96-99eb-4bf4-9792-38eac77cd575, preferredUsername=e2e.alpha.20260516224855-9zejpt@springbank.test, email=e2e.alpha.20260516224855-9zejpt@springbank.test, givenName=E2EAlpha, familyName=Tester, issuer=http://keycloak:8080/realms/banking, audienceJson=\"account\", realmRoles=[default-roles-banking, offline_access, uma_authorization, USER], headerJson={\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}, claimsJson={\"exp\":1778961281,\"iat\":1778960981,\"jti\":\"5d8b2efa-716e-42e8-a0a7-bcaec41b20c2\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"9b8c8f96-99eb-4bf4-9792-38eac77cd575\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"639f8201-f64b-4736-b241-3644bf68c129\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"639f8201-f64b-4736-b241-3644bf68c129\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260516224855-9zejpt@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260516224855-9zejpt@springbank.test\"}, issuedAt=1778960981, expiresAt=1778961281, jwtId=5d8b2efa-716e-42e8-a0a7-bcaec41b20c2, tokenType=Bearer, sessionState=639f8201-f64b-4736-b241-3644bf68c129, scope=email profile)))","path":"uri=/api/transaction-service/v1/saga/create"} curl= 500
+ - saga exists true after manual create
+ - saga status by transaction after/manual HTTP 404 expected 200 body={"time":"2026-05-16T19:52:28.59281876","status":404,"error":"SagaEventNotFoundException","message":"Saga event not found with kafkaEventUUID: be47819c-26c0-4e2f-b042-8de7ddc34bdf","path":"uri=/api/transaction-service/v1/saga/status/by-transaction"} curl= 404
+ - command create account 1 HTTP 400 expected 201 body={"timestamp":"2026-05-16T19:52:31.706Z","status":400,"error":"Bad Request","path":"/api/money-service-command/v1/accounts"}
+ - command create account 2 HTTP 400 expected 201 body={"timestamp":"2026-05-16T19:52:32.148Z","status":400,"error":"Bad Request","path":"/api/money-service-command/v1/accounts"}
+ - command deposit HTTP 400 expected 200 body={"timestamp":"2026-05-16T19:52:32.526Z","status":400,"error":"Bad Request","path":"/api/money-service-command/v1/accounts/deposit"}
+ - command withdraw HTTP 400 expected 200 body={"timestamp":"2026-05-16T19:52:32.850Z","status":400,"error":"Bad Request","path":"/api/money-service-command/v1/accounts/withdraw"}
+ - command block money HTTP 400 expected 200 body={"timestamp":"2026-05-16T19:52:33.160Z","status":400,"error":"Bad Request","path":"/api/money-service-command/v1/accounts/block-money"}
+ - command execute transfer HTTP 400 expected 200 body={"timestamp":"2026-05-16T19:52:33.498Z","status":400,"error":"Bad Request","path":"/api/money-service-command/v1/accounts/transfer"}
+ - command DB sender money/blocked dogru:
+ - command DB receiver money/blocked dogru:
+ - query by user command sender HTTP 500 expected 200 body={"timestamp":"2026-05-16T19:53:04.430Z","status":500,"error":"Internal Server Error","path":"/api/money-service-query/v1/accounts/user/cmd-user-a-20260516224855-9zejpt"}
+ - query by user command receiver HTTP 500 expected 200 body={"timestamp":"2026-05-16T19:53:34.949Z","status":500,"error":"Internal Server Error","path":"/api/money-service-query/v1/accounts/user/cmd-user-b-20260516224855-9zejpt"}
+ - query by user command sender HTTP 500 expected 200 body={"timestamp":"2026-05-16T19:54:10.445Z","status":500,"error":"Internal Server Error","path":"/api/money-service-query/v1/accounts/user/cmd-user-a-20260516224855-9zejpt"}
+ - query by user command receiver HTTP 500 expected 200 body={"timestamp":"2026-05-16T19:54:40.819Z","status":500,"error":"Internal Server Error","path":"/api/money-service-query/v1/accounts/user/cmd-user-b-20260516224855-9zejpt"}
+ - money-service-query projection balances timed out. Last=False
+ - query by iban receiver HTTP 404 expected 200 body={"timestamp":"2026-05-16T19:54:46.234Z","status":404,"error":"Not Found","path":"/api/money-service-query/v1/accounts/iban/"}
+ - query search HTTP 500 expected 200 body={"timestamp":"2026-05-16T19:54:46.695Z","status":500,"error":"Internal Server Error","path":"/api/money-service-query/v1/accounts/search"}
+ - CQRS projection publish Kafka offset advanced banking-microservices.transaction.money-blocked.v1 2 -> 2
+ - CQRS projection receiver event Kafka mesaj icerigi bulundu topic=banking-microservices.transaction.money-blocked.v1 needle=cmd-user-b-20260516224855-9zejpt
+ - Mongo projection receiver balance 750: MISSING
+ - Elasticsearch money-accounts index searchable
+**********************
+Windows PowerShell transcript end
+End time: 20260516225506
+**********************

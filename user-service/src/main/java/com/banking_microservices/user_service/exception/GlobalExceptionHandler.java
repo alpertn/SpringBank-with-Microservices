@@ -36,13 +36,13 @@ public class GlobalExceptionHandler {
         ErrorResponseDto response = ErrorResponseDto
                 .builder()
                 .time(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
+                .status(HttpStatus.CONFLICT.value())
                 .error("User Already Exists")
                 .message(e.getMessage())
                 .path(webRequest.getDescription(true))
                 .build();
 
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(UserSaveDatabaseException.class)
@@ -52,13 +52,13 @@ public class GlobalExceptionHandler {
         ErrorResponseDto response = ErrorResponseDto
                 .builder()
                 .time(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .error("UserSaveDatabaseException")
                 .message(e.getMessage())
                 .path(webRequest.getDescription(true))
                 .build();
 
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(CreateUserException.class)
@@ -82,13 +82,13 @@ public class GlobalExceptionHandler {
         ErrorResponseDto response = ErrorResponseDto
                 .builder()
                 .time(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .error("Runtime Exception")
                 .message(e.getMessage())
                 .path(webRequest.getDescription(true))
                 .build();
 
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(OpenFeignMoneyServiceClientException.class)
@@ -99,13 +99,13 @@ public class GlobalExceptionHandler {
         ErrorResponseDto response = ErrorResponseDto
                 .builder()
                 .time(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
+                .status(HttpStatus.SERVICE_UNAVAILABLE.value())
                 .error("OpenFeignMoneyServiceClientException Exception")
                 .message(e.getMessage())
                 .path(webRequest.getDescription(true))
                 .build();
 
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.SERVICE_UNAVAILABLE);
     }
 
     @ExceptionHandler(KafkaSendException.class)
@@ -114,13 +114,13 @@ public class GlobalExceptionHandler {
         ErrorResponseDto response = ErrorResponseDto
                 .builder()
                 .time(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
+                .status(HttpStatus.SERVICE_UNAVAILABLE.value())
                 .error("KafkaSendException Exception")
                 .message(e.getMessage())
                 .path(webRequest.getDescription(true))
                 .build();
 
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.SERVICE_UNAVAILABLE);
     }
 
     @ExceptionHandler(UserNotFoundById.class)
@@ -129,13 +129,13 @@ public class GlobalExceptionHandler {
         ErrorResponseDto response = ErrorResponseDto
                 .builder()
                 .time(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
+                .status(HttpStatus.NOT_FOUND.value())
                 .error("UserNotFoundById Exception")
                 .message(e.getMessage())
                 .path(webRequest.getDescription(true))
                 .build();
 
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(UserUpdateException.class)
@@ -144,13 +144,13 @@ public class GlobalExceptionHandler {
         ErrorResponseDto response = ErrorResponseDto
                 .builder()
                 .time(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .error("UserUpdateException Exception")
                 .message(e.getMessage())
                 .path(webRequest.getDescription(true))
                 .build();
 
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(UserRoleUpdateException.class)
@@ -159,13 +159,13 @@ public class GlobalExceptionHandler {
         ErrorResponseDto response = ErrorResponseDto
                 .builder()
                 .time(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .error("UserRoleUpdateException Exception")
                 .message(e.getMessage())
                 .path(webRequest.getDescription(true))
                 .build();
 
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(DeleteUserException.class)
@@ -174,13 +174,13 @@ public class GlobalExceptionHandler {
         ErrorResponseDto response = ErrorResponseDto
                 .builder()
                 .time(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .error("DeleteUserException Exception")
                 .message(e.getMessage())
                 .path(webRequest.getDescription(true))
                 .build();
 
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(UserNotFoundByName.class)
@@ -259,6 +259,66 @@ public class GlobalExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(LoginException.class)
+    public ResponseEntity<ErrorResponseDto> handleLoginException(LoginException e, WebRequest webRequest) {
+        ErrorResponseDto response = ErrorResponseDto.builder()
+                .time(LocalDateTime.now())
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .error("Login Failed")
+                .message(e.getMessage())
+                .path(webRequest.getDescription(true))
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<ErrorResponseDto> handleInvalidTokenException(InvalidTokenException e, WebRequest webRequest) {
+        ErrorResponseDto response = ErrorResponseDto.builder()
+                .time(LocalDateTime.now())
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .error("Invalid Token")
+                .message(e.getMessage())
+                .path(webRequest.getDescription(true))
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(KeycloakConnectionException.class)
+    public ResponseEntity<ErrorResponseDto> handleKeycloakConnectionException(KeycloakConnectionException e, WebRequest webRequest) {
+        ErrorResponseDto response = ErrorResponseDto.builder()
+                .time(LocalDateTime.now())
+                .status(HttpStatus.SERVICE_UNAVAILABLE.value())
+                .error("Keycloak Connection Error")
+                .message(e.getMessage())
+                .path(webRequest.getDescription(true))
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
+    @ExceptionHandler(KeycloakUserAlreadyExists.class)
+    public ResponseEntity<ErrorResponseDto> handleKeycloakUserAlreadyExists(KeycloakUserAlreadyExists e, WebRequest webRequest) {
+        ErrorResponseDto response = ErrorResponseDto.builder()
+                .time(LocalDateTime.now())
+                .status(HttpStatus.CONFLICT.value())
+                .error("KeycloakUserAlreadyExists")
+                .message(e.getMessage())
+                .path(webRequest.getDescription(true))
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(KeycloakAssignRoleException.class)
+    public ResponseEntity<ErrorResponseDto> handleKeycloakAssignRoleException(KeycloakAssignRoleException e, WebRequest webRequest) {
+        ErrorResponseDto response = ErrorResponseDto.builder()
+                .time(LocalDateTime.now())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .error("KeycloakAssignRoleException")
+                .message(e.getMessage())
+                .path(webRequest.getDescription(true))
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
 

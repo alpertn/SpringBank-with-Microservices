@@ -39,9 +39,9 @@ document.addEventListener('DOMContentLoaded', () => {
     API.hideMsg(msg);
 
     try {
-      // POST /api/auth-service/v1/auth/register
+      // POST /api/user-service/v1/auth/register
       // RegisterDto: email, Name (büyük N - @JsonProperty), surname, password
-      const res = await fetch('/api/auth-service/v1/auth/register', {
+      const res = await fetch('/api/user-service/v1/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, name: name, surname, password })

@@ -1,0 +1,49 @@
+
+[01:47:32][elapsed=155ms / 0.155s / 0.003m][general][INFO] RunId=20260517014732-xstei2
+
+--------------------------------------------------------------------------------
+[01:47:32][elapsed=241ms / 0.241s / 0.004m][general][INFO] Test modu=dev (varsayilan full kapsam; 1 dakikayi asan parca SKIP yazilip sonraki teste gecilir)
+
+--------------------------------------------------------------------------------
+[01:47:32][elapsed=244ms / 0.244s / 0.004m][general][INFO] Timeoutlar: HTTP=60 sn, long-running-skip=60 sn, wait-cap=60 sn
+
+--------------------------------------------------------------------------------
+[01:47:32][elapsed=246ms / 0.246s / 0.004m][general][INFO] Tum loglar: C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260517014732-xstei2
+
+--------------------------------------------------------------------------------
+[01:47:32][elapsed=310ms / 0.31s / 0.005m][step][START] Kubernetes ve servis on kontrolleri
+MODE: dev
+SKIP_LONG_RUNNING_SECONDS: 60
+--------------------------------------------------------------------------------
+[01:47:32][elapsed=380ms / 0.38s / 0.006m][kubectl][START] --request-timeout=60s config current-context
+COMMAND:
+kubectl --request-timeout=60s config current-context
+START_ELAPSED_TOTAL: 378ms / 0.378s / 0.006m
+--------------------------------------------------------------------------------
+[01:47:32][elapsed=523ms / 0.523s / 0.009m][general][FAIL] Script exception: You cannot call a method on a null-valued expression.
+
+--------------------------------------------------------------------------------
+[01:47:32][elapsed=525ms / 0.525s / 0.009m][run][FAIL] exception-summary
+TOTAL_DURATION: 491ms / 0.491s / 0.008m
+MESSAGE: You cannot call a method on a null-valued expression.
+STACK:
+at Invoke-ExternalCommand, <No file>: line 165
+at Kube, <No file>: line 429
+at <ScriptBlock>, <No file>: line 617
+at <ScriptBlock>, <No file>: line 1
+--------------------------------------------------------------------------------
+[01:47:32][elapsed=665ms / 0.665s / 0.011m][sync][START] gateway test log sync
+SOURCE: C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260517014732-xstei2
+TARGET: banking-microservices/gateway:/tmp/springbank-test-logs/full-e2e-20260517014732-xstei2
+--------------------------------------------------------------------------------
+[01:47:32][elapsed=683ms / 0.683s / 0.011m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 682ms / 0.682s / 0.011m
+--------------------------------------------------------------------------------
+[01:47:32][elapsed=706ms / 0.706s / 0.012m][sync][WARN] gateway test log sync
+SOURCE: C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260517014732-xstei2
+TARGET: banking-microservices/gateway:/tmp/springbank-test-logs/full-e2e-20260517014732-xstei2
+DURATION: 25ms / 0.025s / 0m
+ERROR: You cannot call a method on a null-valued expression.
+--------------------------------------------------------------------------------

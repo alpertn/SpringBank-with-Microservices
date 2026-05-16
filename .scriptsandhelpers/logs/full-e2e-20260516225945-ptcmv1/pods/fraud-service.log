@@ -1,0 +1,51 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.1)
+
+INFO  --- [fraud-service] : Starting FraudServiceApplication v0.0.1-SNAPSHOT using Java 21.0.11 with PID 1 (/app/app.jar started by root in /app)
+INFO  --- [fraud-service] : No active profile set, falling back to 1 default profile: "default"
+INFO  --- [fraud-service] : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+INFO  --- [fraud-service] : Finished Spring Data repository scanning in 922 ms. Found 1 JPA repository interface.
+INFO  --- [fraud-service] : BeanFactory id=4c355d67-b3d2-3ef1-8f5d-ff5dca716ebe
+INFO  --- [fraud-service] : Tomcat initialized with port 8085 (http)
+INFO  --- [fraud-service] : Starting service [Tomcat]
+INFO  --- [fraud-service] : Starting Servlet engine: [Apache Tomcat/11.0.15]
+INFO  --- [fraud-service] : Root WebApplicationContext: initialization completed in 23975 ms
+INFO  --- [fraud-service] : HHH008540: Processing PersistenceUnitInfo [name: default]
+INFO  --- [fraud-service] : HHH000001: Hibernate ORM core version 7.2.0.Final
+INFO  --- [fraud-service] : No LoadTimeWeaver setup: ignoring JPA class transformer
+WARN  --- [fraud-service] : HikariPool-1 - idleTimeout is close to or more than maxLifetime, disabling it.
+INFO  --- [fraud-service] : HikariPool-1 - Starting...
+INFO  --- [fraud-service] : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@76cbee13
+INFO  --- [fraud-service] : HikariPool-1 - Start completed.
+WARN  --- [fraud-service] : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+INFO  --- [fraud-service] : HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://postgres:5432/banking_fraud]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 15.15
+	Default catalog/schema: banking_fraud/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+INFO  --- [fraud-service] : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+INFO  --- [fraud-service] : Initialized JPA EntityManagerFactory for persistence unit 'default'
+INFO  --- [fraud-service] : Hibernate is in classpath; If applicable, HQL parser will be used.
+WARN  --- [fraud-service] : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+WARN  --- [fraud-service] : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+INFO  --- [fraud-service] : Exposing 2 endpoints beneath base path '/api/fraud-service/actuator'
+INFO  --- [fraud-service] : Tomcat started on port 8085 (http) with context path '/'
+INFO  --- [fraud-service] : Started FraudServiceApplication in 62.538 seconds (process running for 69.193)
+WARN  --- [fraud-service] : [Consumer clientId=consumer-fraud-service-group-1, groupId=fraud-service-group] The metadata response from the cluster reported a recoverable issue with correlation id 3 : {banking-microservices.transaction.user-validation.success.v1=LEADER_NOT_AVAILABLE}
+INFO  --- [fraud-service] : Initializing Spring DispatcherServlet 'dispatcherServlet'
+INFO  --- [fraud-service] : Initializing Servlet 'dispatcherServlet'
+INFO  --- [fraud-service] : Completed initialization in 2 ms

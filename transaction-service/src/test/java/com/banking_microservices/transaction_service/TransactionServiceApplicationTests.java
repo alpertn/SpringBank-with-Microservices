@@ -1,13 +1,13 @@
 package com.banking_microservices.transaction_service;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+import static org.assertj.core.api.Assertions.assertThat;
+
 class TransactionServiceApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
-
+    @Test
+    void applicationClassIsPresent() {
+        assertThat(TransactionServiceApplication.class).isNotNull();
+    }
 }

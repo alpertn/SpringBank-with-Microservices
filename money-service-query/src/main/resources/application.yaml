@@ -1,0 +1,46 @@
+server:
+  port: ${MONEY_SERVICE_QUERY_PORT:8093}
+
+spring:
+  application:
+    name: money-service-query
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/banking_money_query}
+    elasticsearch:
+      repositories:
+        enabled: true
+  elasticsearch:
+    uris: ${SPRING_ELASTICSEARCH_URIS:http://localhost:9200}
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: ${SPRING_KAFKA_CONSUMER_GROUP_ID:money-service-query-group}
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.value.default.type: com.banking_microservices.money_service_query.dto.MoneyProjectionEvent
+
+grpc:
+  server:
+    # Diger servisler bu porttan query-service'e gRPC ile okuma yapar.
+    port: ${MONEY_SERVICE_QUERY_GRPC_PORT:9193}
+
+money-service:
+  topics:
+    # Command tarafinin bastigi projection event topic'i.
+    # Read-side bu eventleri consume edip MongoDB ve Elasticsearch'i gunceller.
+    projection-sync: ${MONEY_SERVICE_PROJECTION_TOPIC:banking-microservices.transaction.money-blocked.v1}
+
+management:
+  endpoints:
+    web:
+      base-path: /api/money-service-query/actuator
+      exposure:
+        include: health,info
+
+logging:
+  pattern:
+    console: "%-5level --- [money-service-query] : %msg%n"

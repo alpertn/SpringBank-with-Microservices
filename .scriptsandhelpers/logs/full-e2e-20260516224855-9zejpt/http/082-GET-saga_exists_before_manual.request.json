@@ -1,0 +1,9 @@
+{
+    "method":  "GET",
+    "url":  "http://localhost:8095/api/transaction-service/v1/saga/exists?eventUUID=be47819c-26c0-4e2f-b042-8de7ddc34bdf",
+    "expected":  [
+                     200
+                 ],
+    "headers":  "Authorization",
+    "body":  null
+}

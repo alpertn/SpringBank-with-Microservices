@@ -40,7 +40,11 @@ echo.
 
 :: ADIM 1: Kullanici 1 Kayit
 echo [ADIM 1/10] Kullanici 1 kayit ediliyor...
-curl.exe -s -X POST "%GATEWAY%/api/auth-service/v1/auth/register" -H "Content-Type: application/json" -d "{\"email\":\"!USER1_EMAIL!\",\"password\":\"%USER1_PASS%\",\"name\":\"!USER1_NAME!\",\"surname\":\"!USER1_SURNAME!\",\"role\":\"USER\"}"
+curl.exe -s -X POST "%GATEWAY%/api/user-service/v1/auth/register" -H "Content-Type: application/json" -d "{\"email\":\"!USER1_EMAIL!\",\"password\":\"%USER1_PASS%\",\"name\":\"!USER1_NAME!\",\"surname\":\"!USER1_SURNAME!\",\"role\":\"USER\"}"
+if errorlevel 1 (
+    echo  [HATA] Kullanici 1 register istegi basarisiz. Gateway calisiyor mu?
+    goto :FAIL
+)
 echo.
 echo  [7sn bekleniyor - Kafka user-create akisi...]
 powershell.exe -NoProfile -Command "Start-Sleep -Seconds 7"
@@ -48,7 +52,11 @@ powershell.exe -NoProfile -Command "Start-Sleep -Seconds 7"
 :: ADIM 2: Kullanici 2 Kayit
 echo.
 echo [ADIM 2/10] Kullanici 2 kayit ediliyor...
-curl.exe -s -X POST "%GATEWAY%/api/auth-service/v1/auth/register" -H "Content-Type: application/json" -d "{\"email\":\"!USER2_EMAIL!\",\"password\":\"%USER2_PASS%\",\"name\":\"!USER2_NAME!\",\"surname\":\"!USER2_SURNAME!\",\"role\":\"USER\"}"
+curl.exe -s -X POST "%GATEWAY%/api/user-service/v1/auth/register" -H "Content-Type: application/json" -d "{\"email\":\"!USER2_EMAIL!\",\"password\":\"%USER2_PASS%\",\"name\":\"!USER2_NAME!\",\"surname\":\"!USER2_SURNAME!\",\"role\":\"USER\"}"
+if errorlevel 1 (
+    echo  [HATA] Kullanici 2 register istegi basarisiz. Gateway calisiyor mu?
+    goto :FAIL
+)
 echo.
 echo  [7sn bekleniyor - Kafka user-create akisi...]
 powershell.exe -NoProfile -Command "Start-Sleep -Seconds 7"
@@ -57,7 +65,12 @@ powershell.exe -NoProfile -Command "Start-Sleep -Seconds 7"
 echo.
 echo [ADIM 3/10] Kullanici 1 token aliniyor...
 set TMPFILE1=%TEMP%\bank_user1_token.json
-curl.exe -s -X POST "%GATEWAY%/api/auth-service/v1/auth/login" -H "Content-Type: application/json" -d "{\"email\":\"!USER1_EMAIL!\",\"password\":\"%USER1_PASS%\"}" -o "%TMPFILE1%"
+if exist "%TMPFILE1%" del /f /q "%TMPFILE1%" >nul 2>nul
+curl.exe -s -X POST "%GATEWAY%/api/user-service/v1/auth/login" -H "Content-Type: application/json" -d "{\"email\":\"!USER1_EMAIL!\",\"password\":\"%USER1_PASS%\"}" -o "%TMPFILE1%"
+if errorlevel 1 (
+    echo  [HATA] Kullanici 1 login istegi basarisiz. Gateway calisiyor mu?
+    goto :FAIL
+)
 
 for /f "delims=" %%T in ('powershell.exe -NoProfile -Command "(Get-Content '%TMPFILE1%' | ConvertFrom-Json).access_token"') do set TOKEN1=%%T
 for /f "delims=" %%U in ('powershell.exe -NoProfile -Command "$t=(Get-Content '%TMPFILE1%'|ConvertFrom-Json).access_token;$p=$t.Split('.')[1];switch($p.Length%%4){2{$p+='=='}3{$p+='='}};$b=[System.Convert]::FromBase64String($p);([System.Text.Encoding]::UTF8.GetString($b)|ConvertFrom-Json).sub"') do set UUID1=%%U
@@ -76,7 +89,12 @@ echo  Token: !TOKEN1:~0,50!...
 echo.
 echo [ADIM 4/10] Kullanici 2 token aliniyor...
 set TMPFILE2=%TEMP%\bank_user2_token.json
-curl.exe -s -X POST "%GATEWAY%/api/auth-service/v1/auth/login" -H "Content-Type: application/json" -d "{\"email\":\"!USER2_EMAIL!\",\"password\":\"%USER2_PASS%\"}" -o "%TMPFILE2%"
+if exist "%TMPFILE2%" del /f /q "%TMPFILE2%" >nul 2>nul
+curl.exe -s -X POST "%GATEWAY%/api/user-service/v1/auth/login" -H "Content-Type: application/json" -d "{\"email\":\"!USER2_EMAIL!\",\"password\":\"%USER2_PASS%\"}" -o "%TMPFILE2%"
+if errorlevel 1 (
+    echo  [HATA] Kullanici 2 login istegi basarisiz. Gateway calisiyor mu?
+    goto :FAIL
+)
 
 for /f "delims=" %%T in ('powershell.exe -NoProfile -Command "(Get-Content '%TMPFILE2%' | ConvertFrom-Json).access_token"') do set TOKEN2=%%T
 for /f "delims=" %%U in ('powershell.exe -NoProfile -Command "$t=(Get-Content '%TMPFILE2%'|ConvertFrom-Json).access_token;$p=$t.Split('.')[1];switch($p.Length%%4){2{$p+='=='}3{$p+='='}};$b=[System.Convert]::FromBase64String($p);([System.Text.Encoding]::UTF8.GetString($b)|ConvertFrom-Json).sub"') do set UUID2=%%U
@@ -96,9 +114,17 @@ echo.
 echo [ADIM 5/10] Money hesaplari olusturuluyor...
 echo  Kullanici 1 money hesabi...
 curl.exe -s -X POST "%GATEWAY%/api/money-service/v1/accounts/createusermoney" -H "Authorization: Bearer !TOKEN1!" -H "X-User-KeycloakUUID: !UUID1!"
+if errorlevel 1 (
+    echo  [HATA] Kullanici 1 money hesabi olusturulamadi.
+    goto :FAIL
+)
 echo.
 echo  Kullanici 2 money hesabi...
 curl.exe -s -X POST "%GATEWAY%/api/money-service/v1/accounts/createusermoney" -H "Authorization: Bearer !TOKEN2!" -H "X-User-KeycloakUUID: !UUID2!"
+if errorlevel 1 (
+    echo  [HATA] Kullanici 2 money hesabi olusturulamadi.
+    goto :FAIL
+)
 echo.
 echo  [5sn bekleniyor...]
 powershell.exe -NoProfile -Command "Start-Sleep -Seconds 5"
@@ -107,7 +133,12 @@ powershell.exe -NoProfile -Command "Start-Sleep -Seconds 5"
 echo.
 echo [ADIM 6/10] Kullanici 2 IBAN bilgisi aliniyor...
 set TMPFILE_IBAN=%TEMP%\bank_user2_iban.json
+if exist "%TMPFILE_IBAN%" del /f /q "%TMPFILE_IBAN%" >nul 2>nul
 curl.exe -s -X GET "%GATEWAY%/api/money-service/v1/accounts/balance-info" -H "Authorization: Bearer !TOKEN2!" -H "X-User-KeycloakUUID: !UUID2!" -o "%TMPFILE_IBAN%"
+if errorlevel 1 (
+    echo  [HATA] Kullanici 2 IBAN istegi basarisiz.
+    goto :FAIL
+)
 
 for /f "delims=" %%I in ('powershell.exe -NoProfile -Command "(Get-Content '%TMPFILE_IBAN%' | ConvertFrom-Json).userIban"') do set USER2_IBAN=%%I
 
@@ -133,6 +164,10 @@ echo.
 echo.
 echo [ADIM 8/10] Kullanici 1'e DEPOSIT (5000 TL)...
 curl.exe -s -X POST "%GATEWAY%/api/transaction-service/v1/transactions/create" -H "Authorization: Bearer !TOKEN1!" -H "Content-Type: application/json" -H "X-User-KeycloakUUID: !UUID1!" -H "X-User-Email: !USER1_EMAIL!" -H "X-User-Name: !USER1_NAME!" -H "X-User-Surname: !USER1_SURNAME!" -d "{\"amount\":5000,\"transactionType\":\"DEPOSIT\",\"senderIban\":null,\"receiverIban\":null,\"receiverName\":null,\"receiverSurname\":null,\"description\":\"Test deposit\"}"
+if errorlevel 1 (
+    echo  [HATA] Deposit istegi basarisiz.
+    goto :FAIL
+)
 echo.
 echo  [7sn bekleniyor - Kafka DEPOSIT akisi...]
 powershell.exe -NoProfile -Command "Start-Sleep -Seconds 7"
@@ -147,6 +182,10 @@ echo  Alici IBAN     : !USER2_IBAN!
 echo  Alici Ad/Soyad : !USER2_NAME! !USER2_SURNAME!
 echo.
 curl.exe -s -X POST "%GATEWAY%/api/transaction-service/v1/transactions/create" -H "Authorization: Bearer !TOKEN1!" -H "Content-Type: application/json" -H "X-User-KeycloakUUID: !UUID1!" -H "X-User-Email: !USER1_EMAIL!" -H "X-User-Name: !USER1_NAME!" -H "X-User-Surname: !USER1_SURNAME!" -d "{\"amount\":1000,\"transactionType\":\"TRANSFER\",\"senderIban\":null,\"receiverIban\":\"!USER2_IBAN!\",\"receiverName\":\"!USER2_NAME!\",\"receiverSurname\":\"!USER2_SURNAME!\",\"description\":\"Test transfer\"}"
+if errorlevel 1 (
+    echo  [HATA] Transfer istegi basarisiz.
+    goto :FAIL
+)
 echo.
 echo.
 echo  [30sn bekleniyor - Kafka: block > user-validate > fraud > execute...]
@@ -157,10 +196,36 @@ echo.
 echo [ADIM 10/10] SONUC - Transfer sonrasi:
 echo.
 echo  === !USER1_NAME! !USER1_SURNAME! (Gonderen) - 4000 bekleniyor ===
-curl.exe -s -X GET "%GATEWAY%/api/money-service/v1/accounts/balance-info" -H "Authorization: Bearer !TOKEN1!" -H "X-User-KeycloakUUID: !UUID1!"
+set TMPFILE_BALANCE1=%TEMP%\bank_user1_final_balance.json
+set TMPFILE_BALANCE2=%TEMP%\bank_user2_final_balance.json
+if exist "%TMPFILE_BALANCE1%" del /f /q "%TMPFILE_BALANCE1%" >nul 2>nul
+if exist "%TMPFILE_BALANCE2%" del /f /q "%TMPFILE_BALANCE2%" >nul 2>nul
+curl.exe -s -X GET "%GATEWAY%/api/money-service/v1/accounts/balance-info" -H "Authorization: Bearer !TOKEN1!" -H "X-User-KeycloakUUID: !UUID1!" -o "%TMPFILE_BALANCE1%"
+if errorlevel 1 (
+    echo  [HATA] Kullanici 1 final bakiye istegi basarisiz.
+    goto :FAIL
+)
+type "%TMPFILE_BALANCE1%"
 echo.
 echo  === !USER2_NAME! !USER2_SURNAME! (Alan) - 1000 bekleniyor ===
-curl.exe -s -X GET "%GATEWAY%/api/money-service/v1/accounts/balance-info" -H "Authorization: Bearer !TOKEN2!" -H "X-User-KeycloakUUID: !UUID2!"
+curl.exe -s -X GET "%GATEWAY%/api/money-service/v1/accounts/balance-info" -H "Authorization: Bearer !TOKEN2!" -H "X-User-KeycloakUUID: !UUID2!" -o "%TMPFILE_BALANCE2%"
+if errorlevel 1 (
+    echo  [HATA] Kullanici 2 final bakiye istegi basarisiz.
+    goto :FAIL
+)
+type "%TMPFILE_BALANCE2%"
+for /f "delims=" %%M in ('powershell.exe -NoProfile -Command "(Get-Content '%TMPFILE_BALANCE1%' | ConvertFrom-Json).money"') do set USER1_FINAL_MONEY=%%M
+for /f "delims=" %%M in ('powershell.exe -NoProfile -Command "(Get-Content '%TMPFILE_BALANCE2%' | ConvertFrom-Json).money"') do set USER2_FINAL_MONEY=%%M
+if not "!USER1_FINAL_MONEY!"=="4000.00" if not "!USER1_FINAL_MONEY!"=="4000" (
+    echo.
+    echo  [HATA] Kullanici 1 final bakiye beklenen degil. Beklenen=4000 Gelen=!USER1_FINAL_MONEY!
+    goto :FAIL
+)
+if not "!USER2_FINAL_MONEY!"=="1000.00" if not "!USER2_FINAL_MONEY!"=="1000" (
+    echo.
+    echo  [HATA] Kullanici 2 final bakiye beklenen degil. Beklenen=1000 Gelen=!USER2_FINAL_MONEY!
+    goto :FAIL
+)
 echo.
 echo  === !USER1_NAME! Islem Gecmisi ===
 curl.exe -s -X GET "%GATEWAY%/api/transaction-service/v1/transactions/gettransactionhistorywithid?id=!UUID1!" -H "Authorization: Bearer !TOKEN1!"
@@ -184,3 +249,4 @@ echo ==============================================================
 echo    [HATA] Test basarisiz oldu!
 echo ==============================================================
 pause
+exit /b 1

@@ -1,0 +1,15 @@
+{
+    "method":  "POST",
+    "url":  "http://localhost:8095/api/user-service/v1/auth/register",
+    "expected":  [
+                     200
+                 ],
+    "headers":  "",
+    "body":  {
+                 "email":  "e2e.alpha.20260516222643-wihrmy@springbank.test",
+                 "role":  "USER",
+                 "name":  "E2EAlpha",
+                 "password":  "Test1234!",
+                 "surname":  "Tester"
+             }
+}

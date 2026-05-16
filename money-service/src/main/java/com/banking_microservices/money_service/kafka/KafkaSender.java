@@ -34,8 +34,8 @@ public class KafkaSender {
     @Value("${kafka.topics.transaction.transactionmoney.sender}")
     private String transactionSenderTopic;
 
-    @Value("${kafka.topics.username-validation.sender}")
-    private String usernameValidationSenderTopic;
+    @Value("${kafka.topics.transaction.blockmoney.user-validation-sender}")
+    private String userValidationRequestTopic;
 
     @Value("${kafka.topics.transaction.error}")
     private String transactionErrorTopic;
@@ -117,7 +117,7 @@ public class KafkaSender {
     public void sendTransactionToUserService(String key, KafkaTransactionTopicMessageDto dto) {
         try {
             log.info(" ({}) > KafkaSender | sendTransactionToUserService -> Kafkaya mesaj gonderilmek uzere alindi. Dto: \n{}", currentTime.get(), gson.toJson(dto));
-            kafkaTemplate.send(usernameValidationSenderTopic, key, dto);
+            kafkaTemplate.send(userValidationRequestTopic, key, dto);
             log.info(" ({}) > KafkaSender | sendTransactionToUserService -> Kafkaya mesaj gonderildi. Key: {}, Dto: \n{}", currentTime.get(), key, gson.toJson(dto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendTransactionToUserService -> Kafkaya mesaj gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());

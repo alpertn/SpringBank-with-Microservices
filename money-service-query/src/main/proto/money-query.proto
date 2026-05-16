@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.banking_microservices.money_service_query.grpc";
+option java_outer_classname = "MoneyQueryProto";
+
+package money.v1;
+
+message MoneyAccountByIdRequest {
+  string id = 1;
+}
+
+message MoneyAccountByUserIdRequest {
+  string user_id = 1;
+}
+
+message MoneyAccountByIbanRequest {
+  string iban = 1;
+}
+
+message MoneyAccountResponse {
+  string id = 1;
+  string user_id = 2;
+  string keycloak_user_uuid = 3;
+  string user_iban = 4;
+  string available_balance = 5;
+  string blocked_balance = 6;
+}
+
+service MoneyQueryGrpcService {
+  rpc GetAccountById(MoneyAccountByIdRequest) returns (MoneyAccountResponse);
+  rpc GetAccountByUserId(MoneyAccountByUserIdRequest) returns (MoneyAccountResponse);
+  rpc GetAccountByIban(MoneyAccountByIbanRequest) returns (MoneyAccountResponse);
+}

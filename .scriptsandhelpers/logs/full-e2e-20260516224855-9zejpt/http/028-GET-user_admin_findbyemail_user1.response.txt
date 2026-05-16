@@ -1,0 +1,1 @@
+[{"id":"9b8c8f96-99eb-4bf4-9792-38eac77cd575","keycloakUUID":"9b8c8f96-99eb-4bf4-9792-38eac77cd575","mail":"e2e.alpha.20260516224855-9zejpt@springbank.test","password":"","name":"E2EAlpha","surname":"Tester","role":"USER","active":true,"createdAt":"2026-05-16T19:49:29.119"}]

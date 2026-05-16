@@ -2,6 +2,7 @@ package com.banking_microservices.money_service.dto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -91,6 +92,9 @@ public class TransactionEntity {
     @Column(name = "transaction_status")
     @Builder.Default
     private String status = "PROGRESS";
+
+    @Transient
+    private TokenDetailsDto tokenDetails;
 
 }
 

@@ -28,8 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
     API.hideMsg(msg);
 
     try {
-      // POST /api/auth-service/v1/auth/login
-      const res = await fetch('/api/auth-service/v1/auth/login', {
+      // POST /api/user-service/v1/auth/login
+      const res = await fetch('/api/user-service/v1/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })

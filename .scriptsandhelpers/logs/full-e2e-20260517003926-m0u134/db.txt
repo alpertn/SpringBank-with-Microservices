@@ -1,0 +1,55 @@
+
+[00:39:46][elapsed=19899ms / 19.899s / 0.332m][db][OK] postgres:banking_keycloak
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_keycloak -t -A -c "select count(*) from user_entity where lower(email)=lower('e2e.alpha.20260517003926-m0u134@springbank.test');"
+DURATION: 538ms / 0.538s / 0.009m
+SQL:
+select count(*) from user_entity where lower(email)=lower('e2e.alpha.20260517003926-m0u134@springbank.test');
+RESULT:
+1
+--------------------------------------------------------------------------------
+[00:39:47][elapsed=20277ms / 20.277s / 0.338m][db][OK] postgres:banking_keycloak
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_keycloak -t -A -c "select count(*) from user_entity where lower(email)=lower('e2e.beta.20260517003926-m0u134@springbank.test');"
+DURATION: 371ms / 0.371s / 0.006m
+SQL:
+select count(*) from user_entity where lower(email)=lower('e2e.beta.20260517003926-m0u134@springbank.test');
+RESULT:
+1
+--------------------------------------------------------------------------------
+[00:39:58][elapsed=31623ms / 31.623s / 0.527m][db][OK] postgres:banking_money
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_money -t -A -c "select count(*) from money where user_id='b646a1ae-38a7-44f6-9d7e-2b04f45f1906' or keycloak_user_uuid='b646a1ae-38a7-44f6-9d7e-2b04f45f1906';"
+DURATION: 1939ms / 1.939s / 0.032m
+SQL:
+select count(*) from money where user_id='b646a1ae-38a7-44f6-9d7e-2b04f45f1906' or keycloak_user_uuid='b646a1ae-38a7-44f6-9d7e-2b04f45f1906';
+RESULT:
+1
+--------------------------------------------------------------------------------
+[00:39:59][elapsed=32282ms / 32.282s / 0.538m][db][OK] postgres:banking_money
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_money -t -A -c "select count(*) from money where user_id='effff247-f255-431a-a830-8a2d3ba8f07d' or keycloak_user_uuid='effff247-f255-431a-a830-8a2d3ba8f07d';"
+DURATION: 655ms / 0.655s / 0.011m
+SQL:
+select count(*) from money where user_id='effff247-f255-431a-a830-8a2d3ba8f07d' or keycloak_user_uuid='effff247-f255-431a-a830-8a2d3ba8f07d';
+RESULT:
+1
+--------------------------------------------------------------------------------
+[00:40:09][elapsed=42978ms / 42.978s / 0.716m][db][OK] postgres:banking_money
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_money -t -A -c "select money || '|' || blocked_money from money where user_id='b646a1ae-38a7-44f6-9d7e-2b04f45f1906' or keycloak_user_uuid='b646a1ae-38a7-44f6-9d7e-2b04f45f1906' limit 1;"
+DURATION: 935ms / 0.935s / 0.016m
+SQL:
+select money || '|' || blocked_money from money where user_id='b646a1ae-38a7-44f6-9d7e-2b04f45f1906' or keycloak_user_uuid='b646a1ae-38a7-44f6-9d7e-2b04f45f1906' limit 1;
+RESULT:
+3500.00|0.00
+--------------------------------------------------------------------------------
+[00:40:10][elapsed=44032ms / 44.032s / 0.734m][db][OK] postgres:banking_money
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_money -t -A -c "select money || '|' || blocked_money from money where user_id='effff247-f255-431a-a830-8a2d3ba8f07d' or keycloak_user_uuid='effff247-f255-431a-a830-8a2d3ba8f07d' limit 1;"
+DURATION: 1050ms / 1.05s / 0.018m
+SQL:
+select money || '|' || blocked_money from money where user_id='effff247-f255-431a-a830-8a2d3ba8f07d' or keycloak_user_uuid='effff247-f255-431a-a830-8a2d3ba8f07d' limit 1;
+RESULT:
+1000.00|0.00
+--------------------------------------------------------------------------------

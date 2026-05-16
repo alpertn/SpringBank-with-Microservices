@@ -1,0 +1,11 @@
+
+[01:47:32][elapsed=380ms / 0.38s / 0.006m][kubectl][START] --request-timeout=60s config current-context
+COMMAND:
+kubectl --request-timeout=60s config current-context
+START_ELAPSED_TOTAL: 378ms / 0.378s / 0.006m
+--------------------------------------------------------------------------------
+[01:47:32][elapsed=683ms / 0.683s / 0.011m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 682ms / 0.682s / 0.011m
+--------------------------------------------------------------------------------

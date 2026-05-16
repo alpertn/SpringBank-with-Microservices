@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -73,6 +74,9 @@ public class TransactionEntity {
 
     @Builder.Default
     private String status = "PROGRESS";
+
+    @Transient
+    private TokenDetailsDto tokenDetails;
 
     @PrePersist
     protected void onCreate() {

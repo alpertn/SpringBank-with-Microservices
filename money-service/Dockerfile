@@ -12,8 +12,8 @@ RUN mvn dependency:go-offline -B
 # ── Stage 2: Build ───────────────────────────────────────────
 FROM deps AS build
 COPY src ./src
-# -o (offline): Internete cikmaz, Stage 1'deki cache'i kullanir
-RUN mvn clean package -DskipTests -o
+# Online build resolves artifacts missed by dependency:go-offline.
+RUN mvn clean package -DskipTests
 
 # ── Stage 3: Runtime ─────────────────────────────────────────
 # JRE-only + alpine: Sadece calisma zamani, JDK araclari haric → image ~%50 kucuk

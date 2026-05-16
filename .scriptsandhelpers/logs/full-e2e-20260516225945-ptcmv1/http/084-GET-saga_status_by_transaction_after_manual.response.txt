@@ -1,0 +1,1 @@
+{"time":"2026-05-16T20:04:29.810476519","status":404,"error":"SagaEventNotFoundException","message":"Saga event not found with kafkaEventUUID: b6f77671-af27-4cd2-b511-5fa631a53109","path":"uri=/api/transaction-service/v1/saga/status/by-transaction"}

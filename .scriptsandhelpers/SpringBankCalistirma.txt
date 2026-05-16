@@ -19,7 +19,6 @@ kubectl rollout restart deployment/transaction-service deployment/money-service 
 kubectl rollout restart deployment/gateway -n banking-microservices
 kubectl rollout restart deployment/fraud-service -n banking-microservices
 kubectl rollout restart deployment/user-service -n banking-microservices
-kubectl rollout restart deployment/auth-service -n banking-microservices
 kubectl rollout restart deployment/transaction-service -n banking-microservices
 kubectl rollout restart deployment/money-service -n banking-microservices
 
@@ -27,24 +26,26 @@ kubectl logs -n banking-microservices deploy/fraud-service --tail=200
 
 kubectl logs -n banking-microservices pod/fraud-service-799dc8d9b7-tk6n8 > fraud_logs.txt
 
-docker build --no-cache -t SpringBankWithMicroservices/auth-service:1.0.0 ./auth-service
-docker build --no-cache -t SpringBankWithMicroservices/user-service:1.0.0 ./user-service
-docker build --no-cache -t SpringBankWithMicroservices/money-service:1.0.0 ./money-service
-docker build --no-cache -t SpringBankWithMicroservices/transaction-service:1.0.0 ./transaction-service
-docker build --no-cache -t SpringBankWithMicroservices/gateway:1.0.0 ./gateway
-docker build --no-cache -t SpringBankWithMicroservices/fraud-service:1.0.0 ./fraud-service
+docker build --no-cache -t springbankwithmicroservices/user-service:1.0.0 ./user-service
+docker build --no-cache -t springbankwithmicroservices/money-service:1.0.0 ./money-service
+docker build --no-cache -t springbankwithmicroservices/money-service-command:1.0.0 ./money-service-command
+docker build --no-cache -t springbankwithmicroservices/money-service-query:1.0.0 ./money-service-query
+docker build --no-cache -t springbankwithmicroservices/transaction-service:1.0.0 ./transaction-service
+docker build --no-cache -t springbankwithmicroservices/gateway:1.0.0 ./gateway
+docker build --no-cache -t springbankwithmicroservices/fraud-service:1.0.0 ./fraud-service
 kubectl apply -f k8s/01-Base.yaml
 kubectl apply -f k8s/02-Apps.yaml
 kubectl rollout restart deployment -n banking-microservices
 kubectl get pods -n banking-microservices
 
 
-docker build -t SpringBankWithMicroservices/auth-service:1.0.0 ./auth-service
-docker build -t SpringBankWithMicroservices/user-service:1.0.0 ./user-service
-docker build -t SpringBankWithMicroservices/money-service:1.0.0 ./money-service
-docker build -t SpringBankWithMicroservices/transaction-service:1.0.0 ./transaction-service
-docker build -t SpringBankWithMicroservices/gateway:1.0.0 ./gateway
-docker build -t SpringBankWithMicroservices/fraud-service:1.0.0 ./fraud-service
+docker build -t springbankwithmicroservices/user-service:1.0.0 ./user-service
+docker build -t springbankwithmicroservices/money-service:1.0.0 ./money-service
+docker build -t springbankwithmicroservices/money-service-command:1.0.0 ./money-service-command
+docker build -t springbankwithmicroservices/money-service-query:1.0.0 ./money-service-query
+docker build -t springbankwithmicroservices/transaction-service:1.0.0 ./transaction-service
+docker build -t springbankwithmicroservices/gateway:1.0.0 ./gateway
+docker build -t springbankwithmicroservices/fraud-service:1.0.0 ./fraud-service
 kubectl apply -f k8s/01-Base.yaml
 kubectl apply -f k8s/02-Apps.yaml
 kubectl rollout restart deployment -n banking-microservices
@@ -53,16 +54,17 @@ kubectl get pods -n banking-microservices
 
 
 kubectl logs -n banking-microservices deploy/fraud-service --tail=50 > fraud_logs_new.txt
-kubectl logs -n banking-microservices -l "app in (gateway, auth-service, user-service, transaction-service, money-service, fraud-service)" -f --max-log-requests=50
+kubectl logs -n banking-microservices -l "app in (gateway, user-service, transaction-service, money-service, money-service-command, money-service-query, fraud-service)" -f --max-log-requests=50
 
 SELECT * FROM users; kubectl exec -it postgres-75bf67f4f4-p5fhj -n banking-microservices -- psql -U banking_admin -d postgres
 
 Powershell paralelq
 
 $jobs = @(
-    { docker build --no-cache -t springbankwithmicroservices/auth-service:1.0.0 ./auth-service },
     { docker build --no-cache -t springbankwithmicroservices/user-service:1.0.0 ./user-service },
     { docker build --no-cache -t springbankwithmicroservices/money-service:1.0.0 ./money-service },
+    { docker build --no-cache -t springbankwithmicroservices/money-service-command:1.0.0 ./money-service-command },
+    { docker build --no-cache -t springbankwithmicroservices/money-service-query:1.0.0 ./money-service-query },
     { docker build --no-cache -t springbankwithmicroservices/transaction-service:1.0.0 ./transaction-service },
     { docker build --no-cache -t springbankwithmicroservices/gateway:1.0.0 ./gateway },
     { docker build --no-cache -t springbankwithmicroservices/fraud-service:1.0.0 ./fraud-service }

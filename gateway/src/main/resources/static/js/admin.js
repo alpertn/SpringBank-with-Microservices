@@ -7,10 +7,22 @@
 'use strict';
 
 // ─── Helpers ─────────────────────────────────────────────────
-const token = () => localStorage.getItem('sb_token');
-const authH = () => ({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${token()}` });
+const sessionApi = window.API || null;
+const token = () => sessionApi?.getToken?.() || localStorage.getItem('sb_token');
+const authH = (extraHeaders = {}) => sessionApi?.authHeaders?.(extraHeaders) || ({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${token()}`, ...extraHeaders });
+
+async function fetchAuth(path, options = {}) {
+  if (sessionApi?.fetchWithAuth) {
+    return sessionApi.fetchWithAuth(path, options);
+  }
+  const opts = { ...options, headers: authH(options.headers || {}) };
+  const res = await fetch(path, opts);
+  if (res.status === 401) { window.location.href = '/login.html'; return null; }
+  return res;
+}
 
 function parseJwt() {
+  if (sessionApi?.parseJwt) return sessionApi.parseJwt();
   try {
     const t = token();
     if (!t) return null;
@@ -20,6 +32,7 @@ function parseJwt() {
 }
 
 function checkAdmin() {
+  if (sessionApi?.checkAdmin) return sessionApi.checkAdmin();
   const t = token();
   if (!t) { window.location.href = '/login.html'; return false; }
   try {
@@ -34,6 +47,9 @@ function checkAdmin() {
 }
 
 async function api(method, path, body = null) {
+  if (sessionApi?.getJson) {
+    return sessionApi.getJson(path, method, body);
+  }
   const opts = { method, headers: authH() };
   if (body !== null) opts.body = JSON.stringify(body);
   const res = await fetch(path, opts);
@@ -267,6 +283,7 @@ const PAGE_TITLES = {
 };
 
 let currentPage = '';
+PAGE_TITLES.testlogs = 'Test Loglari';
 let healthTimer = null;
 
 function navigateTo(page) {
@@ -292,6 +309,7 @@ function navigateTo(page) {
     case 'fraud': loadFraud(); break;
     case 'health': checkHealth(); healthTimer = setInterval(checkHealth, 30000); break;
     case 'logs': break;
+    case 'testlogs': initTestLogs(); break;
     case 'activity': renderActivity(); break;
   }
 }
@@ -313,8 +331,9 @@ function attachNav() {
 }
 
 function initSidebarUser() {
+  const user = sessionApi?.getUserData?.() || {};
   const p = parseJwt();
-  const name = p?.preferred_username || p?.name || 'Admin';
+  const name = [user.name, user.surname].filter(Boolean).join(' ').trim() || p?.preferred_username || p?.name || user.email || 'Admin';
   const el = document.getElementById('sidebarAdminName');
   if (el) el.textContent = name;
   const init = document.getElementById('sidebarInitials');
@@ -647,8 +666,8 @@ window.showUserDetail = async function (idx) {
     let balData = { money: null, blockedMoney: null, userIban: null };
     try {
       const targetUUID = u?.keycloakUUID || u?.id;
-      const balRes = await fetch('/api/money-service/v1/accounts/balance-info', {
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token()}`, 'X-User-KeycloakUUID': targetUUID }
+      const balRes = await fetchAuth('/api/money-service/v1/accounts/balance-info', {
+        headers: { 'X-User-KeycloakUUID': targetUUID }
       });
       if (balRes.ok) balData = await balRes.json();
     } catch (_) { }
@@ -876,10 +895,32 @@ function renderTxTable(txs, state, errMsg) {
       <td>${t.receiverName || t.receiverIban ? escHtml(t.receiverName || '') || trunc(t.receiverIban, 10) : '-'}</td>
       <td>${badge(t.status)}</td>
       <td>${t.error ? '<span class="badge badge-danger"><i class="ph-fill ph-x-circle"></i> Hata</span>' : '<span class="badge badge-muted">—</span>'}</td>
-      <td><button class="action-link" data-tx-source="tx" data-tx-idx="${idx}" onclick="showTxDetailByIdx(this)">Detay</button></td>
+      <td>
+        <button class="action-link" data-tx-source="tx" data-tx-idx="${idx}" onclick="showTxDetailByIdx(this)">Detay</button>
+        ${canReverseTx(t) ? `<button class="action-link" data-tx-idx="${idx}" onclick="reverseTxByIdx(this)">Geri Cek</button>` : ''}
+      </td>
     </tr>
   `).join('');
 }
+
+function canReverseTx(t) {
+  return t && t.eventId && !['FAILED', 'CANCELLED', 'REVERSED'].includes(t.status);
+}
+
+window.reverseTxByIdx = async function (btn) {
+  const idx = parseInt(btn.dataset.txIdx);
+  const t = currentTxData[idx];
+  if (!t?.eventId) return;
+  if (!confirm(`${t.eventId} islemi geri alinsin mi?`)) return;
+  try {
+    await api('POST', `/api/transaction-service/v1/admin/transactions/reverse?eventUUID=${encodeURIComponent(t.eventId)}`);
+    toast('Islem geri alma baslatildi', 'success');
+    addActivity('warning', `Transaction geri alindi: ${t.eventId}`);
+    await loadTransactions();
+  } catch (e) {
+    toast(e.message, 'error');
+  }
+};
 
 // FIXED: Safe transaction detail display — no JSON.stringify in onclick
 window.showTxDetailByIdx = function (btn) {
@@ -998,8 +1039,8 @@ async function lookupAccount() {
   if (!id) { toast('Kullanıcı ID giriniz', 'warning'); return; }
   try {
     // Money-service balance info
-    const res = await fetch('/api/money-service/v1/accounts/balance-info', {
-      headers: { ...authH(), 'X-User-KeycloakUUID': id }
+    const res = await fetchAuth('/api/money-service/v1/accounts/balance-info', {
+      headers: { 'X-User-KeycloakUUID': id }
     });
     if (res.status === 401) { window.location.href = '/login.html'; return; }
     if (!res.ok) throw new Error('Hesap bulunamadı');
@@ -1366,7 +1407,6 @@ const HEALTH_SVCS = [
   { name: 'User Service', path: '/api/user-service/actuator/health' },
   { name: 'Money Service', path: '/api/money-service/actuator/health' },
   { name: 'Transaction Service', path: '/api/transaction-service/actuator/health' },
-  { name: 'Auth Service', path: '/api/auth-service/actuator/health' },
   { name: 'Fraud Service', path: '/api/fraud-service/actuator/health' },
 ];
 
@@ -1587,9 +1627,7 @@ function startPollingLogs(svc, tail) {
 async function fetchRecentLogs(svc, lines) {
   const term = document.getElementById('log-terminal');
   try {
-    const res = await fetch(`/api/gateway/admin/logs/${svc}/recent?lines=${lines}`, {
-      headers: { 'Authorization': `Bearer ${token()}` }
-    });
+    const res = await fetchAuth(`/api/gateway/admin/logs/${svc}/recent?lines=${lines}`);
     if (!res.ok) {
       if (res.status === 401) {
         logLine(term, 'error', '[HATA] Yetkilendirme hatası — lütfen tekrar giriş yapın.');
@@ -1758,6 +1796,94 @@ document.addEventListener('DOMContentLoaded', () => {
 // ═══════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════
+// Test log viewer
+let testLogRunsCache = [];
+
+function renderTestLogRunMeta(run) {
+  const meta = document.getElementById('testLogRunMeta');
+  const fileSelect = document.getElementById('testLogFileSelect');
+  if (!meta || !fileSelect) return;
+
+  if (!run) {
+    meta.textContent = 'Run bilgisi bulunamadi.';
+    return;
+  }
+
+  const files = Array.isArray(run.files) ? run.files : [];
+  meta.innerHTML = `
+    <strong>${escHtml(run.runId)}</strong>
+    <span style="margin-left:12px;">Guncellendi: ${escHtml(run.modifiedAt || '-')}</span>
+    <span style="margin-left:12px;">Dosyalar: ${files.length ? files.map(file => `<span class="badge badge-info" style="margin-right:6px;">${escHtml(file)}</span>`).join('') : '<span class="badge badge-muted">Yok</span>'}</span>
+  `;
+
+  Array.from(fileSelect.options).forEach(option => {
+    option.disabled = files.length > 0 && !files.includes(option.value);
+  });
+  if (fileSelect.selectedOptions[0]?.disabled) {
+    const firstAvailable = Array.from(fileSelect.options).find(option => !option.disabled);
+    if (firstAvailable) fileSelect.value = firstAvailable.value;
+  }
+}
+
+async function initTestLogs() {
+  const refreshBtn = document.getElementById('btnRefreshTestLogs');
+  if (refreshBtn) refreshBtn.onclick = loadTestLogRuns;
+  document.getElementById('testLogRunSelect')?.addEventListener('change', loadSelectedTestLog);
+  document.getElementById('testLogFileSelect')?.addEventListener('change', loadSelectedTestLog);
+  document.querySelectorAll('.test-log-mode-btn').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.test-log-mode-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const select = document.getElementById('testLogFileSelect');
+      if (select) select.value = btn.dataset.file || 'all-logs';
+      loadSelectedTestLog();
+    };
+  });
+  await loadTestLogRuns();
+}
+
+async function loadTestLogRuns() {
+  const select = document.getElementById('testLogRunSelect');
+  const term = document.getElementById('test-log-terminal');
+  if (!select || !term) return;
+  term.textContent = 'Test loglari yukleniyor...';
+  try {
+    testLogRunsCache = await api('GET', '/api/gateway/admin/test-logs/runs') || [];
+    select.innerHTML = testLogRunsCache.length
+      ? testLogRunsCache.map(r => `<option value="${escHtml(r.runId)}">${escHtml(r.runId)} (${escHtml(r.modifiedAt || '')})</option>`).join('')
+      : '<option value="">Log bulunamadi</option>';
+    renderTestLogRunMeta(testLogRunsCache[0] || null);
+    await loadSelectedTestLog();
+  } catch (e) {
+    term.textContent = `Test loglari alinamadi: ${e.message}`;
+    toast(e.message, 'error');
+  }
+}
+
+async function loadSelectedTestLog() {
+  const runId = document.getElementById('testLogRunSelect')?.value;
+  const file = document.getElementById('testLogFileSelect')?.value || 'all-logs';
+  const term = document.getElementById('test-log-terminal');
+  if (!term) return;
+  if (!runId) {
+    term.textContent = 'Test logu bulunamadi.';
+    renderTestLogRunMeta(null);
+    return;
+  }
+  renderTestLogRunMeta(testLogRunsCache.find(run => run.runId === runId) || null);
+  term.textContent = `${runId}/${file}.txt okunuyor...`;
+  try {
+    const res = await fetchAuth(`/api/gateway/admin/test-logs/${encodeURIComponent(runId)}/${encodeURIComponent(file)}?lines=1200`);
+    const text = await res.text();
+    if (!res.ok) throw new Error(text || `HTTP ${res.status}`);
+    term.textContent = text || 'Dosya bos.';
+    term.scrollTop = term.scrollHeight;
+    addActivity('info', `Test log acildi: ${runId}/${file}`);
+  } catch (e) {
+    term.textContent = `Log okunamadi: ${e.message}`;
+  }
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   if (!checkAdmin()) return;
   initSidebarUser();

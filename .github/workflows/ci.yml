@@ -236,7 +236,6 @@ jobs:
       # GitHub Actions bunlari paralel calistirmaya calisir.
       #
       # Ornek:
-      # - auth-service icin ayri quality job
       # - user-service icin ayri quality job
       # - gateway icin ayri quality job
       matrix:
@@ -246,7 +245,6 @@ jobs:
           # [YARI-SABIT] "service:" kelimesini degistirirsen asagidaki "${{ matrix.service }}"
           # kullanimlari patlar. Degistirmemen onerilir.
 
-          - auth-service
           - user-service
           - money-service
           - transaction-service
@@ -254,7 +252,7 @@ jobs:
           - gateway
           # [DEGISEBILIR] Bu liste serbest. Yeni servis ekleyebilir, mevcutlari silip degistirebilirsin.
           # UYARI: Buradaki her isim, repo kokunde ayni isimde bir klasore karsilik gelmeli.
-          # Ornegin "auth-service" yaziyorsa, repo'nda "auth-service/" klasoru olmali;
+          # Ornegin "user-service" yaziyorsa, repo'nda "user-service/" klasoru olmali;
           # yoksa o servis icin calistirilan Maven komutu "dizin bulunamadi" hatasi verir.
 
     defaults:
@@ -263,7 +261,7 @@ jobs:
         # Maven komutu hangi klasorde calissin?
         #
         # matrix.service o an hangi servis ise oraya girer.
-        # Ornek: auth-service kosusunda komut auth-service klasorunde calisir.
+        # Ornek: user-service kosusunda komut user-service klasorunde calisir.
         working-directory: ${{ matrix.service }}
         # [SABIT] "${{ matrix.service }}" ifadesini degistirme. Hangi klasorde calisacagini dinamik belirler.
         # [SABIT] "working-directory:" anahtar kelimesini degistirme.
@@ -350,7 +348,7 @@ jobs:
         # [YARI-SABIT] "actions/upload-artifact" resmi Action adi; degistirme.
         with:
           # Artifact adi servis adina gore degisir.
-          # Ornek: auth-service-reports
+          # Ornek: user-service-reports
           name: ${{ matrix.service }}-reports
           # [DEGISEBILIR] "-reports" son ekini istersen degistirebilirsin. Ornegin: "-test-ciktisi"
           # [SABIT] "${{ matrix.service }}" kismini degistirme; servis adini dinamik ekler.
