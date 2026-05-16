@@ -1,1 +1,0 @@
-{"totalAccounts":13,"totalBalance":8000.00,"totalBlockedBalance":1000.00,"averageBalance":615.38,"richAccounts":0,"zeroBalanceAccounts":10,"accountsWithBlockedFunds":1}

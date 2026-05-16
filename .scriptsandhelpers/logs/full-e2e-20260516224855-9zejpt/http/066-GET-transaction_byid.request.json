@@ -1,9 +1,0 @@
-{
-    "method":  "GET",
-    "url":  "http://localhost:8095/api/transaction-service/v1/transactions/byid?id=32a11579-7d75-427e-8314-a9cd64807d2b",
-    "expected":  [
-                     200
-                 ],
-    "headers":  "Authorization",
-    "body":  null
-}

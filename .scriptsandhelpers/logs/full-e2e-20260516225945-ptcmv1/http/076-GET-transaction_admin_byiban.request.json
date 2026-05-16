@@ -1,9 +1,0 @@
-{
-    "method":  "GET",
-    "url":  "http://localhost:8095/api/transaction-service/v1/admin/byiban?iban=TR2298160MYNKEYCF5Z2BDBE4G",
-    "expected":  [
-                     200
-                 ],
-    "headers":  "Authorization",
-    "body":  null
-}

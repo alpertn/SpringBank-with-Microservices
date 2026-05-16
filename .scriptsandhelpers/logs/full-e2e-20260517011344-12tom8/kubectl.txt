@@ -1,6 +1,0 @@
-
-[01:13:45][elapsed=655ms / 0.655s / 0.011m][kubectl][START] --request-timeout=60s config current-context
-COMMAND:
-kubectl --request-timeout=60s config current-context
-START_ELAPSED_TOTAL: 655ms / 0.655s / 0.011m
---------------------------------------------------------------------------------

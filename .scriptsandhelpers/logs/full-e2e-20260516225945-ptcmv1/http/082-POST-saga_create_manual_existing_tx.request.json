@@ -1,9 +1,0 @@
-{
-    "method":  "POST",
-    "url":  "http://localhost:8095/api/transaction-service/v1/saga/create?eventUUID=b6f77671-af27-4cd2-b511-5fa631a53109",
-    "expected":  [
-                     201
-                 ],
-    "headers":  "Authorization",
-    "body":  null
-}

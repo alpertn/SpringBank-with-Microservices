@@ -1,1 +1,0 @@
-{"timestamp":"2026-05-16T19:38:12.282Z","status":500,"error":"Internal Server Error","path":"/api/money-service-query/v1/accounts/search"}

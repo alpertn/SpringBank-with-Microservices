@@ -1,1 +1,0 @@
-{"message":"Projection event could not be published for eventId=982d56b5-3dff-45bb-8f19-7ccac82acc4d","errorCode":"MONEY_COMMAND_INFRA","timestamp":"2026-05-16T20:04:38.200031453"}

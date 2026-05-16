@@ -1,3 +1,0 @@
-SQL: select id || '|' || event_id || '|' || status from transactions where sender_user_id='75cdda7c-9be6-4b07-8414-94c420545f02' and transaction_type='TRANSFER' order by created_at desc limit 1;
-RESULT:
-623fa155-9b8f-47c9-8cd7-e5376c326072|b6f77671-af27-4cd2-b511-5fa631a53109|COMPLETED

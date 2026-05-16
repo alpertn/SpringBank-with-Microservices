@@ -1,3 +1,0 @@
-SQL: select count(*) from transactions where sender_user_id='9be57278-0a67-453d-86da-472faf6f68ad' and error=true;
-RESULT:
-0

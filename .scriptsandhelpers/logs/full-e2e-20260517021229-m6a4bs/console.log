@@ -175,3 +175,84 @@ PS>TerminatingError(Add-Content): "The running command stopped because the prefe
 [OK]   user2 direct withdraw balance 0 satisfied
 
 ==== Deposit, withdraw, transfer E2E ====
+[OK]   transaction deposit user1 HTTP 201
+[OK]   user1 after deposit balance-info HTTP 200
+[OK]   user1 balance >= 5000 after deposit satisfied
+[OK]   transaction withdraw user1 HTTP 201
+[OK]   user1 after withdraw balance-info HTTP 200
+[OK]   user1 balance 4500 after withdraw satisfied
+[OK]   transaction transfer user1 to user2 HTTP 201
+[OK]   user1 after transfer balance-info HTTP 200
+[OK]   user2 after transfer balance-info HTTP 200
+[OK]   transfer balances user1=3500 user2=1000 satisfied
+[OK]   user1 final balance-info HTTP 200
+[OK]   user2 final balance-info HTTP 200
+[OK]   Final user1 money 3500
+[OK]   Final user2 money 1000
+[OK]   Final user1 blockedmoney 0
+[OK]   Final user2 blockedmoney 0
+[OK]   DB user1 money/blocked dogru: 3500.00|0.00
+[OK]   DB user2 money/blocked dogru: 1000.00|0.00
+
+==== Transaction endpointleri ve DB dogrulamasi ====
+[OK]   transaction history user1 HTTP 200
+[OK]   transaction history user2 HTTP 200
+PS>TerminatingError(Add-Content): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: İşlem, başka bir işlem tarafından kullanıldığından 'C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260517021229-m6a4bs\all-logs.txt' dosyasına erişemiyor."
+[OK]   user1 transaction history >= 3
+[OK]   user2 transaction history >= 1
+[OK]   transaction errors endpoint HTTP 200
+[OK]   transaction daterange HTTP 200
+[OK]   DB transfer event_uuid var: a26f2500-859f-4737-be82-11ff5b855b93
+[OK]   DB transfer status COMPLETED
+[OK]   transaction byid HTTP 200
+[OK]   transaction create Kafka offset advanced banking-microservices.transaction.created.v1 52 -> 55
+[OK]   transaction block/projection Kafka offset advanced banking-microservices.transaction.money-blocked.v1 12 -> 13
+PS>TerminatingError(Add-Content): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: İşlem, başka bir işlem tarafından kullanıldığından 'C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260517021229-m6a4bs\all-logs.txt' dosyasına erişemiyor."
+[OK]   transaction user validation request Kafka offset advanced banking-microservices.transaction.user-validation.request.v1 12 -> 13
+[OK]   transaction user validation success Kafka offset advanced banking-microservices.transaction.user-validation.success.v1 11 -> 12
+[OK]   transaction fraud checked Kafka offset advanced banking-microservices.transaction.fraud.checked.v1 11 -> 12
+[OK]   transaction completed Kafka offset advanced banking-microservices.transaction.completed.v1 47 -> 50
+[OK]   transaction.created eventUUID Kafka mesaj icerigi bulundu topic=banking-microservices.transaction.created.v1 needle=a26f2500-859f-4737-be82-11ff5b855b93
+[OK]   transaction.money-blocked eventUUID Kafka mesaj icerigi bulundu topic=banking-microservices.transaction.money-blocked.v1 needle=a26f2500-859f-4737-be82-11ff5b855b93
+[OK]   user-validation.request eventUUID Kafka mesaj icerigi bulundu topic=banking-microservices.transaction.user-validation.request.v1 needle=a26f2500-859f-4737-be82-11ff5b855b93
+[OK]   user-validation.success eventUUID Kafka mesaj icerigi bulundu topic=banking-microservices.transaction.user-validation.success.v1 needle=a26f2500-859f-4737-be82-11ff5b855b93
+[OK]   fraud.checked eventUUID Kafka mesaj icerigi bulundu topic=banking-microservices.transaction.fraud.checked.v1 needle=a26f2500-859f-4737-be82-11ff5b855b93
+[OK]   transaction.completed eventUUID Kafka mesaj icerigi bulundu topic=banking-microservices.transaction.completed.v1 needle=a26f2500-859f-4737-be82-11ff5b855b93
+[SKIP] Step 1 dakikayi asti: Transaction endpointleri ve DB dogrulamasi duration=78971ms / 78.971s / 1.316m
+
+==== Admin money/transaction/saga/gateway endpointleri ====
+[OK]   admin refresh before admin endpoints login HTTP 200
+[OK]   admin refresh before admin endpoints access_token alindi
+[OK]   money admin summary HTTP 200
+[OK]   money admin count HTTP 200
+[OK]   money admin accounts HTTP 200
+[OK]   money admin top HTTP 200
+[OK]   money admin account byiban HTTP 200
+[OK]   money admin distribution HTTP 200
+[OK]   transaction admin summary HTTP 200
+[OK]   transaction admin daily HTTP 200
+[OK]   transaction admin stuck HTTP 200
+[OK]   transaction admin byiban HTTP 200
+[OK]   transaction admin errors analysis HTTP 200
+[OK]   transaction admin count HTTP 200
+[OK]   transaction admin top by volume HTTP 200
+[OK]   saga all HTTP 200
+[OK]   saga exists before/manual HTTP 200
+[OK]   saga create manual existing tx HTTP 201
+[OK]   saga exists after/manual HTTP 200
+[OK]   saga exists true after manual create
+[OK]   saga status by transaction after/manual HTTP 200
+[OK]   saga status by saga uuid HTTP 200
+[OK]   transaction admin manual saga bad request validation HTTP 400
+[OK]   gateway recent logs HTTP 200
+
+==== CQRS command/query servisleri internal gercek akisi ====
+[FAIL] command create account 1 HTTP 503 expected 201 body={"message":"Projection event could not be published for eventId=3db3e7a7-3ee6-46cf-8a4d-d3889c0122c2","errorCode":"MONEY_COMMAND_INFRA","timestamp":"2026-05-16T23:16:28.444899801"}
+[FAIL] command create account 2 HTTP 503 expected 201 body={"message":"Projection event could not be published for eventId=accdabaa-ef90-4120-a298-256bd765715d","errorCode":"MONEY_COMMAND_INFRA","timestamp":"2026-05-16T23:16:28.909635221"}
+[FAIL] command deposit HTTP 404 expected 200 body={"message":"Money account not found for userId=cmd-user-a-20260517021229-m6a4bs","errorCode":"ACCOUNT_NOT_FOUND","timestamp":"2026-05-16T23:16:29.344379549"}
+[FAIL] command withdraw HTTP 404 expected 200 body={"message":"Money account not found for userId=cmd-user-a-20260517021229-m6a4bs","errorCode":"ACCOUNT_NOT_FOUND","timestamp":"2026-05-16T23:16:29.710368166"}
+[FAIL] command block money HTTP 400 expected 200 body={"message":"senderIban must not be blank","errorCode":"VALIDATION_ERROR","timestamp":"2026-05-16T23:16:30.131835143"}
+[FAIL] command execute transfer HTTP 400 expected 200 body={"message":"senderIban must not be blank","errorCode":"VALIDATION_ERROR","timestamp":"2026-05-16T23:16:30.611463137"}
+[FAIL] command DB sender money/blocked dogru:
+[FAIL] command DB receiver money/blocked dogru:
+[FAIL] query by user command sender HTTP 500 expected 200 body={"timestamp":"2026-05-16T23:17:01.914Z","status":500,"error":"Internal Server Error","path":"/api/money-service-query/v1/accounts/user/cmd-user-a-20260517021229-m6a4bs"}

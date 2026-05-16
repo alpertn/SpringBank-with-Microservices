@@ -1,1 +1,0 @@
-{"id":"75cdda7c-9be6-4b07-8414-94c420545f02","keycloakUUID":"75cdda7c-9be6-4b07-8414-94c420545f02","mail":"e2e.alpha.20260516225945-ptcmv1@springbank.test","password":"","name":"E2EAlpha","surname":"Tester","role":"USER","active":true,"createdAt":"2026-05-16T20:01:22"}

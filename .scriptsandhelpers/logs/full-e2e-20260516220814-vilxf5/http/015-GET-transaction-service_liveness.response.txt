@@ -1,1 +1,0 @@
-{"timestamp":"2026-05-16T19:08:22.436+00:00","path":"/api/transaction-service/actuator/health/liveness","status":500,"error":"Internal Server Error","requestId":"dd1824bd-9"}

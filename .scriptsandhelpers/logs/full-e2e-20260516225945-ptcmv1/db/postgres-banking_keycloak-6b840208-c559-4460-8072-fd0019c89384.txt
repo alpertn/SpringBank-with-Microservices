@@ -1,3 +1,0 @@
-SQL: select count(*) from user_entity where lower(email)=lower('e2e.beta.20260516225945-ptcmv1@springbank.test');
-RESULT:
-1

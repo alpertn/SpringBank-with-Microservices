@@ -1,1 +1,0 @@
-{"time":"2026-05-16T19:19:27.643345152","status":500,"error":"Runtime Exception","message":"JSON parse error: Unexpected character ('p' (code 112)): was expecting double-quote to start property name","path":"uri=/api/user-service/v1/auth/login;client=192.168.65.3"}

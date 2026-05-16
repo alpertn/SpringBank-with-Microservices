@@ -1,9 +1,0 @@
-{
-    "method":  "PATCH",
-    "url":  "http://localhost:8095/api/user-service/v1/admin/updaterole/=USER",
-    "expected":  [
-                     200
-                 ],
-    "headers":  "Authorization",
-    "body":  null
-}

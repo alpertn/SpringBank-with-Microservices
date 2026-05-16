@@ -1,1 +1,0 @@
-money-service-command is healthy

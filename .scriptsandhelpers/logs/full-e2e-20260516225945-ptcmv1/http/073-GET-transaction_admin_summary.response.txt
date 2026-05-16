@@ -1,1 +1,0 @@
-{"totalCount":10,"totalVolume":10019499.00,"completed":8,"pending":1,"failed":1,"countByType":{"DEPOSIT":3,"WITHDRAW":3,"TRANSFER":4},"volumeByType":{"DEPOSIT":15000.00,"WITHDRAW":1500.00,"TRANSFER":10002999.00}}

@@ -35,3 +35,48 @@ select count(*) from money where user_id='9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8' 
 RESULT:
 1
 --------------------------------------------------------------------------------
+[02:14:58][elapsed=149017ms / 149.017s / 2.484m][db][OK] postgres:banking_money
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_money -t -A -c "select money || '|' || blocked_money from money where user_id='95fc80d4-08c5-47d2-8697-9f7796b0562b' or keycloak_user_uuid='95fc80d4-08c5-47d2-8697-9f7796b0562b' limit 1;"
+DURATION: 1597ms / 1.597s / 0.027m
+SQL:
+select money || '|' || blocked_money from money where user_id='95fc80d4-08c5-47d2-8697-9f7796b0562b' or keycloak_user_uuid='95fc80d4-08c5-47d2-8697-9f7796b0562b' limit 1;
+RESULT:
+3500.00|0.00
+--------------------------------------------------------------------------------
+[02:14:59][elapsed=150465ms / 150.465s / 2.508m][db][OK] postgres:banking_money
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_money -t -A -c "select money || '|' || blocked_money from money where user_id='9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8' or keycloak_user_uuid='9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8' limit 1;"
+DURATION: 1442ms / 1.442s / 0.024m
+SQL:
+select money || '|' || blocked_money from money where user_id='9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8' or keycloak_user_uuid='9c7d1d8c-5cac-4a6d-985b-3a75b2b9c9e8' limit 1;
+RESULT:
+1000.00|0.00
+--------------------------------------------------------------------------------
+[02:15:02][elapsed=153349ms / 153.349s / 2.556m][db][OK] postgres:banking_transactions
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_transactions -t -A -c "select id || '|' || event_id || '|' || status from transactions where sender_user_id='95fc80d4-08c5-47d2-8697-9f7796b0562b' and transaction_type='TRANSFER' order by created_at desc limit 1;"
+DURATION: 814ms / 0.814s / 0.014m
+SQL:
+select id || '|' || event_id || '|' || status from transactions where sender_user_id='95fc80d4-08c5-47d2-8697-9f7796b0562b' and transaction_type='TRANSFER' order by created_at desc limit 1;
+RESULT:
+98452e3e-acd1-434d-bac0-1ae9b0208fc3|a26f2500-859f-4737-be82-11ff5b855b93|COMPLETED
+--------------------------------------------------------------------------------
+[02:16:30][elapsed=241656ms / 241.656s / 4.028m][db][OK] postgres:banking_money_command
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_money_command -t -A -c "select money || '|' || blocked_money from money_accounts where user_id='cmd-user-a-20260517021229-m6a4bs' limit 1;"
+DURATION: 353ms / 0.353s / 0.006m
+SQL:
+select money || '|' || blocked_money from money_accounts where user_id='cmd-user-a-20260517021229-m6a4bs' limit 1;
+RESULT:
+
+--------------------------------------------------------------------------------
+[02:16:31][elapsed=242061ms / 242.061s / 4.034m][db][OK] postgres:banking_money_command
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_money_command -t -A -c "select money || '|' || blocked_money from money_accounts where user_id='cmd-user-b-20260517021229-m6a4bs' limit 1;"
+DURATION: 402ms / 0.402s / 0.007m
+SQL:
+select money || '|' || blocked_money from money_accounts where user_id='cmd-user-b-20260517021229-m6a4bs' limit 1;
+RESULT:
+
+--------------------------------------------------------------------------------

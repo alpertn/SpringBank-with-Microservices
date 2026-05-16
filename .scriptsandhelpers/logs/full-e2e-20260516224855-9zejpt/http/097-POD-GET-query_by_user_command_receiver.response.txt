@@ -1,1 +1,0 @@
-{"timestamp":"2026-05-16T19:54:40.819Z","status":500,"error":"Internal Server Error","path":"/api/money-service-query/v1/accounts/user/cmd-user-b-20260516224855-9zejpt"}

@@ -1,1 +1,0 @@
-{"id":"bef58d8f-4960-47a3-8520-fd07156500e4","userId":"9b8c8f96-99eb-4bf4-9792-38eac77cd575","userIban":"TR4531613EKO6V3HV1RBHS4UJ2","money":0.00,"blockedmoney":0.00}

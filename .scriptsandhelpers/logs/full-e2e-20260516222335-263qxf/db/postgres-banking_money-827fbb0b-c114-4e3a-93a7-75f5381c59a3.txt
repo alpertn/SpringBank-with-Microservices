@@ -1,3 +1,0 @@
-SQL: select count(*) from money where user_id='d822ea18-f495-4837-aed6-a85b55987ff4' or keycloak_user_uuid='d822ea18-f495-4837-aed6-a85b55987ff4';
-RESULT:
-1

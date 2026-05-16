@@ -1,4 +1,0 @@
-TOPIC: banking-microservices.transaction.saga.money.completed.v1
-RAW:
-command terminated with exit code 1
-SUM: 0

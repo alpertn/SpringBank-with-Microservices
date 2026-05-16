@@ -1,9 +1,0 @@
-{
-    "method":  "GET",
-    "url":  "http://localhost:8095/",
-    "expected":  [
-                     200
-                 ],
-    "headers":  "",
-    "body":  null
-}

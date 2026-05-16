@@ -1,9 +1,0 @@
-{
-    "method":  "POST",
-    "url":  "http://localhost:8095/api/user-service/v1/admin/users/ee151fc1-5118-4139-aec1-37189357b311/activate",
-    "expected":  [
-                     200
-                 ],
-    "headers":  "Authorization",
-    "body":  null
-}

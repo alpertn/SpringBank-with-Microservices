@@ -1,1 +1,0 @@
-[{"id":"ee151fc1-5118-4139-aec1-37189357b311","keycloakUUID":"ee151fc1-5118-4139-aec1-37189357b311","mail":"e2e.admin.target.20260516225945-ptcmv1@springbank.test","password":"","name":"E2EAdminTarget","surname":"Tester","role":"USER","active":true,"createdAt":"2026-05-16T20:01:57.181"}]

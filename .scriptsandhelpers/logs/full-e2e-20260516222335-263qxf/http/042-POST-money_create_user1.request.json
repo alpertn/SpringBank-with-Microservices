@@ -1,9 +1,0 @@
-{
-    "method":  "POST",
-    "url":  "http://localhost:8095/api/money-service/v1/accounts/createusermoney",
-    "expected":  [
-                     200
-                 ],
-    "headers":  "X-User-KeycloakUUID,Authorization",
-    "body":  null
-}
