@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
  * Cozum: Frontend token'i ?token=... seklinde URL'ye ekler, bu filtre onu
  * Authorization header'ina tasir. Boylece Spring Security normal JWT dogrulamasi yapar.
  *
- * Sadece /api/gateway/admin/logs/ yollarinda aktiftir — diger endpointler etkilenmez.
+ * Sadece /api/admin-service/logs/ yollarinda aktiftir; diger endpointler etkilenmez.
  * 
  * Oncelik: -100 (SecurityWebFilterChain'den ONCE calisir)
  */
@@ -23,7 +23,7 @@ import reactor.core.publisher.Mono;
 @Component
 public class SseTokenQueryParamFilter implements WebFilter {
 
-    private static final String LOG_PATH_PREFIX = "/api/gateway/admin/logs/";
+    private static final String LOG_PATH_PREFIX = "/api/admin-service/logs/";
     private static final String TOKEN_PARAM = "token";
 
     @Override

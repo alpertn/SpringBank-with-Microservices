@@ -1,0 +1,299 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20260517031351
+Username: monte\alper
+RunAs User: monte\alper
+Configuration Name: 
+Machine: MONTE (Microsoft Windows NT 10.0.26200.0)
+Host Application: powershell.exe -NoProfile -ExecutionPolicy Bypass -Command $p=$env:SELF; $c=Get-Content -Raw -LiteralPath $p; $m='# POWERSHELL_PAYLOAD'; $i=$c.LastIndexOf($m); if($i -lt 0){throw 'PowerShell payload not found'}; $s=$c.Substring($i + $m.Length); Invoke-Expression $s
+Process ID: 16720
+PSVersion: 5.1.26100.7462
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7462
+BuildVersion: 10.0.26100.7462
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+[INFO] RunId=20260517031351-fqw19y
+[INFO] Test modu=full (varsayilan full kapsam; 1 dakikayi asan parca SKIP yazilip sonraki teste gecilir)
+[INFO] Timeoutlar: HTTP=60 sn, long-running-skip=60 sn, wait-cap=60 sn
+[INFO] Tum loglar: C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260517031351-fqw19y
+
+==== Kubernetes ve servis on kontrolleri ====
+[OK]   kubectl context: docker-desktop
+[OK]   Kubernetes API cevap veriyor
+[OK]   namespace var: banking-microservices
+[OK]   tum deployment'lar available condition beklemesi tamam
+[OK]   deployment ready: postgres (1)
+[OK]   deployment ready: redis (1)
+PS>TerminatingError(Add-Content): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: İşlem, başka bir işlem tarafından kullanıldığından 'C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260517031351-fqw19y\all-logs.txt' dosyasına erişemiyor."
+[OK]   deployment ready: mongodb (1)
+[OK]   deployment ready: elasticsearch (1)
+[OK]   deployment ready: zookeeper (1)
+[OK]   deployment ready: kafka (1)
+[OK]   deployment ready: keycloak (1)
+[OK]   deployment ready: user-service (1)
+[OK]   deployment ready: money-service (1)
+[OK]   deployment ready: money-service-command (1)
+[OK]   deployment ready: money-service-query (1)
+[OK]   deployment ready: transaction-service (1)
+[OK]   deployment ready: fraud-service (1)
+[OK]   deployment ready: gateway (1)
+[OK]   service var: postgres
+[OK]   service var: redis
+[OK]   service var: mongodb
+[OK]   service var: elasticsearch
+[OK]   service var: zookeeper
+[OK]   service var: kafka
+[OK]   service var: keycloak
+[OK]   service var: user-service
+[OK]   service var: money-service
+[OK]   service var: money-service-command
+[OK]   service var: money-service-query
+[OK]   service var: transaction-service
+[OK]   service var: fraud-service
+[OK]   service var: gateway
+
+==== Gateway erisimi ====
+[OK]   gateway static login.html HTTP 200
+[OK]   static / HTTP 200
+[OK]   static /index.html HTTP 200
+[OK]   static /login.html HTTP 200
+[OK]   static /register.html HTTP 200
+[OK]   static /dashboard.html HTTP 200
+[OK]   static /deposit.html HTTP 200
+[OK]   static /withdraw.html HTTP 200
+[OK]   static /transfer.html HTTP 200
+[OK]   static /transactions.html HTTP 200
+[OK]   static /admin.html HTTP 200
+
+==== Public health endpointleri ====
+[OK]   money-service health unauthenticated/security HTTP 401
+[OK]   user-service liveness HTTP 200
+[OK]   user-service liveness HTTP 200 satisfied
+[OK]   money-service liveness HTTP 200
+[OK]   money-service liveness HTTP 200 satisfied
+[OK]   transaction-service liveness HTTP 200
+[OK]   transaction-service liveness HTTP 200 satisfied
+[OK]   fraud-service liveness HTTP 200
+[OK]   fraud-service liveness HTTP 200 satisfied
+[OK]   money-service-command internal health HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: money-service-command."
+[OK]   money-service-command internal health HTTP 200 satisfied
+[OK]   money-service-query internal health HTTP 200
+PS>TerminatingError(ConvertFrom-Json): "Geçersiz JSON basit öğesi: money-service-query."
+[OK]   money-service-query internal health HTTP 200 satisfied
+
+==== Kafka topic ve altyapi kontrolleri ====
+[OK]   Kafka topic var: banking-microservices.user.created.v1
+[OK]   Kafka topic var: banking-microservices.money.account.created.v1
+[INFO] Kafka topic henuz yok, akista uretildiginde tekrar dogrulanacak: banking-microservices.money.account.create-failed.v1
+[OK]   Kafka topic var: banking-microservices.transaction.created.v1
+[OK]   Kafka topic var: banking-microservices.transaction.completed.v1
+[OK]   Kafka topic var: banking-microservices.transaction.failed.v1
+[OK]   Kafka topic var: banking-microservices.transaction.money-blocked.v1
+[OK]   Kafka topic var: banking-microservices.money.projection-sync.v1
+[OK]   Kafka topic var: banking-microservices.transaction.user-validation.request.v1
+[OK]   Kafka topic var: banking-microservices.transaction.user-validation.success.v1
+[OK]   Kafka topic var: banking-microservices.transaction.fraud.checked.v1
+[OK]   Kafka topic var: banking-microservices.transaction.saga.created.v1
+[OK]   Kafka topic var: banking-microservices.transaction.saga.money.completed.v1
+[INFO] Kafka topic henuz yok, akista uretildiginde tekrar dogrulanacak: banking-microservices.transaction.saga.money.failed.v1
+[OK]   Kafka topic var: banking-microservices.transaction.money-blocked.v1
+[OK]   Kafka topic var: banking-microservices.money.projection-sync.v1
+
+==== Register, login, token decode ====
+[OK]   register user1 HTTP 200
+[OK]   register user2 HTTP 200
+[OK]   user1 login HTTP 200
+[OK]   user1 access_token alindi
+[OK]   user2 login HTTP 200
+[OK]   user2 access_token alindi
+[OK]   admin login HTTP 200
+[OK]   admin access_token alindi
+[OK]   user1 JWT sub: 3cfc87b2-57ef-483b-85f2-f6100d466920
+[OK]   user2 JWT sub: 1c2cf767-1f45-4ef6-bc23-a5b69bb2628f
+[OK]   admin JWT ADMIN role iceriyor
+[OK]   refresh token user1 HTTP 200
+[OK]   register user Kafka offset advanced banking-microservices.user.created.v1 52 -> 54
+[OK]   register user1 create-user event Kafka mesaj icerigi bulundu topic=banking-microservices.user.created.v1 needle=3cfc87b2-57ef-483b-85f2-f6100d466920
+[OK]   register user2 create-user event Kafka mesaj icerigi bulundu topic=banking-microservices.user.created.v1 needle=1c2cf767-1f45-4ef6-bc23-a5b69bb2628f
+
+==== Keycloak DB dogrulamasi ====
+[OK]   Keycloak DB user1 kaydi var
+[OK]   Keycloak DB user2 kaydi var
+
+==== User admin endpointleri ====
+[OK]   user admin total HTTP 200
+[OK]   user admin roles HTTP 200
+[OK]   user admin active HTTP 200
+[OK]   user admin findbyemail user1 HTTP 200
+[OK]   user1 DB id bulundu: 3cfc87b2-57ef-483b-85f2-f6100d466920
+[OK]   user get self by id HTTP 200
+[OK]   user admin findbykeycloakuuid user1 HTTP 200
+[OK]   user admin search name HTTP 200
+[OK]   user admin allusers HTTP 200
+
+==== User self-service profil mutasyon endpointleri ====
+[OK]   user2 change-email HTTP 200
+[OK]   user2 change-password HTTP 200
+[OK]   user2 after self-service mutations login HTTP 200
+[OK]   user2 after self-service mutations access_token alindi
+[OK]   register admin mutation target HTTP 200
+[OK]   user admin findbyemail mutation target HTTP 200
+[OK]   admin mutation target DB id bulundu: 9e8aff5e-0f37-48ce-9299-2888b1e82225
+[OK]   user admin updaterole target USER HTTP 200
+[OK]   user admin deactivate target HTTP 200
+[OK]   user admin activate target HTTP 200
+[OK]   user admin reset-password target HTTP 200
+[OK]   admin target after reset login HTTP 200
+[OK]   admin target after reset access_token alindi
+[OK]   user admin updateuser target HTTP 200
+[OK]   user admin deleteuser target HTTP 200
+
+==== Money account create ve DB dogrulamasi ====
+[OK]   money create user1 HTTP 200
+[OK]   money create user2 HTTP 200
+[OK]   user1 balance-info HTTP 200
+[OK]   user2 balance-info HTTP 200
+[OK]   user1 IBAN var: TR7748291PVL3S9GIOKSC7640F
+[OK]   user2 IBAN var: TR76490188MTNK8G81WCR2HB2N
+[OK]   getUserIbanWithUserId user1 HTTP 200
+[OK]   Postgres banking_money user1 money kaydi var
+[OK]   Postgres banking_money user2 money kaydi var
+[OK]   money account create Kafka offset advanced banking-microservices.money.account.created.v1 52 -> 55
+[OK]   money account created user1 event Kafka mesaj icerigi bulundu topic=banking-microservices.money.account.created.v1 needle=3cfc87b2-57ef-483b-85f2-f6100d466920
+[OK]   money account created user2 event Kafka mesaj icerigi bulundu topic=banking-microservices.money.account.created.v1 needle=1c2cf767-1f45-4ef6-bc23-a5b69bb2628f
+
+==== Money direct deposit/withdraw endpointleri ====
+[OK]   money direct depositByUserId user2 HTTP 200
+[OK]   user2 after direct deposit balance-info HTTP 200
+[OK]   user2 direct deposit balance 200 satisfied
+[OK]   money direct withdrawByUserId user2 HTTP 200
+[OK]   user2 after direct withdraw balance-info HTTP 200
+[OK]   user2 direct withdraw balance 0 satisfied
+
+==== Deposit, withdraw, transfer E2E ====
+[OK]   transaction deposit user1 HTTP 201
+[OK]   user1 after deposit balance-info HTTP 200
+[OK]   user1 balance >= 5000 after deposit satisfied
+[OK]   transaction withdraw user1 HTTP 201
+[OK]   user1 after withdraw balance-info HTTP 200
+[OK]   user1 balance 4500 after withdraw satisfied
+[OK]   transaction transfer user1 to user2 HTTP 201
+[OK]   user1 after transfer balance-info HTTP 200
+[OK]   user2 after transfer balance-info HTTP 200
+[OK]   user1 after transfer balance-info HTTP 200
+[OK]   user2 after transfer balance-info HTTP 200
+[OK]   transfer balances user1=3500 user2=1000 satisfied
+[OK]   user1 final balance-info HTTP 200
+[OK]   user2 final balance-info HTTP 200
+[OK]   Final user1 money 3500
+[OK]   Final user2 money 1000
+[OK]   Final user1 blockedmoney 0
+[OK]   Final user2 blockedmoney 0
+[OK]   DB user1 money/blocked dogru: 3500.00|0.00
+[OK]   DB user2 money/blocked dogru: 1000.00|0.00
+
+==== Transaction endpointleri ve DB dogrulamasi ====
+[OK]   transaction history user1 HTTP 200
+[OK]   transaction history user2 HTTP 200
+[OK]   user1 transaction history >= 3
+[OK]   user2 transaction history >= 1
+[OK]   transaction errors endpoint HTTP 200
+[OK]   transaction daterange HTTP 200
+[OK]   DB transfer event_uuid var: 7d723db9-9657-4881-870d-230e82cce0c4
+[OK]   DB transfer status COMPLETED
+[OK]   transaction byid HTTP 200
+[OK]   transaction create Kafka offset advanced banking-microservices.transaction.created.v1 68 -> 71
+[OK]   transaction block/projection Kafka offset advanced banking-microservices.transaction.money-blocked.v1 16 -> 17
+[OK]   transaction user validation request Kafka offset advanced banking-microservices.transaction.user-validation.request.v1 16 -> 17
+[OK]   transaction user validation success Kafka offset advanced banking-microservices.transaction.user-validation.success.v1 15 -> 16
+[OK]   transaction fraud checked Kafka offset advanced banking-microservices.transaction.fraud.checked.v1 15 -> 16
+[OK]   transaction completed Kafka offset advanced banking-microservices.transaction.completed.v1 59 -> 62
+[OK]   transaction.created eventUUID Kafka mesaj icerigi bulundu topic=banking-microservices.transaction.created.v1 needle=7d723db9-9657-4881-870d-230e82cce0c4
+[OK]   transaction.money-blocked eventUUID Kafka mesaj icerigi bulundu topic=banking-microservices.transaction.money-blocked.v1 needle=7d723db9-9657-4881-870d-230e82cce0c4
+[OK]   user-validation.request eventUUID Kafka mesaj icerigi bulundu topic=banking-microservices.transaction.user-validation.request.v1 needle=7d723db9-9657-4881-870d-230e82cce0c4
+[OK]   user-validation.success eventUUID Kafka mesaj icerigi bulundu topic=banking-microservices.transaction.user-validation.success.v1 needle=7d723db9-9657-4881-870d-230e82cce0c4
+[OK]   fraud.checked eventUUID Kafka mesaj icerigi bulundu topic=banking-microservices.transaction.fraud.checked.v1 needle=7d723db9-9657-4881-870d-230e82cce0c4
+[OK]   transaction.completed eventUUID Kafka mesaj icerigi bulundu topic=banking-microservices.transaction.completed.v1 needle=7d723db9-9657-4881-870d-230e82cce0c4
+[SKIP] Step 1 dakikayi asti: Transaction endpointleri ve DB dogrulamasi duration=71973ms / 71.973s / 1.2m
+
+==== Admin money/transaction/saga/gateway endpointleri ====
+[OK]   admin refresh before admin endpoints login HTTP 200
+[OK]   admin refresh before admin endpoints access_token alindi
+[OK]   money admin summary HTTP 200
+[OK]   money admin count HTTP 200
+[OK]   money admin accounts HTTP 200
+[OK]   money admin top HTTP 200
+[OK]   money admin account byiban HTTP 200
+[OK]   money admin distribution HTTP 200
+[OK]   transaction admin summary HTTP 200
+[OK]   transaction admin daily HTTP 200
+[OK]   transaction admin stuck HTTP 200
+[OK]   transaction admin byiban HTTP 200
+[OK]   transaction admin errors analysis HTTP 200
+[OK]   transaction admin count HTTP 200
+[OK]   transaction admin top by volume HTTP 200
+[OK]   saga all HTTP 200
+[OK]   saga exists before/manual HTTP 200
+[OK]   saga create manual existing tx HTTP 201
+[OK]   saga exists after/manual HTTP 200
+[OK]   saga exists true after manual create
+[OK]   saga status by transaction after/manual HTTP 200
+[OK]   saga status by saga uuid HTTP 200
+[OK]   transaction admin manual saga bad request validation HTTP 400
+[OK]   gateway recent logs HTTP 200
+
+==== CQRS command/query servisleri internal gercek akisi ====
+[OK]   command create account 1 HTTP 201
+[OK]   command create account 2 HTTP 201
+PS>TerminatingError(Add-Content): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: İşlem, başka bir işlem tarafından kullanıldığından 'C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260517031351-fqw19y\kubectl.txt' dosyasına erişemiyor."
+[OK]   command deposit HTTP 200
+[OK]   command withdraw HTTP 200
+[OK]   command block money HTTP 200
+[OK]   command execute transfer HTTP 200
+[OK]   command DB sender money/blocked dogru: 2000.00|0.00
+[OK]   command DB receiver money/blocked dogru: 750.00|0.00
+[OK]   query by user command sender HTTP 200
+[OK]   query by user command receiver HTTP 200
+[OK]   money-service-query projection balances satisfied
+[OK]   query by iban receiver HTTP 200
+[OK]   query search HTTP 200
+[OK]   CQRS projection publish Kafka offset advanced banking-microservices.money.projection-sync.v1 7 -> 14
+[OK]   CQRS projection receiver event Kafka mesaj icerigi bulundu topic=banking-microservices.money.projection-sync.v1 needle=cmd-user-b-20260517031351-fqw19y
+[OK]   Mongo projection receiver balance 750: 750.00
+PS>TerminatingError(Add-Content): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: İşlem, başka bir işlem tarafından kullanıldığından 'C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260517031351-fqw19y\all-logs.txt' dosyasına erişemiyor."
+PS>TerminatingError(Add-Content): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: İşlem, başka bir işlem tarafından kullanıldığından 'C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260517031351-fqw19y\all-logs.txt' dosyasına erişemiyor."
+[OK]   Elasticsearch money-accounts search HTTP 200
+[OK]   Elasticsearch money-accounts index searchable
+
+==== Negatif/error senaryolari ====
+[OK]   user1 refresh before negative scenario login HTTP 200
+[OK]   user1 refresh before negative scenario access_token alindi
+[OK]   insufficient transfer accepted into saga HTTP 201
+[OK]   insufficient funds eventually records error satisfied
+[OK]   negative transfer failed event Kafka offset advanced banking-microservices.transaction.failed.v1 15 -> 17
+[OK]   errors after negative scenario HTTP 200
+
+==== Servis loglari ====
+[OK]   user-service pod log icinde '20260517031351-fqw19y' bulundu
+[OK]   money-service pod log icinde '20260517031351-fqw19y' bulundu
+[OK]   transaction-service pod log icinde '20260517031351-fqw19y' bulundu
+[OK]   fraud-service pod log icinde '7d723db9-9657-4881-870d-230e82cce0c4' bulundu
+[OK]   money-service-command pod log icinde 'cmd-user-b-20260517031351-fqw19y' bulundu
+[INFO] money-service-query pod log icinde 'cmd-user-b-20260517031351-fqw19y' bulunamadi; log kaydedildi
+[INFO] gateway pod log icinde '20260517031351-fqw19y' bulunamadi; log kaydedildi
+
+==== Logout ====
+[OK]   logout user2 refresh token HTTP 200
+
+==== Son ozet ====
+
+TUM TESTLER GECTI. Pass=224 RunId=20260517031351-fqw19y Duration=229645ms / 229.645s / 3.827m
+**********************
+Windows PowerShell transcript end
+End time: 20260517031740
+**********************

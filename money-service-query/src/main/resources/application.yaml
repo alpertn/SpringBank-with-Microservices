@@ -6,22 +6,19 @@ spring:
     name: money-service-query
   data:
     mongodb:
-      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/banking_money_query}
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://mongodb:27017/banking_money_query}
     elasticsearch:
       repositories:
         enabled: true
   elasticsearch:
-    uris: ${SPRING_ELASTICSEARCH_URIS:http://localhost:9200}
+    uris: ${SPRING_ELASTICSEARCH_URIS:http://elasticsearch:9200}
   kafka:
     bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
       group-id: ${SPRING_KAFKA_CONSUMER_GROUP_ID:money-service-query-group}
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring.json.trusted.packages: "*"
-        spring.json.value.default.type: com.banking_microservices.money_service_query.dto.MoneyProjectionEvent
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
 grpc:
   server:
@@ -32,7 +29,7 @@ money-service:
   topics:
     # Command tarafinin bastigi projection event topic'i.
     # Read-side bu eventleri consume edip MongoDB ve Elasticsearch'i gunceller.
-    projection-sync: ${MONEY_SERVICE_PROJECTION_TOPIC:banking-microservices.transaction.money-blocked.v1}
+    projection-sync: ${MONEY_SERVICE_PROJECTION_TOPIC:banking-microservices.money.projection-sync.v1}
 
 management:
   endpoints:

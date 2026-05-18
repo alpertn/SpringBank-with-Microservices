@@ -1,0 +1,35 @@
+server:
+  port: ${ADMIN_SERVICE_PORT:8096}
+
+spring:
+  application:
+    name: admin-service
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+grpc:
+  client:
+    admin-command:
+      address: ${ADMIN_SERVICE_COMMAND_GRPC_ADDRESS:static://admin-service-command:9197}
+      negotiationType: plaintext
+    admin-query:
+      address: ${ADMIN_SERVICE_QUERY_GRPC_ADDRESS:static://admin-service-query:9198}
+      negotiationType: plaintext
+
+admin-service:
+  topics:
+    command: ${ADMIN_SERVICE_COMMAND_TOPIC:banking-microservices.admin.history.command.v1}
+
+management:
+  endpoints:
+    web:
+      base-path: /api/admin-service/actuator
+      exposure:
+        include: health,info
+
+logging:
+  pattern:
+    console: "%-5level --- [admin-service] : %msg%n"

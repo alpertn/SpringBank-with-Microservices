@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="tr">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SpringBank — Admin Panel</title>
-  <meta name="description" content="SpringBank Admin Panel - Mikroservis tabanlı bankacılık yönetim sistemi">
+  <title>SpringBank â€” Admin Panel</title>
+  <meta name="description" content="SpringBank Admin Panel - Mikroservis tabanlÄ± bankacÄ±lÄ±k yÃ¶netim sistemi">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
@@ -13,7 +13,7 @@
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* ── Design Tokens ── */
+    /* â”€â”€ Design Tokens â”€â”€ */
     :root {
       --primary: #026CB6;
       --primary-dark: #014373;
@@ -42,7 +42,7 @@
       --transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
-    /* ── Dark Mode ── */
+    /* â”€â”€ Dark Mode â”€â”€ */
     [data-theme="dark"] {
       --primary: #4A90E2;
       --primary-dark: #6DB3F8;
@@ -84,7 +84,7 @@
       line-height: 1.6;
     }
 
-    /* ── Sidebar ── */
+    /* â”€â”€ Sidebar â”€â”€ */
     .sidebar {
       width: var(--sidebar-w);
       background: var(--surface);
@@ -293,7 +293,7 @@
       border-color: #f9b8b8;
     }
 
-    /* ── Main ── */
+    /* â”€â”€ Main â”€â”€ */
     .main-content {
       margin-left: var(--sidebar-w);
       flex: 1;
@@ -303,7 +303,7 @@
       transition: margin-left 0.3s ease;
     }
 
-    /* ── Topbar ── */
+    /* â”€â”€ Topbar â”€â”€ */
     .topbar {
       height: 62px;
       min-height: 62px;
@@ -389,7 +389,7 @@
       border-color: var(--primary);
     }
 
-    /* ── Pages ── */
+    /* â”€â”€ Pages â”€â”€ */
     .page-wrap {
       padding: 28px;
       display: none;
@@ -441,7 +441,7 @@
       flex-wrap: wrap;
     }
 
-    /* ── KPI Cards ── */
+    /* â”€â”€ KPI Cards â”€â”€ */
     .kpi-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
@@ -541,7 +541,7 @@
       margin-top: 4px;
     }
 
-    /* ── Charts ── */
+    /* â”€â”€ Charts â”€â”€ */
     .charts-row {
       display: grid;
       grid-template-columns: 1fr 2fr;
@@ -582,7 +582,7 @@
       font-size: 13px;
     }
 
-    /* ── Table Card ── */
+    /* â”€â”€ Table Card â”€â”€ */
     .table-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -769,7 +769,7 @@
       color: var(--text-muted);
     }
 
-    /* ── Badges ── */
+    /* â”€â”€ Badges â”€â”€ */
     .badge {
       display: inline-flex;
       align-items: center;
@@ -841,7 +841,7 @@
       color: #2dd4bf;
     }
 
-    /* ── Panels ── */
+    /* â”€â”€ Panels â”€â”€ */
     .split-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -937,7 +937,7 @@
       margin-top: 14px;
     }
 
-    /* ── Health Grid ── */
+    /* â”€â”€ Health Grid â”€â”€ */
     .health-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -982,7 +982,7 @@
       border-left-color: var(--danger);
     }
 
-    /* ── Logs Terminal ── */
+    /* â”€â”€ Logs Terminal â”€â”€ */
     #log-terminal {
       background: #0f1923;
       color: #4ade80;
@@ -1039,7 +1039,7 @@
       border-color: var(--primary);
     }
 
-    /* ── Log Layout Switcher ── */
+    /* â”€â”€ Log Layout Switcher â”€â”€ */
     .log-layout-switcher {
       display: flex;
       align-items: center;
@@ -1087,7 +1087,7 @@
       box-shadow: 0 2px 8px rgba(2, 108, 182, 0.25);
     }
 
-    /* ═══ Layout 2: Claude Code ═══ */
+    /* â•â•â• Layout 2: Claude Code â•â•â• */
     #log-terminal.layout-claude-code {
       background: #1e1e2e;
       color: #cdd6f4;
@@ -1133,7 +1133,7 @@
     #log-terminal.layout-claude-code .log-line-warn { color: #fab387; }
     #log-terminal.layout-claude-code .log-line-system { color: #89b4fa; font-style: italic; }
 
-    /* ═══ Layout 3: Datadog ═══ */
+    /* â•â•â• Layout 3: Datadog â•â•â• */
     #log-terminal.layout-datadog {
       background: var(--surface);
       color: var(--text);
@@ -1177,7 +1177,7 @@
       font-weight: 500;
     }
 
-    /* ═══ Layout 4: Grafana Loki ═══ */
+    /* â•â•â• Layout 4: Grafana Loki â•â•â• */
     #log-terminal.layout-grafana {
       background: #111217;
       color: #d8dee9;
@@ -1212,7 +1212,7 @@
     #log-terminal.layout-grafana .log-line-warn { color: #ebcb8b; }
     #log-terminal.layout-grafana .log-line-system { color: #81a1c1; }
 
-    /* ═══ Layout 5: Claude Chat ═══ */
+    /* â•â•â• Layout 5: Claude Chat â•â•â• */
     #log-terminal.layout-claude-chat {
       background: #FAF9F7;
       color: #2D2D2D;
@@ -1264,7 +1264,7 @@
       background: rgba(255, 255, 255, 0.025);
     }
 
-    /* INFO — like Claude response blocks: warm subtle background */
+    /* INFO â€” like Claude response blocks: warm subtle background */
     #log-terminal.layout-claude-chat .log-line-info {
       color: #2D2D2D;
       background: #F3F1EE;
@@ -1275,7 +1275,7 @@
       background: #33322F;
     }
 
-    /* ERROR — soft red tint, clear but not aggressive */
+    /* ERROR â€” soft red tint, clear but not aggressive */
     #log-terminal.layout-claude-chat .log-line-error {
       color: #9B2C2C;
       background: #FEF2F2;
@@ -1288,7 +1288,7 @@
       border-left-color: #FC8181;
     }
 
-    /* WARN — warm amber tint */
+    /* WARN â€” warm amber tint */
     #log-terminal.layout-claude-chat .log-line-warn {
       color: #744210;
       background: #FFFBEB;
@@ -1301,7 +1301,7 @@
       border-left-color: #ECC94B;
     }
 
-    /* SYSTEM — centered, small, like a timestamp divider */
+    /* SYSTEM â€” centered, small, like a timestamp divider */
     #log-terminal.layout-claude-chat .log-line-system {
       color: #9B8E7B;
       background: transparent;
@@ -1316,7 +1316,7 @@
       color: #8A8375;
     }
 
-    /* ── Modals ── */
+    /* â”€â”€ Modals â”€â”€ */
     .modal-bg {
       position: fixed;
       inset: 0;
@@ -1410,7 +1410,7 @@
       justify-content: flex-end;
     }
 
-    /* ── Toasts ── */
+    /* â”€â”€ Toasts â”€â”€ */
     #toast-stack {
       position: fixed;
       top: 20px;
@@ -1462,7 +1462,7 @@
       }
     }
 
-    /* ── Activity Log ── */
+    /* â”€â”€ Activity Log â”€â”€ */
     .activity-log {
       max-height: 250px;
       overflow-y: auto;
@@ -1590,7 +1590,7 @@
       cursor: pointer;
     }
 
-    /* ── Responsive ── */
+    /* â”€â”€ Responsive â”€â”€ */
     @media (max-width: 1024px) {
       .charts-row {
         grid-template-columns: 1fr;
@@ -1643,10 +1643,10 @@
 
 <body>
 
-  <!-- ── Sidebar Overlay (mobile) ── -->
+  <!-- â”€â”€ Sidebar Overlay (mobile) â”€â”€ -->
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-  <!-- ── Sidebar ── -->
+  <!-- â”€â”€ Sidebar â”€â”€ -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
       <div class="logo-icon"><i class="ph-fill ph-bank"></i></div>
@@ -1664,34 +1664,38 @@
     </div>
 
     <nav class="sidebar-nav">
-      <div class="nav-section-label">Ana Menü</div>
+      <div class="nav-section-label">Ana MenÃ¼</div>
       <button class="nav-item active" data-page="dashboard"><i class="ph ph-squares-four"></i> Dashboard</button>
-      <button class="nav-item" data-page="users"><i class="ph ph-users-three"></i> Kullanıcı Yönetimi</button>
-      <button class="nav-item" data-page="transactions"><i class="ph ph-arrows-left-right"></i> İşlem Monitörü</button>
-      <button class="nav-item" data-page="accounts"><i class="ph ph-wallet"></i> Hesap İşlemleri</button>
+      <button class="nav-item" data-page="users"><i class="ph ph-users-three"></i> KullanÄ±cÄ± YÃ¶netimi</button>
+      <button class="nav-item" data-page="transactions"><i class="ph ph-arrows-left-right"></i> Ä°ÅŸlem MonitÃ¶rÃ¼</button>
+      <button class="nav-item" data-page="accounts"><i class="ph ph-wallet"></i> Hesap Ä°ÅŸlemleri</button>
+      <button class="nav-item" data-page="advanced-search"><i class="ph ph-magnifying-glass"></i> Detayli Arama</button>
+      <button class="nav-item" data-page="queries"><i class="ph ph-code-block"></i> Tum Sorgular</button>
 
       <div class="nav-section-label">Sistem</div>
       <button class="nav-item" data-page="fraud"><i class="ph ph-shield-warning"></i> Hata & Fraud <span
           class="nav-badge" id="errBadge" style="display:none">!</span></button>
-      <button class="nav-item" data-page="health"><i class="ph ph-heartbeat"></i> Sistem Sağlığı</button>
-      <button class="nav-item" data-page="logs"><i class="ph ph-terminal-window"></i> Canlı Loglar</button>
+      <button class="nav-item" data-page="health"><i class="ph ph-heartbeat"></i> Sistem SaÄŸlÄ±ÄŸÄ±</button>
+      <button class="nav-item" data-page="flow"><i class="ph ph-git-branch"></i> Saga/Kafka/CQRS</button>
+      <button class="nav-item" data-page="ops"><i class="ph ph-wrench"></i> Operasyon Merkezi</button>
+      <button class="nav-item" data-page="logs"><i class="ph ph-terminal-window"></i> CanlÄ± Loglar</button>
       <button class="nav-item" data-page="testlogs"><i class="ph ph-list-checks"></i> Test Loglari</button>
       <button class="nav-item" data-page="activity"><i class="ph ph-clipboard-text"></i> Aktivite Log</button>
     </nav>
 
     <div class="sidebar-footer">
-      <button class="logout-btn" id="btnLogout"><i class="ph ph-sign-out"></i> Çıkış Yap</button>
+      <button class="logout-btn" id="btnLogout"><i class="ph ph-sign-out"></i> Ã‡Ä±kÄ±ÅŸ Yap</button>
     </div>
   </aside>
 
-  <!-- ── Main ── -->
+  <!-- â”€â”€ Main â”€â”€ -->
   <div class="main-content">
     <!-- Topbar -->
     <header class="topbar">
       <button class="topbar-hamburger" id="btnHamburger"><i class="ph ph-list"></i></button>
       <div class="topbar-title" id="topbarTitle">Dashboard</div>
       <div class="topbar-actions">
-        <button class="icon-btn" id="btnDarkMode" title="Tema Değiştir"><i class="ph ph-moon"></i></button>
+        <button class="icon-btn" id="btnDarkMode" title="Tema DeÄŸiÅŸtir"><i class="ph ph-moon"></i></button>
         <button class="icon-btn" id="btnAutoRefresh" title="Otomatik Yenileme (30s)"><i
             class="ph ph-arrows-clockwise"></i></button>
       </div>
@@ -1703,12 +1707,12 @@
       </div>
     </header>
 
-    <!-- ═══════════════ 1. DASHBOARD ═══════════════ -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• 1. DASHBOARD â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <div class="page-wrap active" id="page-dashboard">
       <div class="section-header">
         <div>
           <div class="section-title">Dashboard</div>
-          <div class="section-sub">Sistemin genel durumu ve son işlemler</div>
+          <div class="section-sub">Sistemin genel durumu ve son iÅŸlemler</div>
         </div>
         <div class="section-actions">
           <button class="btn btn-outline btn-sm" id="btnRefreshDash"><i class="ph ph-arrows-clockwise"></i>
@@ -1720,32 +1724,32 @@
         <div class="kpi-card">
           <div class="kpi-icon"><i class="ph-fill ph-users"></i></div>
           <div>
-            <div class="kpi-label">Toplam Kullanıcı</div>
-            <div class="kpi-value" id="kpiTotalUsers">—</div>
-            <div class="kpi-change">Kayıtlı kullanıcılar</div>
+            <div class="kpi-label">Toplam KullanÄ±cÄ±</div>
+            <div class="kpi-value" id="kpiTotalUsers">â€”</div>
+            <div class="kpi-change">KayÄ±tlÄ± kullanÄ±cÄ±lar</div>
           </div>
         </div>
         <div class="kpi-card success">
           <div class="kpi-icon"><i class="ph-fill ph-user-check"></i></div>
           <div>
-            <div class="kpi-label">Aktif Kullanıcı</div>
-            <div class="kpi-value" id="kpiActiveUsers">—</div>
+            <div class="kpi-label">Aktif KullanÄ±cÄ±</div>
+            <div class="kpi-value" id="kpiActiveUsers">â€”</div>
             <div class="kpi-change">Hesap aktif</div>
           </div>
         </div>
         <div class="kpi-card warning">
           <div class="kpi-icon"><i class="ph-fill ph-clock-countdown"></i></div>
           <div>
-            <div class="kpi-label">Toplam İşlem</div>
-            <div class="kpi-value" id="kpiTodayTx">—</div>
-            <div class="kpi-change">Tüm zamanlar</div>
+            <div class="kpi-label">Toplam Ä°ÅŸlem</div>
+            <div class="kpi-value" id="kpiTodayTx">â€”</div>
+            <div class="kpi-change">TÃ¼m zamanlar</div>
           </div>
         </div>
         <div class="kpi-card danger">
           <div class="kpi-icon"><i class="ph-fill ph-warning-circle"></i></div>
           <div>
-            <div class="kpi-label">Hatalı İşlem</div>
-            <div class="kpi-value" id="kpiErrorTx">—</div>
+            <div class="kpi-label">HatalÄ± Ä°ÅŸlem</div>
+            <div class="kpi-value" id="kpiErrorTx">â€”</div>
             <div class="kpi-change">Toplam hata</div>
           </div>
         </div>
@@ -1753,7 +1757,7 @@
           <div class="kpi-icon"><i class="ph-fill ph-currency-circle-dollar"></i></div>
           <div>
             <div class="kpi-label">Toplam Bakiye</div>
-            <div class="kpi-value" id="kpiTotalMoney" style="font-size:18px;">—</div>
+            <div class="kpi-value" id="kpiTotalMoney" style="font-size:18px;">â€”</div>
             <div class="kpi-change">Sistemdeki toplam para</div>
           </div>
         </div>
@@ -1761,7 +1765,7 @@
           <div class="kpi-icon"><i class="ph-fill ph-lock"></i></div>
           <div>
             <div class="kpi-label">Bloke Bakiye</div>
-            <div class="kpi-value" id="kpiBlockedMoney" style="font-size:18px;">—</div>
+            <div class="kpi-value" id="kpiBlockedMoney" style="font-size:18px;">â€”</div>
             <div class="kpi-change">Bekleyen transferler</div>
           </div>
         </div>
@@ -1769,13 +1773,13 @@
 
       <div class="charts-row">
         <div class="chart-card">
-          <div class="chart-title"><i class="ph ph-chart-pie" style="color:var(--primary);"></i> Rol Dağılımı</div>
+          <div class="chart-title"><i class="ph ph-chart-pie" style="color:var(--primary);"></i> Rol DaÄŸÄ±lÄ±mÄ±</div>
           <div class="chart-body"><canvas id="roleChart"></canvas>
             <div class="chart-empty" id="roleChartEmpty" style="display:none;">Veri yok</div>
           </div>
         </div>
         <div class="chart-card">
-          <div class="chart-title"><i class="ph ph-chart-bar" style="color:var(--primary);"></i> Son 7 Gün İşlem Hacmi
+          <div class="chart-title"><i class="ph ph-chart-bar" style="color:var(--primary);"></i> Son 7 GÃ¼n Ä°ÅŸlem Hacmi
           </div>
           <div class="chart-body"><canvas id="volChart"></canvas>
             <div class="chart-empty" id="volChartEmpty" style="display:none;">Veri yok</div>
@@ -1786,7 +1790,7 @@
       <div class="table-card">
         <div class="table-toolbar">
           <div class="table-toolbar-title"><i class="ph ph-clock-counter-clockwise" style="color:var(--primary);"></i>
-            Son İşlemler</div>
+            Son Ä°ÅŸlemler</div>
           <button class="btn btn-outline btn-sm" id="btnExportDashTx"><i class="ph ph-download-simple"></i> CSV</button>
         </div>
         <div class="tbl-wrap">
@@ -1797,13 +1801,13 @@
                 <th>ID</th>
                 <th>Tip</th>
                 <th>Tutar</th>
-                <th>Gönderen</th>
+                <th>GÃ¶nderen</th>
                 <th>Durum</th>
               </tr>
             </thead>
             <tbody id="dashTxTbody">
               <tr>
-                <td colspan="6" class="empty-msg">Yükleniyor...</td>
+                <td colspan="6" class="empty-msg">YÃ¼kleniyor...</td>
               </tr>
             </tbody>
           </table>
@@ -1811,12 +1815,12 @@
       </div>
     </div>
 
-    <!-- ═══════════════ 2. USERS ═══════════════ -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• 2. USERS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <div class="page-wrap" id="page-users">
       <div class="section-header">
         <div>
-          <div class="section-title">Kullanıcı Yönetimi</div>
-          <div class="section-sub">Tüm kullanıcıları görüntüle, yönet ve rol ata</div>
+          <div class="section-title">KullanÄ±cÄ± YÃ¶netimi</div>
+          <div class="section-sub">TÃ¼m kullanÄ±cÄ±larÄ± gÃ¶rÃ¼ntÃ¼le, yÃ¶net ve rol ata</div>
         </div>
         <div class="section-actions">
           <button class="btn btn-outline btn-sm" id="btnExportUsers"><i class="ph ph-download-simple"></i> CSV</button>
@@ -1825,13 +1829,13 @@
 
       <div class="table-card">
         <div class="table-toolbar">
-          <div class="table-toolbar-title"><i class="ph ph-users" style="color:var(--primary);"></i> Kullanıcılar</div>
+          <div class="table-toolbar-title"><i class="ph ph-users" style="color:var(--primary);"></i> KullanÄ±cÄ±lar</div>
           <div class="table-tools">
             <input type="text" class="search-box" id="searchName" placeholder="Ad / Soyad">
             <input type="text" class="search-box" id="searchEmail" placeholder="E-posta">
-            <input type="text" class="search-box" id="searchId" placeholder="Kullanıcı ID" style="width:280px;">
+            <input type="text" class="search-box" id="searchId" placeholder="KullanÄ±cÄ± ID" style="width:280px;">
             <button class="btn btn-primary btn-sm" id="btnSearch"><i class="ph ph-magnifying-glass"></i> Ara</button>
-            <button class="btn btn-outline btn-sm" id="btnLoadAll"><i class="ph ph-arrow-clockwise"></i> Tümü</button>
+            <button class="btn btn-outline btn-sm" id="btnLoadAll"><i class="ph ph-arrow-clockwise"></i> TÃ¼mÃ¼</button>
           </div>
         </div>
         <div class="tbl-wrap">
@@ -1844,13 +1848,13 @@
                 <th>E-posta</th>
                 <th>Rol</th>
                 <th>Durum</th>
-                <th>Kayıt Tarihi</th>
-                <th>İşlem</th>
+                <th>KayÄ±t Tarihi</th>
+                <th>Ä°ÅŸlem</th>
               </tr>
             </thead>
             <tbody id="usersTbody">
               <tr>
-                <td colspan="8" class="empty-msg">Kullanıcı listesi yükleniyor...</td>
+                <td colspan="8" class="empty-msg">KullanÄ±cÄ± listesi yÃ¼kleniyor...</td>
               </tr>
             </tbody>
           </table>
@@ -1863,12 +1867,12 @@
       </div>
     </div>
 
-    <!-- ═══════════════ 3. TRANSACTIONS ═══════════════ -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• 3. TRANSACTIONS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <div class="page-wrap" id="page-transactions">
       <div class="section-header">
         <div>
-          <div class="section-title">İşlem Monitörü</div>
-          <div class="section-sub">Tarih aralığına göre filtrele, detay görüntüle</div>
+          <div class="section-title">Ä°ÅŸlem MonitÃ¶rÃ¼</div>
+          <div class="section-sub">Tarih aralÄ±ÄŸÄ±na gÃ¶re filtrele, detay gÃ¶rÃ¼ntÃ¼le</div>
         </div>
         <div class="section-actions">
           <button class="btn btn-outline btn-sm" id="btnExportTx"><i class="ph ph-download-simple"></i> CSV</button>
@@ -1879,22 +1883,22 @@
         <div class="kpi-card">
           <div class="kpi-icon"><i class="ph-fill ph-list-numbers"></i></div>
           <div>
-            <div class="kpi-label">Filtrelenen İşlem</div>
-            <div class="kpi-value" id="txCount">—</div>
+            <div class="kpi-label">Filtrelenen Ä°ÅŸlem</div>
+            <div class="kpi-value" id="txCount">â€”</div>
           </div>
         </div>
         <div class="kpi-card warning">
           <div class="kpi-icon"><i class="ph-fill ph-currency-circle-dollar"></i></div>
           <div>
             <div class="kpi-label">Toplam Hacim</div>
-            <div class="kpi-value" id="txVol" style="font-size:18px;">—</div>
+            <div class="kpi-value" id="txVol" style="font-size:18px;">â€”</div>
           </div>
         </div>
         <div class="kpi-card danger">
           <div class="kpi-icon"><i class="ph-fill ph-x-circle"></i></div>
           <div>
-            <div class="kpi-label">Hata Sayısı</div>
-            <div class="kpi-value" id="txErrs">—</div>
+            <div class="kpi-label">Hata SayÄ±sÄ±</div>
+            <div class="kpi-value" id="txErrs">â€”</div>
           </div>
         </div>
       </div>
@@ -1903,26 +1907,26 @@
         <div class="table-toolbar">
           <div class="table-toolbar-title"><i class="ph ph-funnel" style="color:var(--primary);"></i> Filtre</div>
           <div class="table-tools">
-            <label style="font-size:12px;color:var(--text-muted);font-weight:600;">Başlangıç:</label>
+            <label style="font-size:12px;color:var(--text-muted);font-weight:600;">BaÅŸlangÄ±Ã§:</label>
             <input type="datetime-local" class="search-box" id="txStart" style="width:190px;">
-            <label style="font-size:12px;color:var(--text-muted);font-weight:600;">Bitiş:</label>
+            <label style="font-size:12px;color:var(--text-muted);font-weight:600;">BitiÅŸ:</label>
             <input type="datetime-local" class="search-box" id="txEnd" style="width:190px;">
             <select class="filter-select" id="txTypeFilter">
-              <option value="">Tüm Tipler</option>
+              <option value="">TÃ¼m Tipler</option>
               <option value="DEPOSIT">Deposit</option>
               <option value="WITHDRAW">Withdraw</option>
               <option value="TRANSFER">Transfer</option>
             </select>
             <select class="filter-select" id="txStatusFilter">
-              <option value="">Tüm Durumlar</option>
+              <option value="">TÃ¼m Durumlar</option>
               <option value="COMPLETED">Completed</option>
               <option value="CREATED">Created</option>
               <option value="FAILED">Failed</option>
             </select>
             <button class="btn btn-primary btn-sm" id="btnTxFilter"><i class="ph ph-funnel"></i> Filtrele</button>
             <button class="btn btn-warning btn-sm" id="btnShowStuck"
-              title="30+ dk CREATED durumunda takılı kalan işlemler"><i class="ph ph-warning"></i> Takılı</button>
-            <button class="btn btn-outline btn-sm" id="btnTopVolume" title="En büyük hacimli 10 işlem"><i
+              title="30+ dk CREATED durumunda takÄ±lÄ± kalan iÅŸlemler"><i class="ph ph-warning"></i> TakÄ±lÄ±</button>
+            <button class="btn btn-outline btn-sm" id="btnTopVolume" title="En bÃ¼yÃ¼k hacimli 10 iÅŸlem"><i
                 class="ph ph-trophy"></i> Top 10</button>
           </div>
         </div>
@@ -1935,7 +1939,7 @@
                 <th>Tip</th>
                 <th>Tutar</th>
                 <th>Sender IBAN</th>
-                <th>Alıcı</th>
+                <th>AlÄ±cÄ±</th>
                 <th>Durum</th>
                 <th>Hata</th>
                 <th>Detay</th>
@@ -1943,7 +1947,7 @@
             </thead>
             <tbody id="txTbody">
               <tr>
-                <td colspan="9" class="empty-msg">Tarih aralığı seçip filtreleme yapın.</td>
+                <td colspan="9" class="empty-msg">Tarih aralÄ±ÄŸÄ± seÃ§ip filtreleme yapÄ±n.</td>
               </tr>
             </tbody>
           </table>
@@ -1951,45 +1955,45 @@
       </div>
     </div>
 
-    <!-- ═══════════════ 4. ACCOUNTS ═══════════════ -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• 4. ACCOUNTS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <div class="page-wrap" id="page-accounts">
       <div class="section-header">
         <div>
-          <div class="section-title">Hesap İşlemleri</div>
-          <div class="section-sub">Kullanıcı bakiyesi görüntüle, para yatır/çek, bloke kaldır</div>
+          <div class="section-title">Hesap Ä°ÅŸlemleri</div>
+          <div class="section-sub">KullanÄ±cÄ± bakiyesi gÃ¶rÃ¼ntÃ¼le, para yatÄ±r/Ã§ek, bloke kaldÄ±r</div>
         </div>
-        <button class="btn btn-outline btn-sm" id="btnLoadAllAccounts"><i class="ph ph-list"></i> Tüm Hesaplar</button>
+        <button class="btn btn-outline btn-sm" id="btnLoadAllAccounts"><i class="ph ph-list"></i> TÃ¼m Hesaplar</button>
       </div>
 
-      <!-- Bakiye Dağılım Grafiği -->
+      <!-- Bakiye DaÄŸÄ±lÄ±m GrafiÄŸi -->
       <div class="charts-row" style="grid-template-columns: 1fr 1fr; margin-bottom: 20px;">
         <div class="chart-card">
-          <div class="chart-title"><i class="ph ph-chart-donut" style="color:var(--primary);"></i> Bakiye Dağılımı</div>
+          <div class="chart-title"><i class="ph ph-chart-donut" style="color:var(--primary);"></i> Bakiye DaÄŸÄ±lÄ±mÄ±</div>
           <div class="chart-body"><canvas id="distChart"></canvas>
             <div class="chart-empty" id="distChartEmpty" style="display:none;">Veri yok</div>
           </div>
         </div>
         <div class="chart-card">
-          <div class="chart-title"><i class="ph ph-chart-bar" style="color:var(--success);"></i> Hesap Özeti</div>
+          <div class="chart-title"><i class="ph ph-chart-bar" style="color:var(--success);"></i> Hesap Ã–zeti</div>
           <div style="padding: 10px 0;">
             <div class="kv-row"><span class="kv-key">Toplam Hesap</span><span class="kv-val"
-                id="accSummaryTotal">—</span></div>
+                id="accSummaryTotal">â€”</span></div>
             <div class="kv-row"><span class="kv-key">Ortalama Bakiye</span><span class="kv-val"
-                id="accSummaryAvg">—</span></div>
+                id="accSummaryAvg">â€”</span></div>
             <div class="kv-row"><span class="kv-key">Zengin Hesap (>10K)</span><span class="kv-val"
-                id="accSummaryRich">—</span></div>
-            <div class="kv-row"><span class="kv-key">Sıfır Bakiye</span><span class="kv-val"
-                id="accSummaryZero">—</span></div>
+                id="accSummaryRich">â€”</span></div>
+            <div class="kv-row"><span class="kv-key">SÄ±fÄ±r Bakiye</span><span class="kv-val"
+                id="accSummaryZero">â€”</span></div>
             <div class="kv-row"><span class="kv-key">Blokeli Hesap</span><span class="kv-val"
-                id="accSummaryBlocked">—</span></div>
+                id="accSummaryBlocked">â€”</span></div>
           </div>
         </div>
       </div>
 
-      <!-- Tüm Hesaplar Listesi -->
+      <!-- TÃ¼m Hesaplar Listesi -->
       <div class="table-card" id="allAccountsCard" style="display:none;margin-bottom:20px;">
         <div class="table-toolbar">
-          <div class="table-toolbar-title"><i class="ph ph-wallet" style="color:var(--primary);"></i> Tüm Hesaplar</div>
+          <div class="table-toolbar-title"><i class="ph ph-wallet" style="color:var(--primary);"></i> TÃ¼m Hesaplar</div>
           <div class="table-tools">
             <span id="accountsTotal" style="font-size:12px;color:var(--text-muted);"></span>
             <button class="btn btn-outline btn-sm"
@@ -2001,16 +2005,16 @@
           <table>
             <thead>
               <tr>
-                <th>Kullanıcı ID</th>
+                <th>KullanÄ±cÄ± ID</th>
                 <th>IBAN</th>
                 <th>Bakiye</th>
                 <th>Bloke</th>
-                <th>İşlem</th>
+                <th>Ä°ÅŸlem</th>
               </tr>
             </thead>
             <tbody id="allAccountsTbody">
               <tr>
-                <td colspan="5" class="empty-msg">Yükleniyor...</td>
+                <td colspan="5" class="empty-msg">YÃ¼kleniyor...</td>
               </tr>
             </tbody>
           </table>
@@ -2020,7 +2024,7 @@
       <!-- Top 10 Hesap -->
       <div class="table-card" style="margin-bottom:20px;">
         <div class="table-toolbar">
-          <div class="table-toolbar-title"><i class="ph ph-trophy" style="color:var(--warning);"></i> En Yüksek Bakiyeli
+          <div class="table-toolbar-title"><i class="ph ph-trophy" style="color:var(--warning);"></i> En YÃ¼ksek Bakiyeli
             10 Hesap</div>
           <button class="btn btn-outline btn-sm" id="btnRefreshTop"><i class="ph ph-arrows-clockwise"></i></button>
         </div>
@@ -2029,16 +2033,16 @@
             <thead>
               <tr>
                 <th>#</th>
-                <th>Kullanıcı ID</th>
+                <th>KullanÄ±cÄ± ID</th>
                 <th>IBAN</th>
                 <th>Bakiye</th>
                 <th>Bloke</th>
-                <th>İşlem</th>
+                <th>Ä°ÅŸlem</th>
               </tr>
             </thead>
             <tbody id="topAccountsTbody">
               <tr>
-                <td colspan="6" class="empty-msg">Yükleniyor...</td>
+                <td colspan="6" class="empty-msg">YÃ¼kleniyor...</td>
               </tr>
             </tbody>
           </table>
@@ -2048,9 +2052,9 @@
       <div class="split-grid">
         <div class="panel-card">
           <div class="panel-title"><i class="ph ph-magnifying-glass" style="color:var(--primary);"></i> Hesap Sorgula &
-            Para Yatır/Çek</div>
+            Para YatÄ±r/Ã‡ek</div>
           <div class="form-group">
-            <label class="form-label">Kullanıcı ID (Keycloak UUID)</label>
+            <label class="form-label">KullanÄ±cÄ± ID (Keycloak UUID)</label>
             <div style="display:flex;gap:10px;">
               <input type="text" class="form-control" id="opUserId" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
               <button class="btn btn-primary btn-sm" id="btnLookup" style="flex-shrink:0;"><i
@@ -2058,65 +2062,65 @@
             </div>
           </div>
           <div class="account-info-box" id="accountBox">
-            <div class="sub-heading">Kullanıcı Bilgileri (User Service)</div>
-            <div class="kv-row"><span class="kv-key">Ad Soyad</span><span class="kv-val" id="opUserName">—</span></div>
-            <div class="kv-row"><span class="kv-key">E-posta</span><span class="kv-val" id="opUserEmail">—</span></div>
-            <div class="kv-row"><span class="kv-key">Rol</span><span class="kv-val" id="opUserRole">—</span></div>
-            <div class="kv-row"><span class="kv-key">Durum</span><span class="kv-val" id="opUserStatus">—</span></div>
-            <div class="kv-row"><span class="kv-key">Internal ID</span><span class="kv-val mono" id="opUserInternalId" style="font-size:11px;">—</span></div>
-            <div class="kv-row"><span class="kv-key">Keycloak UUID</span><span class="kv-val mono" id="opUuid" style="font-size:11px;">—</span></div>
+            <div class="sub-heading">KullanÄ±cÄ± Bilgileri (User Service)</div>
+            <div class="kv-row"><span class="kv-key">Ad Soyad</span><span class="kv-val" id="opUserName">â€”</span></div>
+            <div class="kv-row"><span class="kv-key">E-posta</span><span class="kv-val" id="opUserEmail">â€”</span></div>
+            <div class="kv-row"><span class="kv-key">Rol</span><span class="kv-val" id="opUserRole">â€”</span></div>
+            <div class="kv-row"><span class="kv-key">Durum</span><span class="kv-val" id="opUserStatus">â€”</span></div>
+            <div class="kv-row"><span class="kv-key">Internal ID</span><span class="kv-val mono" id="opUserInternalId" style="font-size:11px;">â€”</span></div>
+            <div class="kv-row"><span class="kv-key">Keycloak UUID</span><span class="kv-val mono" id="opUuid" style="font-size:11px;">â€”</span></div>
             <div class="sub-heading" style="margin-top:12px;">Hesap Bilgileri (Money Service)</div>
-            <div class="kv-row"><span class="kv-key">IBAN</span><span class="kv-val" id="opIban">—</span></div>
+            <div class="kv-row"><span class="kv-key">IBAN</span><span class="kv-val" id="opIban">â€”</span></div>
             <div class="kv-row"><span class="kv-key">Bakiye</span><span class="kv-val" id="opBal"
-                style="color:var(--success);font-weight:700;">—</span></div>
+                style="color:var(--success);font-weight:700;">â€”</span></div>
             <div class="kv-row"><span class="kv-key">Bloke Bakiye</span><span class="kv-val" id="opBlocked"
-                style="color:var(--warning);">—</span></div>
+                style="color:var(--warning);">â€”</span></div>
             <div class="divider"></div>
             <div class="form-group">
-              <label class="form-label">Para Yatır / Çek — Tutar (₺)</label>
+              <label class="form-label">Para YatÄ±r / Ã‡ek â€” Tutar (â‚º)</label>
               <input type="number" class="form-control" id="opAmount" placeholder="0.00" min="0.01" step="0.01">
             </div>
             <div class="op-buttons">
               <button class="btn btn-success" id="btnDeposit" style="flex:1;"><i class="ph ph-plus-circle"></i> Para
-                Yatır</button>
+                YatÄ±r</button>
               <button class="btn btn-warning" id="btnWithdraw" style="flex:1;"><i class="ph ph-minus-circle"></i> Para
-                Çek</button>
+                Ã‡ek</button>
             </div>
             <div class="divider"></div>
             <button class="btn btn-danger" id="btnUnblock" style="width:100%;"><i class="ph ph-lock-open"></i> Bloke
-              Kaldır</button>
+              KaldÄ±r</button>
             <div class="divider"></div>
-            <div class="sub-heading" style="color:var(--danger);">Hesap Silme İşlemleri</div>
+            <div class="sub-heading" style="color:var(--danger);">Hesap Silme Ä°ÅŸlemleri</div>
             <div class="op-buttons" style="flex-wrap:wrap;">
               <button class="btn btn-outline btn-sm" id="btnDeleteFromUser" style="flex:1;border-color:var(--danger);color:var(--danger);"><i class="ph ph-user-minus"></i> User-Service'den Sil</button>
               <button class="btn btn-outline btn-sm" id="btnDeleteFromMoney" style="flex:1;border-color:var(--danger);color:var(--danger);"><i class="ph ph-wallet"></i> Money-Service'den Sil</button>
             </div>
-            <button class="btn btn-danger" id="btnDeleteFromAll" style="width:100%;margin-top:8px;"><i class="ph ph-trash"></i> Tüm Mikroservislerden Sil</button>
+            <button class="btn btn-danger" id="btnDeleteFromAll" style="width:100%;margin-top:8px;"><i class="ph ph-trash"></i> TÃ¼m Mikroservislerden Sil</button>
           </div>
         </div>
 
         <div class="panel-card">
-          <div class="panel-title"><i class="ph ph-identification-card" style="color:var(--primary);"></i> IBAN & İşlem
-            Geçmişi</div>
+          <div class="panel-title"><i class="ph ph-identification-card" style="color:var(--primary);"></i> IBAN & Ä°ÅŸlem
+            GeÃ§miÅŸi</div>
           <div class="form-group">
-            <label class="form-label">Kullanıcı ID ile IBAN Sorgula</label>
+            <label class="form-label">KullanÄ±cÄ± ID ile IBAN Sorgula</label>
             <div style="display:flex;gap:10px;">
-              <input type="text" class="form-control" id="ibanLookupId" placeholder="Kullanıcı ID">
+              <input type="text" class="form-control" id="ibanLookupId" placeholder="KullanÄ±cÄ± ID">
               <button class="btn btn-primary btn-sm" id="btnIbanLookup" style="flex-shrink:0;"><i
                   class="ph ph-magnifying-glass"></i> Sorgula</button>
             </div>
           </div>
           <div class="account-info-box" id="ibanBox">
-            <div class="kv-row"><span class="kv-key">IBAN</span><span class="kv-val mono" id="ibanResult">—</span></div>
+            <div class="kv-row"><span class="kv-key">IBAN</span><span class="kv-val mono" id="ibanResult">â€”</span></div>
           </div>
 
           <div class="divider" style="margin-top:16px;"></div>
           <div class="panel-title" style="margin-top:4px;"><i class="ph ph-arrows-left-right"
-              style="color:var(--primary);"></i> İşlem Geçmişi</div>
+              style="color:var(--primary);"></i> Ä°ÅŸlem GeÃ§miÅŸi</div>
           <div class="form-group">
-            <label class="form-label">Kullanıcı ID ile işlem geçmişi</label>
+            <label class="form-label">KullanÄ±cÄ± ID ile iÅŸlem geÃ§miÅŸi</label>
             <div style="display:flex;gap:10px;">
-              <input type="text" class="form-control" id="txHistoryId" placeholder="Kullanıcı ID">
+              <input type="text" class="form-control" id="txHistoryId" placeholder="KullanÄ±cÄ± ID">
               <button class="btn btn-primary btn-sm" id="btnTxHistory" style="flex-shrink:0;"><i class="ph ph-list"></i>
                 Listele</button>
             </div>
@@ -2137,10 +2141,10 @@
           </div>
 
           <div class="divider" style="margin-top:16px;"></div>
-          <div class="panel-title"><i class="ph ph-magnifying-glass" style="color:var(--primary);"></i> IBAN Bazlı
-            İşlemler</div>
+          <div class="panel-title"><i class="ph ph-magnifying-glass" style="color:var(--primary);"></i> IBAN BazlÄ±
+            Ä°ÅŸlemler</div>
           <div class="form-group">
-            <label class="form-label">IBAN ile işlem ara</label>
+            <label class="form-label">IBAN ile iÅŸlem ara</label>
             <div style="display:flex;gap:10px;">
               <input type="text" class="form-control" id="ibanTxSearch" placeholder="TR...">
               <button class="btn btn-primary btn-sm" id="btnIbanTxSearch" style="flex-shrink:0;"><i
@@ -2154,7 +2158,7 @@
                 <tr>
                   <th>Tip</th>
                   <th>Tutar</th>
-                  <th>Karşı Taraf</th>
+                  <th>KarÅŸÄ± Taraf</th>
                   <th>Durum</th>
                   <th>Tarih</th>
                 </tr>
@@ -2166,12 +2170,12 @@
       </div>
     </div>
 
-    <!-- ═══════════════ 5. FRAUD ═══════════════ -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• 5. FRAUD â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <div class="page-wrap" id="page-fraud">
       <div class="section-header">
         <div>
-          <div class="section-title">Hata & Fraud Monitörü</div>
-          <div class="section-sub">Hatalı işlemleri incele, analiz et</div>
+          <div class="section-title">Hata & Fraud MonitÃ¶rÃ¼</div>
+          <div class="section-sub">HatalÄ± iÅŸlemleri incele, analiz et</div>
         </div>
         <div class="section-actions">
           <button class="btn btn-outline btn-sm" id="btnExportFraud"><i class="ph ph-download-simple"></i> CSV</button>
@@ -2185,35 +2189,35 @@
           <div class="kpi-icon"><i class="ph-fill ph-x-circle"></i></div>
           <div>
             <div class="kpi-label">Toplam Hata</div>
-            <div class="kpi-value" id="errTotal">—</div>
+            <div class="kpi-value" id="errTotal">â€”</div>
           </div>
         </div>
         <div class="kpi-card warning">
           <div class="kpi-icon"><i class="ph-fill ph-percent"></i></div>
           <div>
-            <div class="kpi-label">Hata Oranı</div>
-            <div class="kpi-value" id="errRate">—</div>
+            <div class="kpi-label">Hata OranÄ±</div>
+            <div class="kpi-value" id="errRate">â€”</div>
           </div>
         </div>
         <div class="kpi-card">
           <div class="kpi-icon"><i class="ph-fill ph-chart-bar"></i></div>
           <div>
-            <div class="kpi-label">En Sık Hata Tipi</div>
-            <div class="kpi-value" id="errCommon" style="font-size:16px;">—</div>
+            <div class="kpi-label">En SÄ±k Hata Tipi</div>
+            <div class="kpi-value" id="errCommon" style="font-size:16px;">â€”</div>
           </div>
         </div>
         <div class="kpi-card danger">
           <div class="kpi-icon"><i class="ph-fill ph-currency-circle-dollar"></i></div>
           <div>
             <div class="kpi-label">Kaybedilen Hacim</div>
-            <div class="kpi-value" id="errLostVolume" style="font-size:16px;">—</div>
+            <div class="kpi-value" id="errLostVolume" style="font-size:16px;">â€”</div>
           </div>
         </div>
       </div>
 
       <!-- Error Type Breakdown Chart -->
       <div class="chart-card" style="margin-bottom: 20px;">
-        <div class="chart-title"><i class="ph ph-chart-bar" style="color:var(--danger);"></i> Hata Tipi Dağılımı</div>
+        <div class="chart-title"><i class="ph ph-chart-bar" style="color:var(--danger);"></i> Hata Tipi DaÄŸÄ±lÄ±mÄ±</div>
         <div class="chart-body"><canvas id="errorTypeChart"></canvas>
           <div class="chart-empty" id="errorTypeChartEmpty" style="display:none;">Hata verisi yok</div>
         </div>
@@ -2221,7 +2225,7 @@
 
       <div class="table-card">
         <div class="table-toolbar">
-          <div class="table-toolbar-title"><i class="ph ph-warning" style="color:var(--danger);"></i> Hatalı İşlemler
+          <div class="table-toolbar-title"><i class="ph ph-warning" style="color:var(--danger);"></i> HatalÄ± Ä°ÅŸlemler
           </div>
         </div>
         <div class="tbl-wrap">
@@ -2231,9 +2235,9 @@
                 <th>ID</th>
                 <th>Tip</th>
                 <th>Tutar</th>
-                <th>Hata Açıklaması</th>
-                <th>Gönderen</th>
-                <th>Alıcı</th>
+                <th>Hata AÃ§Ä±klamasÄ±</th>
+                <th>GÃ¶nderen</th>
+                <th>AlÄ±cÄ±</th>
                 <th>Tarih</th>
                 <th>Durum</th>
                 <th>Detay</th>
@@ -2241,7 +2245,7 @@
             </thead>
             <tbody id="fraudTbody">
               <tr>
-                <td colspan="9" class="empty-msg">Yükleniyor...</td>
+                <td colspan="9" class="empty-msg">YÃ¼kleniyor...</td>
               </tr>
             </tbody>
           </table>
@@ -2249,31 +2253,31 @@
       </div>
     </div>
 
-    <!-- ═══════════════ 6. HEALTH ═══════════════ -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• 6. HEALTH â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <div class="page-wrap" id="page-health">
       <div class="section-header">
         <div>
-          <div class="section-title">Sistem Sağlığı</div>
-          <div class="section-sub">Tüm mikroservislerin durumu</div>
+          <div class="section-title">Sistem SaÄŸlÄ±ÄŸÄ±</div>
+          <div class="section-sub">TÃ¼m mikroservislerin durumu</div>
         </div>
-        <button class="btn btn-primary btn-sm" id="btnRefreshHealth"><i class="ph ph-arrows-clockwise"></i> Tümünü
+        <button class="btn btn-primary btn-sm" id="btnRefreshHealth"><i class="ph ph-arrows-clockwise"></i> TÃ¼mÃ¼nÃ¼
           Yenile</button>
       </div>
       <div class="health-grid" id="healthGrid">
         <div class="health-card">
-          <div class="health-header"><span class="health-name">Yükleniyor...</span>
+          <div class="health-header"><span class="health-name">YÃ¼kleniyor...</span>
             <div class="loader-ring"></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ═══════════════ 7. LOGS ═══════════════ -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• 7. LOGS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <div class="page-wrap" id="page-logs">
       <div class="section-header">
         <div>
-          <div class="section-title">Canlı Log Monitörü</div>
-          <div class="section-sub">Servis durumunu gerçek zamanlı izle</div>
+          <div class="section-title">CanlÄ± Log MonitÃ¶rÃ¼</div>
+          <div class="section-sub">Servis durumunu gerÃ§ek zamanlÄ± izle</div>
         </div>
         <div style="display:flex;gap:10px;">
           <button class="btn btn-outline btn-sm" id="btnClearLogs"><i class="ph ph-trash"></i> Temizle</button>
@@ -2283,24 +2287,29 @@
       </div>
       <div class="log-service-btns">
         <button class="log-svc-btn" data-svc="all"
-          style="background:linear-gradient(135deg,#026CB6,#0C9A5D);color:#fff;border-color:transparent;">🔍 Tüm
+          style="background:linear-gradient(135deg,#026CB6,#0C9A5D);color:#fff;border-color:transparent;">ğŸ” TÃ¼m
           Servisler</button>
-        <button class="log-svc-btn" data-svc="gateway">🌐 Gateway</button>
-        <button class="log-svc-btn" data-svc="user-service">👤 User</button>
-        <button class="log-svc-btn" data-svc="money-service">💰 Money</button>
-        <button class="log-svc-btn" data-svc="transaction-service">↔ Transaction</button>
-        <button class="log-svc-btn" data-svc="fraud-service">🛡 Fraud</button>
+        <button class="log-svc-btn" data-svc="gateway">ğŸŒ Gateway</button>
+        <button class="log-svc-btn" data-svc="admin-service">Admin API</button>
+        <button class="log-svc-btn" data-svc="admin-service-command">Admin Cmd</button>
+        <button class="log-svc-btn" data-svc="admin-service-query">Admin Query</button>
+        <button class="log-svc-btn" data-svc="user-service">ğŸ‘¤ User</button>
+        <button class="log-svc-btn" data-svc="money-service">ğŸ’° Money</button>
+        <button class="log-svc-btn" data-svc="money-service-command">Money Cmd</button>
+        <button class="log-svc-btn" data-svc="money-service-query">Money Query</button>
+        <button class="log-svc-btn" data-svc="transaction-service">â†” Transaction</button>
+        <button class="log-svc-btn" data-svc="fraud-service">ğŸ›¡ Fraud</button>
       </div>
       <div class="log-layout-switcher">
         <span class="log-layout-label">Layout:</span>
         <button class="log-layout-btn active" data-layout="classic" title="Classic Terminal"><i class="ph ph-terminal-window"></i> Classic</button>
-        <button class="log-layout-btn" data-layout="claude-code" title="Claude Code — satır numaralı, Catppuccin tema"><i class="ph ph-code"></i> Claude Code</button>
-        <button class="log-layout-btn" data-layout="datadog" title="Datadog — seviye çubuğu, yapısal görünüm"><i class="ph ph-chart-line-up"></i> Datadog</button>
-        <button class="log-layout-btn" data-layout="grafana" title="Grafana Loki — yoğun, kompakt log görünümü"><i class="ph ph-graph"></i> Grafana</button>
-        <button class="log-layout-btn" data-layout="claude-chat" title="Claude Chat — sohbet baloncuğu stili"><i class="ph ph-chat-circle-text"></i> Chat</button>
+        <button class="log-layout-btn" data-layout="claude-code" title="Claude Code â€” satÄ±r numaralÄ±, Catppuccin tema"><i class="ph ph-code"></i> Claude Code</button>
+        <button class="log-layout-btn" data-layout="datadog" title="Datadog â€” seviye Ã§ubuÄŸu, yapÄ±sal gÃ¶rÃ¼nÃ¼m"><i class="ph ph-chart-line-up"></i> Datadog</button>
+        <button class="log-layout-btn" data-layout="grafana" title="Grafana Loki â€” yoÄŸun, kompakt log gÃ¶rÃ¼nÃ¼mÃ¼"><i class="ph ph-graph"></i> Grafana</button>
+        <button class="log-layout-btn" data-layout="claude-chat" title="Claude Chat â€” sohbet baloncuÄŸu stili"><i class="ph ph-chat-circle-text"></i> Chat</button>
       </div>
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
-        <label style="font-size:12px;color:var(--text-muted);font-weight:600;">Satır:</label>
+        <label style="font-size:12px;color:var(--text-muted);font-weight:600;">SatÄ±r:</label>
         <select id="logTailCount" class="role-select">
           <option value="100">Son 100</option>
           <option value="200" selected>Son 200</option>
@@ -2308,12 +2317,12 @@
         </select>
         <span id="logStatusDot"
           style="width:8px;height:8px;background:var(--text-muted);border-radius:50%;display:inline-block;"></span>
-        <span id="logStatusText" style="font-size:12px;color:var(--text-muted);">Bağlı değil</span>
+        <span id="logStatusText" style="font-size:12px;color:var(--text-muted);">BaÄŸlÄ± deÄŸil</span>
       </div>
-      <div id="log-terminal"><span class="log-line-system">// Terminal hazır. Bir servis seçin.</span></div>
+      <div id="log-terminal"><span class="log-line-system">// Terminal hazÄ±r. Bir servis seÃ§in.</span></div>
     </div>
 
-    <!-- ═══════════════ 8. ACTIVITY LOG ═══════════════ -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• 8. ACTIVITY LOG â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <div class="page-wrap" id="page-testlogs">
       <div class="section-header">
         <div>
@@ -2354,7 +2363,7 @@
       <div class="section-header">
         <div>
           <div class="section-title">Aktivite Log</div>
-          <div class="section-sub">Bu oturumdaki admin işlemleri</div>
+          <div class="section-sub">Bu oturumdaki admin iÅŸlemleri</div>
         </div>
         <div class="section-actions">
           <button class="btn btn-outline btn-sm" id="btnClearActivity"><i class="ph ph-trash"></i> Temizle</button>
@@ -2371,7 +2380,7 @@
         <div class="activity-log" id="activityLog">
           <div class="activity-item">
             <span class="activity-type-icon" style="color:var(--text-muted);"><i class="ph ph-info"></i></span>
-            <span class="activity-text">Henüz aktivite kaydı yok.</span>
+            <span class="activity-text">HenÃ¼z aktivite kaydÄ± yok.</span>
           </div>
         </div>
       </div>
@@ -2379,19 +2388,19 @@
 
   </div>
 
-  <!-- ════ Toast Stack ════ -->
+  <!-- â•â•â•â• Toast Stack â•â•â•â• -->
   <div id="toast-stack"></div>
 
-  <!-- ════ MODALS ════ -->
+  <!-- â•â•â•â• MODALS â•â•â•â• -->
 
   <!-- User Detail -->
   <div class="modal-bg" id="modalUserDetail">
     <div class="modal-box">
-      <div class="modal-head"><span><i class="ph ph-user" style="color:var(--primary);margin-right:8px;"></i>Kullanıcı
-          Detayı</span><button class="modal-close-btn" onclick="closeModal('modalUserDetail')"><i
+      <div class="modal-head"><span><i class="ph ph-user" style="color:var(--primary);margin-right:8px;"></i>KullanÄ±cÄ±
+          DetayÄ±</span><button class="modal-close-btn" onclick="closeModal('modalUserDetail')"><i
             class="ph ph-x"></i></button></div>
       <div class="modal-body" id="modalUserDetailBody">
-        <div class="empty-msg">Yükleniyor...</div>
+        <div class="empty-msg">YÃ¼kleniyor...</div>
       </div>
       <div class="modal-foot" id="modalUserDetailFoot" style="display:none;">
         <button class="btn btn-outline btn-sm" onclick="closeModal('modalUserDetail')">Kapat</button>
@@ -2404,7 +2413,7 @@
   <div class="modal-bg" id="modalTxDetail">
     <div class="modal-box wide">
       <div class="modal-head"><span><i class="ph ph-arrows-left-right"
-            style="color:var(--primary);margin-right:8px;"></i>İşlem Detayı</span><button class="modal-close-btn"
+            style="color:var(--primary);margin-right:8px;"></i>Ä°ÅŸlem DetayÄ±</span><button class="modal-close-btn"
           onclick="closeModal('modalTxDetail')"><i class="ph ph-x"></i></button></div>
       <div class="modal-body" id="modalTxDetailBody"></div>
     </div>
@@ -2413,18 +2422,18 @@
   <!-- Reset Password -->
   <div class="modal-bg" id="modalResetPwd">
     <div class="modal-box" style="width:400px;">
-      <div class="modal-head"><span><i class="ph ph-key" style="color:var(--primary);margin-right:8px;"></i>Şifre
-          Sıfırla</span><button class="modal-close-btn" onclick="closeModal('modalResetPwd')"><i
+      <div class="modal-head"><span><i class="ph ph-key" style="color:var(--primary);margin-right:8px;"></i>Åifre
+          SÄ±fÄ±rla</span><button class="modal-close-btn" onclick="closeModal('modalResetPwd')"><i
             class="ph ph-x"></i></button></div>
       <div class="modal-body">
         <input type="hidden" id="resetPwdUserId">
         <div class="form-group">
-          <label class="form-label">Yeni Şifre</label>
+          <label class="form-label">Yeni Åifre</label>
           <input type="password" class="form-control" id="newPwdInput" placeholder="En az 8 karakter">
         </div>
       </div>
       <div class="modal-foot">
-        <button class="btn btn-outline btn-sm" onclick="closeModal('modalResetPwd')">İptal</button>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('modalResetPwd')">Ä°ptal</button>
         <button class="btn btn-primary btn-sm" id="btnConfirmResetPwd"><i class="ph ph-check"></i> Kaydet</button>
       </div>
     </div>
@@ -2434,20 +2443,21 @@
   <div class="modal-bg" id="modalDelete">
     <div class="modal-box" style="width:380px;">
       <div class="modal-head" style="color:var(--danger);"><span><i class="ph-fill ph-warning-circle"
-            style="margin-right:8px;"></i>Silme Onayı</span><button class="modal-close-btn"
+            style="margin-right:8px;"></i>Silme OnayÄ±</span><button class="modal-close-btn"
           onclick="closeModal('modalDelete')"><i class="ph ph-x"></i></button></div>
       <div class="modal-body">
-        <p style="font-size:14px;color:var(--text-muted);">Bu kullanıcıyı silmek istediğinizden emin misiniz? Bu işlem
-          <strong style="color:var(--danger);">geri alınamaz.</strong></p>
+        <p style="font-size:14px;color:var(--text-muted);">Bu kullanÄ±cÄ±yÄ± silmek istediÄŸinizden emin misiniz? Bu iÅŸlem
+          <strong style="color:var(--danger);">geri alÄ±namaz.</strong></p>
       </div>
       <div class="modal-foot">
-        <button class="btn btn-outline btn-sm" onclick="closeModal('modalDelete')">Vazgeç</button>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('modalDelete')">VazgeÃ§</button>
         <button class="btn btn-danger btn-sm" id="btnConfirmDelete"><i class="ph ph-trash"></i> Sil</button>
       </div>
     </div>
   </div>
   <script src="js/api.js"></script>
   <script src="js/admin.js"></script>
+  <script src="js/admin-extended.js"></script>
 </body>
 
 </html>

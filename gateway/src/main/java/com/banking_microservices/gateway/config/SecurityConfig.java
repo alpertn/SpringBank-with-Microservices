@@ -54,11 +54,16 @@ public class SecurityConfig {
                         .pathMatchers("/api/money-service/actuator/**").permitAll()
                         .pathMatchers("/api/transaction-service/actuator/**").permitAll()
                         .pathMatchers("/api/fraud-service/actuator/**").permitAll()
+                        .pathMatchers("/api/admin-service/actuator/**").permitAll()
+                        .pathMatchers("/api/admin-service-command/actuator/**").permitAll()
+                        .pathMatchers("/api/admin-service-query/actuator/**").permitAll()
                         .pathMatchers("/api/user-service/v1/admin/**").hasRole("ADMIN")
                         .pathMatchers("/api/money-service/v1/admin/**").hasRole("ADMIN")
                         .pathMatchers("/api/transaction-service/v1/admin/**").hasRole("ADMIN")
                         .pathMatchers("/api/fraud-service/v1/admin/**").hasRole("ADMIN")
-                        .pathMatchers("/api/gateway/admin/**").hasRole("ADMIN")
+                        .pathMatchers("/api/admin-service/**").hasRole("ADMIN")
+                        .pathMatchers("/api/admin-service-command/**").hasRole("ADMIN")
+                        .pathMatchers("/api/admin-service-query/**").hasRole("ADMIN")
                         .anyExchange().authenticated()) // geri kalani icin login yeterli olsun demek bu.
                 .oauth2ResourceServer(oauth -> oauth
                         .authenticationEntryPoint((exchange, ex) -> {

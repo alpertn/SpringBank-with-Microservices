@@ -1,0 +1,29 @@
+SpringBank Log Izleme
+=====================
+
+Canli loglari izlemek icin:
+
+  .\.scriptsandhelpers\start-logs.bat
+
+Bu script su servisleri birlikte takip eder:
+
+- gateway
+- admin-service
+- admin-service-command
+- admin-service-query
+- user-service
+- money-service
+- money-service-command
+- money-service-query
+- transaction-service
+- fraud-service
+
+Log dosyalari burada olusur:
+
+  .scriptsandhelpers\logs\logs1.log
+  .scriptsandhelpers\logs\logs2.log
+  ...
+
+Elle calistirmak istersen:
+
+  kubectl logs -n banking-microservices -l "app in (gateway,admin-service,admin-service-command,admin-service-query,user-service,money-service,money-service-command,money-service-query,transaction-service,fraud-service)" -f --tail=200 --max-log-requests=50

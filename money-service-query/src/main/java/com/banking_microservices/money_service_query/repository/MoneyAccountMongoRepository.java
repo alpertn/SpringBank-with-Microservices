@@ -3,6 +3,7 @@ package com.banking_microservices.money_service_query.repository;
 import com.banking_microservices.money_service_query.model.MoneyAccountDocument;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface MoneyAccountMongoRepository extends MongoRepository<MoneyAccountDocument, String> {
@@ -10,4 +11,10 @@ public interface MoneyAccountMongoRepository extends MongoRepository<MoneyAccoun
     Optional<MoneyAccountDocument> findByUserId(String userId);
 
     Optional<MoneyAccountDocument> findByUserIban(String userIban);
+
+    List<MoneyAccountDocument> findByUserIdContainingIgnoreCaseOrUserIbanContainingIgnoreCaseOrKeycloakUserUUIDContainingIgnoreCase(
+            String userId,
+            String userIban,
+            String keycloakUserUUID
+    );
 }

@@ -14,13 +14,13 @@ import reactor.core.publisher.Mono;
  *
  * Browser'in EventSource API'si custom HTTP header gonderemiyor.
  * Bu yuzden SSE log endpoint'leri icin token query parameter olarak gonderilir:
- *   /api/gateway/admin/logs/{service}?token=eyJhb...
+ *   /api/admin-service/logs/{service}?token=eyJhb...
  *
  * Bu filter, SSE isteklerinde "token" query param'ini alip
  * "Authorization: Bearer {token}" header'i olarak inject eder.
  * Boylece Spring Security JWT dogrulamasi normal calisir.
  *
- * Guvenlik: sadece /api/gateway/admin/logs/ path'ine uygulaniyor.
+ * Guvenlik: sadece /api/admin-service/logs/ path'ine uygulaniyor.
  *
  * @Order(Ordered.HIGHEST_PRECEDENCE) Spring Security'den once calismasini saglar.
  * Aksi halde token inject edilmeden JWT kontrolu yapilir ve 401 donulur.
@@ -30,7 +30,7 @@ import reactor.core.publisher.Mono;
 public class SseTokenWebFilter implements WebFilter {
 
     private static final String TOKEN_PARAM = "token";
-    private static final String SSE_LOG_PATH = "/api/gateway/admin/logs/";
+    private static final String SSE_LOG_PATH = "/api/admin-service/logs/";
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {

@@ -1,0 +1,2154 @@
+
+[02:36:43][elapsed=294334ms / 294.334s / 4.906m][pods][OK] user-service
+COMMAND:
+kubectl -n banking-microservices logs user-service-77d5c559d5-nngs8 --tail=400
+DURATION: 244ms / 0.244s / 0.004m
+SELECTOR: app=user-service
+NEEDLE: 20260517023149-opt96e
+FOUND: True
+OUTPUT:
+"receiverName": "E2EBeta",
+      "senderName": "E2EAlpha",
+      "senderSurname": "Tester",
+      "senderEmail": "e2e.alpha.20260517021229-m6a4bs@springbank.test",
+      "receiverEmail": null,
+      "receiverSurname": "Tester",
+      "senderUserId": "95fc80d4-08c5-47d2-8697-9f7796b0562b",
+      "receiverUserId": null,
+      "senderIban": "TR2874854ICT5JAD55SFROTOKP",
+      "receiverIban": "TR2964057F1UFMYCTJVJ7NNNN9",
+      "money": 1000,
+      "transactionType": "TRANSFER",
+      "description": "E2E transfer 20260517021229-m6a4bs",
+      "localDateTime": "2026-05-16T23:14:54.504175561",
+      "error": false,
+      "errorDescription": null,
+      "userValidation": false,
+      "isMoneyBlocked": false,
+      "status": "CREATED",
+      "tokenDetails": {
+        "subject": "95fc80d4-08c5-47d2-8697-9f7796b0562b",
+        "preferredUsername": "e2e.alpha.20260517021229-m6a4bs@springbank.test",
+        "email": "e2e.alpha.20260517021229-m6a4bs@springbank.test",
+        "givenName": "E2EAlpha",
+        "familyName": "Tester",
+        "issuer": "http://keycloak:8080/realms/banking",
+        "audienceJson": "\"account\"",
+        "realmRoles": [
+          "default-roles-banking",
+          "offline_access",
+          "uma_authorization",
+          "USER"
+        ],
+        "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+        "claimsJson": "{\"exp\":1778973801,\"iat\":1778973201,\"jti\":\"7a3b0c34-cb3e-4180-ae4f-b684582ac94f\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"95fc80d4-08c5-47d2-8697-9f7796b0562b\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"a4a6c4c2-26a7-41bc-be8a-090dd75b6dce\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"a4a6c4c2-26a7-41bc-be8a-090dd75b6dce\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517021229-m6a4bs@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517021229-m6a4bs@springbank.test\"}",
+        "issuedAt": "1778973201",
+        "expiresAt": "1778973801",
+        "jwtId": "7a3b0c34-cb3e-4180-ae4f-b684582ac94f",
+        "tokenType": "Bearer",
+        "sessionState": "a4a6c4c2-26a7-41bc-be8a-090dd75b6dce",
+        "scope": "email profile"
+      }
+    }
+  ],
+  "tokenDetails": {
+    "subject": "95fc80d4-08c5-47d2-8697-9f7796b0562b",
+    "preferredUsername": "e2e.alpha.20260517021229-m6a4bs@springbank.test",
+    "email": "e2e.alpha.20260517021229-m6a4bs@springbank.test",
+    "givenName": "E2EAlpha",
+    "familyName": "Tester",
+    "issuer": "http://keycloak:8080/realms/banking",
+    "audienceJson": "\"account\"",
+    "realmRoles": [
+      "default-roles-banking",
+      "offline_access",
+      "uma_authorization",
+      "USER"
+    ],
+    "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+    "claimsJson": "{\"exp\":1778973801,\"iat\":1778973201,\"jti\":\"7a3b0c34-cb3e-4180-ae4f-b684582ac94f\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"95fc80d4-08c5-47d2-8697-9f7796b0562b\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"a4a6c4c2-26a7-41bc-be8a-090dd75b6dce\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"a4a6c4c2-26a7-41bc-be8a-090dd75b6dce\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517021229-m6a4bs@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517021229-m6a4bs@springbank.test\"}",
+    "issuedAt": "1778973201",
+    "expiresAt": "1778973801",
+    "jwtId": "7a3b0c34-cb3e-4180-ae4f-b684582ac94f",
+    "tokenType": "Bearer",
+    "sessionState": "a4a6c4c2-26a7-41bc-be8a-090dd75b6dce",
+    "scope": "email profile"
+  }
+}
+INFO  --- [user-service] :  (23:16) > AuthController | login -> {
+  "email": "admin@springbank.local",
+  "password": "SpringBankAdmin123!"
+}
+INFO  --- [user-service] :  (23:16) > KeycloakUserService | login -> Request:
+{
+  "email": "admin@springbank.local",
+  "password": "SpringBankAdmin123!"
+}
+INFO  --- [user-service] :  (23:17) > AuthController | login -> {
+  "email": "e2e.alpha.20260517021229-m6a4bs@springbank.test",
+  "password": "Test1234!"
+}
+INFO  --- [user-service] :  (23:17) > KeycloakUserService | login -> Request:
+{
+  "email": "e2e.alpha.20260517021229-m6a4bs@springbank.test",
+  "password": "Test1234!"
+}
+INFO  --- [user-service] :  (23:18) > AuthController | logout -> request received
+INFO  --- [user-service] :  (23:32) > AuthController | register -> {
+  "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+  "name": "E2EAlpha",
+  "surname": "Tester",
+  "password": "Test1234!"
+}
+INFO  --- [user-service] :  (23:32) > KeycloakAdminService | createUser -> User created: 258affa4-7740-4219-8a4c-2dd0f16db425
+INFO  --- [user-service] :  (23:32) > KafkaSender | sendCreateUser -> Kafkaya mesaj gonderilmek uzere alindi. UserId: 258affa4-7740-4219-8a4c-2dd0f16db425
+INFO  --- [user-service] :  (23:32) > KafkaSender | sendCreateUser -> Kafkaya mesaj gonderildi. UserId: 258affa4-7740-4219-8a4c-2dd0f16db425
+INFO  --- [user-service] :  (23:32) > AuthController | register -> {
+  "email": "e2e.beta.20260517023149-opt96e@springbank.test",
+  "name": "E2EBeta",
+  "surname": "Tester",
+  "password": "Test1234!"
+}
+INFO  --- [user-service] :  (23:32) > KeycloakAdminService | createUser -> User created: 569004c1-e404-4e15-87fa-1f5e9034c41e
+INFO  --- [user-service] :  (23:32) > KafkaSender | sendCreateUser -> Kafkaya mesaj gonderilmek uzere alindi. UserId: 569004c1-e404-4e15-87fa-1f5e9034c41e
+INFO  --- [user-service] :  (23:32) > KafkaSender | sendCreateUser -> Kafkaya mesaj gonderildi. UserId: 569004c1-e404-4e15-87fa-1f5e9034c41e
+INFO  --- [user-service] :  (23:32) > AuthController | login -> {
+  "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+  "password": "Test1234!"
+}
+INFO  --- [user-service] :  (23:32) > KeycloakUserService | login -> Request:
+{
+  "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+  "password": "Test1234!"
+}
+INFO  --- [user-service] :  (23:32) > AuthController | login -> {
+  "email": "e2e.beta.20260517023149-opt96e@springbank.test",
+  "password": "Test1234!"
+}
+INFO  --- [user-service] :  (23:32) > KeycloakUserService | login -> Request:
+{
+  "email": "e2e.beta.20260517023149-opt96e@springbank.test",
+  "password": "Test1234!"
+}
+INFO  --- [user-service] :  (23:32) > AuthController | login -> {
+  "email": "admin@springbank.local",
+  "password": "SpringBankAdmin123!"
+}
+INFO  --- [user-service] :  (23:32) > KeycloakUserService | login -> Request:
+{
+  "email": "admin@springbank.local",
+  "password": "SpringBankAdmin123!"
+}
+INFO  --- [user-service] :  (23:32) > AuthController | refresh -> request received
+INFO  --- [user-service] :  (23:32) > AdminController | getTotalUsers -> Istek alindi.
+INFO  --- [user-service] :  (23:32) > AdminController | getRoleStats -> Istek alindi.
+INFO  --- [user-service] :  (23:32) > AdminController | getActiveStats -> Istek alindi.
+INFO  --- [user-service] :  (23:32) > AdminController | searchByEmail -> Istek alindi. Email: e2e.alpha.20260517023149-opt96e@springbank.test
+INFO  --- [user-service] : user endpoint request 258affa4-7740-4219-8a4c-2dd0f16db425
+INFO  --- [user-service] :  (23:32) > AdminController | findByKeycloakUUID -> Istek alindi. UUID : 258affa4-7740-4219-8a4c-2dd0f16db425
+INFO  --- [user-service] :  (23:32) > AdminController | searchUsers -> Istek alindi. Query : E2EAlpha
+INFO  --- [user-service] :  (23:32) > AdminController | getAllUsers -> Istek alindi.
+INFO  --- [user-service] :  (23:32) > KeycloakUserService | login -> Request:
+{
+  "email": "e2e.beta.20260517023149-opt96e@springbank.test",
+  "password": "Test1234!"
+}
+INFO  --- [user-service] :  (23:32) > KeycloakUserService | login -> Request:
+{
+  "email": "e2e.beta.updated.20260517023149-opt96e@springbank.test",
+  "password": "Test1234!"
+}
+INFO  --- [user-service] :  (23:32) > AuthController | login -> {
+  "email": "e2e.beta.updated.20260517023149-opt96e@springbank.test",
+  "password": "Test1234!X"
+}
+INFO  --- [user-service] :  (23:32) > KeycloakUserService | login -> Request:
+{
+  "email": "e2e.beta.updated.20260517023149-opt96e@springbank.test",
+  "password": "Test1234!X"
+}
+INFO  --- [user-service] :  (23:32) > AuthController | register -> {
+  "email": "e2e.admin.target.20260517023149-opt96e@springbank.test",
+  "name": "E2EAdminTarget",
+  "surname": "Tester",
+  "password": "Test1234!"
+}
+INFO  --- [user-service] :  (23:32) > KeycloakAdminService | createUser -> User created: 53b8c328-6f1c-494e-ad15-c6ef625c8795
+INFO  --- [user-service] :  (23:32) > KafkaSender | sendCreateUser -> Kafkaya mesaj gonderilmek uzere alindi. UserId: 53b8c328-6f1c-494e-ad15-c6ef625c8795
+INFO  --- [user-service] :  (23:32) > KafkaSender | sendCreateUser -> Kafkaya mesaj gonderildi. UserId: 53b8c328-6f1c-494e-ad15-c6ef625c8795
+INFO  --- [user-service] :  (23:32) > AdminController | searchByEmail -> Istek alindi. Email: e2e.admin.target.20260517023149-opt96e@springbank.test
+INFO  --- [user-service] :  (23:32) > AdminController | changeRole -> Istek alindi. Id: 53b8c328-6f1c-494e-ad15-c6ef625c8795, Role: USER
+INFO  --- [user-service] :  (23:32) > AdminController | deactivateUser -> Istek alindi. ID: 53b8c328-6f1c-494e-ad15-c6ef625c8795
+INFO  --- [user-service] :  (23:32) > UserService | updateUserStatus -> ID: 53b8c328-6f1c-494e-ad15-c6ef625c8795, active: false
+INFO  --- [user-service] :  (23:32) > AdminController | activateUser -> Istek alindi. ID: 53b8c328-6f1c-494e-ad15-c6ef625c8795
+INFO  --- [user-service] :  (23:32) > UserService | updateUserStatus -> ID: 53b8c328-6f1c-494e-ad15-c6ef625c8795, active: true
+WARN  --- [user-service] :  (23:32) > AdminController | resetPassword -> Istek alindi. ID: 53b8c328-6f1c-494e-ad15-c6ef625c8795, Dto: {"newPassword":"Reset1234!"}
+WARN  --- [user-service] :  (23:32) > UserService | resetUserPassword -> Admin password reset for user ID: 53b8c328-6f1c-494e-ad15-c6ef625c8795
+INFO  --- [user-service] :  (23:32) > AuthController | login -> {
+  "email": "e2e.admin.target.20260517023149-opt96e@springbank.test",
+  "password": "Reset1234!"
+}
+INFO  --- [user-service] :  (23:32) > KeycloakUserService | login -> Request:
+{
+  "email": "e2e.admin.target.20260517023149-opt96e@springbank.test",
+  "password": "Reset1234!"
+}
+INFO  --- [user-service] :  (23:32) > AdminController | updateUserWithId -> Istek alindi. UserDto: {"id":"53b8c328-6f1c-494e-ad15-c6ef625c8795","keycloakUUID":"53b8c328-6f1c-494e-ad15-c6ef625c8795","mail":"e2e.admin.target.20260517023149-opt96e@springbank.test","password":"","name":"E2EAdminUpdated","surname":"Tester","role":"USER","active":true,"createdAt":"2026-05-16T23:32:53.554"}
+INFO  --- [user-service] :  (23:32) > AdminController | deleteUser -> Istek alindi. ID: 53b8c328-6f1c-494e-ad15-c6ef625c8795
+INFO  --- [user-service] :  (23:33) > KafkaSender | sendTransactionUserValidationSuccess -> Kafkaya mesaj gonderilmek uzere alindi. Dto:
+{
+  "eventUUID": "8ae96110-3f5b-4cee-ab68-a1f68e49353e",
+  "keycloakUserUUID": "258affa4-7740-4219-8a4c-2dd0f16db425",
+  "senderName": "E2EAlpha",
+  "senderSurname": "Tester",
+  "senderEmail": "e2e.alpha.20260517023149-opt96e@springbank.test",
+  "receiverEmail": "e2e.beta.20260516222010-lo96ej@springbank.test",
+  "receiverName": "E2EBeta",
+  "receiverSurname": "Tester",
+  "senderUserId": "258affa4-7740-4219-8a4c-2dd0f16db425",
+  "senderIban": "TR0200201R60UN2LCSZIQ1U6LK",
+  "receiverUserId": "a0cdcc62-8a77-440b-8bdb-86fadb2c18f0",
+  "receiverIban": "TR6990608M8TL97F27VNXWS67V",
+  "money": 1000,
+  "transactionType": "TRANSFER",
+  "description": "E2E transfer 20260517023149-opt96e",
+  "status": "VALIDATION_PENDING",
+  "statusDescription": "Gönderici ve alıcı IBAN bilgileri ile hesap varlığı doğrulanıyor",
+  "error": false,
+  "errorDescription": null,
+  "isMoneyBlocked": true,
+  "userValidation": true,
+  "localDateTime": "2026-05-16T23:33:49.402267364",
+  "senderTransactionHistory": null,
+  "receiverTransactionHistory": [
+    {
+      "id": "df3e6661-0f0c-4abd-9881-ae882819c986",
+      "eventId": "8ae96110-3f5b-4cee-ab68-a1f68e49353e",
+      "receiverName": "E2EBeta",
+      "senderName": "E2EAlpha",
+      "senderSurname": "Tester",
+      "senderEmail": "e2e.alpha.20260517023149-opt96e@springbank.test",
+      "receiverEmail": null,
+      "receiverSurname": "Tester",
+      "senderUserId": "258affa4-7740-4219-8a4c-2dd0f16db425",
+      "receiverUserId": null,
+      "senderIban": "TR0200201R60UN2LCSZIQ1U6LK",
+      "receiverIban": "TR6990608M8TL97F27VNXWS67V",
+      "money": 1000,
+      "transactionType": "TRANSFER",
+      "description": "E2E transfer 20260517023149-opt96e",
+      "localDateTime": "2026-05-16T23:33:49.402505829",
+      "error": false,
+      "errorDescription": null,
+      "userValidation": false,
+      "isMoneyBlocked": false,
+      "status": "CREATED",
+      "tokenDetails": {
+        "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+        "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "givenName": "E2EAlpha",
+        "familyName": "Tester",
+        "issuer": "http://keycloak:8080/realms/banking",
+        "audienceJson": "\"account\"",
+        "realmRoles": [
+          "default-roles-banking",
+          "offline_access",
+          "uma_authorization",
+          "USER"
+        ],
+        "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+        "claimsJson": "{\"exp\":1778974950,\"iat\":1778974350,\"jti\":\"cb73c17c-2a8b-480d-904d-042d77a3419d\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+        "issuedAt": "1778974350",
+        "expiresAt": "1778974950",
+        "jwtId": "cb73c17c-2a8b-480d-904d-042d77a3419d",
+        "tokenType": "Bearer",
+        "sessionState": "d538f40e-db55-4d15-9f01-976c0e07c868",
+        "scope": "email profile"
+      }
+    }
+  ],
+  "tokenDetails": {
+    "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+    "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+    "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+    "givenName": "E2EAlpha",
+    "familyName": "Tester",
+    "issuer": "http://keycloak:8080/realms/banking",
+    "audienceJson": "\"account\"",
+    "realmRoles": [
+      "default-roles-banking",
+      "offline_access",
+      "uma_authorization",
+      "USER"
+    ],
+    "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+    "claimsJson": "{\"exp\":1778974950,\"iat\":1778974350,\"jti\":\"cb73c17c-2a8b-480d-904d-042d77a3419d\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+    "issuedAt": "1778974350",
+    "expiresAt": "1778974950",
+    "jwtId": "cb73c17c-2a8b-480d-904d-042d77a3419d",
+    "tokenType": "Bearer",
+    "sessionState": "d538f40e-db55-4d15-9f01-976c0e07c868",
+    "scope": "email profile"
+  }
+}
+INFO  --- [user-service] :  (23:33) > KafkaSender | sendTransactionUserValidationSuccess -> Transaction success kafkaya mesaj gonderildi. Key: 8ae96110-3f5b-4cee-ab68-a1f68e49353e, Dto:
+{
+  "eventUUID": "8ae96110-3f5b-4cee-ab68-a1f68e49353e",
+  "keycloakUserUUID": "258affa4-7740-4219-8a4c-2dd0f16db425",
+  "senderName": "E2EAlpha",
+  "senderSurname": "Tester",
+  "senderEmail": "e2e.alpha.20260517023149-opt96e@springbank.test",
+  "receiverEmail": "e2e.beta.20260516222010-lo96ej@springbank.test",
+  "receiverName": "E2EBeta",
+  "receiverSurname": "Tester",
+  "senderUserId": "258affa4-7740-4219-8a4c-2dd0f16db425",
+  "senderIban": "TR0200201R60UN2LCSZIQ1U6LK",
+  "receiverUserId": "a0cdcc62-8a77-440b-8bdb-86fadb2c18f0",
+  "receiverIban": "TR6990608M8TL97F27VNXWS67V",
+  "money": 1000,
+  "transactionType": "TRANSFER",
+  "description": "E2E transfer 20260517023149-opt96e",
+  "status": "VALIDATION_PENDING",
+  "statusDescription": "Gönderici ve alıcı IBAN bilgileri ile hesap varlığı doğrulanıyor",
+  "error": false,
+  "errorDescription": null,
+  "isMoneyBlocked": true,
+  "userValidation": true,
+  "localDateTime": "2026-05-16T23:33:49.402267364",
+  "senderTransactionHistory": null,
+  "receiverTransactionHistory": [
+    {
+      "id": "df3e6661-0f0c-4abd-9881-ae882819c986",
+      "eventId": "8ae96110-3f5b-4cee-ab68-a1f68e49353e",
+      "receiverName": "E2EBeta",
+      "senderName": "E2EAlpha",
+      "senderSurname": "Tester",
+      "senderEmail": "e2e.alpha.20260517023149-opt96e@springbank.test",
+      "receiverEmail": null,
+      "receiverSurname": "Tester",
+      "senderUserId": "258affa4-7740-4219-8a4c-2dd0f16db425",
+      "receiverUserId": null,
+      "senderIban": "TR0200201R60UN2LCSZIQ1U6LK",
+      "receiverIban": "TR6990608M8TL97F27VNXWS67V",
+      "money": 1000,
+      "transactionType": "TRANSFER",
+      "description": "E2E transfer 20260517023149-opt96e",
+      "localDateTime": "2026-05-16T23:33:49.402505829",
+      "error": false,
+      "errorDescription": null,
+      "userValidation": false,
+      "isMoneyBlocked": false,
+      "status": "CREATED",
+      "tokenDetails": {
+        "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+        "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "givenName": "E2EAlpha",
+        "familyName": "Tester",
+        "issuer": "http://keycloak:8080/realms/banking",
+        "audienceJson": "\"account\"",
+        "realmRoles": [
+          "default-roles-banking",
+          "offline_access",
+          "uma_authorization",
+          "USER"
+        ],
+        "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+        "claimsJson": "{\"exp\":1778974950,\"iat\":1778974350,\"jti\":\"cb73c17c-2a8b-480d-904d-042d77a3419d\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+        "issuedAt": "1778974350",
+        "expiresAt": "1778974950",
+        "jwtId": "cb73c17c-2a8b-480d-904d-042d77a3419d",
+        "tokenType": "Bearer",
+        "sessionState": "d538f40e-db55-4d15-9f01-976c0e07c868",
+        "scope": "email profile"
+      }
+    }
+  ],
+  "tokenDetails": {
+    "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+    "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+    "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+    "givenName": "E2EAlpha",
+    "familyName": "Tester",
+    "issuer": "http://keycloak:8080/realms/banking",
+    "audienceJson": "\"account\"",
+    "realmRoles": [
+      "default-roles-banking",
+      "offline_access",
+      "uma_authorization",
+      "USER"
+    ],
+    "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+    "claimsJson": "{\"exp\":1778974950,\"iat\":1778974350,\"jti\":\"cb73c17c-2a8b-480d-904d-042d77a3419d\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+    "issuedAt": "1778974350",
+    "expiresAt": "1778974950",
+    "jwtId": "cb73c17c-2a8b-480d-904d-042d77a3419d",
+    "tokenType": "Bearer",
+    "sessionState": "d538f40e-db55-4d15-9f01-976c0e07c868",
+    "scope": "email profile"
+  }
+}
+INFO  --- [user-service] :  (23:35) > AuthController | login -> {
+  "email": "admin@springbank.local",
+  "password": "SpringBankAdmin123!"
+}
+INFO  --- [user-service] :  (23:35) > KeycloakUserService | login -> Request:
+{
+  "email": "admin@springbank.local",
+  "password": "SpringBankAdmin123!"
+}
+INFO  --- [user-service] :  (23:36) > AuthController | login -> {
+  "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+  "password": "Test1234!"
+}
+INFO  --- [user-service] :  (23:36) > KeycloakUserService | login -> Request:
+{
+  "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+  "password": "Test1234!"
+}
+--------------------------------------------------------------------------------
+[02:36:43][elapsed=294560ms / 294.56s / 4.909m][pods][OK] money-service
+COMMAND:
+kubectl -n banking-microservices logs money-service-7cddb49484-pxlrs --tail=400
+DURATION: 224ms / 0.224s / 0.004m
+SELECTOR: app=money-service
+NEEDLE: 20260517023149-opt96e
+FOUND: True
+OUTPUT:
+"receiverTransactionHistory": [
+    {
+      "id": "d14e1e82-6f46-4ec3-becc-647c26d1dbaa",
+      "eventId": "f4a785f6-b03d-4b79-947f-64a1e4c2fa92",
+      "receiverName": "E2EBeta",
+      "senderName": "E2EAlpha",
+      "senderSurname": "Tester",
+      "senderEmail": "e2e.alpha.20260517023149-opt96e@springbank.test",
+      "receiverEmail": null,
+      "receiverSurname": "Tester",
+      "senderUserId": "258affa4-7740-4219-8a4c-2dd0f16db425",
+      "receiverUserId": null,
+      "senderIban": "TR0200201R60UN2LCSZIQ1U6LK",
+      "receiverIban": "TR6990608M8TL97F27VNXWS67V",
+      "money": 9999999,
+      "transactionType": "TRANSFER",
+      "description": "E2E insufficient funds 20260517023149-opt96e",
+      "localDateTime": "2026-05-16T23:36:41.564470978",
+      "error": false,
+      "errorDescription": null,
+      "userValidation": false,
+      "status": "CREATED",
+      "tokenDetails": {
+        "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+        "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "givenName": "E2EAlpha",
+        "familyName": "Tester",
+        "issuer": "http://keycloak:8080/realms/banking",
+        "audienceJson": "\"account\"",
+        "realmRoles": [
+          "default-roles-banking",
+          "offline_access",
+          "uma_authorization",
+          "USER"
+        ],
+        "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+        "claimsJson": "{\"exp\":1778975200,\"iat\":1778974600,\"jti\":\"3405c905-a339-401e-ab8d-548d0e54dbb7\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+        "issuedAt": "1778974600",
+        "expiresAt": "1778975200",
+        "jwtId": "3405c905-a339-401e-ab8d-548d0e54dbb7",
+        "tokenType": "Bearer",
+        "sessionState": "ac738567-d0cf-4e42-a2dc-90d3cea674b9",
+        "scope": "email profile"
+      }
+    },
+    {
+      "id": "df3e6661-0f0c-4abd-9881-ae882819c986",
+      "eventId": "8ae96110-3f5b-4cee-ab68-a1f68e49353e",
+      "receiverName": "E2EBeta",
+      "senderName": "E2EAlpha",
+      "senderSurname": "Tester",
+      "senderEmail": "e2e.alpha.20260517023149-opt96e@springbank.test",
+      "receiverEmail": "e2e.beta.20260516222010-lo96ej@springbank.test",
+      "receiverSurname": "Tester",
+      "senderUserId": "258affa4-7740-4219-8a4c-2dd0f16db425",
+      "receiverUserId": "569004c1-e404-4e15-87fa-1f5e9034c41e",
+      "senderIban": "TR0200201R60UN2LCSZIQ1U6LK",
+      "receiverIban": "TR6990608M8TL97F27VNXWS67V",
+      "money": 1000.00,
+      "transactionType": "TRANSFER",
+      "description": "E2E transfer 20260517023149-opt96e",
+      "localDateTime": "2026-05-16T23:33:49.402506",
+      "error": false,
+      "errorDescription": null,
+      "userValidation": true,
+      "status": "COMPLETED",
+      "tokenDetails": {
+        "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+        "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "givenName": "E2EAlpha",
+        "familyName": "Tester",
+        "issuer": "http://keycloak:8080/realms/banking",
+        "audienceJson": "\"account\"",
+        "realmRoles": [
+          "default-roles-banking",
+          "offline_access",
+          "uma_authorization",
+          "USER"
+        ],
+        "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+        "claimsJson": "{\"exp\":1778974950,\"iat\":1778974350,\"jti\":\"cb73c17c-2a8b-480d-904d-042d77a3419d\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+        "issuedAt": "1778974350",
+        "expiresAt": "1778974950",
+        "jwtId": "cb73c17c-2a8b-480d-904d-042d77a3419d",
+        "tokenType": "Bearer",
+        "sessionState": "d538f40e-db55-4d15-9f01-976c0e07c868",
+        "scope": "email profile"
+      }
+    }
+  ],
+  "tokenDetails": {
+    "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+    "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+    "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+    "givenName": "E2EAlpha",
+    "familyName": "Tester",
+    "issuer": "http://keycloak:8080/realms/banking",
+    "audienceJson": "\"account\"",
+    "realmRoles": [
+      "default-roles-banking",
+      "offline_access",
+      "uma_authorization",
+      "USER"
+    ],
+    "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+    "claimsJson": "{\"exp\":1778975200,\"iat\":1778974600,\"jti\":\"3405c905-a339-401e-ab8d-548d0e54dbb7\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+    "issuedAt": "1778974600",
+    "expiresAt": "1778975200",
+    "jwtId": "3405c905-a339-401e-ab8d-548d0e54dbb7",
+    "tokenType": "Bearer",
+    "sessionState": "ac738567-d0cf-4e42-a2dc-90d3cea674b9",
+    "scope": "email profile"
+  }
+}
+ERROR --- [money-service] :  > TransactionErrorHandler | sendErrorAndThrow -> Hata Kafkaya iletildi. EventUUID: f4a785f6-b03d-4b79-947f-64a1e4c2fa92, Aciklama: Sender IBAN not found or insufficient balance for block operation.
+ERROR --- [money-service] :  (23:36) > KafkaListenerService | handleBlockMoney -> BlockMoney FAILED: Block money failed for iban=TR0200201R60UN2LCSZIQ1U6LK
+INFO  --- [money-service] :  (23:36) > KafkaSender | sendTransactionError -> Kafkaya error mesaji gonderilmek uzere alindi. Dto: 
+{
+  "eventUUID": "f4a785f6-b03d-4b79-947f-64a1e4c2fa92",
+  "keycloakUserUUID": "258affa4-7740-4219-8a4c-2dd0f16db425",
+  "senderName": "E2EAlpha",
+  "senderSurname": "Tester",
+  "senderEmail": "e2e.alpha.20260517023149-opt96e@springbank.test",
+  "receiverEmail": null,
+  "receiverName": "E2EBeta",
+  "receiverSurname": "Tester",
+  "senderUserId": "258affa4-7740-4219-8a4c-2dd0f16db425",
+  "senderIban": "TR0200201R60UN2LCSZIQ1U6LK",
+  "receiverUserId": "569004c1-e404-4e15-87fa-1f5e9034c41e",
+  "receiverIban": "TR6990608M8TL97F27VNXWS67V",
+  "money": 9999999,
+  "transactionType": "TRANSFER",
+  "description": "E2E insufficient funds 20260517023149-opt96e",
+  "status": "FAILED",
+  "statusDescription": "İşlem başarısız",
+  "error": true,
+  "errorDescription": "Transfer bloke islemi basarisiz: Block money failed for iban\u003dTR0200201R60UN2LCSZIQ1U6LK",
+  "isMoneyBlocked": false,
+  "userValidation": false,
+  "localDateTime": "2026-05-16T23:36:41.563278304",
+  "senderTransactionHistory": null,
+  "receiverTransactionHistory": [
+    {
+      "id": "d14e1e82-6f46-4ec3-becc-647c26d1dbaa",
+      "eventId": "f4a785f6-b03d-4b79-947f-64a1e4c2fa92",
+      "receiverName": "E2EBeta",
+      "senderName": "E2EAlpha",
+      "senderSurname": "Tester",
+      "senderEmail": "e2e.alpha.20260517023149-opt96e@springbank.test",
+      "receiverEmail": null,
+      "receiverSurname": "Tester",
+      "senderUserId": "258affa4-7740-4219-8a4c-2dd0f16db425",
+      "receiverUserId": null,
+      "senderIban": "TR0200201R60UN2LCSZIQ1U6LK",
+      "receiverIban": "TR6990608M8TL97F27VNXWS67V",
+      "money": 9999999,
+      "transactionType": "TRANSFER",
+      "description": "E2E insufficient funds 20260517023149-opt96e",
+      "localDateTime": "2026-05-16T23:36:41.564470978",
+      "error": false,
+      "errorDescription": null,
+      "userValidation": false,
+      "status": "CREATED",
+      "tokenDetails": {
+        "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+        "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "givenName": "E2EAlpha",
+        "familyName": "Tester",
+        "issuer": "http://keycloak:8080/realms/banking",
+        "audienceJson": "\"account\"",
+        "realmRoles": [
+          "default-roles-banking",
+          "offline_access",
+          "uma_authorization",
+          "USER"
+        ],
+        "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+        "claimsJson": "{\"exp\":1778975200,\"iat\":1778974600,\"jti\":\"3405c905-a339-401e-ab8d-548d0e54dbb7\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+        "issuedAt": "1778974600",
+        "expiresAt": "1778975200",
+        "jwtId": "3405c905-a339-401e-ab8d-548d0e54dbb7",
+        "tokenType": "Bearer",
+        "sessionState": "ac738567-d0cf-4e42-a2dc-90d3cea674b9",
+        "scope": "email profile"
+      }
+    },
+    {
+      "id": "df3e6661-0f0c-4abd-9881-ae882819c986",
+      "eventId": "8ae96110-3f5b-4cee-ab68-a1f68e49353e",
+      "receiverName": "E2EBeta",
+      "senderName": "E2EAlpha",
+      "senderSurname": "Tester",
+      "senderEmail": "e2e.alpha.20260517023149-opt96e@springbank.test",
+      "receiverEmail": "e2e.beta.20260516222010-lo96ej@springbank.test",
+      "receiverSurname": "Tester",
+      "senderUserId": "258affa4-7740-4219-8a4c-2dd0f16db425",
+      "receiverUserId": "569004c1-e404-4e15-87fa-1f5e9034c41e",
+      "senderIban": "TR0200201R60UN2LCSZIQ1U6LK",
+      "receiverIban": "TR6990608M8TL97F27VNXWS67V",
+      "money": 1000.00,
+      "transactionType": "TRANSFER",
+      "description": "E2E transfer 20260517023149-opt96e",
+      "localDateTime": "2026-05-16T23:33:49.402506",
+      "error": false,
+      "errorDescription": null,
+      "userValidation": true,
+      "status": "COMPLETED",
+      "tokenDetails": {
+        "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+        "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "givenName": "E2EAlpha",
+        "familyName": "Tester",
+        "issuer": "http://keycloak:8080/realms/banking",
+        "audienceJson": "\"account\"",
+        "realmRoles": [
+          "default-roles-banking",
+          "offline_access",
+          "uma_authorization",
+          "USER"
+        ],
+        "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+        "claimsJson": "{\"exp\":1778974950,\"iat\":1778974350,\"jti\":\"cb73c17c-2a8b-480d-904d-042d77a3419d\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+        "issuedAt": "1778974350",
+        "expiresAt": "1778974950",
+        "jwtId": "cb73c17c-2a8b-480d-904d-042d77a3419d",
+        "tokenType": "Bearer",
+        "sessionState": "d538f40e-db55-4d15-9f01-976c0e07c868",
+        "scope": "email profile"
+      }
+    }
+  ],
+  "tokenDetails": {
+    "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+    "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+    "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+    "givenName": "E2EAlpha",
+    "familyName": "Tester",
+    "issuer": "http://keycloak:8080/realms/banking",
+    "audienceJson": "\"account\"",
+    "realmRoles": [
+      "default-roles-banking",
+      "offline_access",
+      "uma_authorization",
+      "USER"
+    ],
+    "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+    "claimsJson": "{\"exp\":1778975200,\"iat\":1778974600,\"jti\":\"3405c905-a339-401e-ab8d-548d0e54dbb7\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+    "issuedAt": "1778974600",
+    "expiresAt": "1778975200",
+    "jwtId": "3405c905-a339-401e-ab8d-548d0e54dbb7",
+    "tokenType": "Bearer",
+    "sessionState": "ac738567-d0cf-4e42-a2dc-90d3cea674b9",
+    "scope": "email profile"
+  }
+}
+INFO  --- [money-service] :  (23:36) > KafkaSender | sendTransactionError -> Kafkaya error mesaji gonderildi. Key: f4a785f6-b03d-4b79-947f-64a1e4c2fa92, Dto: 
+{
+  "eventUUID": "f4a785f6-b03d-4b79-947f-64a1e4c2fa92",
+  "keycloakUserUUID": "258affa4-7740-4219-8a4c-2dd0f16db425",
+  "senderName": "E2EAlpha",
+  "senderSurname": "Tester",
+  "senderEmail": "e2e.alpha.20260517023149-opt96e@springbank.test",
+  "receiverEmail": null,
+  "receiverName": "E2EBeta",
+  "receiverSurname": "Tester",
+  "senderUserId": "258affa4-7740-4219-8a4c-2dd0f16db425",
+  "senderIban": "TR0200201R60UN2LCSZIQ1U6LK",
+  "receiverUserId": "569004c1-e404-4e15-87fa-1f5e9034c41e",
+  "receiverIban": "TR6990608M8TL97F27VNXWS67V",
+  "money": 9999999,
+  "transactionType": "TRANSFER",
+  "description": "E2E insufficient funds 20260517023149-opt96e",
+  "status": "FAILED",
+  "statusDescription": "İşlem başarısız",
+  "error": true,
+  "errorDescription": "Transfer bloke islemi basarisiz: Block money failed for iban\u003dTR0200201R60UN2LCSZIQ1U6LK",
+  "isMoneyBlocked": false,
+  "userValidation": false,
+  "localDateTime": "2026-05-16T23:36:41.563278304",
+  "senderTransactionHistory": null,
+  "receiverTransactionHistory": [
+    {
+      "id": "d14e1e82-6f46-4ec3-becc-647c26d1dbaa",
+      "eventId": "f4a785f6-b03d-4b79-947f-64a1e4c2fa92",
+      "receiverName": "E2EBeta",
+      "senderName": "E2EAlpha",
+      "senderSurname": "Tester",
+      "senderEmail": "e2e.alpha.20260517023149-opt96e@springbank.test",
+      "receiverEmail": null,
+      "receiverSurname": "Tester",
+      "senderUserId": "258affa4-7740-4219-8a4c-2dd0f16db425",
+      "receiverUserId": null,
+      "senderIban": "TR0200201R60UN2LCSZIQ1U6LK",
+      "receiverIban": "TR6990608M8TL97F27VNXWS67V",
+      "money": 9999999,
+      "transactionType": "TRANSFER",
+      "description": "E2E insufficient funds 20260517023149-opt96e",
+      "localDateTime": "2026-05-16T23:36:41.564470978",
+      "error": false,
+      "errorDescription": null,
+      "userValidation": false,
+      "status": "CREATED",
+      "tokenDetails": {
+        "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+        "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "givenName": "E2EAlpha",
+        "familyName": "Tester",
+        "issuer": "http://keycloak:8080/realms/banking",
+        "audienceJson": "\"account\"",
+        "realmRoles": [
+          "default-roles-banking",
+          "offline_access",
+          "uma_authorization",
+          "USER"
+        ],
+        "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+        "claimsJson": "{\"exp\":1778975200,\"iat\":1778974600,\"jti\":\"3405c905-a339-401e-ab8d-548d0e54dbb7\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+        "issuedAt": "1778974600",
+        "expiresAt": "1778975200",
+        "jwtId": "3405c905-a339-401e-ab8d-548d0e54dbb7",
+        "tokenType": "Bearer",
+        "sessionState": "ac738567-d0cf-4e42-a2dc-90d3cea674b9",
+        "scope": "email profile"
+      }
+    },
+    {
+      "id": "df3e6661-0f0c-4abd-9881-ae882819c986",
+      "eventId": "8ae96110-3f5b-4cee-ab68-a1f68e49353e",
+      "receiverName": "E2EBeta",
+      "senderName": "E2EAlpha",
+      "senderSurname": "Tester",
+      "senderEmail": "e2e.alpha.20260517023149-opt96e@springbank.test",
+      "receiverEmail": "e2e.beta.20260516222010-lo96ej@springbank.test",
+      "receiverSurname": "Tester",
+      "senderUserId": "258affa4-7740-4219-8a4c-2dd0f16db425",
+      "receiverUserId": "569004c1-e404-4e15-87fa-1f5e9034c41e",
+      "senderIban": "TR0200201R60UN2LCSZIQ1U6LK",
+      "receiverIban": "TR6990608M8TL97F27VNXWS67V",
+      "money": 1000.00,
+      "transactionType": "TRANSFER",
+      "description": "E2E transfer 20260517023149-opt96e",
+      "localDateTime": "2026-05-16T23:33:49.402506",
+      "error": false,
+      "errorDescription": null,
+      "userValidation": true,
+      "status": "COMPLETED",
+      "tokenDetails": {
+        "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+        "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "givenName": "E2EAlpha",
+        "familyName": "Tester",
+        "issuer": "http://keycloak:8080/realms/banking",
+        "audienceJson": "\"account\"",
+        "realmRoles": [
+          "default-roles-banking",
+          "offline_access",
+          "uma_authorization",
+          "USER"
+        ],
+        "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+        "claimsJson": "{\"exp\":1778974950,\"iat\":1778974350,\"jti\":\"cb73c17c-2a8b-480d-904d-042d77a3419d\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+        "issuedAt": "1778974350",
+        "expiresAt": "1778974950",
+        "jwtId": "cb73c17c-2a8b-480d-904d-042d77a3419d",
+        "tokenType": "Bearer",
+        "sessionState": "d538f40e-db55-4d15-9f01-976c0e07c868",
+        "scope": "email profile"
+      }
+    }
+  ],
+  "tokenDetails": {
+    "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+    "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+    "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+    "givenName": "E2EAlpha",
+    "familyName": "Tester",
+    "issuer": "http://keycloak:8080/realms/banking",
+    "audienceJson": "\"account\"",
+    "realmRoles": [
+      "default-roles-banking",
+      "offline_access",
+      "uma_authorization",
+      "USER"
+    ],
+    "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+    "claimsJson": "{\"exp\":1778975200,\"iat\":1778974600,\"jti\":\"3405c905-a339-401e-ab8d-548d0e54dbb7\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+    "issuedAt": "1778974600",
+    "expiresAt": "1778975200",
+    "jwtId": "3405c905-a339-401e-ab8d-548d0e54dbb7",
+    "tokenType": "Bearer",
+    "sessionState": "ac738567-d0cf-4e42-a2dc-90d3cea674b9",
+    "scope": "email profile"
+  }
+}
+--------------------------------------------------------------------------------
+[02:36:44][elapsed=294784ms / 294.784s / 4.913m][pods][OK] transaction-service
+COMMAND:
+kubectl -n banking-microservices logs transaction-service-86b7d98b5d-nd8ft --tail=400
+DURATION: 217ms / 0.217s / 0.004m
+SELECTOR: app=transaction-service
+NEEDLE: 20260517023149-opt96e
+FOUND: True
+OUTPUT:
+"email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "givenName": "E2EAlpha",
+        "familyName": "Tester",
+        "issuer": "http://keycloak:8080/realms/banking",
+        "audienceJson": "\"account\"",
+        "realmRoles": [
+          "default-roles-banking",
+          "offline_access",
+          "uma_authorization",
+          "USER"
+        ],
+        "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+        "claimsJson": "{\"exp\":1778975200,\"iat\":1778974600,\"jti\":\"3405c905-a339-401e-ab8d-548d0e54dbb7\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+        "issuedAt": "1778974600",
+        "expiresAt": "1778975200",
+        "jwtId": "3405c905-a339-401e-ab8d-548d0e54dbb7",
+        "tokenType": "Bearer",
+        "sessionState": "ac738567-d0cf-4e42-a2dc-90d3cea674b9",
+        "scope": "email profile"
+      }
+    },
+    {
+      "id": "df3e6661-0f0c-4abd-9881-ae882819c986",
+      "eventId": "8ae96110-3f5b-4cee-ab68-a1f68e49353e",
+      "receiverName": "E2EBeta",
+      "senderName": "E2EAlpha",
+      "senderSurname": "Tester",
+      "senderEmail": "e2e.alpha.20260517023149-opt96e@springbank.test",
+      "receiverEmail": "e2e.beta.20260516222010-lo96ej@springbank.test",
+      "receiverSurname": "Tester",
+      "senderUserId": "258affa4-7740-4219-8a4c-2dd0f16db425",
+      "receiverUserId": "569004c1-e404-4e15-87fa-1f5e9034c41e",
+      "senderIban": "TR0200201R60UN2LCSZIQ1U6LK",
+      "receiverIban": "TR6990608M8TL97F27VNXWS67V",
+      "money": 1000.00,
+      "transactionType": "TRANSFER",
+      "description": "E2E transfer 20260517023149-opt96e",
+      "localDateTime": "2026-05-16T23:33:49.402506",
+      "error": false,
+      "errorDescription": null,
+      "userValidation": true,
+      "isMoneyBlocked": false,
+      "status": "COMPLETED",
+      "statusDescription": "Isleminiz alindi",
+      "transferStatus": "CREATED",
+      "tokenDetails": {
+        "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+        "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "givenName": "E2EAlpha",
+        "familyName": "Tester",
+        "issuer": "http://keycloak:8080/realms/banking",
+        "audienceJson": "\"account\"",
+        "realmRoles": [
+          "default-roles-banking",
+          "offline_access",
+          "uma_authorization",
+          "USER"
+        ],
+        "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+        "claimsJson": "{\"exp\":1778974950,\"iat\":1778974350,\"jti\":\"cb73c17c-2a8b-480d-904d-042d77a3419d\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+        "issuedAt": "1778974350",
+        "expiresAt": "1778974950",
+        "jwtId": "cb73c17c-2a8b-480d-904d-042d77a3419d",
+        "tokenType": "Bearer",
+        "sessionState": "d538f40e-db55-4d15-9f01-976c0e07c868",
+        "scope": "email profile"
+      }
+    }
+  ],
+  "tokenDetails": {
+    "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+    "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+    "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+    "givenName": "E2EAlpha",
+    "familyName": "Tester",
+    "issuer": "http://keycloak:8080/realms/banking",
+    "audienceJson": "\"account\"",
+    "realmRoles": [
+      "default-roles-banking",
+      "offline_access",
+      "uma_authorization",
+      "USER"
+    ],
+    "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+    "claimsJson": "{\"exp\":1778975200,\"iat\":1778974600,\"jti\":\"3405c905-a339-401e-ab8d-548d0e54dbb7\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+    "issuedAt": "1778974600",
+    "expiresAt": "1778975200",
+    "jwtId": "3405c905-a339-401e-ab8d-548d0e54dbb7",
+    "tokenType": "Bearer",
+    "sessionState": "ac738567-d0cf-4e42-a2dc-90d3cea674b9",
+    "scope": "email profile"
+  }
+}
+INFO  --- [transaction-service] :  (23:36) > KafkaListenerService | listenAllTransactionTopics -> Metoda veri geldi. RawData:
+{"eventUUID":"f4a785f6-b03d-4b79-947f-64a1e4c2fa92","keycloakUserUUID":"258affa4-7740-4219-8a4c-2dd0f16db425","senderName":"E2EAlpha","senderSurname":"Tester","senderEmail":"e2e.alpha.20260517023149-opt96e@springbank.test","receiverEmail":null,"receiverName":"E2EBeta","receiverSurname":"Tester","senderUserId":"258affa4-7740-4219-8a4c-2dd0f16db425","senderIban":"TR0200201R60UN2LCSZIQ1U6LK","receiverUserId":"569004c1-e404-4e15-87fa-1f5e9034c41e","receiverIban":"TR6990608M8TL97F27VNXWS67V","money":9999999,"transactionType":"TRANSFER","description":"E2E insufficient funds 20260517023149-opt96e","status":"FAILED","statusDescription":"İşlem başarısız","error":true,"errorDescription":"Transfer bloke islemi basarisiz: Block money failed for iban\u003dTR0200201R60UN2LCSZIQ1U6LK","isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:36:41.563278304","senderTransactionHistory":null,"receiverTransactionHistory":[{"id":"d14e1e82-6f46-4ec3-becc-647c26d1dbaa","eventId":"f4a785f6-b03d-4b79-947f-64a1e4c2fa92","receiverName":"E2EBeta","senderName":"E2EAlpha","senderSurname":"Tester","senderEmail":"e2e.alpha.20260517023149-opt96e@springbank.test","receiverEmail":null,"receiverSurname":"Tester","senderUserId":"258affa4-7740-4219-8a4c-2dd0f16db425","receiverUserId":null,"senderIban":"TR0200201R60UN2LCSZIQ1U6LK","receiverIban":"TR6990608M8TL97F27VNXWS67V","money":9999999,"transactionType":"TRANSFER","description":"E2E insufficient funds 20260517023149-opt96e","localDateTime":"2026-05-16T23:36:41.564470978","error":false,"errorDescription":null,"userValidation":false,"status":"CREATED","tokenDetails":{"subject":"258affa4-7740-4219-8a4c-2dd0f16db425","preferredUsername":"e2e.alpha.20260517023149-opt96e@springbank.test","email":"e2e.alpha.20260517023149-opt96e@springbank.test","givenName":"E2EAlpha","familyName":"Tester","issuer":"http://keycloak:8080/realms/banking","audienceJson":"\"account\"","realmRoles":["default-roles-banking","offline_access","uma_authorization","USER"],"headerJson":"{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}","claimsJson":"{\"exp\":1778975200,\"iat\":1778974600,\"jti\":\"3405c905-a339-401e-ab8d-548d0e54dbb7\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}","issuedAt":"1778974600","expiresAt":"1778975200","jwtId":"3405c905-a339-401e-ab8d-548d0e54dbb7","tokenType":"Bearer","sessionState":"ac738567-d0cf-4e42-a2dc-90d3cea674b9","scope":"email profile"}},{"id":"df3e6661-0f0c-4abd-9881-ae882819c986","eventId":"8ae96110-3f5b-4cee-ab68-a1f68e49353e","receiverName":"E2EBeta","senderName":"E2EAlpha","senderSurname":"Tester","senderEmail":"e2e.alpha.20260517023149-opt96e@springbank.test","receiverEmail":"e2e.beta.20260516222010-lo96ej@springbank.test","receiverSurname":"Tester","senderUserId":"258affa4-7740-4219-8a4c-2dd0f16db425","receiverUserId":"569004c1-e404-4e15-87fa-1f5e9034c41e","senderIban":"TR0200201R60UN2LCSZIQ1U6LK","receiverIban":"TR6990608M8TL97F27VNXWS67V","money":1000.00,"transactionType":"TRANSFER","description":"E2E transfer 20260517023149-opt96e","localDateTime":"2026-05-16T23:33:49.402506","error":false,"errorDescription":null,"userValidation":true,"status":"COMPLETED","tokenDetails":{"subject":"258affa4-7740-4219-8a4c-2dd0f16db425","preferredUsername":"e2e.alpha.20260517023149-opt96e@springbank.test","email":"e2e.alpha.20260517023149-opt96e@springbank.test","givenName":"E2EAlpha","familyName":"Tester","issuer":"http://keycloak:8080/realms/banking","audienceJson":"\"account\"","realmRoles":["default-roles-banking","offline_access","uma_authorization","USER"],"headerJson":"{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}","claimsJson":"{\"exp\":1778974950,\"iat\":1778974350,\"jti\":\"cb73c17c-2a8b-480d-904d-042d77a3419d\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}","issuedAt":"1778974350","expiresAt":"1778974950","jwtId":"cb73c17c-2a8b-480d-904d-042d77a3419d","tokenType":"Bearer","sessionState":"d538f40e-db55-4d15-9f01-976c0e07c868","scope":"email profile"}}],"tokenDetails":{"subject":"258affa4-7740-4219-8a4c-2dd0f16db425","preferredUsername":"e2e.alpha.20260517023149-opt96e@springbank.test","email":"e2e.alpha.20260517023149-opt96e@springbank.test","givenName":"E2EAlpha","familyName":"Tester","issuer":"http://keycloak:8080/realms/banking","audienceJson":"\"account\"","realmRoles":["default-roles-banking","offline_access","uma_authorization","USER"],"headerJson":"{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}","claimsJson":"{\"exp\":1778975200,\"iat\":1778974600,\"jti\":\"3405c905-a339-401e-ab8d-548d0e54dbb7\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}","issuedAt":"1778974600","expiresAt":"1778975200","jwtId":"3405c905-a339-401e-ab8d-548d0e54dbb7","tokenType":"Bearer","sessionState":"ac738567-d0cf-4e42-a2dc-90d3cea674b9","scope":"email profile"}}
+INFO  --- [transaction-service] :  (23:36) > KafkaListenerService | listenAllTransactionTopics -> event: f4a785f6-b03d-4b79-947f-64a1e4c2fa92 status: FAILED, Dto:
+{
+  "eventUUID": "f4a785f6-b03d-4b79-947f-64a1e4c2fa92",
+  "keycloakUserUUID": "258affa4-7740-4219-8a4c-2dd0f16db425",
+  "senderName": "E2EAlpha",
+  "senderSurname": "Tester",
+  "senderEmail": "e2e.alpha.20260517023149-opt96e@springbank.test",
+  "receiverEmail": null,
+  "receiverName": "E2EBeta",
+  "receiverSurname": "Tester",
+  "senderUserId": "258affa4-7740-4219-8a4c-2dd0f16db425",
+  "senderIban": "TR0200201R60UN2LCSZIQ1U6LK",
+  "receiverUserId": "569004c1-e404-4e15-87fa-1f5e9034c41e",
+  "receiverIban": "TR6990608M8TL97F27VNXWS67V",
+  "money": 9999999,
+  "transactionType": "TRANSFER",
+  "description": "E2E insufficient funds 20260517023149-opt96e",
+  "status": "FAILED",
+  "statusDescription": "İşlem başarısız",
+  "error": true,
+  "errorDescription": "Transfer bloke islemi basarisiz: Block money failed for iban\u003dTR0200201R60UN2LCSZIQ1U6LK",
+  "isMoneyBlocked": false,
+  "userValidation": false,
+  "localDateTime": "2026-05-16T23:36:41.563278304",
+  "senderTransactionHistory": null,
+  "receiverTransactionHistory": [
+    {
+      "id": "d14e1e82-6f46-4ec3-becc-647c26d1dbaa",
+      "eventId": "f4a785f6-b03d-4b79-947f-64a1e4c2fa92",
+      "receiverName": "E2EBeta",
+      "senderName": "E2EAlpha",
+      "senderSurname": "Tester",
+      "senderEmail": "e2e.alpha.20260517023149-opt96e@springbank.test",
+      "receiverEmail": null,
+      "receiverSurname": "Tester",
+      "senderUserId": "258affa4-7740-4219-8a4c-2dd0f16db425",
+      "receiverUserId": null,
+      "senderIban": "TR0200201R60UN2LCSZIQ1U6LK",
+      "receiverIban": "TR6990608M8TL97F27VNXWS67V",
+      "money": 9999999,
+      "transactionType": "TRANSFER",
+      "description": "E2E insufficient funds 20260517023149-opt96e",
+      "localDateTime": "2026-05-16T23:36:41.564470978",
+      "error": false,
+      "errorDescription": null,
+      "userValidation": false,
+      "isMoneyBlocked": false,
+      "status": "CREATED",
+      "statusDescription": "Isleminiz alindi",
+      "transferStatus": "CREATED",
+      "tokenDetails": {
+        "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+        "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "givenName": "E2EAlpha",
+        "familyName": "Tester",
+        "issuer": "http://keycloak:8080/realms/banking",
+        "audienceJson": "\"account\"",
+        "realmRoles": [
+          "default-roles-banking",
+          "offline_access",
+          "uma_authorization",
+          "USER"
+        ],
+        "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+        "claimsJson": "{\"exp\":1778975200,\"iat\":1778974600,\"jti\":\"3405c905-a339-401e-ab8d-548d0e54dbb7\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+        "issuedAt": "1778974600",
+        "expiresAt": "1778975200",
+        "jwtId": "3405c905-a339-401e-ab8d-548d0e54dbb7",
+        "tokenType": "Bearer",
+        "sessionState": "ac738567-d0cf-4e42-a2dc-90d3cea674b9",
+        "scope": "email profile"
+      }
+    },
+    {
+      "id": "df3e6661-0f0c-4abd-9881-ae882819c986",
+      "eventId": "8ae96110-3f5b-4cee-ab68-a1f68e49353e",
+      "receiverName": "E2EBeta",
+      "senderName": "E2EAlpha",
+      "senderSurname": "Tester",
+      "senderEmail": "e2e.alpha.20260517023149-opt96e@springbank.test",
+      "receiverEmail": "e2e.beta.20260516222010-lo96ej@springbank.test",
+      "receiverSurname": "Tester",
+      "senderUserId": "258affa4-7740-4219-8a4c-2dd0f16db425",
+      "receiverUserId": "569004c1-e404-4e15-87fa-1f5e9034c41e",
+      "senderIban": "TR0200201R60UN2LCSZIQ1U6LK",
+      "receiverIban": "TR6990608M8TL97F27VNXWS67V",
+      "money": 1000.00,
+      "transactionType": "TRANSFER",
+      "description": "E2E transfer 20260517023149-opt96e",
+      "localDateTime": "2026-05-16T23:33:49.402506",
+      "error": false,
+      "errorDescription": null,
+      "userValidation": true,
+      "isMoneyBlocked": false,
+      "status": "COMPLETED",
+      "statusDescription": "Isleminiz alindi",
+      "transferStatus": "CREATED",
+      "tokenDetails": {
+        "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+        "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "givenName": "E2EAlpha",
+        "familyName": "Tester",
+        "issuer": "http://keycloak:8080/realms/banking",
+        "audienceJson": "\"account\"",
+        "realmRoles": [
+          "default-roles-banking",
+          "offline_access",
+          "uma_authorization",
+          "USER"
+        ],
+        "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+        "claimsJson": "{\"exp\":1778974950,\"iat\":1778974350,\"jti\":\"cb73c17c-2a8b-480d-904d-042d77a3419d\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+        "issuedAt": "1778974350",
+        "expiresAt": "1778974950",
+        "jwtId": "cb73c17c-2a8b-480d-904d-042d77a3419d",
+        "tokenType": "Bearer",
+        "sessionState": "d538f40e-db55-4d15-9f01-976c0e07c868",
+        "scope": "email profile"
+      }
+    }
+  ],
+  "tokenDetails": {
+    "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+    "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+    "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+    "givenName": "E2EAlpha",
+    "familyName": "Tester",
+    "issuer": "http://keycloak:8080/realms/banking",
+    "audienceJson": "\"account\"",
+    "realmRoles": [
+      "default-roles-banking",
+      "offline_access",
+      "uma_authorization",
+      "USER"
+    ],
+    "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+    "claimsJson": "{\"exp\":1778975200,\"iat\":1778974600,\"jti\":\"3405c905-a339-401e-ab8d-548d0e54dbb7\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+    "issuedAt": "1778974600",
+    "expiresAt": "1778975200",
+    "jwtId": "3405c905-a339-401e-ab8d-548d0e54dbb7",
+    "tokenType": "Bearer",
+    "sessionState": "ac738567-d0cf-4e42-a2dc-90d3cea674b9",
+    "scope": "email profile"
+  }
+}
+INFO  --- [transaction-service] :  (23:36) > TransactionService | updateTransactionStatus -> Onceki status: CREATED -> Yeni status: CREATED EventUUID: f4a785f6-b03d-4b79-947f-64a1e4c2fa92
+INFO  --- [transaction-service] :  (23:36) > TransactionService | updateTransactionStatus -> Transaction status GUNCELLENDI: f4a785f6-b03d-4b79-947f-64a1e4c2fa92 -> CREATED
+INFO  --- [transaction-service] :  (23:36) > KafkaListenerService | listenErrorTopic -> Error status guncellendi: f4a785f6-b03d-4b79-947f-64a1e4c2fa92 -> CREATED
+INFO  --- [transaction-service] :  (23:36) > KafkaListenerService | listenErrorTopic -> Metoda veri geldi. RawData:
+{"eventUUID":"f4a785f6-b03d-4b79-947f-64a1e4c2fa92","keycloakUserUUID":"258affa4-7740-4219-8a4c-2dd0f16db425","senderName":"E2EAlpha","senderSurname":"Tester","senderEmail":"e2e.alpha.20260517023149-opt96e@springbank.test","receiverEmail":null,"receiverName":"E2EBeta","receiverSurname":"Tester","senderUserId":"258affa4-7740-4219-8a4c-2dd0f16db425","senderIban":"TR0200201R60UN2LCSZIQ1U6LK","receiverUserId":"569004c1-e404-4e15-87fa-1f5e9034c41e","receiverIban":"TR6990608M8TL97F27VNXWS67V","money":9999999,"transactionType":"TRANSFER","description":"E2E insufficient funds 20260517023149-opt96e","status":"FAILED","statusDescription":"İşlem başarısız","error":true,"errorDescription":"Transfer bloke islemi basarisiz: Block money failed for iban\u003dTR0200201R60UN2LCSZIQ1U6LK","isMoneyBlocked":false,"userValidation":false,"localDateTime":"2026-05-16T23:36:41.563278304","senderTransactionHistory":null,"receiverTransactionHistory":[{"id":"d14e1e82-6f46-4ec3-becc-647c26d1dbaa","eventId":"f4a785f6-b03d-4b79-947f-64a1e4c2fa92","receiverName":"E2EBeta","senderName":"E2EAlpha","senderSurname":"Tester","senderEmail":"e2e.alpha.20260517023149-opt96e@springbank.test","receiverEmail":null,"receiverSurname":"Tester","senderUserId":"258affa4-7740-4219-8a4c-2dd0f16db425","receiverUserId":null,"senderIban":"TR0200201R60UN2LCSZIQ1U6LK","receiverIban":"TR6990608M8TL97F27VNXWS67V","money":9999999,"transactionType":"TRANSFER","description":"E2E insufficient funds 20260517023149-opt96e","localDateTime":"2026-05-16T23:36:41.564470978","error":false,"errorDescription":null,"userValidation":false,"status":"CREATED","tokenDetails":{"subject":"258affa4-7740-4219-8a4c-2dd0f16db425","preferredUsername":"e2e.alpha.20260517023149-opt96e@springbank.test","email":"e2e.alpha.20260517023149-opt96e@springbank.test","givenName":"E2EAlpha","familyName":"Tester","issuer":"http://keycloak:8080/realms/banking","audienceJson":"\"account\"","realmRoles":["default-roles-banking","offline_access","uma_authorization","USER"],"headerJson":"{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}","claimsJson":"{\"exp\":1778975200,\"iat\":1778974600,\"jti\":\"3405c905-a339-401e-ab8d-548d0e54dbb7\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}","issuedAt":"1778974600","expiresAt":"1778975200","jwtId":"3405c905-a339-401e-ab8d-548d0e54dbb7","tokenType":"Bearer","sessionState":"ac738567-d0cf-4e42-a2dc-90d3cea674b9","scope":"email profile"}},{"id":"df3e6661-0f0c-4abd-9881-ae882819c986","eventId":"8ae96110-3f5b-4cee-ab68-a1f68e49353e","receiverName":"E2EBeta","senderName":"E2EAlpha","senderSurname":"Tester","senderEmail":"e2e.alpha.20260517023149-opt96e@springbank.test","receiverEmail":"e2e.beta.20260516222010-lo96ej@springbank.test","receiverSurname":"Tester","senderUserId":"258affa4-7740-4219-8a4c-2dd0f16db425","receiverUserId":"569004c1-e404-4e15-87fa-1f5e9034c41e","senderIban":"TR0200201R60UN2LCSZIQ1U6LK","receiverIban":"TR6990608M8TL97F27VNXWS67V","money":1000.00,"transactionType":"TRANSFER","description":"E2E transfer 20260517023149-opt96e","localDateTime":"2026-05-16T23:33:49.402506","error":false,"errorDescription":null,"userValidation":true,"status":"COMPLETED","tokenDetails":{"subject":"258affa4-7740-4219-8a4c-2dd0f16db425","preferredUsername":"e2e.alpha.20260517023149-opt96e@springbank.test","email":"e2e.alpha.20260517023149-opt96e@springbank.test","givenName":"E2EAlpha","familyName":"Tester","issuer":"http://keycloak:8080/realms/banking","audienceJson":"\"account\"","realmRoles":["default-roles-banking","offline_access","uma_authorization","USER"],"headerJson":"{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}","claimsJson":"{\"exp\":1778974950,\"iat\":1778974350,\"jti\":\"cb73c17c-2a8b-480d-904d-042d77a3419d\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}","issuedAt":"1778974350","expiresAt":"1778974950","jwtId":"cb73c17c-2a8b-480d-904d-042d77a3419d","tokenType":"Bearer","sessionState":"d538f40e-db55-4d15-9f01-976c0e07c868","scope":"email profile"}}],"tokenDetails":{"subject":"258affa4-7740-4219-8a4c-2dd0f16db425","preferredUsername":"e2e.alpha.20260517023149-opt96e@springbank.test","email":"e2e.alpha.20260517023149-opt96e@springbank.test","givenName":"E2EAlpha","familyName":"Tester","issuer":"http://keycloak:8080/realms/banking","audienceJson":"\"account\"","realmRoles":["default-roles-banking","offline_access","uma_authorization","USER"],"headerJson":"{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}","claimsJson":"{\"exp\":1778975200,\"iat\":1778974600,\"jti\":\"3405c905-a339-401e-ab8d-548d0e54dbb7\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}","issuedAt":"1778974600","expiresAt":"1778975200","jwtId":"3405c905-a339-401e-ab8d-548d0e54dbb7","tokenType":"Bearer","sessionState":"ac738567-d0cf-4e42-a2dc-90d3cea674b9","scope":"email profile"}}
+INFO  --- [transaction-service] :  (23:36) > KafkaListenerService | listenErrorTopic -> Data islenmek uzere alindi. Dto:
+{
+  "eventUUID": "f4a785f6-b03d-4b79-947f-64a1e4c2fa92",
+  "keycloakUserUUID": "258affa4-7740-4219-8a4c-2dd0f16db425",
+  "senderName": "E2EAlpha",
+  "senderSurname": "Tester",
+  "senderEmail": "e2e.alpha.20260517023149-opt96e@springbank.test",
+  "receiverEmail": null,
+  "receiverName": "E2EBeta",
+  "receiverSurname": "Tester",
+  "senderUserId": "258affa4-7740-4219-8a4c-2dd0f16db425",
+  "senderIban": "TR0200201R60UN2LCSZIQ1U6LK",
+  "receiverUserId": "569004c1-e404-4e15-87fa-1f5e9034c41e",
+  "receiverIban": "TR6990608M8TL97F27VNXWS67V",
+  "money": 9999999,
+  "transactionType": "TRANSFER",
+  "description": "E2E insufficient funds 20260517023149-opt96e",
+  "status": "FAILED",
+  "statusDescription": "İşlem başarısız",
+  "error": true,
+  "errorDescription": "Transfer bloke islemi basarisiz: Block money failed for iban\u003dTR0200201R60UN2LCSZIQ1U6LK",
+  "isMoneyBlocked": false,
+  "userValidation": false,
+  "localDateTime": "2026-05-16T23:36:41.563278304",
+  "senderTransactionHistory": null,
+  "receiverTransactionHistory": [
+    {
+      "id": "d14e1e82-6f46-4ec3-becc-647c26d1dbaa",
+      "eventId": "f4a785f6-b03d-4b79-947f-64a1e4c2fa92",
+      "receiverName": "E2EBeta",
+      "senderName": "E2EAlpha",
+      "senderSurname": "Tester",
+      "senderEmail": "e2e.alpha.20260517023149-opt96e@springbank.test",
+      "receiverEmail": null,
+      "receiverSurname": "Tester",
+      "senderUserId": "258affa4-7740-4219-8a4c-2dd0f16db425",
+      "receiverUserId": null,
+      "senderIban": "TR0200201R60UN2LCSZIQ1U6LK",
+      "receiverIban": "TR6990608M8TL97F27VNXWS67V",
+      "money": 9999999,
+      "transactionType": "TRANSFER",
+      "description": "E2E insufficient funds 20260517023149-opt96e",
+      "localDateTime": "2026-05-16T23:36:41.564470978",
+      "error": false,
+      "errorDescription": null,
+      "userValidation": false,
+      "isMoneyBlocked": false,
+      "status": "CREATED",
+      "statusDescription": "Isleminiz alindi",
+      "transferStatus": "CREATED",
+      "tokenDetails": {
+        "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+        "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "givenName": "E2EAlpha",
+        "familyName": "Tester",
+        "issuer": "http://keycloak:8080/realms/banking",
+        "audienceJson": "\"account\"",
+        "realmRoles": [
+          "default-roles-banking",
+          "offline_access",
+          "uma_authorization",
+          "USER"
+        ],
+        "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+        "claimsJson": "{\"exp\":1778975200,\"iat\":1778974600,\"jti\":\"3405c905-a339-401e-ab8d-548d0e54dbb7\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+        "issuedAt": "1778974600",
+        "expiresAt": "1778975200",
+        "jwtId": "3405c905-a339-401e-ab8d-548d0e54dbb7",
+        "tokenType": "Bearer",
+        "sessionState": "ac738567-d0cf-4e42-a2dc-90d3cea674b9",
+        "scope": "email profile"
+      }
+    },
+    {
+      "id": "df3e6661-0f0c-4abd-9881-ae882819c986",
+      "eventId": "8ae96110-3f5b-4cee-ab68-a1f68e49353e",
+      "receiverName": "E2EBeta",
+      "senderName": "E2EAlpha",
+      "senderSurname": "Tester",
+      "senderEmail": "e2e.alpha.20260517023149-opt96e@springbank.test",
+      "receiverEmail": "e2e.beta.20260516222010-lo96ej@springbank.test",
+      "receiverSurname": "Tester",
+      "senderUserId": "258affa4-7740-4219-8a4c-2dd0f16db425",
+      "receiverUserId": "569004c1-e404-4e15-87fa-1f5e9034c41e",
+      "senderIban": "TR0200201R60UN2LCSZIQ1U6LK",
+      "receiverIban": "TR6990608M8TL97F27VNXWS67V",
+      "money": 1000.00,
+      "transactionType": "TRANSFER",
+      "description": "E2E transfer 20260517023149-opt96e",
+      "localDateTime": "2026-05-16T23:33:49.402506",
+      "error": false,
+      "errorDescription": null,
+      "userValidation": true,
+      "isMoneyBlocked": false,
+      "status": "COMPLETED",
+      "statusDescription": "Isleminiz alindi",
+      "transferStatus": "CREATED",
+      "tokenDetails": {
+        "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+        "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "givenName": "E2EAlpha",
+        "familyName": "Tester",
+        "issuer": "http://keycloak:8080/realms/banking",
+        "audienceJson": "\"account\"",
+        "realmRoles": [
+          "default-roles-banking",
+          "offline_access",
+          "uma_authorization",
+          "USER"
+        ],
+        "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+        "claimsJson": "{\"exp\":1778974950,\"iat\":1778974350,\"jti\":\"cb73c17c-2a8b-480d-904d-042d77a3419d\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+        "issuedAt": "1778974350",
+        "expiresAt": "1778974950",
+        "jwtId": "cb73c17c-2a8b-480d-904d-042d77a3419d",
+        "tokenType": "Bearer",
+        "sessionState": "d538f40e-db55-4d15-9f01-976c0e07c868",
+        "scope": "email profile"
+      }
+    }
+  ],
+  "tokenDetails": {
+    "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+    "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+    "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+    "givenName": "E2EAlpha",
+    "familyName": "Tester",
+    "issuer": "http://keycloak:8080/realms/banking",
+    "audienceJson": "\"account\"",
+    "realmRoles": [
+      "default-roles-banking",
+      "offline_access",
+      "uma_authorization",
+      "USER"
+    ],
+    "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+    "claimsJson": "{\"exp\":1778975200,\"iat\":1778974600,\"jti\":\"3405c905-a339-401e-ab8d-548d0e54dbb7\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"ac738567-d0cf-4e42-a2dc-90d3cea674b9\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+    "issuedAt": "1778974600",
+    "expiresAt": "1778975200",
+    "jwtId": "3405c905-a339-401e-ab8d-548d0e54dbb7",
+    "tokenType": "Bearer",
+    "sessionState": "ac738567-d0cf-4e42-a2dc-90d3cea674b9",
+    "scope": "email profile"
+  }
+}
+INFO  --- [transaction-service] :  (23:36) > TransactionService | updateTransactionStatus -> Onceki status: CREATED -> Yeni status: FAILED EventUUID: f4a785f6-b03d-4b79-947f-64a1e4c2fa92
+INFO  --- [transaction-service] :  (23:36) > TransactionService | updateTransactionStatus -> Transaction status GUNCELLENDI: f4a785f6-b03d-4b79-947f-64a1e4c2fa92 -> FAILED
+INFO  --- [transaction-service] :  (23:36) > KafkaListenerService | listenErrorTopic -> Error status guncellendi: f4a785f6-b03d-4b79-947f-64a1e4c2fa92 -> FAILED
+INFO  --- [transaction-service] :  (23:36) > TransactionController | getErrorLogs -> Istek alindi.
+INFO  --- [transaction-service] :  (23:36) > TransactionService | getErrorLogs -> methoduna istek geldi
+--------------------------------------------------------------------------------
+[02:36:44][elapsed=295002ms / 295.002s / 4.917m][pods][OK] fraud-service
+COMMAND:
+kubectl -n banking-microservices logs fraud-service-67f4885c58-4qhp6 --tail=400
+DURATION: 206ms / 0.206s / 0.003m
+SELECTOR: app=fraud-service
+NEEDLE: 8ae96110-3f5b-4cee-ab68-a1f68e49353e
+FOUND: True
+OUTPUT:
+"USER"
+    ],
+    "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+    "claimsJson": "{\"exp\":1778973300,\"iat\":1778972700,\"jti\":\"ab62ba0b-fb39-40fb-89d7-34cc6e40d59e\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"5217079a-83c3-4592-b6c2-4ffe2ffe7b1e\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"9dbbb67c-ec8c-4d24-94ba-77a4a53d1b19\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"9dbbb67c-ec8c-4d24-94ba-77a4a53d1b19\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517020447-funmbc@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517020447-funmbc@springbank.test\"}",
+    "issuedAt": "1778972700",
+    "expiresAt": "1778973300",
+    "jwtId": "ab62ba0b-fb39-40fb-89d7-34cc6e40d59e",
+    "tokenType": "Bearer",
+    "sessionState": "9dbbb67c-ec8c-4d24-94ba-77a4a53d1b19",
+    "scope": "email profile"
+  }
+}
+INFO  --- [fraud-service] :  (23:14) > KafkaListenerService | listenAllTransactions -> Metoda veri geldi.
+INFO  --- [fraud-service] :  (23:14) > KafkaListenerService | listenAllTransactions -> Data islenmek uzere alindi. UUID: a26f2500-859f-4737-be82-11ff5b855b93, Type: TRANSFER
+INFO  --- [fraud-service] :  (23:14) > KafkaSenderService | sendTransaction -> Fraud check oncesi kafkaya gonderilmek uzere alindi. Key: a26f2500-859f-4737-be82-11ff5b855b93, Dto:
+{
+  "eventUUID": "a26f2500-859f-4737-be82-11ff5b855b93",
+  "keycloakUserUUID": "95fc80d4-08c5-47d2-8697-9f7796b0562b",
+  "senderName": "E2EAlpha",
+  "senderSurname": "Tester",
+  "senderEmail": "e2e.alpha.20260517021229-m6a4bs@springbank.test",
+  "receiverEmail": "e2e.beta.20260516222010-lo96ej@springbank.test",
+  "receiverName": "E2EBeta",
+  "receiverSurname": "Tester",
+  "senderUserId": "95fc80d4-08c5-47d2-8697-9f7796b0562b",
+  "senderIban": "TR2874854ICT5JAD55SFROTOKP",
+  "receiverUserId": "a0cdcc62-8a77-440b-8bdb-86fadb2c18f0",
+  "receiverIban": "TR2964057F1UFMYCTJVJ7NNNN9",
+  "money": 1000,
+  "transactionType": "TRANSFER",
+  "description": "E2E transfer 20260517021229-m6a4bs",
+  "status": "FRAUD_REVIEW",
+  "statusDescription": "İşleminiz inceleniyor",
+  "error": false,
+  "errorDescription": null,
+  "isMoneyBlocked": true,
+  "userValidation": true,
+  "localDateTime": "2026-05-16T23:14:54.503655983",
+  "senderTransactionHistory": null,
+  "receiverTransactionHistory": [
+    {
+      "id": "98452e3e-acd1-434d-bac0-1ae9b0208fc3",
+      "eventId": "a26f2500-859f-4737-be82-11ff5b855b93",
+      "receiverName": "E2EBeta",
+      "senderName": "E2EAlpha",
+      "senderSurname": "Tester",
+      "senderEmail": "e2e.alpha.20260517021229-m6a4bs@springbank.test",
+      "receiverEmail": null,
+      "receiverSurname": "Tester",
+      "senderUserId": "95fc80d4-08c5-47d2-8697-9f7796b0562b",
+      "receiverUserId": null,
+      "senderIban": "TR2874854ICT5JAD55SFROTOKP",
+      "receiverIban": "TR2964057F1UFMYCTJVJ7NNNN9",
+      "money": 1000,
+      "transactionType": "TRANSFER",
+      "description": "E2E transfer 20260517021229-m6a4bs",
+      "localDateTime": "2026-05-16T23:14:54.504175561",
+      "error": false,
+      "errorDescription": null,
+      "userValidation": false,
+      "status": "CREATED",
+      "tokenDetails": {
+        "subject": "95fc80d4-08c5-47d2-8697-9f7796b0562b",
+        "preferredUsername": "e2e.alpha.20260517021229-m6a4bs@springbank.test",
+        "email": "e2e.alpha.20260517021229-m6a4bs@springbank.test",
+        "givenName": "E2EAlpha",
+        "familyName": "Tester",
+        "issuer": "http://keycloak:8080/realms/banking",
+        "audienceJson": "\"account\"",
+        "realmRoles": [
+          "default-roles-banking",
+          "offline_access",
+          "uma_authorization",
+          "USER"
+        ],
+        "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+        "claimsJson": "{\"exp\":1778973801,\"iat\":1778973201,\"jti\":\"7a3b0c34-cb3e-4180-ae4f-b684582ac94f\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"95fc80d4-08c5-47d2-8697-9f7796b0562b\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"a4a6c4c2-26a7-41bc-be8a-090dd75b6dce\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"a4a6c4c2-26a7-41bc-be8a-090dd75b6dce\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517021229-m6a4bs@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517021229-m6a4bs@springbank.test\"}",
+        "issuedAt": "1778973201",
+        "expiresAt": "1778973801",
+        "jwtId": "7a3b0c34-cb3e-4180-ae4f-b684582ac94f",
+        "tokenType": "Bearer",
+        "sessionState": "a4a6c4c2-26a7-41bc-be8a-090dd75b6dce",
+        "scope": "email profile"
+      }
+    }
+  ],
+  "tokenDetails": {
+    "subject": "95fc80d4-08c5-47d2-8697-9f7796b0562b",
+    "preferredUsername": "e2e.alpha.20260517021229-m6a4bs@springbank.test",
+    "email": "e2e.alpha.20260517021229-m6a4bs@springbank.test",
+    "givenName": "E2EAlpha",
+    "familyName": "Tester",
+    "issuer": "http://keycloak:8080/realms/banking",
+    "audienceJson": "\"account\"",
+    "realmRoles": [
+      "default-roles-banking",
+      "offline_access",
+      "uma_authorization",
+      "USER"
+    ],
+    "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+    "claimsJson": "{\"exp\":1778973801,\"iat\":1778973201,\"jti\":\"7a3b0c34-cb3e-4180-ae4f-b684582ac94f\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"95fc80d4-08c5-47d2-8697-9f7796b0562b\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"a4a6c4c2-26a7-41bc-be8a-090dd75b6dce\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"a4a6c4c2-26a7-41bc-be8a-090dd75b6dce\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517021229-m6a4bs@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517021229-m6a4bs@springbank.test\"}",
+    "issuedAt": "1778973201",
+    "expiresAt": "1778973801",
+    "jwtId": "7a3b0c34-cb3e-4180-ae4f-b684582ac94f",
+    "tokenType": "Bearer",
+    "sessionState": "a4a6c4c2-26a7-41bc-be8a-090dd75b6dce",
+    "scope": "email profile"
+  }
+}
+INFO  --- [fraud-service] :  (23:14) > KafkaSenderService | sendTransaction -> Fraud checked kafkaya gonderildi. Key: a26f2500-859f-4737-be82-11ff5b855b93, Dto:
+{
+  "eventUUID": "a26f2500-859f-4737-be82-11ff5b855b93",
+  "keycloakUserUUID": "95fc80d4-08c5-47d2-8697-9f7796b0562b",
+  "senderName": "E2EAlpha",
+  "senderSurname": "Tester",
+  "senderEmail": "e2e.alpha.20260517021229-m6a4bs@springbank.test",
+  "receiverEmail": "e2e.beta.20260516222010-lo96ej@springbank.test",
+  "receiverName": "E2EBeta",
+  "receiverSurname": "Tester",
+  "senderUserId": "95fc80d4-08c5-47d2-8697-9f7796b0562b",
+  "senderIban": "TR2874854ICT5JAD55SFROTOKP",
+  "receiverUserId": "a0cdcc62-8a77-440b-8bdb-86fadb2c18f0",
+  "receiverIban": "TR2964057F1UFMYCTJVJ7NNNN9",
+  "money": 1000,
+  "transactionType": "TRANSFER",
+  "description": "E2E transfer 20260517021229-m6a4bs",
+  "status": "FRAUD_REVIEW",
+  "statusDescription": "İşleminiz inceleniyor",
+  "error": false,
+  "errorDescription": null,
+  "isMoneyBlocked": true,
+  "userValidation": true,
+  "localDateTime": "2026-05-16T23:14:54.503655983",
+  "senderTransactionHistory": null,
+  "receiverTransactionHistory": [
+    {
+      "id": "98452e3e-acd1-434d-bac0-1ae9b0208fc3",
+      "eventId": "a26f2500-859f-4737-be82-11ff5b855b93",
+      "receiverName": "E2EBeta",
+      "senderName": "E2EAlpha",
+      "senderSurname": "Tester",
+      "senderEmail": "e2e.alpha.20260517021229-m6a4bs@springbank.test",
+      "receiverEmail": null,
+      "receiverSurname": "Tester",
+      "senderUserId": "95fc80d4-08c5-47d2-8697-9f7796b0562b",
+      "receiverUserId": null,
+      "senderIban": "TR2874854ICT5JAD55SFROTOKP",
+      "receiverIban": "TR2964057F1UFMYCTJVJ7NNNN9",
+      "money": 1000,
+      "transactionType": "TRANSFER",
+      "description": "E2E transfer 20260517021229-m6a4bs",
+      "localDateTime": "2026-05-16T23:14:54.504175561",
+      "error": false,
+      "errorDescription": null,
+      "userValidation": false,
+      "status": "CREATED",
+      "tokenDetails": {
+        "subject": "95fc80d4-08c5-47d2-8697-9f7796b0562b",
+        "preferredUsername": "e2e.alpha.20260517021229-m6a4bs@springbank.test",
+        "email": "e2e.alpha.20260517021229-m6a4bs@springbank.test",
+        "givenName": "E2EAlpha",
+        "familyName": "Tester",
+        "issuer": "http://keycloak:8080/realms/banking",
+        "audienceJson": "\"account\"",
+        "realmRoles": [
+          "default-roles-banking",
+          "offline_access",
+          "uma_authorization",
+          "USER"
+        ],
+        "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+        "claimsJson": "{\"exp\":1778973801,\"iat\":1778973201,\"jti\":\"7a3b0c34-cb3e-4180-ae4f-b684582ac94f\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"95fc80d4-08c5-47d2-8697-9f7796b0562b\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"a4a6c4c2-26a7-41bc-be8a-090dd75b6dce\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"a4a6c4c2-26a7-41bc-be8a-090dd75b6dce\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517021229-m6a4bs@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517021229-m6a4bs@springbank.test\"}",
+        "issuedAt": "1778973201",
+        "expiresAt": "1778973801",
+        "jwtId": "7a3b0c34-cb3e-4180-ae4f-b684582ac94f",
+        "tokenType": "Bearer",
+        "sessionState": "a4a6c4c2-26a7-41bc-be8a-090dd75b6dce",
+        "scope": "email profile"
+      }
+    }
+  ],
+  "tokenDetails": {
+    "subject": "95fc80d4-08c5-47d2-8697-9f7796b0562b",
+    "preferredUsername": "e2e.alpha.20260517021229-m6a4bs@springbank.test",
+    "email": "e2e.alpha.20260517021229-m6a4bs@springbank.test",
+    "givenName": "E2EAlpha",
+    "familyName": "Tester",
+    "issuer": "http://keycloak:8080/realms/banking",
+    "audienceJson": "\"account\"",
+    "realmRoles": [
+      "default-roles-banking",
+      "offline_access",
+      "uma_authorization",
+      "USER"
+    ],
+    "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+    "claimsJson": "{\"exp\":1778973801,\"iat\":1778973201,\"jti\":\"7a3b0c34-cb3e-4180-ae4f-b684582ac94f\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"95fc80d4-08c5-47d2-8697-9f7796b0562b\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"a4a6c4c2-26a7-41bc-be8a-090dd75b6dce\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"a4a6c4c2-26a7-41bc-be8a-090dd75b6dce\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517021229-m6a4bs@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517021229-m6a4bs@springbank.test\"}",
+    "issuedAt": "1778973201",
+    "expiresAt": "1778973801",
+    "jwtId": "7a3b0c34-cb3e-4180-ae4f-b684582ac94f",
+    "tokenType": "Bearer",
+    "sessionState": "a4a6c4c2-26a7-41bc-be8a-090dd75b6dce",
+    "scope": "email profile"
+  }
+}
+INFO  --- [fraud-service] :  (23:33) > KafkaListenerService | listenAllTransactions -> Metoda veri geldi.
+INFO  --- [fraud-service] :  (23:33) > KafkaListenerService | listenAllTransactions -> Data islenmek uzere alindi. UUID: 8ae96110-3f5b-4cee-ab68-a1f68e49353e, Type: TRANSFER
+INFO  --- [fraud-service] :  (23:33) > KafkaSenderService | sendTransaction -> Fraud check oncesi kafkaya gonderilmek uzere alindi. Key: 8ae96110-3f5b-4cee-ab68-a1f68e49353e, Dto:
+{
+  "eventUUID": "8ae96110-3f5b-4cee-ab68-a1f68e49353e",
+  "keycloakUserUUID": "258affa4-7740-4219-8a4c-2dd0f16db425",
+  "senderName": "E2EAlpha",
+  "senderSurname": "Tester",
+  "senderEmail": "e2e.alpha.20260517023149-opt96e@springbank.test",
+  "receiverEmail": "e2e.beta.20260516222010-lo96ej@springbank.test",
+  "receiverName": "E2EBeta",
+  "receiverSurname": "Tester",
+  "senderUserId": "258affa4-7740-4219-8a4c-2dd0f16db425",
+  "senderIban": "TR0200201R60UN2LCSZIQ1U6LK",
+  "receiverUserId": "a0cdcc62-8a77-440b-8bdb-86fadb2c18f0",
+  "receiverIban": "TR6990608M8TL97F27VNXWS67V",
+  "money": 1000,
+  "transactionType": "TRANSFER",
+  "description": "E2E transfer 20260517023149-opt96e",
+  "status": "FRAUD_REVIEW",
+  "statusDescription": "İşleminiz inceleniyor",
+  "error": false,
+  "errorDescription": null,
+  "isMoneyBlocked": true,
+  "userValidation": true,
+  "localDateTime": "2026-05-16T23:33:49.402267364",
+  "senderTransactionHistory": null,
+  "receiverTransactionHistory": [
+    {
+      "id": "df3e6661-0f0c-4abd-9881-ae882819c986",
+      "eventId": "8ae96110-3f5b-4cee-ab68-a1f68e49353e",
+      "receiverName": "E2EBeta",
+      "senderName": "E2EAlpha",
+      "senderSurname": "Tester",
+      "senderEmail": "e2e.alpha.20260517023149-opt96e@springbank.test",
+      "receiverEmail": null,
+      "receiverSurname": "Tester",
+      "senderUserId": "258affa4-7740-4219-8a4c-2dd0f16db425",
+      "receiverUserId": null,
+      "senderIban": "TR0200201R60UN2LCSZIQ1U6LK",
+      "receiverIban": "TR6990608M8TL97F27VNXWS67V",
+      "money": 1000,
+      "transactionType": "TRANSFER",
+      "description": "E2E transfer 20260517023149-opt96e",
+      "localDateTime": "2026-05-16T23:33:49.402505829",
+      "error": false,
+      "errorDescription": null,
+      "userValidation": false,
+      "status": "CREATED",
+      "tokenDetails": {
+        "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+        "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "givenName": "E2EAlpha",
+        "familyName": "Tester",
+        "issuer": "http://keycloak:8080/realms/banking",
+        "audienceJson": "\"account\"",
+        "realmRoles": [
+          "default-roles-banking",
+          "offline_access",
+          "uma_authorization",
+          "USER"
+        ],
+        "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+        "claimsJson": "{\"exp\":1778974950,\"iat\":1778974350,\"jti\":\"cb73c17c-2a8b-480d-904d-042d77a3419d\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+        "issuedAt": "1778974350",
+        "expiresAt": "1778974950",
+        "jwtId": "cb73c17c-2a8b-480d-904d-042d77a3419d",
+        "tokenType": "Bearer",
+        "sessionState": "d538f40e-db55-4d15-9f01-976c0e07c868",
+        "scope": "email profile"
+      }
+    }
+  ],
+  "tokenDetails": {
+    "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+    "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+    "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+    "givenName": "E2EAlpha",
+    "familyName": "Tester",
+    "issuer": "http://keycloak:8080/realms/banking",
+    "audienceJson": "\"account\"",
+    "realmRoles": [
+      "default-roles-banking",
+      "offline_access",
+      "uma_authorization",
+      "USER"
+    ],
+    "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+    "claimsJson": "{\"exp\":1778974950,\"iat\":1778974350,\"jti\":\"cb73c17c-2a8b-480d-904d-042d77a3419d\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+    "issuedAt": "1778974350",
+    "expiresAt": "1778974950",
+    "jwtId": "cb73c17c-2a8b-480d-904d-042d77a3419d",
+    "tokenType": "Bearer",
+    "sessionState": "d538f40e-db55-4d15-9f01-976c0e07c868",
+    "scope": "email profile"
+  }
+}
+INFO  --- [fraud-service] :  (23:33) > KafkaSenderService | sendTransaction -> Fraud checked kafkaya gonderildi. Key: 8ae96110-3f5b-4cee-ab68-a1f68e49353e, Dto:
+{
+  "eventUUID": "8ae96110-3f5b-4cee-ab68-a1f68e49353e",
+  "keycloakUserUUID": "258affa4-7740-4219-8a4c-2dd0f16db425",
+  "senderName": "E2EAlpha",
+  "senderSurname": "Tester",
+  "senderEmail": "e2e.alpha.20260517023149-opt96e@springbank.test",
+  "receiverEmail": "e2e.beta.20260516222010-lo96ej@springbank.test",
+  "receiverName": "E2EBeta",
+  "receiverSurname": "Tester",
+  "senderUserId": "258affa4-7740-4219-8a4c-2dd0f16db425",
+  "senderIban": "TR0200201R60UN2LCSZIQ1U6LK",
+  "receiverUserId": "a0cdcc62-8a77-440b-8bdb-86fadb2c18f0",
+  "receiverIban": "TR6990608M8TL97F27VNXWS67V",
+  "money": 1000,
+  "transactionType": "TRANSFER",
+  "description": "E2E transfer 20260517023149-opt96e",
+  "status": "FRAUD_REVIEW",
+  "statusDescription": "İşleminiz inceleniyor",
+  "error": false,
+  "errorDescription": null,
+  "isMoneyBlocked": true,
+  "userValidation": true,
+  "localDateTime": "2026-05-16T23:33:49.402267364",
+  "senderTransactionHistory": null,
+  "receiverTransactionHistory": [
+    {
+      "id": "df3e6661-0f0c-4abd-9881-ae882819c986",
+      "eventId": "8ae96110-3f5b-4cee-ab68-a1f68e49353e",
+      "receiverName": "E2EBeta",
+      "senderName": "E2EAlpha",
+      "senderSurname": "Tester",
+      "senderEmail": "e2e.alpha.20260517023149-opt96e@springbank.test",
+      "receiverEmail": null,
+      "receiverSurname": "Tester",
+      "senderUserId": "258affa4-7740-4219-8a4c-2dd0f16db425",
+      "receiverUserId": null,
+      "senderIban": "TR0200201R60UN2LCSZIQ1U6LK",
+      "receiverIban": "TR6990608M8TL97F27VNXWS67V",
+      "money": 1000,
+      "transactionType": "TRANSFER",
+      "description": "E2E transfer 20260517023149-opt96e",
+      "localDateTime": "2026-05-16T23:33:49.402505829",
+      "error": false,
+      "errorDescription": null,
+      "userValidation": false,
+      "status": "CREATED",
+      "tokenDetails": {
+        "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+        "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+        "givenName": "E2EAlpha",
+        "familyName": "Tester",
+        "issuer": "http://keycloak:8080/realms/banking",
+        "audienceJson": "\"account\"",
+        "realmRoles": [
+          "default-roles-banking",
+          "offline_access",
+          "uma_authorization",
+          "USER"
+        ],
+        "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+        "claimsJson": "{\"exp\":1778974950,\"iat\":1778974350,\"jti\":\"cb73c17c-2a8b-480d-904d-042d77a3419d\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+        "issuedAt": "1778974350",
+        "expiresAt": "1778974950",
+        "jwtId": "cb73c17c-2a8b-480d-904d-042d77a3419d",
+        "tokenType": "Bearer",
+        "sessionState": "d538f40e-db55-4d15-9f01-976c0e07c868",
+        "scope": "email profile"
+      }
+    }
+  ],
+  "tokenDetails": {
+    "subject": "258affa4-7740-4219-8a4c-2dd0f16db425",
+    "preferredUsername": "e2e.alpha.20260517023149-opt96e@springbank.test",
+    "email": "e2e.alpha.20260517023149-opt96e@springbank.test",
+    "givenName": "E2EAlpha",
+    "familyName": "Tester",
+    "issuer": "http://keycloak:8080/realms/banking",
+    "audienceJson": "\"account\"",
+    "realmRoles": [
+      "default-roles-banking",
+      "offline_access",
+      "uma_authorization",
+      "USER"
+    ],
+    "headerJson": "{\"alg\":\"RS256\",\"typ\":\"JWT\",\"kid\":\"cXlYeegMcMa86uJVoCw83izxuVT_p7mjWVvIvYty2g0\"}",
+    "claimsJson": "{\"exp\":1778974950,\"iat\":1778974350,\"jti\":\"cb73c17c-2a8b-480d-904d-042d77a3419d\",\"iss\":\"http://keycloak:8080/realms/banking\",\"aud\":\"account\",\"sub\":\"258affa4-7740-4219-8a4c-2dd0f16db425\",\"typ\":\"Bearer\",\"azp\":\"banking-app\",\"session_state\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"acr\":\"1\",\"allowed-origins\":[\"*\"],\"realm_access\":{\"roles\":[\"default-roles-banking\",\"offline_access\",\"uma_authorization\",\"USER\"]},\"resource_access\":{\"account\":{\"roles\":[\"manage-account\",\"manage-account-links\",\"view-profile\"]}},\"scope\":\"email profile\",\"sid\":\"d538f40e-db55-4d15-9f01-976c0e07c868\",\"email_verified\":true,\"name\":\"E2EAlpha Tester\",\"preferred_username\":\"e2e.alpha.20260517023149-opt96e@springbank.test\",\"given_name\":\"E2EAlpha\",\"family_name\":\"Tester\",\"email\":\"e2e.alpha.20260517023149-opt96e@springbank.test\"}",
+    "issuedAt": "1778974350",
+    "expiresAt": "1778974950",
+    "jwtId": "cb73c17c-2a8b-480d-904d-042d77a3419d",
+    "tokenType": "Bearer",
+    "sessionState": "d538f40e-db55-4d15-9f01-976c0e07c868",
+    "scope": "email profile"
+  }
+}
+--------------------------------------------------------------------------------
+[02:36:44][elapsed=295202ms / 295.202s / 4.92m][pods][INFO] money-service-command
+COMMAND:
+kubectl -n banking-microservices logs money-service-command-6c865bc46c-s5cdh --tail=400
+DURATION: 199ms / 0.199s / 0.003m
+SELECTOR: app=money-service-command
+NEEDLE: cmd-user-b-20260517023149-opt96e
+FOUND: False
+OUTPUT:
+.   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.1)
+
+INFO  --- [money-service-command] : Starting MoneyServiceCommandApplication v0.0.1-SNAPSHOT using Java 21.0.11 with PID 1 (/app/app.jar started by root in /app)
+INFO  --- [money-service-command] : No active profile set, falling back to 1 default profile: "default"
+INFO  --- [money-service-command] : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+INFO  --- [money-service-command] : Finished Spring Data repository scanning in 149 ms. Found 1 JPA repository interface.
+INFO  --- [money-service-command] : Tomcat initialized with port 8092 (http)
+INFO  --- [money-service-command] : Starting service [Tomcat]
+INFO  --- [money-service-command] : Starting Servlet engine: [Apache Tomcat/11.0.15]
+INFO  --- [money-service-command] : Root WebApplicationContext: initialization completed in 8597 ms
+INFO  --- [money-service-command] : HHH008540: Processing PersistenceUnitInfo [name: default]
+INFO  --- [money-service-command] : HHH000001: Hibernate ORM core version 7.2.0.Final
+INFO  --- [money-service-command] : No LoadTimeWeaver setup: ignoring JPA class transformer
+INFO  --- [money-service-command] : HikariPool-1 - Starting...
+INFO  --- [money-service-command] : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@40b8158d
+INFO  --- [money-service-command] : HikariPool-1 - Start completed.
+WARN  --- [money-service-command] : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+INFO  --- [money-service-command] : HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://postgres:5432/banking_money_command]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 15.15
+	Default catalog/schema: banking_money_command/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+INFO  --- [money-service-command] : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+INFO  --- [money-service-command] : Initialized JPA EntityManagerFactory for persistence unit 'default'
+INFO  --- [money-service-command] : Hibernate is in classpath; If applicable, HQL parser will be used.
+WARN  --- [money-service-command] : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+INFO  --- [money-service-command] : Exposing 2 endpoints beneath base path '/api/money-service-command/actuator'
+INFO  --- [money-service-command] : Tomcat started on port 8092 (http) with context path '/'
+INFO  --- [money-service-command] : Started MoneyServiceCommandApplication in 26.791 seconds (process running for 30.541)
+INFO  --- [money-service-command] : Initializing Spring DispatcherServlet 'dispatcherServlet'
+INFO  --- [money-service-command] : Initializing Servlet 'dispatcherServlet'
+INFO  --- [money-service-command] : Completed initialization in 2 ms
+INFO  --- [money-service-command] : ProducerConfig values: 
+	acks = -1
+	batch.size = 16384
+	bootstrap.servers = [kafka:9092]
+	buffer.memory = 33554432
+	client.dns.lookup = use_all_dns_ips
+	client.id = money-service-command-producer-1
+	compression.gzip.level = -1
+	compression.lz4.level = 9
+	compression.type = none
+	compression.zstd.level = 3
+	connections.max.idle.ms = 540000
+	delivery.timeout.ms = 120000
+	enable.idempotence = true
+	enable.metrics.push = true
+	interceptor.classes = []
+	key.serializer = class org.apache.kafka.common.serialization.StringSerializer
+	linger.ms = 5
+	max.block.ms = 60000
+	max.in.flight.requests.per.connection = 5
+	max.request.size = 1048576
+	metadata.max.age.ms = 300000
+	metadata.max.idle.ms = 300000
+	metadata.recovery.rebootstrap.trigger.ms = 300000
+	metadata.recovery.strategy = rebootstrap
+	metric.reporters = [org.apache.kafka.common.metrics.JmxReporter]
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partitioner.adaptive.partitioning.enable = true
+	partitioner.availability.timeout.ms = 0
+	partitioner.class = null
+	partitioner.ignore.keys = false
+	receive.buffer.bytes = 32768
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retries = 2147483647
+	retry.backoff.max.ms = 1000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.connect.timeout.ms = null
+	sasl.login.read.timeout.ms = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.login.retry.backoff.max.ms = 10000
+	sasl.login.retry.backoff.ms = 100
+	sasl.mechanism = GSSAPI
+	sasl.oauthbearer.assertion.algorithm = RS256
+	sasl.oauthbearer.assertion.claim.aud = null
+	sasl.oauthbearer.assertion.claim.exp.seconds = 300
+	sasl.oauthbearer.assertion.claim.iss = null
+	sasl.oauthbearer.assertion.claim.jti.include = false
+	sasl.oauthbearer.assertion.claim.nbf.seconds = 60
+	sasl.oauthbearer.assertion.claim.sub = null
+	sasl.oauthbearer.assertion.file = null
+	sasl.oauthbearer.assertion.private.key.file = null
+	sasl.oauthbearer.assertion.private.key.passphrase = null
+	sasl.oauthbearer.assertion.template.file = null
+	sasl.oauthbearer.client.credentials.client.id = null
+	sasl.oauthbearer.client.credentials.client.secret = null
+	sasl.oauthbearer.clock.skew.seconds = 30
+	sasl.oauthbearer.expected.audience = null
+	sasl.oauthbearer.expected.issuer = null
+	sasl.oauthbearer.header.urlencode = false
+	sasl.oauthbearer.jwks.endpoint.refresh.ms = 3600000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.max.ms = 10000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.ms = 100
+	sasl.oauthbearer.jwks.endpoint.url = null
+	sasl.oauthbearer.jwt.retriever.class = class org.apache.kafka.common.security.oauthbearer.DefaultJwtRetriever
+	sasl.oauthbearer.jwt.validator.class = class org.apache.kafka.common.security.oauthbearer.DefaultJwtValidator
+	sasl.oauthbearer.scope = null
+	sasl.oauthbearer.scope.claim.name = scope
+	sasl.oauthbearer.sub.claim.name = sub
+	sasl.oauthbearer.token.endpoint.url = null
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	socket.connection.setup.timeout.max.ms = 30000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	transaction.timeout.ms = 60000
+	transaction.two.phase.commit.enable = false
+	transactional.id = null
+	value.serializer = class org.springframework.kafka.support.serializer.JsonSerializer
+
+INFO  --- [money-service-command] : initializing Kafka metrics collector
+INFO  --- [money-service-command] : [Producer clientId=money-service-command-producer-1] Closing the Kafka producer with timeoutMillis = 0 ms.
+INFO  --- [money-service-command] : Metrics scheduler closed
+INFO  --- [money-service-command] : Closing reporter org.apache.kafka.common.metrics.JmxReporter
+INFO  --- [money-service-command] : Closing reporter org.apache.kafka.common.telemetry.internals.ClientTelemetryReporter
+INFO  --- [money-service-command] : Metrics reporters closed
+INFO  --- [money-service-command] : App info kafka.producer for money-service-command-producer-1 unregistered
+INFO  --- [money-service-command] : ProducerConfig values: 
+	acks = -1
+	batch.size = 16384
+	bootstrap.servers = [kafka:9092]
+	buffer.memory = 33554432
+	client.dns.lookup = use_all_dns_ips
+	client.id = money-service-command-producer-2
+	compression.gzip.level = -1
+	compression.lz4.level = 9
+	compression.type = none
+	compression.zstd.level = 3
+	connections.max.idle.ms = 540000
+	delivery.timeout.ms = 120000
+	enable.idempotence = true
+	enable.metrics.push = true
+	interceptor.classes = []
+	key.serializer = class org.apache.kafka.common.serialization.StringSerializer
+	linger.ms = 5
+	max.block.ms = 60000
+	max.in.flight.requests.per.connection = 5
+	max.request.size = 1048576
+	metadata.max.age.ms = 300000
+	metadata.max.idle.ms = 300000
+	metadata.recovery.rebootstrap.trigger.ms = 300000
+	metadata.recovery.strategy = rebootstrap
+	metric.reporters = [org.apache.kafka.common.metrics.JmxReporter]
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partitioner.adaptive.partitioning.enable = true
+	partitioner.availability.timeout.ms = 0
+	partitioner.class = null
+	partitioner.ignore.keys = false
+	receive.buffer.bytes = 32768
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retries = 2147483647
+	retry.backoff.max.ms = 1000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.connect.timeout.ms = null
+	sasl.login.read.timeout.ms = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.login.retry.backoff.max.ms = 10000
+	sasl.login.retry.backoff.ms = 100
+	sasl.mechanism = GSSAPI
+	sasl.oauthbearer.assertion.algorithm = RS256
+	sasl.oauthbearer.assertion.claim.aud = null
+	sasl.oauthbearer.assertion.claim.exp.seconds = 300
+	sasl.oauthbearer.assertion.claim.iss = null
+	sasl.oauthbearer.assertion.claim.jti.include = false
+	sasl.oauthbearer.assertion.claim.nbf.seconds = 60
+	sasl.oauthbearer.assertion.claim.sub = null
+	sasl.oauthbearer.assertion.file = null
+	sasl.oauthbearer.assertion.private.key.file = null
+	sasl.oauthbearer.assertion.private.key.passphrase = null
+	sasl.oauthbearer.assertion.template.file = null
+	sasl.oauthbearer.client.credentials.client.id = null
+	sasl.oauthbearer.client.credentials.client.secret = null
+	sasl.oauthbearer.clock.skew.seconds = 30
+	sasl.oauthbearer.expected.audience = null
+	sasl.oauthbearer.expected.issuer = null
+	sasl.oauthbearer.header.urlencode = false
+	sasl.oauthbearer.jwks.endpoint.refresh.ms = 3600000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.max.ms = 10000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.ms = 100
+	sasl.oauthbearer.jwks.endpoint.url = null
+	sasl.oauthbearer.jwt.retriever.class = class org.apache.kafka.common.security.oauthbearer.DefaultJwtRetriever
+	sasl.oauthbearer.jwt.validator.class = class org.apache.kafka.common.security.oauthbearer.DefaultJwtValidator
+	sasl.oauthbearer.scope = null
+	sasl.oauthbearer.scope.claim.name = scope
+	sasl.oauthbearer.sub.claim.name = sub
+	sasl.oauthbearer.token.endpoint.url = null
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	socket.connection.setup.timeout.max.ms = 30000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	transaction.timeout.ms = 60000
+	transaction.two.phase.commit.enable = false
+	transactional.id = null
+	value.serializer = class org.springframework.kafka.support.serializer.JsonSerializer
+
+INFO  --- [money-service-command] : initializing Kafka metrics collector
+INFO  --- [money-service-command] : [Producer clientId=money-service-command-producer-2] Closing the Kafka producer with timeoutMillis = 0 ms.
+INFO  --- [money-service-command] : Metrics scheduler closed
+INFO  --- [money-service-command] : Closing reporter org.apache.kafka.common.metrics.JmxReporter
+INFO  --- [money-service-command] : Closing reporter org.apache.kafka.common.telemetry.internals.ClientTelemetryReporter
+INFO  --- [money-service-command] : Metrics reporters closed
+INFO  --- [money-service-command] : App info kafka.producer for money-service-command-producer-2 unregistered
+--------------------------------------------------------------------------------
+[02:36:44][elapsed=295421ms / 295.421s / 4.924m][pods][INFO] money-service-query
+COMMAND:
+kubectl -n banking-microservices logs money-service-query-9989f4f66-d829p --tail=400
+DURATION: 217ms / 0.217s / 0.004m
+SELECTOR: app=money-service-query
+NEEDLE: cmd-user-b-20260517023149-opt96e
+FOUND: False
+OUTPUT:
+.   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.1)
+
+INFO  --- [money-service-query] : Starting MoneyServiceQueryApplication v0.0.1-SNAPSHOT using Java 21.0.11 with PID 1 (/app/app.jar started by root in /app)
+INFO  --- [money-service-query] : No active profile set, falling back to 1 default profile: "default"
+INFO  --- [money-service-query] : Multiple Spring Data modules found, entering strict repository configuration mode
+INFO  --- [money-service-query] : Bootstrapping Spring Data Elasticsearch repositories in DEFAULT mode.
+INFO  --- [money-service-query] : Spring Data Elasticsearch - Could not safely identify store assignment for repository candidate interface com.banking_microservices.money_service_query.repository.MoneyAccountMongoRepository; If you want this repository to be a Elasticsearch repository, consider annotating your entities with one of these annotations: org.springframework.data.elasticsearch.annotations.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.elasticsearch.repository.ElasticsearchRepository
+INFO  --- [money-service-query] : Finished Spring Data repository scanning in 184 ms. Found 1 Elasticsearch repository interface.
+INFO  --- [money-service-query] : Multiple Spring Data modules found, entering strict repository configuration mode
+INFO  --- [money-service-query] : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+INFO  --- [money-service-query] : Spring Data MongoDB - Could not safely identify store assignment for repository candidate interface com.banking_microservices.money_service_query.repository.MoneyAccountSearchRepository; If you want this repository to be a MongoDB repository, consider annotating your entities with one of these annotations: org.springframework.data.mongodb.core.mapping.Document (preferred), or consider extending one of the following types with your repository: org.springframework.data.mongodb.repository.MongoRepository
+INFO  --- [money-service-query] : Finished Spring Data repository scanning in 5 ms. Found 1 MongoDB repository interface.
+INFO  --- [money-service-query] : Tomcat initialized with port 8093 (http)
+INFO  --- [money-service-query] : Starting service [Tomcat]
+INFO  --- [money-service-query] : Starting Servlet engine: [Apache Tomcat/11.0.15]
+INFO  --- [money-service-query] : Root WebApplicationContext: initialization completed in 4200 ms
+INFO  --- [money-service-query] : MongoClient with metadata {"driver": {"name": "mongo-java-driver|spring-boot|sync", "version": "5.6.2"}, "os": {"type": "Linux", "name": "Linux", "architecture": "amd64", "version": "6.6.87.2-microsoft-standard-WSL2"}, "platform": "Java/Eclipse Adoptium/21.0.11+10-LTS", "env": {"container": {"runtime": "docker", "orchestrator": "kubernetes"}}} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, transportSettings=null, commandListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsCommandListener@dae5e0], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, CollectionCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, com.mongodb.client.model.mql.ExpressionCodecProvider@59a94d0f, com.mongodb.Jep395RecordCodecProvider@7ff09659, com.mongodb.KotlinCodecProvider@517fbf62, EnumCodecProvider{}]}, loggerSettings=LoggerSettings{maxDocumentLength=1000}, clusterSettings={hosts=[mongodb:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='15 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[io.micrometer.core.instrument.binder.mongodb.MongoMetricsConnectionPoolListener@65db548], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverMonitoringMode=AUTO, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=UNSPECIFIED, serverApi=null, autoEncryptionSettings=null, dnsClient=null, inetAddressResolver=null, contextProvider=null, timeoutMS=null}
+INFO  --- [money-service-query] : Monitor thread successfully connected to server with description ServerDescription{address=mongodb:27017, type=STANDALONE, cryptd=false, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=21, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=94261467, minRoundTripTimeNanos=0}
+INFO  --- [money-service-query] : Detected grpc-netty-shaded: Creating ShadedNettyGrpcServerFactory
+INFO  --- [money-service-query] : Exposing 2 endpoints beneath base path '/api/money-service-query/actuator'
+INFO  --- [money-service-query] : Tomcat started on port 8093 (http) with context path '/'
+INFO  --- [money-service-query] : ConsumerConfig values: 
+	allow.auto.create.topics = true
+	auto.commit.interval.ms = 5000
+	auto.offset.reset = earliest
+	bootstrap.servers = [kafka:9092]
+	check.crcs = true
+	client.dns.lookup = use_all_dns_ips
+	client.id = consumer-money-service-query-group-1
+	client.rack = 
+	connections.max.idle.ms = 540000
+	default.api.timeout.ms = 60000
+	enable.auto.commit = false
+	enable.metrics.push = true
+	exclude.internal.topics = true
+	fetch.max.bytes = 52428800
+	fetch.max.wait.ms = 500
+	fetch.min.bytes = 1
+	group.id = money-service-query-group
+	group.instance.id = null
+	group.protocol = classic
+	group.remote.assignor = null
+	heartbeat.interval.ms = 3000
+	interceptor.classes = []
+	internal.leave.group.on.close = true
+	internal.throw.on.fetch.stable.offset.unsupported = false
+	isolation.level = read_uncommitted
+	key.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+	max.partition.fetch.bytes = 1048576
+	max.poll.interval.ms = 300000
+	max.poll.records = 500
+	metadata.max.age.ms = 300000
+	metadata.recovery.rebootstrap.trigger.ms = 300000
+	metadata.recovery.strategy = rebootstrap
+	metric.reporters = [org.apache.kafka.common.metrics.JmxReporter]
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor, class org.apache.kafka.clients.consumer.CooperativeStickyAssignor]
+	receive.buffer.bytes = 65536
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retry.backoff.max.ms = 1000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.connect.timeout.ms = null
+	sasl.login.read.timeout.ms = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.login.retry.backoff.max.ms = 10000
+	sasl.login.retry.backoff.ms = 100
+	sasl.mechanism = GSSAPI
+	sasl.oauthbearer.assertion.algorithm = RS256
+	sasl.oauthbearer.assertion.claim.aud = null
+	sasl.oauthbearer.assertion.claim.exp.seconds = 300
+	sasl.oauthbearer.assertion.claim.iss = null
+	sasl.oauthbearer.assertion.claim.jti.include = false
+	sasl.oauthbearer.assertion.claim.nbf.seconds = 60
+	sasl.oauthbearer.assertion.claim.sub = null
+	sasl.oauthbearer.assertion.file = null
+	sasl.oauthbearer.assertion.private.key.file = null
+	sasl.oauthbearer.assertion.private.key.passphrase = null
+	sasl.oauthbearer.assertion.template.file = null
+	sasl.oauthbearer.client.credentials.client.id = null
+	sasl.oauthbearer.client.credentials.client.secret = null
+	sasl.oauthbearer.clock.skew.seconds = 30
+	sasl.oauthbearer.expected.audience = null
+	sasl.oauthbearer.expected.issuer = null
+	sasl.oauthbearer.header.urlencode = false
+	sasl.oauthbearer.jwks.endpoint.refresh.ms = 3600000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.max.ms = 10000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.ms = 100
+	sasl.oauthbearer.jwks.endpoint.url = null
+	sasl.oauthbearer.jwt.retriever.class = class org.apache.kafka.common.security.oauthbearer.DefaultJwtRetriever
+	sasl.oauthbearer.jwt.validator.class = class org.apache.kafka.common.security.oauthbearer.DefaultJwtValidator
+	sasl.oauthbearer.scope = null
+	sasl.oauthbearer.scope.claim.name = scope
+	sasl.oauthbearer.sub.claim.name = sub
+	sasl.oauthbearer.token.endpoint.url = null
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	session.timeout.ms = 45000
+	share.acknowledgement.mode = implicit
+	socket.connection.setup.timeout.max.ms = 30000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = null
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	value.deserializer = class org.springframework.kafka.support.serializer.JsonDeserializer
+
+INFO  --- [money-service-query] : initializing Kafka metrics collector
+INFO  --- [money-service-query] : Kafka version: 4.1.1
+INFO  --- [money-service-query] : Kafka commitId: be816b82d25370ce
+INFO  --- [money-service-query] : Kafka startTimeMs: 1778974267296
+INFO  --- [money-service-query] : [Consumer clientId=consumer-money-service-query-group-1, groupId=money-service-query-group] Subscribed to topic(s): banking-microservices.money.projection-sync.v1
+INFO  --- [money-service-query] : Registered gRPC service: money.v1.MoneyQueryGrpcService, bean: moneyQueryGrpcEndpoint, class: com.banking_microservices.money_service_query.grpc.MoneyQueryGrpcEndpoint
+INFO  --- [money-service-query] : Registered gRPC service: grpc.health.v1.Health, bean: grpcHealthService, class: io.grpc.protobuf.services.HealthServiceImpl
+INFO  --- [money-service-query] : Registered gRPC service: grpc.reflection.v1alpha.ServerReflection, bean: protoReflectionService, class: io.grpc.protobuf.services.ProtoReflectionService
+INFO  --- [money-service-query] : gRPC Server started, listening on address: *, port: 9193
+INFO  --- [money-service-query] : Started MoneyServiceQueryApplication in 13.989 seconds (process running for 15.502)
+INFO  --- [money-service-query] : [Consumer clientId=consumer-money-service-query-group-1, groupId=money-service-query-group] Cluster ID: RV3yzlebQoyQFGQ1LkQb2Q
+INFO  --- [money-service-query] : [Consumer clientId=consumer-money-service-query-group-1, groupId=money-service-query-group] Discovered group coordinator kafka:9092 (id: 2147483646 rack: null isFenced: false)
+INFO  --- [money-service-query] : [Consumer clientId=consumer-money-service-query-group-1, groupId=money-service-query-group] (Re-)joining group
+INFO  --- [money-service-query] : [Consumer clientId=consumer-money-service-query-group-1, groupId=money-service-query-group] Request joining group due to: need to re-join with the given member-id: consumer-money-service-query-group-1-bb67301a-a082-41bd-8c78-7d820f9832b5
+INFO  --- [money-service-query] : [Consumer clientId=consumer-money-service-query-group-1, groupId=money-service-query-group] (Re-)joining group
+INFO  --- [money-service-query] : [Consumer clientId=consumer-money-service-query-group-1, groupId=money-service-query-group] Successfully joined group with generation Generation{generationId=6, memberId='consumer-money-service-query-group-1-bb67301a-a082-41bd-8c78-7d820f9832b5', protocol='range'}
+INFO  --- [money-service-query] : [Consumer clientId=consumer-money-service-query-group-1, groupId=money-service-query-group] Finished assignment for group at generation 6: {consumer-money-service-query-group-1-bb67301a-a082-41bd-8c78-7d820f9832b5=Assignment(partitions=[banking-microservices.money.projection-sync.v1-0])}
+INFO  --- [money-service-query] : [Consumer clientId=consumer-money-service-query-group-1, groupId=money-service-query-group] Successfully synced group in generation Generation{generationId=6, memberId='consumer-money-service-query-group-1-bb67301a-a082-41bd-8c78-7d820f9832b5', protocol='range'}
+INFO  --- [money-service-query] : [Consumer clientId=consumer-money-service-query-group-1, groupId=money-service-query-group] Notifying assignor about the new Assignment(partitions=[banking-microservices.money.projection-sync.v1-0])
+INFO  --- [money-service-query] : [Consumer clientId=consumer-money-service-query-group-1, groupId=money-service-query-group] Adding newly assigned partitions: [banking-microservices.money.projection-sync.v1-0]
+INFO  --- [money-service-query] : [Consumer clientId=consumer-money-service-query-group-1, groupId=money-service-query-group] Found no committed offset for partition banking-microservices.money.projection-sync.v1-0
+INFO  --- [money-service-query] : [Consumer clientId=consumer-money-service-query-group-1, groupId=money-service-query-group] Resetting offset for partition banking-microservices.money.projection-sync.v1-0 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[kafka:9092 (id: 1 rack: null isFenced: false)], epoch=0}}.
+INFO  --- [money-service-query] : money-service-query-group: partitions assigned: [banking-microservices.money.projection-sync.v1-0]
+INFO  --- [money-service-query] : Initializing Spring DispatcherServlet 'dispatcherServlet'
+INFO  --- [money-service-query] : Initializing Servlet 'dispatcherServlet'
+INFO  --- [money-service-query] : Completed initialization in 3 ms
+--------------------------------------------------------------------------------
+[02:36:44][elapsed=295621ms / 295.621s / 4.927m][pods][INFO] gateway
+COMMAND:
+kubectl -n banking-microservices logs gateway-748599b696-7ttk6 --tail=400
+DURATION: 192ms / 0.192s / 0.003m
+SELECTOR: app=gateway
+NEEDLE: 20260517023149-opt96e
+FOUND: False
+OUTPUT:
+.   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.2)
+
+INFO  --- [gateway] : Starting GatewayApplication v0.0.1-SNAPSHOT using Java 21.0.11 with PID 1 (/app/app.jar started by root in /app)
+INFO  --- [gateway] : No active profile set, falling back to 1 default profile: "default"
+INFO  --- [gateway] : BeanFactory id=e45648c7-cb8a-3e2e-b90d-9041ec4c9e2b
+INFO  --- [gateway] : Loaded RoutePredicateFactory [After]
+INFO  --- [gateway] : Loaded RoutePredicateFactory [Before]
+INFO  --- [gateway] : Loaded RoutePredicateFactory [Between]
+INFO  --- [gateway] : Loaded RoutePredicateFactory [Cookie]
+INFO  --- [gateway] : Loaded RoutePredicateFactory [Header]
+INFO  --- [gateway] : Loaded RoutePredicateFactory [Host]
+INFO  --- [gateway] : Loaded RoutePredicateFactory [Method]
+INFO  --- [gateway] : Loaded RoutePredicateFactory [Path]
+INFO  --- [gateway] : Loaded RoutePredicateFactory [Query]
+INFO  --- [gateway] : Loaded RoutePredicateFactory [ReadBody]
+INFO  --- [gateway] : Loaded RoutePredicateFactory [RemoteAddr]
+INFO  --- [gateway] : Loaded RoutePredicateFactory [XForwardedRemoteAddr]
+INFO  --- [gateway] : Loaded RoutePredicateFactory [Weight]
+INFO  --- [gateway] : Loaded RoutePredicateFactory [CloudFoundryRouteService]
+INFO  --- [gateway] : Exposing 2 endpoints beneath base path '/actuator'
+INFO  --- [gateway] : Netty started on port 8095 (http)
+INFO  --- [gateway] : Started GatewayApplication in 20.621 seconds (process running for 23.55)
+INFO  --- [gateway] :  > LogStreamController | getRecentLogs -> Istek alindi. Service: gateway
+INFO  --- [gateway] :  > LogStreamController | getRecentLogs -> Istek alindi. Service: gateway
+--------------------------------------------------------------------------------

@@ -1,80 +1,384 @@
+SpringBank with Microservices - Calistirma Notlari
+==================================================
 
-kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
-
-kubectl apply -f k8s/01-Base.yaml
-kubectl apply -f k8s/02-Apps.yaml
-
-kubectl get pods -n banking-microservices
-
-Podlari ve Deploymentleri Sil
-kubectl delete -f k8s/02-Apps.yaml
-kubectl delete -f k8s/01-Base.yaml
-
-Podlar Restart
-kubectl rollout restart deployment -n banking-microservices
-kubectl rollout restart deployment/gateway -n banking-microservices
-kubectl apply -f k8s/02-Apps.yaml -n banking-microservices
-kubectl rollout restart deployment/transaction-service deployment/money-service -n banking-microservices
-
-kubectl rollout restart deployment/gateway -n banking-microservices
-kubectl rollout restart deployment/fraud-service -n banking-microservices
-kubectl rollout restart deployment/user-service -n banking-microservices
-kubectl rollout restart deployment/transaction-service -n banking-microservices
-kubectl rollout restart deployment/money-service -n banking-microservices
-
-kubectl logs -n banking-microservices deploy/fraud-service --tail=200
-
-kubectl logs -n banking-microservices pod/fraud-service-799dc8d9b7-tk6n8 > fraud_logs.txt
-
-docker build --no-cache -t springbankwithmicroservices/user-service:1.0.0 ./user-service
-docker build --no-cache -t springbankwithmicroservices/money-service:1.0.0 ./money-service
-docker build --no-cache -t springbankwithmicroservices/money-service-command:1.0.0 ./money-service-command
-docker build --no-cache -t springbankwithmicroservices/money-service-query:1.0.0 ./money-service-query
-docker build --no-cache -t springbankwithmicroservices/transaction-service:1.0.0 ./transaction-service
-docker build --no-cache -t springbankwithmicroservices/gateway:1.0.0 ./gateway
-docker build --no-cache -t springbankwithmicroservices/fraud-service:1.0.0 ./fraud-service
-kubectl apply -f k8s/01-Base.yaml
-kubectl apply -f k8s/02-Apps.yaml
-kubectl rollout restart deployment -n banking-microservices
-kubectl get pods -n banking-microservices
+$services = @('admin-service','admin-service-command','admin-service-query','user-service','money-service','money-service-command','money-service-query','transaction-service','gateway','fraud-service'); foreach ($svc in $services) { Write-Host "== Building $svc =="; docker build -t "springbankwithmicroservices/${svc}:1.0.0" "./$svc"; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }; kubectl apply -f k8s/01-Base.yaml; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; kubectl apply -f k8s/02-Apps.yaml; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; kubectl -n banking-microservices rollout restart deployment/admin-service deployment/admin-service-command deployment/admin-service-query deployment/user-service deployment/money-service deployment/money-service-command deployment/money-service-query deployment/transaction-service deployment/gateway deployment/fraud-service; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; foreach ($svc in $services) { kubectl -n banking-microservices rollout status "deployment/$svc" --timeout=180s; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }; kubectl -n banking-microservices get pods
 
 
-docker build -t springbankwithmicroservices/user-service:1.0.0 ./user-service
-docker build -t springbankwithmicroservices/money-service:1.0.0 ./money-service
-docker build -t springbankwithmicroservices/money-service-command:1.0.0 ./money-service-command
-docker build -t springbankwithmicroservices/money-service-query:1.0.0 ./money-service-query
-docker build -t springbankwithmicroservices/transaction-service:1.0.0 ./transaction-service
-docker build -t springbankwithmicroservices/gateway:1.0.0 ./gateway
-docker build -t springbankwithmicroservices/fraud-service:1.0.0 ./fraud-service
-kubectl apply -f k8s/01-Base.yaml
-kubectl apply -f k8s/02-Apps.yaml
-kubectl rollout restart deployment -n banking-microservices
-kubectl get pods -n banking-microservices
-kubectl get pods -n banking-microservices
+Bu dosya guncel proje yapisina gore hazirlandi. Projede artik klasik
+money-service yaninda CQRS icin ayrilmis money-service-command ve
+money-service-query servisleri de var. Query tarafi MongoDB ve
+Elasticsearch kullanir.
+Gateway'deki admin backend mantigi da admin-service, admin-service-command ve
+admin-service-query olarak ayrildi.
 
 
-kubectl logs -n banking-microservices deploy/fraud-service --tail=50 > fraud_logs_new.txt
-kubectl logs -n banking-microservices -l "app in (gateway, user-service, transaction-service, money-service, money-service-command, money-service-query, fraud-service)" -f --max-log-requests=50
+1) Gerekenler
+-------------
 
-SELECT * FROM users; kubectl exec -it postgres-75bf67f4f4-p5fhj -n banking-microservices -- psql -U banking_admin -d postgres
+- Docker Desktop acik olmali.
+- Kubernetes aktif olmali.
+- kubectl cluster'a bagli olmali.
+- Java 21 ve Maven kurulu olmali.
+- Komutlar repo kok dizininden calistirilmali:
 
-Powershell paralelq
-
-$jobs = @(
-    { docker build --no-cache -t springbankwithmicroservices/user-service:1.0.0 ./user-service },
-    { docker build --no-cache -t springbankwithmicroservices/money-service:1.0.0 ./money-service },
-    { docker build --no-cache -t springbankwithmicroservices/money-service-command:1.0.0 ./money-service-command },
-    { docker build --no-cache -t springbankwithmicroservices/money-service-query:1.0.0 ./money-service-query },
-    { docker build --no-cache -t springbankwithmicroservices/transaction-service:1.0.0 ./transaction-service },
-    { docker build --no-cache -t springbankwithmicroservices/gateway:1.0.0 ./gateway },
-    { docker build --no-cache -t springbankwithmicroservices/fraud-service:1.0.0 ./fraud-service }
-) | ForEach-Object { Start-Job -ScriptBlock $_ }
-
-$jobs | Wait-Job
-$jobs | Receive-Job
-
-kubectl rollout restart deployment -n banking-microservices
-kubectl get pods -n banking-microservices
+  C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices
 
 
-kubectl exec -it -n banking-microservices postgres-ffc4dfb95-xctnk -- env PGPASSWORD=local_password psql -U banking_admin -d banking_transactions -c "SELECT * FROM transactions;"
+2) Servisler ve portlar
+-----------------------
+
+- gateway: 8095
+- admin-service: 8096
+- admin-service-command: 8097, gRPC 9197
+- admin-service-query: 8098, gRPC 9198
+- user-service: 8081, gRPC 9194
+- money-service: 8082
+- money-service-command: 8092
+- money-service-query: 8093, gRPC 9193
+- transaction-service: 8083
+- fraud-service: 8085
+- keycloak: 8080
+- postgres: 5432
+- redis: 6379
+- kafka: 9092
+- mongodb: 27017
+- elasticsearch: 9200
+
+Gateway disariya acilan ana servistir:
+
+  http://localhost:8095
+
+UI sayfalari:
+
+  http://localhost:8095/login.html
+  http://localhost:8095/register.html
+  http://localhost:8095/dashboard.html
+  http://localhost:8095/deposit.html
+  http://localhost:8095/withdraw.html
+  http://localhost:8095/transfer.html
+  http://localhost:8095/transactions.html
+  http://localhost:8095/admin.html
+
+
+3) Image build
+--------------
+
+Menulu calistirma dosyasi:
+
+  .\springbankcalistirma.bat
+
+Menudeki ana secenekler:
+
+  1. Her seyi yap
+     - Image build
+     - Kubernetes dosyalarini uygula/guncelle
+     - Deployment restart
+     - Pod durumunu goster
+
+  2. Sadece build et
+
+  3. Calistir / Kubernetes dosyalarini uygula-guncelle
+
+  4. Deployment restart et
+
+  5. Durum goster
+
+  6. Loglari izle
+
+  7. Test calistir (dev)
+
+Normal build:
+
+  docker build -t springbankwithmicroservices/user-service:1.0.0 ./user-service
+  docker build -t springbankwithmicroservices/admin-service:1.0.0 ./admin-service
+  docker build -t springbankwithmicroservices/admin-service-command:1.0.0 ./admin-service-command
+  docker build -t springbankwithmicroservices/admin-service-query:1.0.0 ./admin-service-query
+  docker build -t springbankwithmicroservices/money-service:1.0.0 ./money-service
+  docker build -t springbankwithmicroservices/money-service-command:1.0.0 ./money-service-command
+  docker build -t springbankwithmicroservices/money-service-query:1.0.0 ./money-service-query
+  docker build -t springbankwithmicroservices/transaction-service:1.0.0 ./transaction-service
+  docker build -t springbankwithmicroservices/gateway:1.0.0 ./gateway
+  docker build -t springbankwithmicroservices/fraud-service:1.0.0 ./fraud-service
+
+Cache kullanmadan temiz build:
+
+  docker build --no-cache -t springbankwithmicroservices/user-service:1.0.0 ./user-service
+  docker build --no-cache -t springbankwithmicroservices/admin-service:1.0.0 ./admin-service
+  docker build --no-cache -t springbankwithmicroservices/admin-service-command:1.0.0 ./admin-service-command
+  docker build --no-cache -t springbankwithmicroservices/admin-service-query:1.0.0 ./admin-service-query
+  docker build --no-cache -t springbankwithmicroservices/money-service:1.0.0 ./money-service
+  docker build --no-cache -t springbankwithmicroservices/money-service-command:1.0.0 ./money-service-command
+  docker build --no-cache -t springbankwithmicroservices/money-service-query:1.0.0 ./money-service-query
+  docker build --no-cache -t springbankwithmicroservices/transaction-service:1.0.0 ./transaction-service
+  docker build --no-cache -t springbankwithmicroservices/gateway:1.0.0 ./gateway
+  docker build --no-cache -t springbankwithmicroservices/fraud-service:1.0.0 ./fraud-service
+
+
+4) Kubernetes deploy
+--------------------
+
+Metrics Server HPA icin gereklidir. Ilk kurulumda bir kere calistir:
+
+  kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+Altyapi servisleri:
+
+  kubectl apply -f k8s/01-Base.yaml
+
+Uygulama servisleri:
+
+  kubectl apply -f k8s/02-Apps.yaml
+
+Durum kontrolu:
+
+  kubectl -n banking-microservices get deploy,hpa,pods
+  kubectl -n banking-microservices get svc
+
+Gateway localhost'ta gorunmuyorsa port-forward ac:
+
+  kubectl -n banking-microservices port-forward svc/gateway 8095:8095
+
+
+5) Restart ve yeniden deploy
+----------------------------
+
+Tum deployment'lari restart et:
+
+  kubectl rollout restart deployment -n banking-microservices
+
+Tek servis restart:
+
+  kubectl rollout restart deployment/gateway -n banking-microservices
+  kubectl rollout restart deployment/admin-service -n banking-microservices
+  kubectl rollout restart deployment/admin-service-command -n banking-microservices
+  kubectl rollout restart deployment/admin-service-query -n banking-microservices
+  kubectl rollout restart deployment/user-service -n banking-microservices
+  kubectl rollout restart deployment/money-service -n banking-microservices
+  kubectl rollout restart deployment/money-service-command -n banking-microservices
+  kubectl rollout restart deployment/money-service-query -n banking-microservices
+  kubectl rollout restart deployment/transaction-service -n banking-microservices
+  kubectl rollout restart deployment/fraud-service -n banking-microservices
+
+Yeni image build ettikten sonra en pratik akis:
+
+  kubectl apply -f k8s/01-Base.yaml
+  kubectl apply -f k8s/02-Apps.yaml
+  kubectl rollout restart deployment -n banking-microservices
+  kubectl -n banking-microservices get deploy,hpa,pods
+
+
+6) Silme / temiz kurulum
+------------------------
+
+Sadece uygulamalari sil:
+
+  kubectl delete -f k8s/02-Apps.yaml
+
+Altyapi dahil sil:
+
+  kubectl delete -f k8s/02-Apps.yaml
+  kubectl delete -f k8s/01-Base.yaml
+
+Not: Postgres ve MongoDB hostPath volume kullaniyor. Kubernetes objelerini silmek
+her zaman diskteki veriyi silmez. Tam temiz veri gerekiyorsa Docker Desktop /
+Kubernetes volume tarafini ayrica temizlemek gerekebilir.
+
+
+7) Test komutlari
+-----------------
+
+Butun kapsamli test:
+
+  .\.scriptsandhelpers\test-everything.bat full
+
+Daha kisa gelistirme smoke testi:
+
+  .\.scriptsandhelpers\test-everything.bat dev
+
+Sadece transfer odakli eski E2E test:
+
+  .\.scriptsandhelpers\test-transfer.bat
+
+Test scriptleri varsayilan olarak gateway'i su adreste bekler:
+
+  http://localhost:8095
+
+Farkli gateway kullanmak icin:
+
+  $env:GATEWAY="http://localhost:8095"
+  $env:GATEWAY_PORT="8095"
+  .\.scriptsandhelpers\test-everything.bat dev
+
+Test loglari burada olusur:
+
+  .scriptsandhelpers\logs\
+
+
+8) Log alma
+-----------
+
+Tum ana servis loglarini canli izle:
+
+  kubectl logs -n banking-microservices -l "app in (gateway,admin-service,admin-service-command,admin-service-query,user-service,money-service,money-service-command,money-service-query,transaction-service,fraud-service)" -f --max-log-requests=50
+
+Hazir log scripti:
+
+  .\.scriptsandhelpers\start-logs.bat
+
+Tek servis loglari:
+
+  kubectl logs -n banking-microservices deploy/gateway --tail=200
+  kubectl logs -n banking-microservices deploy/admin-service --tail=200
+  kubectl logs -n banking-microservices deploy/admin-service-command --tail=200
+  kubectl logs -n banking-microservices deploy/admin-service-query --tail=200
+  kubectl logs -n banking-microservices deploy/user-service --tail=200
+  kubectl logs -n banking-microservices deploy/money-service --tail=200
+  kubectl logs -n banking-microservices deploy/money-service-command --tail=200
+  kubectl logs -n banking-microservices deploy/money-service-query --tail=200
+  kubectl logs -n banking-microservices deploy/transaction-service --tail=200
+  kubectl logs -n banking-microservices deploy/fraud-service --tail=200
+
+Hata aramak icin:
+
+  kubectl logs -n banking-microservices -l app=admin-service --tail=300 --prefix=true
+  kubectl logs -n banking-microservices -l app=admin-service-command --tail=300 --prefix=true
+  kubectl logs -n banking-microservices -l app=admin-service-query --tail=300 --prefix=true
+  kubectl logs -n banking-microservices -l app=gateway --tail=300 --prefix=true
+  kubectl logs -n banking-microservices -l app=money-service-query --tail=300 --prefix=true
+  kubectl logs -n banking-microservices -l app=money-service-command --tail=300 --prefix=true
+
+
+9) Veritabani kontrolleri
+-------------------------
+
+Postgres pod adini bul:
+
+  kubectl -n banking-microservices get pods -l app=postgres
+
+Postgres'e gir:
+
+  kubectl -n banking-microservices exec -it deploy/postgres -- psql -U banking_admin -d postgres
+
+Database listesi:
+
+  \l
+
+Ornek sorgular:
+
+  \c banking_users
+  SELECT * FROM users;
+
+  \c banking_money
+  SELECT * FROM user_money;
+
+  \c banking_money_command
+  SELECT * FROM user_money;
+
+  \c banking_transactions
+  SELECT * FROM transactions;
+
+  \c banking_fraud
+  SELECT * FROM kafka_event;
+
+MongoDB read model kontrolu:
+
+  kubectl -n banking-microservices exec -it deploy/mongodb -- mongosh banking_money_query
+  show collections
+  db.moneyAccount.find().limit(5)
+
+Elasticsearch kontrolu:
+
+  kubectl -n banking-microservices port-forward svc/elasticsearch 9200:9200
+  curl.exe http://localhost:9200/_cat/indices?v
+
+
+10) Keycloak bilgileri
+----------------------
+
+Keycloak admin:
+
+  URL: http://localhost:8080
+  Kullanici: alper123
+  Sifre: alper123A
+
+Realm:
+
+  banking
+
+Client:
+
+  banking-app
+
+Admin test kullanicisi:
+
+  admin@springbank.local
+  SpringBankAdmin123!
+
+Gateway JWT issuer:
+
+  http://keycloak:8080/realms/banking
+
+
+11) Guncel mimari notlari
+-------------------------
+
+- user-service kullanici kaydi, login, Keycloak entegrasyonu ve kullanici admin
+  islemlerini yapar.
+- money-service eski akisin ana para servisidir ve mevcut gateway route'u
+  /api/money-service/** buraya gider.
+- admin-service gateway'deki admin backend mantigini devralir; log stream,
+  test loglari, operasyon merkezi, query transport secimi ve history okuma
+  endpointleri buradadir.
+- admin-service-command admin history write-side servisidir. PENDING ve
+  COMPLETED/FAILED history kayitlarini Postgres'e yazar ve projection event'i basar.
+- admin-service-query admin history read-side servisidir. Kafka projection
+  eventlerini MongoDB ve Elasticsearch'e yazar, history sorgularini buradan cevaplar.
+- money-service-command CQRS write-side servisidir. Create account, deposit,
+  withdraw, block money ve transfer command endpointleri buradadir.
+- money-service-query CQRS read-side servisidir. Kafka projection eventlerini
+  MongoDB'ye yazar ve Elasticsearch indexini gunceller.
+- transaction-service transaction olusturma, gecmis, admin istatistikleri,
+  cancel/reverse ve saga endpointlerini tasir.
+- fraud-service fraud kontrol Kafka akisinda calisir.
+- gateway statik UI dosyalarini ve /api/** route'larini disariya acar.
+
+
+12) Sik sorunlar
+----------------
+
+Pod ImagePullBackOff ise:
+
+  docker images | findstr springbankwithmicroservices
+  kubectl -n banking-microservices describe pod POD_ADI
+
+Gateway acilmiyorsa:
+
+  kubectl -n banking-microservices get svc gateway
+  kubectl -n banking-microservices port-forward svc/gateway 8095:8095
+  kubectl logs -n banking-microservices deploy/gateway --tail=200
+
+Keycloak token hatasi varsa:
+
+  kubectl logs -n banking-microservices deploy/keycloak --tail=200
+  kubectl logs -n banking-microservices deploy/user-service --tail=200
+  kubectl logs -n banking-microservices deploy/gateway --tail=200
+
+Projection / read model guncellenmiyorsa:
+
+  kubectl logs -n banking-microservices deploy/money-service-command --tail=300
+  kubectl logs -n banking-microservices deploy/money-service-query --tail=300
+  kubectl -n banking-microservices get pods -l app=mongodb
+  kubectl -n banking-microservices get pods -l app=elasticsearch
+
+Admin migration veya history akisi sorunluysa:
+
+  kubectl logs -n banking-microservices deploy/admin-service --tail=300
+  kubectl logs -n banking-microservices deploy/admin-service-command --tail=300
+  kubectl logs -n banking-microservices deploy/admin-service-query --tail=300
+  kubectl -n banking-microservices exec -it deploy/postgres -- psql -U banking_admin -d banking_admin_command -c "select request_id, status, transport from admin_query_history order by requested_at desc limit 20;"
+  kubectl -n banking-microservices exec -it deploy/mongodb -- mongosh banking_admin_query --quiet --eval "db.admin_query_history.find().sort({requestedAt:-1}).limit(5).toArray()"
+
+Kafka akisinda sorun varsa:
+
+  kubectl logs -n banking-microservices deploy/kafka --tail=200
+  kubectl logs -n banking-microservices deploy/zookeeper --tail=200

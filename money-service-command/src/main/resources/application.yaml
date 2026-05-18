@@ -15,18 +15,20 @@ spring:
     show-sql: false
     properties:
       hibernate:
+        hbm2ddl:
+          auto: ${SPRING_JPA_PROPERTIES_HIBERNATE_HBM2DDL_AUTO:update}
         dialect: org.hibernate.dialect.PostgreSQLDialect
   kafka:
     bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
 money-service:
   topics:
     # Write database'de basarili olan her state degisikligi bu topic'e basilir.
     # Query-service bu topic'i okuyup kendi MongoDB + Elasticsearch read modelini gunceller.
-    projection-sync: ${MONEY_SERVICE_PROJECTION_TOPIC:banking-microservices.transaction.money-blocked.v1}
+    projection-sync: ${MONEY_SERVICE_PROJECTION_TOPIC:banking-microservices.money.projection-sync.v1}
 
 management:
   endpoints:

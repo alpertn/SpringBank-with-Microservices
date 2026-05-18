@@ -28,7 +28,13 @@ metadata:
   namespace: banking-microservices
 rules:
   - apiGroups: [""]
-    resources: ["pods", "pods/log"]
+    resources: ["pods", "pods/log", "pods/exec", "events", "services"]
+    verbs: ["get", "list", "watch", "create"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "deployments/scale", "replicasets"]
+    verbs: ["get", "list", "watch", "patch", "update"]
+  - apiGroups: ["autoscaling"]
+    resources: ["horizontalpodautoscalers"]
     verbs: ["get", "list", "watch"]
 
 ---
@@ -92,6 +98,8 @@ spec:
             - name: SPRING_DATASOURCE_PASSWORD
               value: banking_admin
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: update
+            - name: SPRING_JPA_PROPERTIES_HIBERNATE_HBM2DDL_AUTO
               value: update
             - name: USER_SERVICE_PORT_NUMBER
               value: "8081"
@@ -232,6 +240,8 @@ spec:
               value: banking_admin
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
               value: update
+            - name: SPRING_JPA_PROPERTIES_HIBERNATE_HBM2DDL_AUTO
+              value: update
 
             # Harici Zorunlu Olmayanlar
             - name: MONEY_SERVICE_PORT_NUMBER
@@ -334,7 +344,7 @@ spec:
 # AKIS:
 # command request gelir
 #   -> Postgres'e write edilir
-#     -> her basarili state degisikligi banking-microservices.transaction.money-blocked.v1 topic'ine basilir
+#     -> her basarili state degisikligi banking-microservices.money.projection-sync.v1 topic'ine basilir
 #       -> money-service-query bu event'i okuyup kendi read database'lerini gunceller
 # Ayrica query servisine gRPC ile "projection sync registration" gonderilir.
 
@@ -375,12 +385,14 @@ spec:
               value: banking_admin
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
               value: update
+            - name: SPRING_JPA_PROPERTIES_HIBERNATE_HBM2DDL_AUTO
+              value: update
             - name: MONEY_SERVICE_COMMAND_PORT
               value: "8092"
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
               value: kafka:9092
             - name: MONEY_SERVICE_PROJECTION_TOPIC
-              value: banking-microservices.transaction.money-blocked.v1
+              value: banking-microservices.money.projection-sync.v1
             - name: MONEY_SERVICE_QUERY_GRPC_ADDRESS
               value: static://money-service-query:9193
 
@@ -444,7 +456,7 @@ spec:
 # Bu servis sadece read-side olarak ayrildi ve tum query sorumlulugu buraya verildi.
 #
 # BU SERVIS NE YAPAR?
-# Kafka'dan banking-microservices.transaction.money-blocked.v1 topic'ini dinler.
+# Kafka'dan banking-microservices.money.projection-sync.v1 topic'ini dinler.
 # Gelen event'leri MongoDB'ye read model olarak yazar, Elasticsearch'e de arama indexi olarak kopyalar.
 #
 # AKIS:
@@ -491,6 +503,8 @@ spec:
               value: "8093"
             - name: MONEY_SERVICE_QUERY_GRPC_PORT
               value: "9193"
+            - name: SPRING_APPLICATION_JSON
+              value: '{"spring.data.mongodb.uri":"mongodb://mongodb:27017/banking_money_query","spring.mongodb.uri":"mongodb://mongodb:27017/banking_money_query","spring.elasticsearch.uris":"http://elasticsearch:9200"}'
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
               value: kafka:9092
             - name: SPRING_KAFKA_CONSUMER_GROUP_ID
@@ -500,7 +514,7 @@ spec:
             - name: SPRING_ELASTICSEARCH_URIS
               value: http://elasticsearch:9200
             - name: MONEY_SERVICE_PROJECTION_TOPIC
-              value: banking-microservices.transaction.money-blocked.v1
+              value: banking-microservices.money.projection-sync.v1
 
 ---
 
@@ -561,6 +575,295 @@ spec:
 ---
 
 #
+# Admin Service Command ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-service-command
+  namespace: banking-microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: admin-service-command
+  template:
+    metadata:
+      labels:
+        app: admin-service-command
+    spec:
+      containers:
+        - name: admin-service-command
+          image: springbankwithmicroservices/admin-service-command:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8097
+            - containerPort: 9197
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres:5432/banking_admin_command
+            - name: SPRING_DATASOURCE_USERNAME
+              value: banking_admin
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: banking_admin
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: update
+            - name: SPRING_JPA_PROPERTIES_HIBERNATE_HBM2DDL_AUTO
+              value: update
+            - name: ADMIN_SERVICE_COMMAND_PORT
+              value: "8097"
+            - name: ADMIN_SERVICE_COMMAND_GRPC_PORT
+              value: "9197"
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092
+            - name: ADMIN_SERVICE_COMMAND_TOPIC
+              value: banking-microservices.admin.history.command.v1
+            - name: ADMIN_SERVICE_PROJECTION_TOPIC
+              value: banking-microservices.admin.history.projection-sync.v1
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: admin-service-command
+  namespace: banking-microservices
+spec:
+  selector:
+    app: admin-service-command
+  ports:
+    - name: http
+      port: 8097
+      targetPort: 8097
+    - name: grpc
+      port: 9197
+      targetPort: 9197
+
+---
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: admin-service-command-hpa
+  namespace: banking-microservices
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: admin-service-command
+  minReplicas: 1
+  maxReplicas: 1
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 60
+
+---
+
+#
+# Admin Service Query -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-service-query
+  namespace: banking-microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: admin-service-query
+  template:
+    metadata:
+      labels:
+        app: admin-service-query
+    spec:
+      containers:
+        - name: admin-service-query
+          image: springbankwithmicroservices/admin-service-query:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8098
+            - containerPort: 9198
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "750m"
+          env:
+            - name: ADMIN_SERVICE_QUERY_PORT
+              value: "8098"
+            - name: ADMIN_SERVICE_QUERY_GRPC_PORT
+              value: "9198"
+            - name: SPRING_DATA_MONGODB_URI
+              value: mongodb://mongodb:27017/banking_admin_query
+            - name: SPRING_ELASTICSEARCH_URIS
+              value: http://elasticsearch:9200
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092
+            - name: SPRING_KAFKA_CONSUMER_GROUP_ID
+              value: admin-service-query-group
+            - name: ADMIN_SERVICE_PROJECTION_TOPIC
+              value: banking-microservices.admin.history.projection-sync.v1
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: admin-service-query
+  namespace: banking-microservices
+spec:
+  selector:
+    app: admin-service-query
+  ports:
+    - name: http
+      port: 8098
+      targetPort: 8098
+    - name: grpc
+      port: 9198
+      targetPort: 9198
+
+---
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: admin-service-query-hpa
+  namespace: banking-microservices
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: admin-service-query
+  minReplicas: 1
+  maxReplicas: 1
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 70
+
+---
+
+#
+# Admin Service -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-service
+  namespace: banking-microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: admin-service
+  template:
+    metadata:
+      labels:
+        app: admin-service
+    spec:
+      serviceAccountName: gateway-log-reader
+      containers:
+        - name: admin-service
+          image: springbankwithmicroservices/admin-service:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8096
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          env:
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092
+            - name: ADMIN_SERVICE_COMMAND_GRPC_ADDRESS
+              value: static://admin-service-command:9197
+            - name: ADMIN_SERVICE_QUERY_GRPC_ADDRESS
+              value: static://admin-service-query:9198
+            - name: ADMIN_SERVICE_PORT
+              value: "8096"
+            - name: TEST_LOG_ROOT
+              value: /tmp/springbank-test-logs
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: admin-service
+  namespace: banking-microservices
+spec:
+  selector:
+    app: admin-service
+  ports:
+    - port: 8096
+      targetPort: 8096
+
+---
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: admin-service-hpa
+  namespace: banking-microservices
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: admin-service
+  minReplicas: 1
+  maxReplicas: 1
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 60
+
+---
+
+#
 #Transaction-Service --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #
 
@@ -601,6 +904,8 @@ spec:
             - name: SPRING_DATASOURCE_PASSWORD
               value: banking_admin
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: update
+            - name: SPRING_JPA_PROPERTIES_HIBERNATE_HBM2DDL_AUTO
               value: update
 
             # PORT
@@ -724,6 +1029,12 @@ spec:
               value: http://transaction-service:8083 # SERVICE DISCOVERY ICIN
             - name: FRAUD_SERVICE_URL
               value: http://fraud-service:8085 # SERVICE DISCOVERY ICIN
+            - name: ADMIN_SERVICE_URL
+              value: http://admin-service:8096
+            - name: ADMIN_SERVICE_COMMAND_URL
+              value: http://admin-service-command:8097
+            - name: ADMIN_SERVICE_QUERY_URL
+              value: http://admin-service-query:8098
             - name: REDIS_HOST
               value: redis
             - name: SPRING_DATA_REDIS_PORT
@@ -830,6 +1141,8 @@ spec:
             - name: SPRING_DATASOURCE_PASSWORD
               value: banking_admin
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: update
+            - name: SPRING_JPA_PROPERTIES_HIBERNATE_HBM2DDL_AUTO
               value: update
 
             # PORT

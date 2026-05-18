@@ -460,29 +460,33 @@ function Sync-TestLogsToGateway {
     $script:LogsSyncedToGateway = $true
     $targetRoot = "/tmp/springbank-test-logs"
     $targetPath = "$targetRoot/full-e2e-$RunId"
-    $opStart = Get-Date
-    Write-DetailLog "sync" "START" "gateway test log sync" "SOURCE: $LogRoot`nTARGET: $Namespace/gateway:$targetPath"
-    try {
-        $pod = Get-PodByLabel "app=gateway"
-        $copySource = $LogRoot
-        if ($LogRoot.StartsWith($RepoRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
-            $copySource = ".\" + $LogRoot.Substring($RepoRoot.Length).TrimStart("\", "/")
+    $copySource = $LogRoot
+    if ($LogRoot.StartsWith($RepoRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
+        $copySource = ".\" + $LogRoot.Substring($RepoRoot.Length).TrimStart("\", "/")
+    }
+
+    foreach ($targetLabel in @("app=gateway", "app=admin-service")) {
+        $targetName = ($targetLabel -split "=")[1]
+        $opStart = Get-Date
+        Write-DetailLog "sync" "START" "$targetName test log sync" "SOURCE: $LogRoot`nTARGET: ${Namespace}/${targetName}:$targetPath"
+        try {
+            $pod = Get-PodByLabel $targetLabel
+            $mkdirArgs = @("-n", $Namespace, "exec", $pod, "--", "sh", "-lc", "mkdir -p '$targetRoot' && rm -rf '$targetPath'")
+            $copyArgs = @("-n", $Namespace, "cp", $copySource, "${pod}:$targetPath")
+            $mkdir = Invoke-ExternalCommand "kubectl" $mkdirArgs $SkipLongRunning
+            $copy = if ($mkdir.ExitCode -eq 0 -and -not $mkdir.TimedOut) { Invoke-ExternalCommand "kubectl" $copyArgs $SkipLongRunning } else { $null }
+            $duration = (Get-Date) - $opStart
+            if ($null -eq $copy -or $mkdir.TimedOut -or $mkdir.ExitCode -ne 0 -or $copy.TimedOut -or $copy.ExitCode -ne 0) {
+                Write-Host "[WARN] $targetName test log sync basarisiz." -ForegroundColor DarkYellow
+                Write-DetailLog "sync" "WARN" "$targetName test log sync" "SOURCE: $LogRoot`nCOPY_SOURCE: $copySource`nCOMMANDS:`nkubectl $($mkdirArgs -join ' ')`nkubectl $($copyArgs -join ' ')`nDURATION: $(Format-Duration $duration)`nMKDIR_EXIT: $($mkdir.ExitCode)`nMKDIR_TIMEOUT: $($mkdir.TimedOut)`nMKDIR_OUTPUT:`n$($mkdir.Output)`nCOPY_EXIT: $($copy.ExitCode)`nCOPY_TIMEOUT: $($copy.TimedOut)`nCOPY_OUTPUT:`n$($copy.Output)"
+                continue
+            }
+            Write-DetailLog "sync" "OK" "$targetName test log sync" "SOURCE: $LogRoot`nCOPY_SOURCE: $copySource`nCOMMANDS:`nkubectl $($mkdirArgs -join ' ')`nkubectl $($copyArgs -join ' ')`nDURATION: $(Format-Duration $duration)`nTARGET: $targetPath`nOUTPUT:`n$($copy.Output)"
+        } catch {
+            $duration = (Get-Date) - $opStart
+            Write-Host "[WARN] $targetName test log sync basarisiz: $($_.Exception.Message)" -ForegroundColor DarkYellow
+            Write-DetailLog "sync" "WARN" "$targetName test log sync" "SOURCE: $LogRoot`nTARGET: ${Namespace}/${targetName}:$targetPath`nDURATION: $(Format-Duration $duration)`nERROR: $($_.Exception.Message)"
         }
-        $mkdirArgs = @("-n", $Namespace, "exec", $pod, "--", "sh", "-lc", "mkdir -p '$targetRoot' && rm -rf '$targetPath'")
-        $copyArgs = @("-n", $Namespace, "cp", $copySource, "${pod}:$targetPath")
-        $mkdir = Invoke-ExternalCommand "kubectl" $mkdirArgs $SkipLongRunning
-        $copy = if ($mkdir.ExitCode -eq 0 -and -not $mkdir.TimedOut) { Invoke-ExternalCommand "kubectl" $copyArgs $SkipLongRunning } else { $null }
-        $duration = (Get-Date) - $opStart
-        if ($null -eq $copy -or $mkdir.TimedOut -or $mkdir.ExitCode -ne 0 -or $copy.TimedOut -or $copy.ExitCode -ne 0) {
-            Write-Host "[WARN] gateway test log sync basarisiz." -ForegroundColor DarkYellow
-            Write-DetailLog "sync" "WARN" "gateway test log sync" "SOURCE: $LogRoot`nCOPY_SOURCE: $copySource`nCOMMANDS:`nkubectl $($mkdirArgs -join ' ')`nkubectl $($copyArgs -join ' ')`nDURATION: $(Format-Duration $duration)`nMKDIR_EXIT: $($mkdir.ExitCode)`nMKDIR_TIMEOUT: $($mkdir.TimedOut)`nMKDIR_OUTPUT:`n$($mkdir.Output)`nCOPY_EXIT: $($copy.ExitCode)`nCOPY_TIMEOUT: $($copy.TimedOut)`nCOPY_OUTPUT:`n$($copy.Output)"
-            return
-        }
-        Write-DetailLog "sync" "OK" "gateway test log sync" "SOURCE: $LogRoot`nCOPY_SOURCE: $copySource`nCOMMANDS:`nkubectl $($mkdirArgs -join ' ')`nkubectl $($copyArgs -join ' ')`nDURATION: $(Format-Duration $duration)`nTARGET: $targetPath`nOUTPUT:`n$($copy.Output)"
-    } catch {
-        $duration = (Get-Date) - $opStart
-        Write-Host "[WARN] gateway test log sync basarisiz: $($_.Exception.Message)" -ForegroundColor DarkYellow
-        Write-DetailLog "sync" "WARN" "gateway test log sync" "SOURCE: $LogRoot`nTARGET: $Namespace/gateway:$targetPath`nDURATION: $(Format-Duration $duration)`nERROR: $($_.Exception.Message)"
     }
 }
 
@@ -519,9 +523,15 @@ function GatewayExecCurl($method, $url, $body = $null, $expected = @(200), $labe
     Write-DetailLog "pod-http" "START" $label "COMMAND:`nkubectl -n $Namespace exec $pod -- sh -lc `"$cmd`"`nSTART_ELAPSED_TOTAL: $(Format-Duration ($opStart - $script:RunStart))"
     $raw = Kube -Args @("-n", $Namespace, "exec", $pod, "--", "sh", "-lc", $cmd) -AllowFail
     $duration = (Get-Date) - $opStart
-    $lines = $raw -split "`r?`n"
-    $status = [int]($lines[-1])
-    $content = (($lines | Select-Object -First ($lines.Count - 1)) -join "`n")
+    $lines = @($raw -split "`r?`n")
+    $lastLine = if ($lines.Count -gt 0) { $lines[-1].Trim() } else { "" }
+    $status = 0
+    if ($lastLine -match '^\d{3}$') {
+        $status = [int]$lastLine
+        $content = (($lines | Select-Object -First ($lines.Count - 1)) -join "`n")
+    } else {
+        $content = $raw
+    }
     $script:HttpCounter++
     $okStatus = $expected -contains $status
     if ($okStatus) { Ok "$label HTTP $status" } else { Bad "$label HTTP $status expected $($expected -join ',') body=$content" }
@@ -637,9 +647,9 @@ try {
     Ok "tum deployment'lar available condition beklemesi tamam"
 
     $expectedDeployments = if (Is-FullMode) {
-        @("postgres","redis","mongodb","elasticsearch","zookeeper","kafka","keycloak","user-service","money-service","money-service-command","money-service-query","transaction-service","fraud-service","gateway")
+        @("postgres","redis","mongodb","elasticsearch","zookeeper","kafka","keycloak","admin-service","admin-service-command","admin-service-query","user-service","money-service","money-service-command","money-service-query","transaction-service","fraud-service","gateway")
     } else {
-        @("postgres","kafka","keycloak","user-service","money-service","transaction-service","gateway")
+        @("postgres","kafka","keycloak","admin-service","admin-service-command","admin-service-query","user-service","money-service","transaction-service","gateway")
     }
     foreach ($deployment in $expectedDeployments) {
         $ready = Kube -Args @("-n", $Namespace, "get", "deploy", $deployment, "-o", "jsonpath={.status.readyReplicas}") -AllowFail
@@ -647,9 +657,9 @@ try {
     }
 
     $expectedServices = if (Is-FullMode) {
-        @("postgres","redis","mongodb","elasticsearch","zookeeper","kafka","keycloak","user-service","money-service","money-service-command","money-service-query","transaction-service","fraud-service","gateway")
+        @("postgres","redis","mongodb","elasticsearch","zookeeper","kafka","keycloak","admin-service","admin-service-command","admin-service-query","user-service","money-service","money-service-command","money-service-query","transaction-service","fraud-service","gateway")
     } else {
-        @("postgres","kafka","keycloak","user-service","money-service","transaction-service","gateway")
+        @("postgres","kafka","keycloak","admin-service","admin-service-command","admin-service-query","user-service","money-service","transaction-service","gateway")
     }
     foreach ($service in $expectedServices) {
         Kube -Args @("-n", $Namespace, "get", "svc", $service) | Out-Null
@@ -703,8 +713,14 @@ try {
         return $health.Status -eq 200
     } 60 3 "fraud-service liveness HTTP 200" | Out-Null
     if (Is-FullMode) {
-        GatewayExecCurl GET "http://money-service-command:8092/api/money-service-command/v1/accounts/health" $null @(200) "money-service-command internal health" | Out-Null
-        GatewayExecCurl GET "http://money-service-query:8093/api/money-service-query/v1/accounts/health" $null @(200) "money-service-query internal health" | Out-Null
+        Wait-Until {
+            $health = GatewayExecCurl GET "http://money-service-command:8092/api/money-service-command/v1/accounts/health" $null @(0,200) "money-service-command internal health"
+            return $health.Status -eq 200
+        } 60 3 "money-service-command internal health HTTP 200" | Out-Null
+        Wait-Until {
+            $health = GatewayExecCurl GET "http://money-service-query:8093/api/money-service-query/v1/accounts/health" $null @(0,200) "money-service-query internal health"
+            return $health.Status -eq 200
+        } 60 3 "money-service-query internal health HTTP 200" | Out-Null
     } else {
         Skip-FullOnly "CQRS command/query internal health kontrolleri"
     }
@@ -718,13 +734,15 @@ try {
         "banking-microservices.transaction.completed.v1",
         "banking-microservices.transaction.failed.v1",
         "banking-microservices.transaction.money-blocked.v1",
+        "banking-microservices.money.projection-sync.v1",
         "banking-microservices.transaction.user-validation.request.v1",
         "banking-microservices.transaction.user-validation.success.v1",
         "banking-microservices.transaction.fraud.checked.v1",
         "banking-microservices.transaction.saga.created.v1",
         "banking-microservices.transaction.saga.money.completed.v1",
         "banking-microservices.transaction.saga.money.failed.v1",
-        "banking-microservices.transaction.money-blocked.v1"
+        "banking-microservices.transaction.money-blocked.v1",
+        "banking-microservices.money.projection-sync.v1"
     )
     $KafkaBeforeAll = @{}
     if (Is-FullMode) {
@@ -927,7 +945,8 @@ try {
         $adminHeaders = AuthHeaders $adminToken
         Invoke-Checked GET "/api/money-service/v1/admin/stats/summary" $adminHeaders $null @(200) "dev money admin summary" | Out-Null
         Invoke-Checked GET "/api/transaction-service/v1/admin/stats/summary" $adminHeaders $null @(200) "dev transaction admin summary" | Out-Null
-        Invoke-Checked GET "/api/gateway/admin/test-logs/runs" $adminHeaders $null @(200) "dev gateway test logs runs" | Out-Null
+        Invoke-Checked GET "/api/admin-service/test-logs/runs" $adminHeaders $null @(200) "dev admin-service test logs runs" | Out-Null
+        Invoke-Checked GET "/api/admin-service/v1/query/catalog" $adminHeaders $null @(200) "dev admin-service query catalog" | Out-Null
         Invoke-Checked GET "/admin.html" @{} $null @(200) "dev admin panel html" | Out-Null
         Invoke-Checked GET "/dashboard.html" @{} $null @(200) "dev dashboard html" | Out-Null
         Invoke-Checked GET "/transfer.html" @{} $null @(200) "dev transfer html" | Out-Null
@@ -995,10 +1014,24 @@ try {
         Invoke-Checked GET "/api/transaction-service/v1/saga/status?uuid=$($sagaByTx.Json.uuid)" $adminHeaders $null @(200) "saga status by saga uuid" | Out-Null
     }
     Invoke-Checked POST "/api/transaction-service/v1/admin/transactions/saga?eventUUID=" $adminHeaders $null @(400) "transaction admin manual saga bad request validation" | Out-Null
-    Invoke-Checked GET "/api/gateway/admin/logs/gateway/recent" $adminHeaders $null @(200,500) "gateway recent logs" | Out-Null
+    Invoke-Checked GET "/api/admin-service/logs/gateway/recent" $adminHeaders $null @(200,500) "gateway recent logs" | Out-Null
+    Invoke-Checked GET "/api/admin-service/test-logs/runs" $adminHeaders $null @(200) "admin-service test logs runs" | Out-Null
+    Invoke-Checked GET "/api/admin-service/v1/query/catalog" $adminHeaders $null @(200) "admin-service query catalog" | Out-Null
+    Invoke-Checked GET "/api/admin-service/v1/history?limit=5" $adminHeaders $null @(200) "admin-service history list" | Out-Null
+    Invoke-Checked GET "/api/admin-service/v1/query/kafka/topics" $adminHeaders $null @(200) "admin-service kafka topics" | Out-Null
+    $adminGrpcQuery = Invoke-Checked POST "/api/admin-service/v1/query/database" $adminHeaders @{ engine="postgres"; database="banking_admin_command"; query="select 1 as ok"; transport="grpc" } @(200) "admin-service database query grpc"
+    Assert-True (-not [string]::IsNullOrWhiteSpace($adminGrpcQuery.Json.requestId)) "admin-service grpc requestId var"
+    $adminKafkaQuery = Invoke-Checked POST "/api/admin-service/v1/query/database" $adminHeaders @{ engine="postgres"; database="banking_admin_command"; query="select request_id, status from admin_query_history order by requested_at desc limit 3"; transport="kafka" } @(200) "admin-service database query kafka accepted"
+    $adminHistoryRequestId = $adminKafkaQuery.Json.requestId
+    Assert-True (-not [string]::IsNullOrWhiteSpace($adminHistoryRequestId)) "admin-service kafka requestId var"
+    Wait-Until {
+        $historyItem = Invoke-Checked GET "/api/admin-service/v1/history/$adminHistoryRequestId" $adminHeaders $null @(200,404) "admin-service history poll"
+        ($historyItem.Status -eq 200) -and ($historyItem.Json.status -in @("COMPLETED","FAILED"))
+    } 90 5 "admin-service history completion" | Out-Null
+    Invoke-Checked GET "/api/admin-service/v1/history/$adminHistoryRequestId" $adminHeaders $null @(200) "admin-service history by requestId" | Out-Null
 
     Step "CQRS command/query servisleri internal gercek akisi"
-    $KafkaBeforeCqrs = Snapshot-KafkaOffsets @("banking-microservices.transaction.money-blocked.v1")
+    $KafkaBeforeCqrs = Snapshot-KafkaOffsets @("banking-microservices.money.projection-sync.v1")
     $cmdUser1 = "cmd-user-a-$RunId"
     $cmdUser2 = "cmd-user-b-$RunId"
     $cmdKey1 = "cmd-key-a-$RunId"
@@ -1017,15 +1050,18 @@ try {
     Assert-True ($cmdDb2 -match "^750(\.00)?\|0(\.00)?$") "command DB receiver money/blocked dogru: $cmdDb2"
 
     Wait-Until {
-        $query1 = GatewayExecCurl GET "http://money-service-query:8093/api/money-service-query/v1/accounts/user/$cmdUser1" $null @(200) "query by user command sender"
-        $query2 = GatewayExecCurl GET "http://money-service-query:8093/api/money-service-query/v1/accounts/user/$cmdUser2" $null @(200) "query by user command receiver"
-        ([decimal]$query1.Json.availableBalance -eq 2000) -and ([decimal]$query2.Json.availableBalance -eq 750)
+        $query1 = GatewayExecCurl GET "http://money-service-query:8093/api/money-service-query/v1/accounts/user/$cmdUser1" $null @(200,404) "query by user command sender"
+        $query2 = GatewayExecCurl GET "http://money-service-query:8093/api/money-service-query/v1/accounts/user/$cmdUser2" $null @(200,404) "query by user command receiver"
+        ($query1.Status -eq 200) -and
+        ($query2.Status -eq 200) -and
+        ([decimal]$query1.Json.availableBalance -eq 2000) -and
+        ([decimal]$query2.Json.availableBalance -eq 750)
     } 90 5 "money-service-query projection balances" | Out-Null
 
     GatewayExecCurl GET "http://money-service-query:8093/api/money-service-query/v1/accounts/iban/$cmdIban2" $null @(200) "query by iban receiver" | Out-Null
     GatewayExecCurl GET "http://money-service-query:8093/api/money-service-query/v1/accounts/search?keyword=$cmdUser2" $null @(200) "query search" | Out-Null
-    Assert-KafkaAdvanced $KafkaBeforeCqrs "banking-microservices.transaction.money-blocked.v1" "CQRS projection publish"
-    Kafka-ConsumeContains "banking-microservices.transaction.money-blocked.v1" $cmdUser2 "CQRS projection receiver event" | Out-Null
+    Assert-KafkaAdvanced $KafkaBeforeCqrs "banking-microservices.money.projection-sync.v1" "CQRS projection publish"
+    Kafka-ConsumeContains "banking-microservices.money.projection-sync.v1" $cmdUser2 "CQRS projection receiver event" | Out-Null
 
     $mongoPod = Get-PodByLabel "app=mongodb"
     $mongoBalance = Kube -Args @("-n", $Namespace, "exec", $mongoPod, "--", "mongosh", "--quiet", "banking_money_query", "--eval", "const d=db.money_accounts.findOne({userId:'$cmdUser2'}); d ? d.availableBalance.toString() : 'MISSING';") -AllowFail

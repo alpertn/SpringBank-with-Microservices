@@ -125,7 +125,7 @@ public class MoneyCommandService {
                 .availableBalance(account.getMoney())
                 .blockedBalance(account.getBlockedMoney())
                 .operationType(operationType)
-                .occurredAt(LocalDateTime.now())
+                .occurredAt(LocalDateTime.now().toString())
                 .sourceService("money-service-command")
                 .build();
 

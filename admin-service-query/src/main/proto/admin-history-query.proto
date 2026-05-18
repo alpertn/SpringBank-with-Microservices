@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.banking_microservices.admin_service_query.grpc";
+option java_outer_classname = "AdminHistoryQueryProto";
+
+package admin.query.v1;
+
+message AdminHistoryByRequestIdRequest {
+  string request_id = 1;
+}
+
+message AdminHistoryListRequest {
+  int32 limit = 1;
+  string keyword = 2;
+}
+
+message AdminHistoryResponse {
+  string request_id = 1;
+  string admin_email = 2;
+  string admin_password_masked = 3;
+  string transport = 4;
+  string request_type = 5;
+  string target_type = 6;
+  string target_name = 7;
+  string topic_name = 8;
+  string status = 9;
+  bool response_received = 10;
+  string response_type = 11;
+  string query_text = 12;
+  string request_payload = 13;
+  string response_payload = 14;
+  string error_message = 15;
+  string requested_at = 16;
+  string received_at = 17;
+}
+
+message AdminHistoryListResponse {
+  repeated AdminHistoryResponse items = 1;
+}
+
+service AdminHistoryQueryGrpcService {
+  rpc GetHistoryByRequestId(AdminHistoryByRequestIdRequest) returns (AdminHistoryResponse);
+  rpc ListHistory(AdminHistoryListRequest) returns (AdminHistoryListResponse);
+}

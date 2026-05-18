@@ -191,6 +191,68 @@ public class MoneyAdminController {
     }
 
     /**
+     * Admin manuel bloke/dondurma: istenen tutari veya freeze=true ise tum serbest bakiyeyi bloke eder.
+     */
+    @PostMapping("/account/block")
+    public ResponseEntity<?> blockFunds(@RequestBody Map<String, Object> body) {
+        String userId = String.valueOf(body.getOrDefault("userId", "")).trim();
+        boolean freeze = Boolean.parseBoolean(String.valueOf(body.getOrDefault("freeze", "false")));
+        log.warn(" ({}) > MoneyAdminController | blockFunds -> Admin bloke koyuyor. UserId: {}, Freeze: {}", currentTime.get(), userId, freeze);
+
+        if (userId.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "userId gerekli"));
+        }
+
+        Optional<UserMoney> found = userMoneyRepository.findByUserId(userId);
+        if (found.isEmpty()) {
+            found = userMoneyRepository.findAll().stream()
+                    .filter(u -> userId.equals(u.getKeycloakUserUUID()) || userId.equals(u.getUserIban()))
+                    .findFirst();
+        }
+        if (found.isEmpty()) {
+            log.warn(" ({}) > MoneyAdminController | blockFunds -> Hesap bulunamadi: {}", currentTime.get(), userId);
+            return ResponseEntity.notFound().build();
+        }
+
+        UserMoney acc = found.get();
+        BigDecimal available = acc.getMoney() != null ? acc.getMoney() : BigDecimal.ZERO;
+        BigDecimal currentBlocked = acc.getBlockedMoney() != null ? acc.getBlockedMoney() : BigDecimal.ZERO;
+        BigDecimal amount = freeze ? available : parseMoney(body.get("amount"));
+
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Bloke tutari 0'dan buyuk olmali"));
+        }
+        if (available.compareTo(amount) < 0) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "error", "Yetersiz serbest bakiye",
+                    "available", available,
+                    "requested", amount));
+        }
+
+        acc.setMoney(available.subtract(amount));
+        acc.setBlockedMoney(currentBlocked.add(amount));
+        userMoneyRepository.save(acc);
+
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("status", freeze ? "frozen" : "blocked");
+        result.put("userId", acc.getUserId());
+        result.put("userIban", acc.getUserIban());
+        result.put("blocked", amount);
+        result.put("newBalance", acc.getMoney());
+        result.put("newBlockedBalance", acc.getBlockedMoney());
+        return ResponseEntity.ok(result);
+    }
+
+    private BigDecimal parseMoney(Object value) {
+        if (value == null) return BigDecimal.ZERO;
+        try {
+            return new BigDecimal(String.valueOf(value).replace(",", ".")).setScale(2, RoundingMode.HALF_UP);
+        } catch (Exception ignored) {
+            return BigDecimal.ZERO;
+        }
+    }
+
+    /**
      * Bakiye araligina gore hesap dagilimi (grafik icin).
      */
     @GetMapping("/stats/distribution")

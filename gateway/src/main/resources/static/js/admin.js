@@ -284,6 +284,10 @@ const PAGE_TITLES = {
 
 let currentPage = '';
 PAGE_TITLES.testlogs = 'Test Loglari';
+PAGE_TITLES['advanced-search'] = 'Detayli Arama';
+PAGE_TITLES.queries = 'Tum Sorgular';
+PAGE_TITLES.ops = 'Admin Operasyon Merkezi';
+PAGE_TITLES.flow = 'Saga, Kafka ve CQRS';
 let healthTimer = null;
 
 function navigateTo(page) {
@@ -310,6 +314,10 @@ function navigateTo(page) {
     case 'health': checkHealth(); healthTimer = setInterval(checkHealth, 30000); break;
     case 'logs': break;
     case 'testlogs': initTestLogs(); break;
+    case 'advanced-search': window.initAdvancedSearch?.(); break;
+    case 'queries': window.initQueryWorkbench?.(); break;
+    case 'ops': window.initOpsCenter?.(); break;
+    case 'flow': window.initFlowMonitor?.(); break;
     case 'activity': renderActivity(); break;
   }
 }
@@ -1406,6 +1414,11 @@ const HEALTH_SVCS = [
   { name: 'Gateway', path: '/actuator/health' },
   { name: 'User Service', path: '/api/user-service/actuator/health' },
   { name: 'Money Service', path: '/api/money-service/actuator/health' },
+  { name: 'Money Service Command', path: '/api/money-service-command/actuator/health' },
+  { name: 'Money Service Query', path: '/api/money-service-query/actuator/health' },
+  { name: 'Admin Service', path: '/api/admin-service/actuator/health' },
+  { name: 'Admin Service Command', path: '/api/admin-service-command/actuator/health' },
+  { name: 'Admin Service Query', path: '/api/admin-service-query/actuator/health' },
   { name: 'Transaction Service', path: '/api/transaction-service/actuator/health' },
   { name: 'Fraud Service', path: '/api/fraud-service/actuator/health' },
 ];
@@ -1540,7 +1553,7 @@ function startLogs(svc) {
   // SSE bağlantısı — token query param olarak gönderilir
   // (EventSource API, Authorization header gönderemez, gateway'deki
   //  SseTokenQueryParamFilter bu parametreyi header'a çevirir)
-  const url = `/api/gateway/admin/logs/${svc}?tail=${tail}&token=${encodeURIComponent(tok)}`;
+  const url = `/api/admin-service/logs/${svc}?tail=${tail}&token=${encodeURIComponent(tok)}`;
 
   logEventSource = new EventSource(url);
 
@@ -1627,7 +1640,7 @@ function startPollingLogs(svc, tail) {
 async function fetchRecentLogs(svc, lines) {
   const term = document.getElementById('log-terminal');
   try {
-    const res = await fetchAuth(`/api/gateway/admin/logs/${svc}/recent?lines=${lines}`);
+    const res = await fetchAuth(`/api/admin-service/logs/${svc}/recent?lines=${lines}`);
     if (!res.ok) {
       if (res.status === 401) {
         logLine(term, 'error', '[HATA] Yetkilendirme hatası — lütfen tekrar giriş yapın.');
@@ -1848,7 +1861,7 @@ async function loadTestLogRuns() {
   if (!select || !term) return;
   term.textContent = 'Test loglari yukleniyor...';
   try {
-    testLogRunsCache = await api('GET', '/api/gateway/admin/test-logs/runs') || [];
+    testLogRunsCache = await api('GET', '/api/admin-service/test-logs/runs') || [];
     select.innerHTML = testLogRunsCache.length
       ? testLogRunsCache.map(r => `<option value="${escHtml(r.runId)}">${escHtml(r.runId)} (${escHtml(r.modifiedAt || '')})</option>`).join('')
       : '<option value="">Log bulunamadi</option>';
@@ -1873,7 +1886,7 @@ async function loadSelectedTestLog() {
   renderTestLogRunMeta(testLogRunsCache.find(run => run.runId === runId) || null);
   term.textContent = `${runId}/${file}.txt okunuyor...`;
   try {
-    const res = await fetchAuth(`/api/gateway/admin/test-logs/${encodeURIComponent(runId)}/${encodeURIComponent(file)}?lines=1200`);
+    const res = await fetchAuth(`/api/admin-service/test-logs/${encodeURIComponent(runId)}/${encodeURIComponent(file)}?lines=1200`);
     const text = await res.text();
     if (!res.ok) throw new Error(text || `HTTP ${res.status}`);
     term.textContent = text || 'Dosya bos.';

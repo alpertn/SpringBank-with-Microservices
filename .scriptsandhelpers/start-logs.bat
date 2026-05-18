@@ -1,13 +1,23 @@
 @echo off
-set SCRIPT=%TEMP%\kube_logs_temp.ps1
+chcp 65001 >nul
+setlocal
 
-echo $LOG_DIR = 'logs' > %SCRIPT%
-echo if (-not (Test-Path $LOG_DIR)) { New-Item -ItemType Directory -Path $LOG_DIR ^| Out-Null } >> %SCRIPT%
-echo $INDEX = 1 >> %SCRIPT%
-echo while (Test-Path "$LOG_DIR\logs$INDEX.log") { $INDEX++ } >> %SCRIPT%
-echo $LOG_FILE = "$LOG_DIR\logs$INDEX.log" >> %SCRIPT%
-echo Write-Host 'Loglar yaziliyor:' $LOG_FILE >> %SCRIPT%
-echo kubectl logs -n banking-microservices -l 'app in (gateway, user-service, transaction-service, money-service, money-service-command, money-service-query, fraud-service)' -f --max-log-requests=50 ^| Tee-Object -FilePath $LOG_FILE >> %SCRIPT%
+set "SCRIPT_DIR=%~dp0"
+set "REPO_ROOT=%SCRIPT_DIR%.."
+set "LOG_DIR=%SCRIPT_DIR%logs"
+set "NAMESPACE=banking-microservices"
 
-powershell -ExecutionPolicy Bypass -File %SCRIPT%
+if not exist "%LOG_DIR%" mkdir "%LOG_DIR%"
+
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command ^
+  "$ErrorActionPreference='Stop';" ^
+  "$logDir=$env:LOG_DIR;" ^
+  "$namespace=$env:NAMESPACE;" ^
+  "$index=1;" ^
+  "while(Test-Path (Join-Path $logDir ('logs' + $index + '.log'))){$index++};" ^
+  "$logFile=Join-Path $logDir ('logs' + $index + '.log');" ^
+  "Write-Host ('Loglar yaziliyor: ' + $logFile) -ForegroundColor Cyan;" ^
+  "Write-Host 'Izlenen servisler: gateway, admin-service, admin-service-command, admin-service-query, user-service, money-service, money-service-command, money-service-query, transaction-service, fraud-service' -ForegroundColor DarkCyan;" ^
+  "kubectl logs -n $namespace -l 'app in (gateway,admin-service,admin-service-command,admin-service-query,user-service,money-service,money-service-command,money-service-query,transaction-service,fraud-service)' -f --tail=200 --max-log-requests=50 | Tee-Object -FilePath $logFile"
+
 pause

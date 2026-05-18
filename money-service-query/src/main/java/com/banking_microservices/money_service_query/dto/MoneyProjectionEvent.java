@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -22,6 +21,6 @@ public class MoneyProjectionEvent {
     private BigDecimal availableBalance;
     private BigDecimal blockedBalance;
     private String operationType;
-    private LocalDateTime occurredAt;
+    private String occurredAt;
     private String sourceService;
 }

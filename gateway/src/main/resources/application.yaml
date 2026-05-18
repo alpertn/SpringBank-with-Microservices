@@ -27,6 +27,21 @@ spring:
           predicates:
             - Path=/api/fraud-service/**
 
+        - id: admin-service
+          uri: ${ADMIN_SERVICE_URL:http://admin-service:8096}
+          predicates:
+            - Path=/api/admin-service/**
+
+        - id: admin-service-query
+          uri: ${ADMIN_SERVICE_QUERY_URL:http://admin-service-query:8098}
+          predicates:
+            - Path=/api/admin-service-query/**
+
+        - id: admin-service-command
+          uri: ${ADMIN_SERVICE_COMMAND_URL:http://admin-service-command:8097}
+          predicates:
+            - Path=/api/admin-service-command/**
+
   security:
     oauth2:
       resourceserver:

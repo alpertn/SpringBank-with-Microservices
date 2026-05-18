@@ -38,6 +38,8 @@ spring:
     show-sql: false
     properties:
       hibernate:
+        hbm2ddl:
+          auto: ${SPRING_JPA_PROPERTIES_HIBERNATE_HBM2DDL_AUTO:update}
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
 

@@ -80,3 +80,12 @@ select money || '|' || blocked_money from money_accounts where user_id='cmd-user
 RESULT:
 
 --------------------------------------------------------------------------------
+[02:17:55][elapsed=325980ms / 325.98s / 5.433m][db][OK] postgres:banking_transactions
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-pp9ph -- psql -U banking_admin -d banking_transactions -t -A -c "select count(*) from transactions where sender_user_id='95fc80d4-08c5-47d2-8697-9f7796b0562b' and error=true;"
+DURATION: 393ms / 0.393s / 0.007m
+SQL:
+select count(*) from transactions where sender_user_id='95fc80d4-08c5-47d2-8697-9f7796b0562b' and error=true;
+RESULT:
+1
+--------------------------------------------------------------------------------

@@ -256,3 +256,59 @@ PS>TerminatingError(Add-Content): "The running command stopped because the prefe
 [FAIL] command DB sender money/blocked dogru:
 [FAIL] command DB receiver money/blocked dogru:
 [FAIL] query by user command sender HTTP 500 expected 200 body={"timestamp":"2026-05-16T23:17:01.914Z","status":500,"error":"Internal Server Error","path":"/api/money-service-query/v1/accounts/user/cmd-user-a-20260517021229-m6a4bs"}
+[FAIL] query by user command receiver HTTP 500 expected 200 body={"timestamp":"2026-05-16T23:17:32.344Z","status":500,"error":"Internal Server Error","path":"/api/money-service-query/v1/accounts/user/cmd-user-b-20260517021229-m6a4bs"}
+[SKIP] money-service-query projection balances 1 dakikayi asti, atlandi. Last=False
+[FAIL] query by iban receiver HTTP 404 expected 200 body={"timestamp":"2026-05-16T23:17:37.858Z","status":404,"error":"Not Found","path":"/api/money-service-query/v1/accounts/iban/"}
+[FAIL] query search HTTP 500 expected 200 body={"timestamp":"2026-05-16T23:17:38.442Z","status":500,"error":"Internal Server Error","path":"/api/money-service-query/v1/accounts/search"}
+[FAIL] CQRS projection publish Kafka offset advanced banking-microservices.transaction.money-blocked.v1 13 -> 13
+[FAIL] CQRS projection receiver event Kafka mesaj icerigi bulundu topic=banking-microservices.transaction.money-blocked.v1 needle=cmd-user-b-20260517021229-m6a4bs
+[FAIL] Mongo projection receiver balance 750: MISSING
+[OK]   Elasticsearch money-accounts search HTTP 404
+[FAIL] Elasticsearch money-accounts index searchable
+[SKIP] Step 1 dakikayi asti: CQRS command/query servisleri internal gercek akisi duration=87938ms / 87.938s / 1.466m
+
+==== Negatif/error senaryolari ====
+[OK]   user1 refresh before negative scenario login HTTP 200
+[OK]   user1 refresh before negative scenario access_token alindi
+[OK]   insufficient transfer accepted into saga HTTP 201
+[OK]   insufficient funds eventually records error satisfied
+[OK]   negative transfer failed event Kafka offset advanced banking-microservices.transaction.failed.v1 7 -> 9
+[OK]   errors after negative scenario HTTP 200
+PS>TerminatingError(Add-Content): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: İşlem, başka bir işlem tarafından kullanıldığından 'C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260517021229-m6a4bs\all-logs.txt' dosyasına erişemiyor."
+
+==== Servis loglari ====
+[OK]   user-service pod log icinde '20260517021229-m6a4bs' bulundu
+[OK]   money-service pod log icinde '20260517021229-m6a4bs' bulundu
+PS>TerminatingError(Add-Content): "The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: İşlem, başka bir işlem tarafından kullanıldığından 'C:\Users\alper\Music\SpringBank-with-Microservices - Kopya (2)\SpringBank-with-Microservices\.scriptsandhelpers\logs\full-e2e-20260517021229-m6a4bs\kubectl.txt' dosyasına erişemiyor."
+[OK]   transaction-service pod log icinde '20260517021229-m6a4bs' bulundu
+[OK]   fraud-service pod log icinde 'a26f2500-859f-4737-be82-11ff5b855b93' bulundu
+[INFO] money-service-command pod log icinde 'cmd-user-b-20260517021229-m6a4bs' bulunamadi; log kaydedildi
+[INFO] money-service-query pod log icinde 'cmd-user-b-20260517021229-m6a4bs' bulunamadi; log kaydedildi
+[INFO] gateway pod log icinde '20260517021229-m6a4bs' bulunamadi; log kaydedildi
+
+==== Logout ====
+[OK]   logout user2 refresh token HTTP 200
+
+==== Son ozet ====
+
+TESTLERDE HATA VAR. Pass=200 Fail=16 RunId=20260517021229-m6a4bs Duration=330869ms / 330.869s / 5.514m
+ - command create account 1 HTTP 503 expected 201 body={"message":"Projection event could not be published for eventId=3db3e7a7-3ee6-46cf-8a4d-d3889c0122c2","errorCode":"MONEY_COMMAND_INFRA","timestamp":"2026-05-16T23:16:28.444899801"}
+ - command create account 2 HTTP 503 expected 201 body={"message":"Projection event could not be published for eventId=accdabaa-ef90-4120-a298-256bd765715d","errorCode":"MONEY_COMMAND_INFRA","timestamp":"2026-05-16T23:16:28.909635221"}
+ - command deposit HTTP 404 expected 200 body={"message":"Money account not found for userId=cmd-user-a-20260517021229-m6a4bs","errorCode":"ACCOUNT_NOT_FOUND","timestamp":"2026-05-16T23:16:29.344379549"}
+ - command withdraw HTTP 404 expected 200 body={"message":"Money account not found for userId=cmd-user-a-20260517021229-m6a4bs","errorCode":"ACCOUNT_NOT_FOUND","timestamp":"2026-05-16T23:16:29.710368166"}
+ - command block money HTTP 400 expected 200 body={"message":"senderIban must not be blank","errorCode":"VALIDATION_ERROR","timestamp":"2026-05-16T23:16:30.131835143"}
+ - command execute transfer HTTP 400 expected 200 body={"message":"senderIban must not be blank","errorCode":"VALIDATION_ERROR","timestamp":"2026-05-16T23:16:30.611463137"}
+ - command DB sender money/blocked dogru:
+ - command DB receiver money/blocked dogru:
+ - query by user command sender HTTP 500 expected 200 body={"timestamp":"2026-05-16T23:17:01.914Z","status":500,"error":"Internal Server Error","path":"/api/money-service-query/v1/accounts/user/cmd-user-a-20260517021229-m6a4bs"}
+ - query by user command receiver HTTP 500 expected 200 body={"timestamp":"2026-05-16T23:17:32.344Z","status":500,"error":"Internal Server Error","path":"/api/money-service-query/v1/accounts/user/cmd-user-b-20260517021229-m6a4bs"}
+ - query by iban receiver HTTP 404 expected 200 body={"timestamp":"2026-05-16T23:17:37.858Z","status":404,"error":"Not Found","path":"/api/money-service-query/v1/accounts/iban/"}
+ - query search HTTP 500 expected 200 body={"timestamp":"2026-05-16T23:17:38.442Z","status":500,"error":"Internal Server Error","path":"/api/money-service-query/v1/accounts/search"}
+ - CQRS projection publish Kafka offset advanced banking-microservices.transaction.money-blocked.v1 13 -> 13
+ - CQRS projection receiver event Kafka mesaj icerigi bulundu topic=banking-microservices.transaction.money-blocked.v1 needle=cmd-user-b-20260517021229-m6a4bs
+ - Mongo projection receiver balance 750: MISSING
+ - Elasticsearch money-accounts index searchable
+**********************
+Windows PowerShell transcript end
+End time: 20260517021800
+**********************

@@ -1,0 +1,633 @@
+
+[01:17:14][elapsed=447ms / 0.447s / 0.007m][kubectl][START] --request-timeout=60s config current-context
+COMMAND:
+kubectl --request-timeout=60s config current-context
+START_ELAPSED_TOTAL: 446ms / 0.446s / 0.007m
+--------------------------------------------------------------------------------
+[01:17:14][elapsed=742ms / 0.742s / 0.012m][kubectl][OK] --request-timeout=60s config current-context
+COMMAND:
+kubectl --request-timeout=60s config current-context
+DURATION: 204ms / 0.204s / 0.003m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+docker-desktop
+--------------------------------------------------------------------------------
+[01:17:14][elapsed=752ms / 0.752s / 0.013m][kubectl][START] --request-timeout=10s cluster-info
+COMMAND:
+kubectl --request-timeout=10s cluster-info
+START_ELAPSED_TOTAL: 752ms / 0.752s / 0.013m
+--------------------------------------------------------------------------------
+[01:17:14][elapsed=966ms / 0.966s / 0.016m][kubectl][OK] --request-timeout=10s cluster-info
+COMMAND:
+kubectl --request-timeout=10s cluster-info
+DURATION: 166ms / 0.166s / 0.003m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+Kubernetes control plane is running at https://kubernetes.docker.internal:6443
+CoreDNS is running at https://kubernetes.docker.internal:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+--------------------------------------------------------------------------------
+[01:17:14][elapsed=975ms / 0.975s / 0.016m][kubectl][START] --request-timeout=60s get namespace banking-microservices
+COMMAND:
+kubectl --request-timeout=60s get namespace banking-microservices
+START_ELAPSED_TOTAL: 975ms / 0.975s / 0.016m
+--------------------------------------------------------------------------------
+[01:17:14][elapsed=1129ms / 1.129s / 0.019m][kubectl][OK] --request-timeout=60s get namespace banking-microservices
+COMMAND:
+kubectl --request-timeout=60s get namespace banking-microservices
+DURATION: 147ms / 0.147s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME                    STATUS   AGE
+banking-microservices   Active   20m
+--------------------------------------------------------------------------------
+[01:17:14][elapsed=1135ms / 1.135s / 0.019m][kubectl][START] --request-timeout=60s -n banking-microservices wait --for=condition=available deployment --all --timeout=90s
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices wait --for=condition=available deployment --all --timeout=90s
+START_ELAPSED_TOTAL: 1135ms / 1.135s / 0.019m
+--------------------------------------------------------------------------------
+[01:17:16][elapsed=3050ms / 3.05s / 0.051m][kubectl][OK] --request-timeout=60s -n banking-microservices wait --for=condition=available deployment --all --timeout=90s
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices wait --for=condition=available deployment --all --timeout=90s
+DURATION: 1907ms / 1.907s / 0.032m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+deployment.apps/admin-service condition met
+deployment.apps/admin-service-command condition met
+deployment.apps/admin-service-query condition met
+deployment.apps/elasticsearch condition met
+deployment.apps/fraud-service condition met
+deployment.apps/gateway condition met
+deployment.apps/kafka condition met
+deployment.apps/keycloak condition met
+deployment.apps/money-service condition met
+deployment.apps/money-service-command condition met
+deployment.apps/money-service-query condition met
+deployment.apps/mongodb condition met
+deployment.apps/postgres condition met
+deployment.apps/redis condition met
+deployment.apps/transaction-service condition met
+deployment.apps/user-service condition met
+deployment.apps/zookeeper condition met
+--------------------------------------------------------------------------------
+[01:17:16][elapsed=3068ms / 3.068s / 0.051m][kubectl][START] --request-timeout=60s -n banking-microservices get deploy postgres -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy postgres -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 3067ms / 3.067s / 0.051m
+--------------------------------------------------------------------------------
+[01:17:17][elapsed=3226ms / 3.226s / 0.054m][kubectl][OK] --request-timeout=60s -n banking-microservices get deploy postgres -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy postgres -o jsonpath={.status.readyReplicas}
+DURATION: 144ms / 0.144s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[01:17:17][elapsed=3241ms / 3.241s / 0.054m][kubectl][START] --request-timeout=60s -n banking-microservices get deploy kafka -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy kafka -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 3241ms / 3.241s / 0.054m
+--------------------------------------------------------------------------------
+[01:17:17][elapsed=3369ms / 3.369s / 0.056m][kubectl][OK] --request-timeout=60s -n banking-microservices get deploy kafka -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy kafka -o jsonpath={.status.readyReplicas}
+DURATION: 116ms / 0.116s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[01:17:17][elapsed=3378ms / 3.378s / 0.056m][kubectl][START] --request-timeout=60s -n banking-microservices get deploy keycloak -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy keycloak -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 3377ms / 3.377s / 0.056m
+--------------------------------------------------------------------------------
+[01:17:17][elapsed=3540ms / 3.54s / 0.059m][kubectl][OK] --request-timeout=60s -n banking-microservices get deploy keycloak -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy keycloak -o jsonpath={.status.readyReplicas}
+DURATION: 156ms / 0.156s / 0.003m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[01:17:17][elapsed=3545ms / 3.545s / 0.059m][kubectl][START] --request-timeout=60s -n banking-microservices get deploy admin-service -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy admin-service -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 3545ms / 3.545s / 0.059m
+--------------------------------------------------------------------------------
+[01:17:17][elapsed=3663ms / 3.663s / 0.061m][kubectl][OK] --request-timeout=60s -n banking-microservices get deploy admin-service -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy admin-service -o jsonpath={.status.readyReplicas}
+DURATION: 110ms / 0.11s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[01:17:17][elapsed=3671ms / 3.671s / 0.061m][kubectl][START] --request-timeout=60s -n banking-microservices get deploy admin-service-command -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy admin-service-command -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 3671ms / 3.671s / 0.061m
+--------------------------------------------------------------------------------
+[01:17:17][elapsed=3783ms / 3.783s / 0.063m][kubectl][OK] --request-timeout=60s -n banking-microservices get deploy admin-service-command -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy admin-service-command -o jsonpath={.status.readyReplicas}
+DURATION: 106ms / 0.106s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[01:17:17][elapsed=3789ms / 3.789s / 0.063m][kubectl][START] --request-timeout=60s -n banking-microservices get deploy admin-service-query -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy admin-service-query -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 3788ms / 3.788s / 0.063m
+--------------------------------------------------------------------------------
+[01:17:17][elapsed=3903ms / 3.903s / 0.065m][kubectl][OK] --request-timeout=60s -n banking-microservices get deploy admin-service-query -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy admin-service-query -o jsonpath={.status.readyReplicas}
+DURATION: 108ms / 0.108s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[01:17:17][elapsed=3909ms / 3.909s / 0.065m][kubectl][START] --request-timeout=60s -n banking-microservices get deploy user-service -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy user-service -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 3909ms / 3.909s / 0.065m
+--------------------------------------------------------------------------------
+[01:17:17][elapsed=4021ms / 4.021s / 0.067m][kubectl][OK] --request-timeout=60s -n banking-microservices get deploy user-service -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy user-service -o jsonpath={.status.readyReplicas}
+DURATION: 107ms / 0.107s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[01:17:17][elapsed=4027ms / 4.027s / 0.067m][kubectl][START] --request-timeout=60s -n banking-microservices get deploy money-service -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy money-service -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 4027ms / 4.027s / 0.067m
+--------------------------------------------------------------------------------
+[01:17:17][elapsed=4144ms / 4.144s / 0.069m][kubectl][OK] --request-timeout=60s -n banking-microservices get deploy money-service -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy money-service -o jsonpath={.status.readyReplicas}
+DURATION: 110ms / 0.11s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[01:17:17][elapsed=4151ms / 4.151s / 0.069m][kubectl][START] --request-timeout=60s -n banking-microservices get deploy transaction-service -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy transaction-service -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 4149ms / 4.149s / 0.069m
+--------------------------------------------------------------------------------
+[01:17:18][elapsed=4283ms / 4.283s / 0.071m][kubectl][OK] --request-timeout=60s -n banking-microservices get deploy transaction-service -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy transaction-service -o jsonpath={.status.readyReplicas}
+DURATION: 125ms / 0.125s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[01:17:18][elapsed=4292ms / 4.292s / 0.072m][kubectl][START] --request-timeout=60s -n banking-microservices get deploy gateway -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy gateway -o jsonpath={.status.readyReplicas}
+START_ELAPSED_TOTAL: 4291ms / 4.291s / 0.072m
+--------------------------------------------------------------------------------
+[01:17:18][elapsed=4427ms / 4.427s / 0.074m][kubectl][OK] --request-timeout=60s -n banking-microservices get deploy gateway -o jsonpath={.status.readyReplicas}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get deploy gateway -o jsonpath={.status.readyReplicas}
+DURATION: 108ms / 0.108s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: True
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[01:17:18][elapsed=4433ms / 4.433s / 0.074m][kubectl][START] --request-timeout=60s -n banking-microservices get svc postgres
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc postgres
+START_ELAPSED_TOTAL: 4433ms / 4.433s / 0.074m
+--------------------------------------------------------------------------------
+[01:17:18][elapsed=4551ms / 4.551s / 0.076m][kubectl][OK] --request-timeout=60s -n banking-microservices get svc postgres
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc postgres
+DURATION: 111ms / 0.111s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME       TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+postgres   ClusterIP   10.98.228.162   <none>        5432/TCP   20m
+--------------------------------------------------------------------------------
+[01:17:18][elapsed=4555ms / 4.555s / 0.076m][kubectl][START] --request-timeout=60s -n banking-microservices get svc kafka
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc kafka
+START_ELAPSED_TOTAL: 4555ms / 4.555s / 0.076m
+--------------------------------------------------------------------------------
+[01:17:18][elapsed=4667ms / 4.667s / 0.078m][kubectl][OK] --request-timeout=60s -n banking-microservices get svc kafka
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc kafka
+DURATION: 105ms / 0.105s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME    TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+kafka   ClusterIP   10.99.171.113   <none>        9092/TCP   20m
+--------------------------------------------------------------------------------
+[01:17:18][elapsed=4674ms / 4.674s / 0.078m][kubectl][START] --request-timeout=60s -n banking-microservices get svc keycloak
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc keycloak
+START_ELAPSED_TOTAL: 4673ms / 4.673s / 0.078m
+--------------------------------------------------------------------------------
+[01:17:18][elapsed=4790ms / 4.79s / 0.08m][kubectl][OK] --request-timeout=60s -n banking-microservices get svc keycloak
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc keycloak
+DURATION: 109ms / 0.109s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME       TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+keycloak   LoadBalancer   10.105.72.123   localhost     8080:31404/TCP   20m
+--------------------------------------------------------------------------------
+[01:17:18][elapsed=4796ms / 4.796s / 0.08m][kubectl][START] --request-timeout=60s -n banking-microservices get svc admin-service
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc admin-service
+START_ELAPSED_TOTAL: 4796ms / 4.796s / 0.08m
+--------------------------------------------------------------------------------
+[01:17:18][elapsed=4914ms / 4.914s / 0.082m][kubectl][OK] --request-timeout=60s -n banking-microservices get svc admin-service
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc admin-service
+DURATION: 111ms / 0.111s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+admin-service   ClusterIP   10.111.63.147   <none>        8096/TCP   20m
+--------------------------------------------------------------------------------
+[01:17:18][elapsed=4919ms / 4.919s / 0.082m][kubectl][START] --request-timeout=60s -n banking-microservices get svc admin-service-command
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc admin-service-command
+START_ELAPSED_TOTAL: 4919ms / 4.919s / 0.082m
+--------------------------------------------------------------------------------
+[01:17:18][elapsed=5049ms / 5.049s / 0.084m][kubectl][OK] --request-timeout=60s -n banking-microservices get svc admin-service-command
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc admin-service-command
+DURATION: 123ms / 0.123s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME                    TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)             AGE
+admin-service-command   ClusterIP   10.97.10.8   <none>        8097/TCP,9197/TCP   20m
+--------------------------------------------------------------------------------
+[01:17:18][elapsed=5057ms / 5.057s / 0.084m][kubectl][START] --request-timeout=60s -n banking-microservices get svc admin-service-query
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc admin-service-query
+START_ELAPSED_TOTAL: 5056ms / 5.056s / 0.084m
+--------------------------------------------------------------------------------
+[01:17:18][elapsed=5182ms / 5.182s / 0.086m][kubectl][OK] --request-timeout=60s -n banking-microservices get svc admin-service-query
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc admin-service-query
+DURATION: 119ms / 0.119s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME                  TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
+admin-service-query   ClusterIP   10.101.229.121   <none>        8098/TCP,9198/TCP   20m
+--------------------------------------------------------------------------------
+[01:17:18][elapsed=5188ms / 5.188s / 0.086m][kubectl][START] --request-timeout=60s -n banking-microservices get svc user-service
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc user-service
+START_ELAPSED_TOTAL: 5188ms / 5.188s / 0.086m
+--------------------------------------------------------------------------------
+[01:17:19][elapsed=5308ms / 5.308s / 0.088m][kubectl][OK] --request-timeout=60s -n banking-microservices get svc user-service
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc user-service
+DURATION: 111ms / 0.111s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME           TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
+user-service   ClusterIP   10.102.231.152   <none>        8081/TCP,9194/TCP   20m
+--------------------------------------------------------------------------------
+[01:17:19][elapsed=5316ms / 5.316s / 0.089m][kubectl][START] --request-timeout=60s -n banking-microservices get svc money-service
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc money-service
+START_ELAPSED_TOTAL: 5316ms / 5.316s / 0.089m
+--------------------------------------------------------------------------------
+[01:17:19][elapsed=5430ms / 5.43s / 0.091m][kubectl][OK] --request-timeout=60s -n banking-microservices get svc money-service
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc money-service
+DURATION: 107ms / 0.107s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME            TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+money-service   ClusterIP   10.96.82.249   <none>        8082/TCP   20m
+--------------------------------------------------------------------------------
+[01:17:19][elapsed=5435ms / 5.435s / 0.091m][kubectl][START] --request-timeout=60s -n banking-microservices get svc transaction-service
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc transaction-service
+START_ELAPSED_TOTAL: 5435ms / 5.435s / 0.091m
+--------------------------------------------------------------------------------
+[01:17:19][elapsed=5626ms / 5.626s / 0.094m][kubectl][OK] --request-timeout=60s -n banking-microservices get svc transaction-service
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc transaction-service
+DURATION: 184ms / 0.184s / 0.003m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME                  TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+transaction-service   ClusterIP   10.111.8.218   <none>        8083/TCP   20m
+--------------------------------------------------------------------------------
+[01:17:19][elapsed=5633ms / 5.633s / 0.094m][kubectl][START] --request-timeout=60s -n banking-microservices get svc gateway
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc gateway
+START_ELAPSED_TOTAL: 5633ms / 5.633s / 0.094m
+--------------------------------------------------------------------------------
+[01:17:19][elapsed=5752ms / 5.752s / 0.096m][kubectl][OK] --request-timeout=60s -n banking-microservices get svc gateway
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get svc gateway
+DURATION: 113ms / 0.113s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+NAME      TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+gateway   LoadBalancer   10.108.75.197   localhost     8095:30252/TCP   20m
+--------------------------------------------------------------------------------
+[01:17:28][elapsed=15123ms / 15.123s / 0.252m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 15122ms / 15.122s / 0.252m
+--------------------------------------------------------------------------------
+[01:17:29][elapsed=15314ms / 15.314s / 0.255m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+DURATION: 184ms / 0.184s / 0.003m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+postgres-dc8bdbd65-hn6vt
+--------------------------------------------------------------------------------
+[01:17:29][elapsed=15319ms / 15.319s / 0.255m][kubectl][START] -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_keycloak -t -A -c select count(*) from user_entity where lower(email)=lower('e2e.alpha.20260519011713-jxp52t@springbank.test');
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_keycloak -t -A -c select count(*) from user_entity where lower(email)=lower('e2e.alpha.20260519011713-jxp52t@springbank.test');
+START_ELAPSED_TOTAL: 15319ms / 15.319s / 0.255m
+--------------------------------------------------------------------------------
+[01:17:29][elapsed=15577ms / 15.577s / 0.26m][kubectl][OK] -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_keycloak -t -A -c select count(*) from user_entity where lower(email)=lower('e2e.alpha.20260519011713-jxp52t@springbank.test');
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_keycloak -t -A -c select count(*) from user_entity where lower(email)=lower('e2e.alpha.20260519011713-jxp52t@springbank.test');
+DURATION: 251ms / 0.251s / 0.004m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[01:17:29][elapsed=15585ms / 15.585s / 0.26m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 15585ms / 15.585s / 0.26m
+--------------------------------------------------------------------------------
+[01:17:29][elapsed=15712ms / 15.712s / 0.262m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+DURATION: 117ms / 0.117s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+postgres-dc8bdbd65-hn6vt
+--------------------------------------------------------------------------------
+[01:17:29][elapsed=15716ms / 15.716s / 0.262m][kubectl][START] -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_keycloak -t -A -c select count(*) from user_entity where lower(email)=lower('e2e.beta.20260519011713-jxp52t@springbank.test');
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_keycloak -t -A -c select count(*) from user_entity where lower(email)=lower('e2e.beta.20260519011713-jxp52t@springbank.test');
+START_ELAPSED_TOTAL: 15716ms / 15.716s / 0.262m
+--------------------------------------------------------------------------------
+[01:17:29][elapsed=15938ms / 15.938s / 0.266m][kubectl][OK] -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_keycloak -t -A -c select count(*) from user_entity where lower(email)=lower('e2e.beta.20260519011713-jxp52t@springbank.test');
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_keycloak -t -A -c select count(*) from user_entity where lower(email)=lower('e2e.beta.20260519011713-jxp52t@springbank.test');
+DURATION: 213ms / 0.213s / 0.004m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[01:17:36][elapsed=22410ms / 22.41s / 0.374m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 22410ms / 22.41s / 0.374m
+--------------------------------------------------------------------------------
+[01:17:36][elapsed=22569ms / 22.569s / 0.376m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+DURATION: 152ms / 0.152s / 0.003m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+postgres-dc8bdbd65-hn6vt
+--------------------------------------------------------------------------------
+[01:17:36][elapsed=22574ms / 22.574s / 0.376m][kubectl][START] -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_money -t -A -c select count(*) from money where user_id='2d2e553f-fdfd-49bd-b685-f1cac24b7a05' or keycloak_user_uuid='2d2e553f-fdfd-49bd-b685-f1cac24b7a05';
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_money -t -A -c select count(*) from money where user_id='2d2e553f-fdfd-49bd-b685-f1cac24b7a05' or keycloak_user_uuid='2d2e553f-fdfd-49bd-b685-f1cac24b7a05';
+START_ELAPSED_TOTAL: 22574ms / 22.574s / 0.376m
+--------------------------------------------------------------------------------
+[01:17:36][elapsed=23076ms / 23.076s / 0.385m][kubectl][OK] -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_money -t -A -c select count(*) from money where user_id='2d2e553f-fdfd-49bd-b685-f1cac24b7a05' or keycloak_user_uuid='2d2e553f-fdfd-49bd-b685-f1cac24b7a05';
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_money -t -A -c select count(*) from money where user_id='2d2e553f-fdfd-49bd-b685-f1cac24b7a05' or keycloak_user_uuid='2d2e553f-fdfd-49bd-b685-f1cac24b7a05';
+DURATION: 495ms / 0.495s / 0.008m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[01:17:36][elapsed=23087ms / 23.087s / 0.385m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 23087ms / 23.087s / 0.385m
+--------------------------------------------------------------------------------
+[01:17:37][elapsed=23212ms / 23.212s / 0.387m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+DURATION: 118ms / 0.118s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+postgres-dc8bdbd65-hn6vt
+--------------------------------------------------------------------------------
+[01:17:37][elapsed=23217ms / 23.217s / 0.387m][kubectl][START] -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_money -t -A -c select count(*) from money where user_id='60fc704b-fcd1-4023-b2d6-5621f751ec79' or keycloak_user_uuid='60fc704b-fcd1-4023-b2d6-5621f751ec79';
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_money -t -A -c select count(*) from money where user_id='60fc704b-fcd1-4023-b2d6-5621f751ec79' or keycloak_user_uuid='60fc704b-fcd1-4023-b2d6-5621f751ec79';
+START_ELAPSED_TOTAL: 23216ms / 23.216s / 0.387m
+--------------------------------------------------------------------------------
+[01:17:37][elapsed=23445ms / 23.445s / 0.391m][kubectl][OK] -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_money -t -A -c select count(*) from money where user_id='60fc704b-fcd1-4023-b2d6-5621f751ec79' or keycloak_user_uuid='60fc704b-fcd1-4023-b2d6-5621f751ec79';
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_money -t -A -c select count(*) from money where user_id='60fc704b-fcd1-4023-b2d6-5621f751ec79' or keycloak_user_uuid='60fc704b-fcd1-4023-b2d6-5621f751ec79';
+DURATION: 221ms / 0.221s / 0.004m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+1
+--------------------------------------------------------------------------------
+[01:17:43][elapsed=29326ms / 29.326s / 0.489m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 29326ms / 29.326s / 0.489m
+--------------------------------------------------------------------------------
+[01:17:43][elapsed=29512ms / 29.512s / 0.492m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+DURATION: 178ms / 0.178s / 0.003m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+postgres-dc8bdbd65-hn6vt
+--------------------------------------------------------------------------------
+[01:17:43][elapsed=29518ms / 29.518s / 0.492m][kubectl][START] -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_money -t -A -c select money || '|' || blocked_money from money where user_id='2d2e553f-fdfd-49bd-b685-f1cac24b7a05' or keycloak_user_uuid='2d2e553f-fdfd-49bd-b685-f1cac24b7a05' limit 1;
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_money -t -A -c select money || '|' || blocked_money from money where user_id='2d2e553f-fdfd-49bd-b685-f1cac24b7a05' or keycloak_user_uuid='2d2e553f-fdfd-49bd-b685-f1cac24b7a05' limit 1;
+START_ELAPSED_TOTAL: 29517ms / 29.517s / 0.492m
+--------------------------------------------------------------------------------
+[01:17:43][elapsed=29806ms / 29.806s / 0.497m][kubectl][OK] -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_money -t -A -c select money || '|' || blocked_money from money where user_id='2d2e553f-fdfd-49bd-b685-f1cac24b7a05' or keycloak_user_uuid='2d2e553f-fdfd-49bd-b685-f1cac24b7a05' limit 1;
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_money -t -A -c select money || '|' || blocked_money from money where user_id='2d2e553f-fdfd-49bd-b685-f1cac24b7a05' or keycloak_user_uuid='2d2e553f-fdfd-49bd-b685-f1cac24b7a05' limit 1;
+DURATION: 281ms / 0.281s / 0.005m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+3500.00|0.00
+--------------------------------------------------------------------------------
+[01:17:43][elapsed=29816ms / 29.816s / 0.497m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 29815ms / 29.815s / 0.497m
+--------------------------------------------------------------------------------
+[01:17:43][elapsed=29937ms / 29.937s / 0.499m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+DURATION: 115ms / 0.115s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+postgres-dc8bdbd65-hn6vt
+--------------------------------------------------------------------------------
+[01:17:43][elapsed=29942ms / 29.942s / 0.499m][kubectl][START] -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_money -t -A -c select money || '|' || blocked_money from money where user_id='60fc704b-fcd1-4023-b2d6-5621f751ec79' or keycloak_user_uuid='60fc704b-fcd1-4023-b2d6-5621f751ec79' limit 1;
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_money -t -A -c select money || '|' || blocked_money from money where user_id='60fc704b-fcd1-4023-b2d6-5621f751ec79' or keycloak_user_uuid='60fc704b-fcd1-4023-b2d6-5621f751ec79' limit 1;
+START_ELAPSED_TOTAL: 29941ms / 29.941s / 0.499m
+--------------------------------------------------------------------------------
+[01:17:43][elapsed=30166ms / 30.166s / 0.503m][kubectl][OK] -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_money -t -A -c select money || '|' || blocked_money from money where user_id='60fc704b-fcd1-4023-b2d6-5621f751ec79' or keycloak_user_uuid='60fc704b-fcd1-4023-b2d6-5621f751ec79' limit 1;
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_money -t -A -c select money || '|' || blocked_money from money where user_id='60fc704b-fcd1-4023-b2d6-5621f751ec79' or keycloak_user_uuid='60fc704b-fcd1-4023-b2d6-5621f751ec79' limit 1;
+DURATION: 218ms / 0.218s / 0.004m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+1000.00|0.00
+--------------------------------------------------------------------------------
+[01:17:44][elapsed=30353ms / 30.353s / 0.506m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 30353ms / 30.353s / 0.506m
+--------------------------------------------------------------------------------
+[01:17:44][elapsed=30471ms / 30.471s / 0.508m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+DURATION: 110ms / 0.11s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+postgres-dc8bdbd65-hn6vt
+--------------------------------------------------------------------------------
+[01:17:44][elapsed=30475ms / 30.475s / 0.508m][kubectl][START] -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_transactions -t -A -c select id || '|' || event_id || '|' || status from transactions where sender_user_id='2d2e553f-fdfd-49bd-b685-f1cac24b7a05' and transaction_type='TRANSFER' order by created_at desc limit 1;
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_transactions -t -A -c select id || '|' || event_id || '|' || status from transactions where sender_user_id='2d2e553f-fdfd-49bd-b685-f1cac24b7a05' and transaction_type='TRANSFER' order by created_at desc limit 1;
+START_ELAPSED_TOTAL: 30474ms / 30.474s / 0.508m
+--------------------------------------------------------------------------------
+[01:17:44][elapsed=30709ms / 30.709s / 0.512m][kubectl][OK] -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_transactions -t -A -c select id || '|' || event_id || '|' || status from transactions where sender_user_id='2d2e553f-fdfd-49bd-b685-f1cac24b7a05' and transaction_type='TRANSFER' order by created_at desc limit 1;
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_transactions -t -A -c select id || '|' || event_id || '|' || status from transactions where sender_user_id='2d2e553f-fdfd-49bd-b685-f1cac24b7a05' and transaction_type='TRANSFER' order by created_at desc limit 1;
+DURATION: 228ms / 0.228s / 0.004m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+161e1daf-daa5-4150-83e4-016edf0fe242|3d160532-6c0a-486c-80ae-a1a23f2cdae2|VALIDATION_PENDING
+--------------------------------------------------------------------------------
+[01:17:46][elapsed=32684ms / 32.684s / 0.545m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 32683ms / 32.683s / 0.545m
+--------------------------------------------------------------------------------
+[01:17:46][elapsed=32838ms / 32.838s / 0.547m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+DURATION: 146ms / 0.146s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+postgres-dc8bdbd65-hn6vt
+--------------------------------------------------------------------------------
+[01:17:46][elapsed=32842ms / 32.842s / 0.547m][kubectl][START] -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_transactions -t -A -c select event_id from transactions where sender_user_id='2d2e553f-fdfd-49bd-b685-f1cac24b7a05' and description='DEV cancel smoke 20260519011713-jxp52t' order by created_at desc limit 1;
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_transactions -t -A -c select event_id from transactions where sender_user_id='2d2e553f-fdfd-49bd-b685-f1cac24b7a05' and description='DEV cancel smoke 20260519011713-jxp52t' order by created_at desc limit 1;
+START_ELAPSED_TOTAL: 32842ms / 32.842s / 0.547m
+--------------------------------------------------------------------------------
+[01:17:46][elapsed=33082ms / 33.082s / 0.551m][kubectl][OK] -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_transactions -t -A -c select event_id from transactions where sender_user_id='2d2e553f-fdfd-49bd-b685-f1cac24b7a05' and description='DEV cancel smoke 20260519011713-jxp52t' order by created_at desc limit 1;
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_transactions -t -A -c select event_id from transactions where sender_user_id='2d2e553f-fdfd-49bd-b685-f1cac24b7a05' and description='DEV cancel smoke 20260519011713-jxp52t' order by created_at desc limit 1;
+DURATION: 232ms / 0.232s / 0.004m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+3e5ec97e-e80f-4530-a710-fc1f302b1f1c
+--------------------------------------------------------------------------------
+[01:17:46][elapsed=33135ms / 33.135s / 0.552m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 33134ms / 33.134s / 0.552m
+--------------------------------------------------------------------------------
+[01:17:47][elapsed=33251ms / 33.251s / 0.554m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=postgres -o jsonpath={.items[0].metadata.name}
+DURATION: 110ms / 0.11s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+postgres-dc8bdbd65-hn6vt
+--------------------------------------------------------------------------------
+[01:17:47][elapsed=33256ms / 33.256s / 0.554m][kubectl][START] -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_transactions -t -A -c select status from transactions where event_id='3e5ec97e-e80f-4530-a710-fc1f302b1f1c' limit 1;
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_transactions -t -A -c select status from transactions where event_id='3e5ec97e-e80f-4530-a710-fc1f302b1f1c' limit 1;
+START_ELAPSED_TOTAL: 33256ms / 33.256s / 0.554m
+--------------------------------------------------------------------------------
+[01:17:47][elapsed=33465ms / 33.465s / 0.558m][kubectl][OK] -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_transactions -t -A -c select status from transactions where event_id='3e5ec97e-e80f-4530-a710-fc1f302b1f1c' limit 1;
+COMMAND:
+kubectl -n banking-microservices exec postgres-dc8bdbd65-hn6vt -- psql -U banking_admin -d banking_transactions -t -A -c select status from transactions where event_id='3e5ec97e-e80f-4530-a710-fc1f302b1f1c' limit 1;
+DURATION: 203ms / 0.203s / 0.003m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+REVERSED
+--------------------------------------------------------------------------------
+[01:17:47][elapsed=33541ms / 33.541s / 0.559m][kubectl][START] --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+START_ELAPSED_TOTAL: 33541ms / 33.541s / 0.559m
+--------------------------------------------------------------------------------
+[01:17:47][elapsed=33654ms / 33.654s / 0.561m][kubectl][OK] --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+COMMAND:
+kubectl --request-timeout=60s -n banking-microservices get pods -l app=gateway -o jsonpath={.items[0].metadata.name}
+DURATION: 106ms / 0.106s / 0.002m
+EXIT_CODE: 0
+ALLOW_FAIL: False
+OUTPUT:
+gateway-5c5dfc9958-xczld
+--------------------------------------------------------------------------------

@@ -5,7 +5,7 @@ import com.banking_microservices.money_service_query.exception.ProjectionSyncExc
 import com.banking_microservices.money_service_query.model.MoneyAccountDocument;
 import com.banking_microservices.money_service_query.model.MoneyAccountSearchDocument;
 import com.banking_microservices.money_service_query.repository.MoneyAccountMongoRepository;
-import com.banking_microservices.money_service_query.repository.MoneyAccountSearchRepository;
+import com.banking_microservices.money_service_query.search.MoneyAccountSearchIndexer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,13 +30,13 @@ class MoneyProjectionServiceTest {
     private MoneyAccountMongoRepository mongoRepository;
 
     @Mock
-    private MoneyAccountSearchRepository searchRepository;
+    private MoneyAccountSearchIndexer searchIndexer;
 
     private MoneyProjectionService moneyProjectionService;
 
     @BeforeEach
     void setUp() {
-        moneyProjectionService = new MoneyProjectionService(mongoRepository, searchRepository, () -> "12:00:00");
+        moneyProjectionService = new MoneyProjectionService(mongoRepository, searchIndexer, () -> "12:00:00");
     }
 
     @Test
@@ -49,7 +49,7 @@ class MoneyProjectionServiceTest {
         ArgumentCaptor<MoneyAccountDocument> mongoCaptor = ArgumentCaptor.forClass(MoneyAccountDocument.class);
         ArgumentCaptor<MoneyAccountSearchDocument> searchCaptor = ArgumentCaptor.forClass(MoneyAccountSearchDocument.class);
         verify(mongoRepository).save(mongoCaptor.capture());
-        verify(searchRepository).save(searchCaptor.capture());
+        verify(searchIndexer).upsert(searchCaptor.capture());
 
         assertThat(mongoCaptor.getValue().getAvailableBalance()).isEqualByComparingTo("1000.00");
         assertThat(mongoCaptor.getValue().getLastOperationType()).isEqualTo("TRANSFER_RECEIVED");
@@ -68,7 +68,7 @@ class MoneyProjectionServiceTest {
         moneyProjectionService.project(event("event-stale", "account-1", stale, "DEPOSIT"));
 
         verify(mongoRepository, never()).save(org.mockito.Mockito.any());
-        verify(searchRepository, never()).save(org.mockito.Mockito.any());
+        verify(searchIndexer, never()).upsert(org.mockito.Mockito.any());
     }
 
     @Test
@@ -87,7 +87,7 @@ class MoneyProjectionServiceTest {
                 .availableBalance(new BigDecimal("1000.00"))
                 .blockedBalance(new BigDecimal("0.00"))
                 .operationType(operation)
-                .occurredAt(occurredAt)
+                .occurredAt(occurredAt.toString())
                 .sourceService("money-service-command")
                 .build();
     }

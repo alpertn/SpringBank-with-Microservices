@@ -1,0 +1,50 @@
+server:
+  port: ${ADMIN_SERVICE_COMMAND_PORT:8097}
+
+spring:
+  application:
+    name: admin-service-command
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/banking_admin_command}
+    username: ${SPRING_DATASOURCE_USERNAME:banking_admin}
+    password: ${SPRING_DATASOURCE_PASSWORD:local_password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+    show-sql: false
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: ${SPRING_JPA_PROPERTIES_HIBERNATE_HBM2DDL_AUTO:update}
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: ${SPRING_KAFKA_CONSUMER_GROUP_ID:admin-service-command-group}
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+grpc:
+  server:
+    port: ${ADMIN_SERVICE_COMMAND_GRPC_PORT:9197}
+
+admin-service:
+  topics:
+    command: ${ADMIN_SERVICE_COMMAND_TOPIC:banking-microservices.admin.history.command.v1}
+    projection-sync: ${ADMIN_SERVICE_PROJECTION_TOPIC:banking-microservices.admin.history.projection-sync.v1}
+
+management:
+  endpoints:
+    web:
+      base-path: /api/admin-service-command/actuator
+      exposure:
+        include: health,info
+
+logging:
+  pattern:
+    console: "%-5level --- [admin-service-command] : %msg%n"

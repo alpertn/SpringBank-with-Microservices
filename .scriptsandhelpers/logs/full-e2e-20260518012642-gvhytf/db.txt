@@ -1,0 +1,82 @@
+
+[01:26:56][elapsed=13674ms / 13.674s / 0.228m][db][OK] postgres:banking_keycloak
+COMMAND:
+kubectl -n banking-microservices exec postgres-765db5c44-9glkz -- psql -U banking_admin -d banking_keycloak -t -A -c "select count(*) from user_entity where lower(email)=lower('e2e.alpha.20260518012642-gvhytf@springbank.test');"
+DURATION: 310ms / 0.31s / 0.005m
+SQL:
+select count(*) from user_entity where lower(email)=lower('e2e.alpha.20260518012642-gvhytf@springbank.test');
+RESULT:
+1
+--------------------------------------------------------------------------------
+[01:26:56][elapsed=14122ms / 14.122s / 0.235m][db][OK] postgres:banking_keycloak
+COMMAND:
+kubectl -n banking-microservices exec postgres-765db5c44-9glkz -- psql -U banking_admin -d banking_keycloak -t -A -c "select count(*) from user_entity where lower(email)=lower('e2e.beta.20260518012642-gvhytf@springbank.test');"
+DURATION: 445ms / 0.445s / 0.007m
+SQL:
+select count(*) from user_entity where lower(email)=lower('e2e.beta.20260518012642-gvhytf@springbank.test');
+RESULT:
+1
+--------------------------------------------------------------------------------
+[01:27:03][elapsed=20571ms / 20.571s / 0.343m][db][OK] postgres:banking_money
+COMMAND:
+kubectl -n banking-microservices exec postgres-765db5c44-9glkz -- psql -U banking_admin -d banking_money -t -A -c "select count(*) from money where user_id='0bfcaeec-6326-4ff3-933f-0fa7cff8593b' or keycloak_user_uuid='0bfcaeec-6326-4ff3-933f-0fa7cff8593b';"
+DURATION: 313ms / 0.313s / 0.005m
+SQL:
+select count(*) from money where user_id='0bfcaeec-6326-4ff3-933f-0fa7cff8593b' or keycloak_user_uuid='0bfcaeec-6326-4ff3-933f-0fa7cff8593b';
+RESULT:
+1
+--------------------------------------------------------------------------------
+[01:27:03][elapsed=20860ms / 20.86s / 0.348m][db][OK] postgres:banking_money
+COMMAND:
+kubectl -n banking-microservices exec postgres-765db5c44-9glkz -- psql -U banking_admin -d banking_money -t -A -c "select count(*) from money where user_id='f6c68632-eff3-4d62-a10f-cc5537d2276a' or keycloak_user_uuid='f6c68632-eff3-4d62-a10f-cc5537d2276a';"
+DURATION: 285ms / 0.285s / 0.005m
+SQL:
+select count(*) from money where user_id='f6c68632-eff3-4d62-a10f-cc5537d2276a' or keycloak_user_uuid='f6c68632-eff3-4d62-a10f-cc5537d2276a';
+RESULT:
+1
+--------------------------------------------------------------------------------
+[01:27:15][elapsed=32371ms / 32.371s / 0.54m][db][OK] postgres:banking_money
+COMMAND:
+kubectl -n banking-microservices exec postgres-765db5c44-9glkz -- psql -U banking_admin -d banking_money -t -A -c "select money || '|' || blocked_money from money where user_id='0bfcaeec-6326-4ff3-933f-0fa7cff8593b' or keycloak_user_uuid='0bfcaeec-6326-4ff3-933f-0fa7cff8593b' limit 1;"
+DURATION: 393ms / 0.393s / 0.007m
+SQL:
+select money || '|' || blocked_money from money where user_id='0bfcaeec-6326-4ff3-933f-0fa7cff8593b' or keycloak_user_uuid='0bfcaeec-6326-4ff3-933f-0fa7cff8593b' limit 1;
+RESULT:
+3500.00|0.00
+--------------------------------------------------------------------------------
+[01:27:15][elapsed=32814ms / 32.814s / 0.547m][db][OK] postgres:banking_money
+COMMAND:
+kubectl -n banking-microservices exec postgres-765db5c44-9glkz -- psql -U banking_admin -d banking_money -t -A -c "select money || '|' || blocked_money from money where user_id='f6c68632-eff3-4d62-a10f-cc5537d2276a' or keycloak_user_uuid='f6c68632-eff3-4d62-a10f-cc5537d2276a' limit 1;"
+DURATION: 440ms / 0.44s / 0.007m
+SQL:
+select money || '|' || blocked_money from money where user_id='f6c68632-eff3-4d62-a10f-cc5537d2276a' or keycloak_user_uuid='f6c68632-eff3-4d62-a10f-cc5537d2276a' limit 1;
+RESULT:
+1000.00|0.00
+--------------------------------------------------------------------------------
+[01:27:16][elapsed=33373ms / 33.373s / 0.556m][db][OK] postgres:banking_transactions
+COMMAND:
+kubectl -n banking-microservices exec postgres-765db5c44-9glkz -- psql -U banking_admin -d banking_transactions -t -A -c "select id || '|' || event_id || '|' || status from transactions where sender_user_id='0bfcaeec-6326-4ff3-933f-0fa7cff8593b' and transaction_type='TRANSFER' order by created_at desc limit 1;"
+DURATION: 342ms / 0.342s / 0.006m
+SQL:
+select id || '|' || event_id || '|' || status from transactions where sender_user_id='0bfcaeec-6326-4ff3-933f-0fa7cff8593b' and transaction_type='TRANSFER' order by created_at desc limit 1;
+RESULT:
+de159faa-3f74-48b6-ad57-83e7f59bc960|069c6da7-dfe7-41a4-82c7-6449d3c8d3f7|COMPLETED
+--------------------------------------------------------------------------------
+[01:27:17][elapsed=34249ms / 34.249s / 0.571m][db][OK] postgres:banking_transactions
+COMMAND:
+kubectl -n banking-microservices exec postgres-765db5c44-9glkz -- psql -U banking_admin -d banking_transactions -t -A -c "select event_id from transactions where sender_user_id='0bfcaeec-6326-4ff3-933f-0fa7cff8593b' and description='DEV cancel smoke 20260518012642-gvhytf' order by created_at desc limit 1;"
+DURATION: 285ms / 0.285s / 0.005m
+SQL:
+select event_id from transactions where sender_user_id='0bfcaeec-6326-4ff3-933f-0fa7cff8593b' and description='DEV cancel smoke 20260518012642-gvhytf' order by created_at desc limit 1;
+RESULT:
+53700d77-faa9-4ff8-90c4-686a01d87e9a
+--------------------------------------------------------------------------------
+[01:27:17][elapsed=34579ms / 34.579s / 0.576m][db][OK] postgres:banking_transactions
+COMMAND:
+kubectl -n banking-microservices exec postgres-765db5c44-9glkz -- psql -U banking_admin -d banking_transactions -t -A -c "select status from transactions where event_id='53700d77-faa9-4ff8-90c4-686a01d87e9a' limit 1;"
+DURATION: 286ms / 0.286s / 0.005m
+SQL:
+select status from transactions where event_id='53700d77-faa9-4ff8-90c4-686a01d87e9a' limit 1;
+RESULT:
+REVERSED
+--------------------------------------------------------------------------------

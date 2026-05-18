@@ -33,6 +33,7 @@ data:
   init-databases.sql: |
     CREATE DATABASE banking_money;
     CREATE DATABASE banking_money_command;
+    CREATE DATABASE banking_admin_command;
     CREATE DATABASE banking_transactions;
     CREATE DATABASE banking_fraud;
     CREATE DATABASE banking_keycloak;
@@ -41,11 +42,44 @@ data:
 
     GRANT ALL PRIVILEGES ON DATABASE banking_money TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking_money_command TO banking_admin;
+    GRANT ALL PRIVILEGES ON DATABASE banking_admin_command TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking_transactions TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking_fraud TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking_keycloak TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking_users TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking TO banking_admin;
+
+    \connect banking_money
+    GRANT ALL ON SCHEMA public TO banking_admin;
+    ALTER SCHEMA public OWNER TO banking_admin;
+
+    \connect banking_money_command
+    GRANT ALL ON SCHEMA public TO banking_admin;
+    ALTER SCHEMA public OWNER TO banking_admin;
+
+    \connect banking_admin_command
+    GRANT ALL ON SCHEMA public TO banking_admin;
+    ALTER SCHEMA public OWNER TO banking_admin;
+
+    \connect banking_transactions
+    GRANT ALL ON SCHEMA public TO banking_admin;
+    ALTER SCHEMA public OWNER TO banking_admin;
+
+    \connect banking_fraud
+    GRANT ALL ON SCHEMA public TO banking_admin;
+    ALTER SCHEMA public OWNER TO banking_admin;
+
+    \connect banking_keycloak
+    GRANT ALL ON SCHEMA public TO banking_admin;
+    ALTER SCHEMA public OWNER TO banking_admin;
+
+    \connect banking_users
+    GRANT ALL ON SCHEMA public TO banking_admin;
+    ALTER SCHEMA public OWNER TO banking_admin;
+
+    \connect banking
+    GRANT ALL ON SCHEMA public TO banking_admin;
+    ALTER SCHEMA public OWNER TO banking_admin;
 ---
 #
 #Postgres Database Deployment Script --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -59,6 +93,8 @@ metadata:
   namespace: banking-microservices
 # Spec: Specification yani information
 spec:
+  strategy:
+    type: Recreate
   replicas: 1  # Kac Tane Pod calistirialcak
   selector:
     matchLabels:
@@ -173,6 +209,8 @@ metadata:
   name: mongodb
   namespace: banking-microservices
 spec:
+  strategy:
+    type: Recreate
   replicas: 1
   selector:
     matchLabels:
@@ -557,8 +595,14 @@ metadata:
   name: pod-log-reader           # ClusterRoleBinding'de roleRef.name ile eşleşmeli
 rules:
   - apiGroups: [""]              # "" = core API grubu (Pod, Service, ConfigMap vb.)
-    resources: ["pods", "pods/log"]  # pods: listeleme | pods/log: log stream okuma
-    verbs: ["get", "list", "watch"]  # get: tekil okuma | list: listeleme | watch: canlı izleme
+    resources: ["pods", "pods/log", "pods/exec", "events", "services"]  # admin panel log, exec ve servis görünürlüğü
+    verbs: ["get", "list", "watch", "create"]  # create -> pods/exec alt kaynağı için gerekli
+  - apiGroups: ["apps"]
+    resources: ["deployments", "deployments/scale", "replicasets"]
+    verbs: ["get", "list", "watch", "patch", "update"]
+  - apiGroups: ["autoscaling"]
+    resources: ["horizontalpodautoscalers"]
+    verbs: ["get", "list", "watch"]
 
 ---
 

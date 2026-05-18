@@ -3,7 +3,6 @@ package com.banking_microservices.money_service_command.dto;
 import lombok.Builder;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Builder
 public record MoneyProjectionEvent(
@@ -15,7 +14,7 @@ public record MoneyProjectionEvent(
         BigDecimal availableBalance,
         BigDecimal blockedBalance,
         String operationType,
-        LocalDateTime occurredAt,
+        String occurredAt,
         String sourceService
 ) {
 }
