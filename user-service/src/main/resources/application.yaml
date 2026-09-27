@@ -4,6 +4,10 @@ server:
 grpc:
   server:
     port: ${USER_SERVICE_GRPC_PORT:9194}
+  client:
+    customer-onboarding:
+      address: ${CUSTOMER_SERVICE_GRPC_ADDRESS:static://customer-service:9202}
+      negotiationType: plaintext
 
 kafka:
   topics:

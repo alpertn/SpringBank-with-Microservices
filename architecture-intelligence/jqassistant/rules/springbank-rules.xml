@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jqassistant-rules xmlns="http://schema.jqassistant.org/rule/v2.9"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://schema.jqassistant.org/rule/v2.9 https://jqassistant.github.io/jqassistant/current/schema/jqassistant-rule-v2.9.xsd">
+
+    <concept id="springbank:Controller">
+        <description>Labels SpringBank controller types.</description>
+        <cypher><![CDATA[
+            MATCH (type:Type)
+            WHERE type.fqn STARTS WITH 'com.banking_microservices.'
+              AND type.fqn CONTAINS '.controller.'
+            SET type:SpringBank:Controller
+            RETURN type
+        ]]></cypher>
+    </concept>
+
+    <concept id="springbank:Service">
+        <description>Labels SpringBank service types.</description>
+        <cypher><![CDATA[
+            MATCH (type:Type)
+            WHERE type.fqn STARTS WITH 'com.banking_microservices.'
+              AND type.fqn CONTAINS '.service.'
+            SET type:SpringBank:Service
+            RETURN type
+        ]]></cypher>
+    </concept>
+
+    <concept id="springbank:Repository">
+        <description>Labels SpringBank repository types.</description>
+        <cypher><![CDATA[
+            MATCH (type:Type)
+            WHERE type.fqn STARTS WITH 'com.banking_microservices.'
+              AND type.fqn CONTAINS '.repository.'
+            SET type:SpringBank:Repository
+            RETURN type
+        ]]></cypher>
+    </concept>
+
+    <concept id="springbank:PersistenceModel">
+        <description>Labels persistence models and domain entities.</description>
+        <cypher><![CDATA[
+            MATCH (type:Type)
+            WHERE type.fqn STARTS WITH 'com.banking_microservices.'
+              AND (type.fqn CONTAINS '.model.' OR type.fqn CONTAINS '.domain.')
+            SET type:SpringBank:PersistenceModel
+            RETURN type
+        ]]></cypher>
+    </concept>
+
+    <constraint id="springbank:ControllerMustNotAccessRepository">
+        <description>Controllers must use application services and must not access repositories directly.</description>
+        <cypher><![CDATA[
+            MATCH (controller:SpringBank:Controller)-[:DEPENDS_ON]->(repository:SpringBank:Repository)
+            RETURN controller.fqn AS Controller, repository.fqn AS Repository
+        ]]></cypher>
+    </constraint>
+
+    <constraint id="springbank:InnerLayersMustNotDependOnControllers">
+        <description>Services and repositories must not depend on the HTTP adapter layer.</description>
+        <cypher><![CDATA[
+            MATCH (inner)-[:DEPENDS_ON]->(controller:SpringBank:Controller)
+            WHERE inner:SpringBank:Service OR inner:SpringBank:Repository OR inner:SpringBank:PersistenceModel
+            RETURN inner.fqn AS InnerType, controller.fqn AS Controller
+        ]]></cypher>
+    </constraint>
+
+    <constraint id="springbank:ControllerMustNotExposePersistenceModel">
+        <description>HTTP controllers must exchange API DTOs instead of persistence entities.</description>
+        <cypher><![CDATA[
+            MATCH (controller:SpringBank:Controller)-[:DEPENDS_ON]->(model:SpringBank:PersistenceModel)
+            RETURN controller.fqn AS Controller, model.fqn AS PersistenceModel
+        ]]></cypher>
+    </constraint>
+
+    <constraint id="springbank:ProductionCodeMustUseInjectedClock">
+        <description>Business code must use an injected Clock instead of the host default clock.</description>
+        <cypher><![CDATA[
+            MATCH (owner:Type)-[:DECLARES]->(caller:Method)-[:INVOKES]->(clockMethod:Method)<-[:DECLARES]-(clockType:Type)
+            WHERE owner.fqn STARTS WITH 'com.banking_microservices.'
+              AND ((clockType.fqn = 'java.time.LocalDateTime' AND clockMethod.name = 'now')
+                OR (clockType.fqn = 'java.time.ZoneId' AND clockMethod.name = 'systemDefault'))
+            RETURN owner.fqn AS Type, caller.name AS Method, clockType.fqn AS ClockType, clockMethod.name AS ClockMethod
+        ]]></cypher>
+    </constraint>
+
+    <group id="springbank:baseline">
+        <includeConcept refId="springbank:Controller"/>
+        <includeConcept refId="springbank:Service"/>
+        <includeConcept refId="springbank:Repository"/>
+        <includeConcept refId="springbank:PersistenceModel"/>
+        <includeConstraint refId="springbank:ControllerMustNotAccessRepository" severity="critical"/>
+        <includeConstraint refId="springbank:InnerLayersMustNotDependOnControllers" severity="critical"/>
+        <includeConstraint refId="springbank:ControllerMustNotExposePersistenceModel" severity="major"/>
+        <includeConstraint refId="springbank:ProductionCodeMustUseInjectedClock" severity="major"/>
+    </group>
+</jqassistant-rules>

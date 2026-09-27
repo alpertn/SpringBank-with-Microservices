@@ -1,4 +1,4 @@
-# Bu manifest Argo CD'ye "bu repo icindeki Helm chart'i izle" der.
+# Bu manifest Argo CD'ye repo icindeki Kubernetes manifestlerini izlemesini soyler.
 # Pipeline image tag'ini degistirince Argo CD bunu gorur ve cluster'a uygular.
 # BURADA SENIN DEGISTIRECEGIN EN ONEMLI YERLER:
 # 1) repoURL
@@ -25,12 +25,8 @@ spec:
     # Argo CD hangi branch'i izleyecek?
     targetRevision: main
     # Not:
-    # Repo icindeki Helm chart'in bulundugu klasor.
-    path: helm/springbank
-    helm:
-      valueFiles:
-        - values.yaml
-        - values-prod.yaml
+    # Repo icindeki gercek manifest klasoru. Projede helm/springbank bulunmuyor.
+    path: k8s
   destination:
     # Not:
     # kubernetes.default.svc = Argo CD'nin kurulu oldugu ayni cluster

@@ -1,0 +1,16 @@
+---
+id: customer-service-command
+name: Customer Command Service
+version: 1.0.0
+summary: Authoritative customer profile write model with audit, optimistic locking and soft deletion.
+owners:
+  - platform-team
+sends:
+  - id: customer-projection-sync
+    version: 1.0.0
+repository:
+  language: Java
+  url: https://github.com/alpertn/SpringBank-with-Microservices
+---
+
+**Current role:** Owns customer profile mutations in PostgreSQL and publishes projection events.\n\n**Consistency gap:** Database writes and Kafka publication are not connected by a transactional outbox.

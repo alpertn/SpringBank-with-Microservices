@@ -19,6 +19,18 @@ metadata:
 
 ---
 
+apiVersion: v1
+kind: Secret
+metadata:
+  name: customer-service-secrets
+  namespace: banking-microservices
+type: Opaque
+stringData:
+  # Development placeholder. Production must inject this from Vault/KMS/External Secrets.
+  national-id-hmac-key: replace-with-at-least-32-random-characters
+
+---
+
 #
 #Postgres ConfigMap --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #
@@ -34,6 +46,7 @@ data:
     CREATE DATABASE banking_money;
     CREATE DATABASE banking_money_command;
     CREATE DATABASE banking_admin_command;
+    CREATE DATABASE banking_customer_command;
     CREATE DATABASE banking_transactions;
     CREATE DATABASE banking_fraud;
     CREATE DATABASE banking_keycloak;
@@ -43,6 +56,7 @@ data:
     GRANT ALL PRIVILEGES ON DATABASE banking_money TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking_money_command TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking_admin_command TO banking_admin;
+    GRANT ALL PRIVILEGES ON DATABASE banking_customer_command TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking_transactions TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking_fraud TO banking_admin;
     GRANT ALL PRIVILEGES ON DATABASE banking_keycloak TO banking_admin;
@@ -58,6 +72,10 @@ data:
     ALTER SCHEMA public OWNER TO banking_admin;
 
     \connect banking_admin_command
+    GRANT ALL ON SCHEMA public TO banking_admin;
+    ALTER SCHEMA public OWNER TO banking_admin;
+
+    \connect banking_customer_command
     GRANT ALL ON SCHEMA public TO banking_admin;
     ALTER SCHEMA public OWNER TO banking_admin;
 

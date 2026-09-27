@@ -1,6 +1,6 @@
 package com.banking_microservices.money_service.service.helper;
 
-import com.banking_microservices.money_service.dto.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.money_service.model.workflow.TransactionWorkflowState;
 import com.banking_microservices.money_service.exception.MoneyNotAvaibleException;
 import com.banking_microservices.money_service.exception.NegativeNumberException;
 import com.banking_microservices.money_service.exception.SameAccountException;
@@ -18,21 +18,21 @@ public class TransactionValidator {
 
     private final Supplier<String> currentTime;
 
-    public void assertAmountIsPositive(KafkaTransactionTopicMessageDto dto) {
+    public void assertAmountIsPositive(TransactionWorkflowState dto) {
         if (dto.getMoney().compareTo(BigDecimal.ZERO) <= 0) {
             log.error(" ({}) > TransactionValidator | assertAmountIsPositive -> Transfer miktari pozitif olmalidir! Amount: {}", currentTime.get(), dto.getMoney());
             throw new NegativeNumberException("Transfer amount must be positive");
         }
     }
 
-    public void assertNotSameAccount(KafkaTransactionTopicMessageDto dto) {
+    public void assertNotSameAccount(TransactionWorkflowState dto) {
         if (dto.getReceiverIban() != null && dto.getReceiverIban().equals(dto.getSenderIban())) {
             log.error(" ({}) > TransactionValidator | assertNotSameAccount -> Gonderen ve Alici Iban ayni olamaz! {}", currentTime.get(), dto.getSenderIban());
             throw new SameAccountException("Cannot transfer to the same account");
         }
     }
 
-    public void assertSufficientBalance(BigDecimal balance, KafkaTransactionTopicMessageDto dto) {
+    public void assertSufficientBalance(BigDecimal balance, TransactionWorkflowState dto) {
         if (balance.compareTo(dto.getMoney()) < 0) {
             log.warn(" ({}) > TransactionValidator | assertSufficientBalance -> Bakiye yetersiz! Bankadaki miktar: {} | Istenilen miktar: {}", currentTime.get(), balance, dto.getMoney());
             throw new MoneyNotAvaibleException("Money not avaible KafkaTransactionTopicService");

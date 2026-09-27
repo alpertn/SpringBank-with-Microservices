@@ -1,6 +1,6 @@
 package com.banking_microservices.money_service.service;
 
-import com.banking_microservices.money_service.dto.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.money_service.model.workflow.TransactionWorkflowState;
 import com.banking_microservices.money_service.dto.enums.KafkaEventType;
 import com.banking_microservices.money_service.exception.EventUUIDAlreadyExists;
 import com.banking_microservices.money_service.kafka.KafkaSender;
@@ -40,7 +40,7 @@ public class TransactionService {
         this.currentTime = currentTime;
     }
 
-    public void KafkaTransactionTopicBlockMoney(KafkaTransactionTopicMessageDto dto) {
+    public void KafkaTransactionTopicBlockMoney(TransactionWorkflowState dto) {
         log.info(" ({}) > TransactionService | KafkaTransactionTopicBlockMoney -> Metoda veri geldi. {}", currentTime.get(), dto);
 
         ibanResolver.resolveSenderIban(dto);
@@ -54,7 +54,7 @@ public class TransactionService {
         log.info(" ({}) > TransactionService | KafkaTransactionTopicBlockMoney -> Islem tamamlandi. EventUUID: {}", currentTime.get(), dto.getEventUUID());
     }
 
-    public void KafkaTransactionTopicService(KafkaTransactionTopicMessageDto dto) {
+    public void KafkaTransactionTopicService(TransactionWorkflowState dto) {
         log.info(" ({}) > TransactionService | KafkaTransactionTopicService -> Metoda veri geldi. {}", currentTime.get(), dto);
 
         if (idempotencyGuard.isDuplicateOrRegister(dto.getEventUUID(), KafkaEventType.TRANSACTION_TOPIC_SERVICE.name())) {
@@ -75,7 +75,7 @@ public class TransactionService {
     }
 
     @Transactional
-    public void createTransaction(KafkaTransactionTopicMessageDto dto) {
+    public void createTransaction(TransactionWorkflowState dto) {
         log.info(" ({}) > TransactionService | createTransaction -> Metoda veri geldi. Sender Iban: {}, Receiver IBAN: {}, Amount: {}", currentTime.get(), dto.getSenderIban(), dto.getReceiverIban(), dto.getMoney());
 
         validator.assertAmountIsPositive(dto);

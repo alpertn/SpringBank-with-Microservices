@@ -29,8 +29,9 @@ kafka:
         # Saga
 
       saga:
-        listener: ${KAFKA_TRANSACTION_SAGA_CREATED_TOPIC:banking-microservices.transaction.saga.created.v1}
-        sender: ${KAFKA_TRANSACTION_SAGA_MONEY_COMPLETED_TOPIC:banking-microservices.transaction.saga.money.completed.v1}
+        # transaction-service reversal'i baslatir; money-service sonucu geri gonderir.
+        listener: ${KAFKA_TRANSACTION_SAGA_MONEY_COMPLETED_TOPIC:banking-microservices.transaction.saga.money.completed.v1}
+        sender: ${KAFKA_TRANSACTION_SAGA_CREATED_TOPIC:banking-microservices.transaction.saga.created.v1}
         error: ${KAFKA_TRANSACTION_SAGA_MONEY_FAILED_TOPIC:banking-microservices.transaction.saga.money.failed.v1}
 spring:
   application:

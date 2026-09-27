@@ -1,7 +1,7 @@
 package com.banking_microservices.user_service.service;
 
 import com.banking_microservices.user_service.dto.RoleEnum.RoleEnum.Role;
-import com.banking_microservices.user_service.dto.user.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.user_service.model.workflow.TransactionWorkflowState;
 import com.banking_microservices.user_service.dto.enums.TransactionStatus;
 import com.banking_microservices.user_service.dto.enums.TransactionType;
 import com.banking_microservices.user_service.exception.EmailChangeException;
@@ -60,7 +60,7 @@ public class UserService {
         return keycloakAdminService.findByEmail(mail);
     }
 
-    public void transactionTopicMessageVerify(KafkaTransactionTopicMessageDto dto) {
+    public void transactionTopicMessageVerify(TransactionWorkflowState dto) {
         try {
             Users senderUser = findByKeycloakUUID(dto.getSenderUserId());
 

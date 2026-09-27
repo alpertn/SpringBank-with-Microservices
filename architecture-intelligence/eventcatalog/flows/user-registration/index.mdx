@@ -1,0 +1,57 @@
+---
+id: user-registration
+name: User Registration
+version: 1.0.0
+summary: Current identity, customer onboarding and initial account bootstrap flow.
+owners:
+  - platform-team
+steps:
+  - id: request
+    title: Client submits registration
+    actor:
+      name: Client
+    next_step: keycloak
+  - id: keycloak
+    title: Create identity in Keycloak
+    service:
+      id: user-service
+      version: 1.0.0
+    next_step: customer
+  - id: customer
+    title: Create customer through gRPC facade
+    service:
+      id: customer-service
+      version: 1.0.0
+    next_step: customer-write
+  - id: customer-write
+    title: Persist customer write model
+    service:
+      id: customer-service-command
+      version: 1.0.0
+    next_step: customer-event
+  - id: customer-event
+    title: Publish customer projection sync
+    message:
+      id: customer-projection-sync
+      version: 1.0.0
+    next_step: account-event
+  - id: account-event
+    title: Publish user created for account bootstrap
+    message:
+      id: user-created
+      version: 1.0.0
+    next_step: account
+  - id: account
+    title: Create operational money account
+    service:
+      id: money-service
+      version: 1.0.0
+    next_step: result
+  - id: result
+    title: Publish account creation result
+    message:
+      id: money-account-created
+      version: 1.0.0
+---
+
+This flow documents behavior observed in the repository. Failure branches, consistency risks and the target-state design are detailed in the enterprise architecture assessment.

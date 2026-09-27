@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 option java_multiple_files = true;
-option java_package = "com.banking_microservices.money_service_query.grpc";
+option java_package = "com.banking_microservices.money_service_command.grpc";
 option java_outer_classname = "MoneyQueryProto";
 
 package money.v1;

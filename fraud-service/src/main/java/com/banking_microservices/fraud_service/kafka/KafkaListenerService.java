@@ -1,6 +1,7 @@
 package com.banking_microservices.fraud_service.kafka;
 
-import com.banking_microservices.fraud_service.dto.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.contracts.ContractJsonCodec;
+import com.banking_microservices.fraud_service.model.workflow.TransactionWorkflowState;
 import com.banking_microservices.fraud_service.dto.enums.KafkaEventType;
 import com.banking_microservices.fraud_service.dto.enums.TransactionStatus;
 import com.banking_microservices.fraud_service.repository.KafkaEventRepository;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class KafkaListenerService {
+
+    private final TransactionContractMapper contractMapper = new TransactionContractMapper();
 
     private final Gson gson = new GsonBuilder()
             .serializeNulls()
@@ -44,7 +47,7 @@ public class KafkaListenerService {
     public void listenAllTransactions(String kafkaData) {
         log.info(" ({}) > KafkaListenerService | listenAllTransactions -> Metoda veri geldi.", currentTime.get());
 
-        KafkaTransactionTopicMessageDto dto = parseMessage(kafkaData, "listenAllTransactions");
+        TransactionWorkflowState dto = parseMessage(kafkaData, "listenAllTransactions");
         if (dto == null) return;
 
         if (isDuplicateOrClaim(dto.getEventUUID(), KafkaEventType.EFT_CHECK_RECEIVED, KafkaEventType.EFT_CHECK_DONE, "listenAllTransactions")) return;
@@ -61,11 +64,16 @@ public class KafkaListenerService {
     // ─── Helpers ─────────────────────────────────────────────────────────────────
 
     /**
-     * Kafka'dan gelen raw JSON'u {@link KafkaTransactionTopicMessageDto}'ya ceviri ve bos UUID kontrolu yapar.
+     * Kafka'dan gelen contract'i servis ici workflow state'e cevirir ve bos UUID kontrolu yapar.
      * Gecersiz veri gelirse null doner, cagiran listener hemen return etmelidir.
      */
-    private KafkaTransactionTopicMessageDto parseMessage(String kafkaData, String method) {
-        KafkaTransactionTopicMessageDto dto = gson.fromJson(kafkaData, KafkaTransactionTopicMessageDto.class);
+    private TransactionWorkflowState parseMessage(String kafkaData, String method) {
+        TransactionWorkflowState dto;
+        try {
+            dto = contractMapper.fromContract(ContractJsonCodec.parseTransaction(kafkaData));
+        } catch (IllegalArgumentException contractError) {
+            dto = gson.fromJson(kafkaData, TransactionWorkflowState.class);
+        }
         if (dto == null || dto.getEventUUID() == null) {
             log.warn(" ({}) > KafkaListenerService | {} -> Gecersiz mesaj alindi, atlaniyor.", currentTime.get(), method);
             return null;

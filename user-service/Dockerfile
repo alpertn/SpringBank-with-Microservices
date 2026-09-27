@@ -3,8 +3,14 @@
 # Boylece sadece pom.xml degistiginde dependency'ler yeniden indirilir.
 # Kaynak kod degistiginde bu layer Docker CACHE'den gelir → build suresi 5-10x azalir.
 FROM maven:3.9.6-eclipse-temurin-21 AS deps
+WORKDIR /contracts
+COPY banking-contracts/pom.xml ./pom.xml
+RUN mvn dependency:go-offline -B || true
+COPY banking-contracts/src ./src
+RUN mvn clean install -DskipTests -B
+
 WORKDIR /app
-COPY pom.xml .
+COPY user-service/pom.xml ./pom.xml
 # -B (batch mode): Maven'i interaktif olmayan modda calistirir (CI/CD uyumlu)
 # dependency:go-offline: Tum bagimliliklari indirir ama derleme yapmaz
 # || true: Bazi gRPC artifact'lari offline cache'e girmez, hata olsa bile devam et
@@ -15,7 +21,7 @@ RUN find /root/.m2 -name "*.exe" -exec chmod +x {} \;
 # ── Stage 2: Build ───────────────────────────────────────────
 # deps stage'inden devam eder — dependency'ler zaten indirilmis durumda
 FROM deps AS build
-COPY src ./src
+COPY user-service/src ./src
 # Online mode: Alpine'da protoc binary calismiyordu; Debian-slim ile sorun cozuldu
 RUN find /root/.m2 -name "*.exe" -exec chmod +x {} \; && mvn clean package -DskipTests
 

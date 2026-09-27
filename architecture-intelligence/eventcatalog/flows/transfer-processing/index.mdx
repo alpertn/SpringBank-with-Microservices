@@ -1,0 +1,76 @@
+---
+id: transfer-processing
+name: Transfer Processing
+version: 1.0.0
+summary: Current transfer orchestration across transaction, money, user and fraud services.
+owners:
+  - platform-team
+steps:
+  - id: request
+    title: Client requests transfer
+    service:
+      id: transaction-service
+      version: 1.0.0
+    next_step: created
+  - id: created
+    title: Publish transaction created
+    message:
+      id: transaction-created
+      version: 1.0.0
+    next_step: reserve
+  - id: reserve
+    title: Reserve sender funds
+    service:
+      id: money-service
+      version: 1.0.0
+    next_step: validate-event
+  - id: validate-event
+    title: Request participant validation
+    message:
+      id: transaction-user-validation-request
+      version: 1.0.0
+    next_step: validate
+  - id: validate
+    title: Validate participant identities
+    service:
+      id: user-service
+      version: 1.0.0
+    next_step: validated
+  - id: validated
+    title: Publish validation success
+    message:
+      id: transaction-user-validation-success
+      version: 1.0.0
+    next_step: fraud
+  - id: fraud
+    title: Apply current fraud gate
+    service:
+      id: fraud-service
+      version: 1.0.0
+    next_step: checked
+  - id: checked
+    title: Publish fraud checked
+    message:
+      id: transaction-fraud-checked
+      version: 1.0.0
+    next_step: execute
+  - id: execute
+    title: Move reserved funds
+    service:
+      id: money-service
+      version: 1.0.0
+    next_step: completed
+  - id: completed
+    title: Publish transaction completed
+    message:
+      id: transaction-completed
+      version: 1.0.0
+    next_step: state
+  - id: state
+    title: Update transaction workflow state
+    service:
+      id: transaction-service
+      version: 1.0.0
+---
+
+This flow documents behavior observed in the repository. Failure branches, consistency risks and the target-state design are detailed in the enterprise architecture assessment.

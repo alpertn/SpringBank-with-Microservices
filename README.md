@@ -1,6 +1,6 @@
 # SpringBank-with-Microservices
 
-## Projenin Mimari Çizimi 
+## Projenin Mimari Çizimi
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="900">
 
 <p align="center">
@@ -23,7 +23,18 @@
 <a href="https://app.diagrams.net/?#Uhttps://raw.githubusercontent.com/alpertn/SpringBank-with-Microservices/refs/heads/main/readme/sagapattern260426.drawio" target="_blank">
   <img src="https://img.shields.io/badge/Open_in-Draw.io-orange?style=for-the-badge&logo=diagrams.net" alt="Draw.io'da Çizimi Aç">
 </a>
+<a href="https://app.diagrams.net/?#Uhttps://raw.githubusercontent.com/alpertn/SpringBank-with-Microservices/refs/heads/main/readme/current-data-flow-architecture.drawio" target="_blank">
+  <img src="https://img.shields.io/badge/Current_Data_Flow-Draw.io-blue?style=for-the-badge&logo=diagrams.net" alt="Guncel veri akisini Draw.io'da ac">
+</a>
 </div>
+
+## Guncel Mimari Dokumanlari
+
+- [Mevcut veri akisi ve servis sorumluluklari](DATA_FLOW_ARCHITECTURE.md)
+- [High-scale banking referans mimarisi ve somut servis akislar](HIGH_SCALE_BANKING_REFERENCE_ARCHITECTURE.md)
+- [Kurumsal bankacilik fark analizi](ENTERPRISE_BANKING_ARCHITECTURE_ASSESSMENT.md)
+- [Codex proje calisma hafizasi](CODEX_PROJECT_MEMORY.md)
+
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="900">
 
 <div align="center">
@@ -48,7 +59,7 @@
     <h4>18 - Spring WebFlux</h4>
     <h4>19 - Spring Gateway</h4>
     <h4>20 - Spring Cloud LoadBalancer</h4>
-    <h4>21 - Lombok</h4>    
+    <h4>21 - Lombok</h4>
   </div>
 
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="900">

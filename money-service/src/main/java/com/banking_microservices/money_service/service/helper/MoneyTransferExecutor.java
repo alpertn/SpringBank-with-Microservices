@@ -1,6 +1,6 @@
 package com.banking_microservices.money_service.service.helper;
 
-import com.banking_microservices.money_service.dto.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.money_service.model.workflow.TransactionWorkflowState;
 import com.banking_microservices.money_service.dto.enums.TransactionStatus;
 import com.banking_microservices.money_service.exception.DeposItOrWithdrawFailedException;
 import com.banking_microservices.money_service.exception.KafkaSendException;
@@ -21,7 +21,7 @@ public class MoneyTransferExecutor {
     private final TransactionErrorHandler errorHandler;
     private final Supplier<String> currentTime;
 
-    public void execute(KafkaTransactionTopicMessageDto dto) {
+    public void execute(TransactionWorkflowState dto) {
         // para transferi. basarisizsa Kafkaya error gonderilir.
         try {
             balanceOperationService.withdrawBlockedMoneyByIban(dto.getSenderIban(), dto.getMoney());

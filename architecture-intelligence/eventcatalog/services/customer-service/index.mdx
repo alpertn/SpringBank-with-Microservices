@@ -1,0 +1,13 @@
+---
+id: customer-service
+name: Customer Service
+version: 1.0.0
+summary: HTTP and gRPC facade routing customer commands and queries to their dedicated services.
+owners:
+  - platform-team
+repository:
+  language: Java
+  url: https://github.com/alpertn/SpringBank-with-Microservices
+---
+
+**Current role:** Stable facade over the customer command and query services. User registration calls its gRPC onboarding endpoint.\n\n**Communication:** Synchronous gRPC to command/query services; no database ownership.

@@ -56,6 +56,16 @@ class GlobalExceptionHandlerTest {
                 "uri=/auth/register;client=127.0.0.1");
     }
 
+    @Test
+    void handleCustomerOnboardingExceptionReturnsServiceUnavailable() {
+        ResponseEntity<ErrorResponseDto> response = handler.handleCustomerOnboardingException(
+                new CustomerOnboardingException("customer-service unavailable", new RuntimeException("grpc")),
+                request("/auth/register"));
+
+        assertError(response, HttpStatus.SERVICE_UNAVAILABLE, "Customer Onboarding Unavailable",
+                "customer-service unavailable", "uri=/auth/register;client=127.0.0.1");
+    }
+
     private WebRequest request(String path) {
         MockHttpServletRequest request = new MockHttpServletRequest("POST", path);
         return new ServletWebRequest(request);

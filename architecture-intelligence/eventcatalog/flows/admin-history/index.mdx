@@ -1,0 +1,40 @@
+---
+id: admin-history
+name: Administrative History
+version: 1.0.0
+summary: Administrative command persistence and query projection.
+owners:
+  - platform-team
+steps:
+  - id: request
+    title: Admin operation creates history command
+    service:
+      id: admin-service
+      version: 1.0.0
+    next_step: command
+  - id: command
+    title: Publish administrative history command
+    message:
+      id: admin-history-command
+      version: 1.0.0
+    next_step: persist
+  - id: persist
+    title: Persist authoritative command record
+    service:
+      id: admin-service-command
+      version: 1.0.0
+    next_step: event
+  - id: event
+    title: Publish history projection sync
+    message:
+      id: admin-history-projection-sync
+      version: 1.0.0
+    next_step: project
+  - id: project
+    title: Update MongoDB and Elasticsearch
+    service:
+      id: admin-service-query
+      version: 1.0.0
+---
+
+This flow documents behavior observed in the repository. Failure branches, consistency risks and the target-state design are detailed in the enterprise architecture assessment.

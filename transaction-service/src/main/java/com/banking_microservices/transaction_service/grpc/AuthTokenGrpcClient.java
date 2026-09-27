@@ -1,8 +1,8 @@
 package com.banking_microservices.transaction_service.grpc;
 
-import com.banking_microservices.user_service.grpc.AuthTokenGrpcServiceGrpc;
-import com.banking_microservices.user_service.grpc.TokenDecodeRequest;
-import com.banking_microservices.user_service.grpc.TokenDetailsResponse;
+import com.banking_microservices.transaction_service.grpc.AuthTokenGrpcServiceGrpc;
+import com.banking_microservices.transaction_service.grpc.TokenDecodeRequest;
+import com.banking_microservices.transaction_service.grpc.TokenDetailsResponse;
 import com.banking_microservices.transaction_service.dto.TokenDetailsDto;
 import io.grpc.StatusRuntimeException;
 import net.devh.boot.grpc.client.inject.GrpcClient;

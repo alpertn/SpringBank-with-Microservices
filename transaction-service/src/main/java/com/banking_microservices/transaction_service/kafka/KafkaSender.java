@@ -1,6 +1,6 @@
 package com.banking_microservices.transaction_service.kafka;
 
-import com.banking_microservices.transaction_service.dto.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.transaction_service.model.workflow.TransactionWorkflowState;
 import com.banking_microservices.transaction_service.exception.KafkaSendException;
 import com.banking_microservices.transaction_service.exception.ValueNotFoundException;
 import com.banking_microservices.transaction_service.model.SagaEvents;
@@ -18,6 +18,7 @@ import java.util.function.Supplier;
 @Service
 public class KafkaSender {
     private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final TransactionContractMapper contractMapper = new TransactionContractMapper();
     private final Gson gson = new GsonBuilder()
             .serializeNulls()
             .registerTypeAdapter(java.time.LocalDateTime.class,
@@ -41,10 +42,10 @@ public class KafkaSender {
         this.currentTime = currentTime;
     }
 
-    public void sendTransaction(String key, KafkaTransactionTopicMessageDto kafkaTransactionTopicMessageDto) {
+    public void sendTransaction(String key, TransactionWorkflowState kafkaTransactionTopicMessageDto) {
         try {
             log.info(" ({}) > KafkaSender | sendTransaction -> Kafkaya mesaj gonderilmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(kafkaTransactionTopicMessageDto));
-            kafkaTemplate.send(transactionCreateTopic, key, kafkaTransactionTopicMessageDto);
+            kafkaTemplate.send(transactionCreateTopic, key, contractMapper.toContract(kafkaTransactionTopicMessageDto));
             log.info(" ({}) > KafkaSender | sendTransaction -> Kafkaya mesaj gonderildi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(kafkaTransactionTopicMessageDto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendTransaction -> Kafkaya mesaj gonderilirken hata olustu! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
@@ -57,13 +58,13 @@ public class KafkaSender {
 
     public void sendSagaEvent(SagaEvents dto) {
         if (dto == null) throw new ValueNotFoundException("Values can not null");
-        if (dto.getKafkaEventUUID() == null || dto.getUUID() == null || dto.getTransactionHistory() == null)
+        if (dto.getKafkaEventUUID() == null || dto.getUUID() == null || dto.getTransaction() == null)
             throw new ValueNotFoundException("Değerler Boş olamaz. " + dto);
 
         log.info(" ({}) > KafkaSender | sendSagaEvent -> Saga event Kafkaya gonderilmek uzere alindi. UUID: {}, Status: {}", currentTime.get(), dto.getUUID(), dto.getStatus());
 
         try {
-            kafkaTemplate.send(sagaSenderTopic, dto.getKafkaEventUUID(), dto);
+            kafkaTemplate.send(sagaSenderTopic, dto.getKafkaEventUUID(), contractMapper.toContract(dto));
             log.info(" ({}) > KafkaSender | sendSagaEvent -> Saga event Kafkaya gonderildi. Topic: {}, UUID: {}", currentTime.get(), sagaSenderTopic, dto.getUUID());
         } catch (Exception e) {
             log.error(" ({}) > KafkaSender | sendSagaEvent -> Saga event Kafkaya gonderilemedi! UUID: {}, Hata: {}", currentTime.get(), dto.getUUID(), e.getMessage());

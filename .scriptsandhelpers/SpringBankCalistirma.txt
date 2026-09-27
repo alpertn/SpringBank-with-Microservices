@@ -1,7 +1,7 @@
 SpringBank with Microservices - Calistirma Notlari
 ==================================================
 
-$services = @('admin-service','admin-service-command','admin-service-query','user-service','money-service','money-service-command','money-service-query','transaction-service','gateway','fraud-service'); foreach ($svc in $services) { Write-Host "== Building $svc =="; docker build -t "springbankwithmicroservices/${svc}:1.0.0" "./$svc"; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }; kubectl apply -f k8s/01-Base.yaml; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; kubectl apply -f k8s/02-Apps.yaml; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; kubectl -n banking-microservices rollout restart deployment/admin-service deployment/admin-service-command deployment/admin-service-query deployment/user-service deployment/money-service deployment/money-service-command deployment/money-service-query deployment/transaction-service deployment/gateway deployment/fraud-service; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; foreach ($svc in $services) { kubectl -n banking-microservices rollout status "deployment/$svc" --timeout=180s; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }; kubectl -n banking-microservices get pods
+$services = @('admin-service','admin-service-command','admin-service-query','user-service','money-service','money-service-command','money-service-query','transaction-service','gateway','fraud-service'); $contractServices = @('user-service','money-service','transaction-service','fraud-service'); foreach ($svc in $services) { Write-Host "== Building $svc =="; if ($contractServices -contains $svc) { docker build -f "$svc/Dockerfile" -t "springbankwithmicroservices/${svc}:1.0.0" . } else { docker build -t "springbankwithmicroservices/${svc}:1.0.0" "./$svc" }; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }; kubectl apply -f k8s/01-Base.yaml; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; kubectl apply -f k8s/02-Apps.yaml; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; kubectl -n banking-microservices rollout restart deployment/admin-service deployment/admin-service-command deployment/admin-service-query deployment/user-service deployment/money-service deployment/money-service-command deployment/money-service-query deployment/transaction-service deployment/gateway deployment/fraud-service; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; foreach ($svc in $services) { kubectl -n banking-microservices rollout status "deployment/$svc" --timeout=180s; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }; kubectl -n banking-microservices get pods
 
 
 Bu dosya guncel proje yapisina gore hazirlandi. Projede artik klasik
@@ -89,16 +89,16 @@ Menudeki ana secenekler:
 
 Normal build:
 
-  docker build -t springbankwithmicroservices/user-service:1.0.0 ./user-service
+  docker build -f user-service/Dockerfile -t springbankwithmicroservices/user-service:1.0.0 .
   docker build -t springbankwithmicroservices/admin-service:1.0.0 ./admin-service
   docker build -t springbankwithmicroservices/admin-service-command:1.0.0 ./admin-service-command
   docker build -t springbankwithmicroservices/admin-service-query:1.0.0 ./admin-service-query
-  docker build -t springbankwithmicroservices/money-service:1.0.0 ./money-service
+  docker build -f money-service/Dockerfile -t springbankwithmicroservices/money-service:1.0.0 .
   docker build -t springbankwithmicroservices/money-service-command:1.0.0 ./money-service-command
   docker build -t springbankwithmicroservices/money-service-query:1.0.0 ./money-service-query
-  docker build -t springbankwithmicroservices/transaction-service:1.0.0 ./transaction-service
+  docker build -f transaction-service/Dockerfile -t springbankwithmicroservices/transaction-service:1.0.0 .
   docker build -t springbankwithmicroservices/gateway:1.0.0 ./gateway
-  docker build -t springbankwithmicroservices/fraud-service:1.0.0 ./fraud-service
+  docker build -f fraud-service/Dockerfile -t springbankwithmicroservices/fraud-service:1.0.0 .
 
 Cache kullanmadan temiz build:
 

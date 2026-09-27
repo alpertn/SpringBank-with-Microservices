@@ -1,0 +1,40 @@
+server:
+  port: ${CUSTOMER_SERVICE_QUERY_PORT:8101}
+
+spring:
+  application:
+    name: customer-service-query
+  mongodb:
+    uri: ${SPRING_MONGODB_URI:mongodb://mongodb:27017/banking_customer_query}
+  data:
+    elasticsearch:
+      repositories:
+        enabled: true
+  elasticsearch:
+    uris: ${SPRING_ELASTICSEARCH_URIS:http://elasticsearch:9200}
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: ${SPRING_KAFKA_CONSUMER_GROUP_ID:customer-service-query-group}
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+grpc:
+  server:
+    port: ${CUSTOMER_SERVICE_QUERY_GRPC_PORT:9201}
+
+customer-service:
+  topics:
+    projection-sync: ${CUSTOMER_SERVICE_PROJECTION_TOPIC:banking-microservices.customer.projection-sync.v1}
+
+management:
+  endpoints:
+    web:
+      base-path: /api/customer-service-query/actuator
+      exposure:
+        include: health,info
+
+logging:
+  pattern:
+    console: "%-5level --- [customer-service-query] : %msg%n"

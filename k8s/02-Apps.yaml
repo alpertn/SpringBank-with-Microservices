@@ -77,7 +77,7 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: springbankwithmicroservices/user-service:1.0.0
+          image: springbankwithmicroservices/user-service:1.0.1
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8081
@@ -105,6 +105,8 @@ spec:
               value: "8081"
             - name: USER_SERVICE_GRPC_PORT
               value: "9194"
+            - name: CUSTOMER_SERVICE_GRPC_ADDRESS
+              value: static://customer-service:9202
             # Kafka
             - name: SPRING_APPLICATION_JSON
               value: '{"spring.kafka.bootstrap-servers":"kafka:9092"}'
@@ -486,7 +488,7 @@ spec:
     spec:
       containers:
         - name: money-service-query
-          image: springbankwithmicroservices/money-service-query:1.0.0
+          image: springbankwithmicroservices/money-service-query:1.0.1
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8093
@@ -698,7 +700,7 @@ spec:
     spec:
       containers:
         - name: admin-service-query
-          image: springbankwithmicroservices/admin-service-query:1.0.0
+          image: springbankwithmicroservices/admin-service-query:1.0.1
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8098
@@ -711,6 +713,8 @@ spec:
               memory: "1Gi"
               cpu: "750m"
           env:
+            - name: SPRING_MONGODB_URI
+              value: mongodb://mongodb:27017/banking_admin_query
             - name: ADMIN_SERVICE_QUERY_PORT
               value: "8098"
             - name: ADMIN_SERVICE_QUERY_GRPC_PORT
@@ -796,7 +800,7 @@ spec:
       serviceAccountName: gateway-log-reader
       containers:
         - name: admin-service
-          image: springbankwithmicroservices/admin-service:1.0.0
+          image: springbankwithmicroservices/admin-service:1.0.1
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8096
@@ -1009,7 +1013,7 @@ spec:
       serviceAccountName: gateway-log-reader
       containers:
         - name: gateway
-          image: springbankwithmicroservices/gateway:1.0.0
+          image: springbankwithmicroservices/gateway:1.0.1
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8095
@@ -1035,6 +1039,12 @@ spec:
               value: http://admin-service-command:8097
             - name: ADMIN_SERVICE_QUERY_URL
               value: http://admin-service-query:8098
+            - name: CUSTOMER_SERVICE_URL
+              value: http://customer-service:8099
+            - name: CUSTOMER_SERVICE_COMMAND_URL
+              value: http://customer-service-command:8100
+            - name: CUSTOMER_SERVICE_QUERY_URL
+              value: http://customer-service-query:8101
             - name: REDIS_HOST
               value: redis
             - name: SPRING_DATA_REDIS_PORT
@@ -1160,6 +1170,328 @@ spec:
               value: banking-microservices.transaction.fraud.checked.v1
             - name: KAFKA_TRANSACTION_FAILED_TOPIC
               value: banking-microservices.transaction.failed.v1
+
+---
+
+#
+# Customer-Service-Command -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customer-service-command
+  namespace: banking-microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: customer-service-command
+  template:
+    metadata:
+      labels:
+        app: customer-service-command
+    spec:
+      containers:
+        - name: customer-service-command
+          image: springbankwithmicroservices/customer-service-command:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8100
+            - containerPort: 9200
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres:5432/banking_customer_command
+            - name: SPRING_DATASOURCE_USERNAME
+              value: banking_admin
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: banking_admin
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: validate
+            - name: SPRING_JPA_PROPERTIES_HIBERNATE_HBM2DDL_AUTO
+              value: validate
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092
+            - name: CUSTOMER_SERVICE_COMMAND_PORT
+              value: "8100"
+            - name: CUSTOMER_SERVICE_COMMAND_GRPC_PORT
+              value: "9200"
+            - name: CUSTOMER_SERVICE_PROJECTION_TOPIC
+              value: banking-microservices.customer.projection-sync.v1
+            - name: ADDRESS_PARSER_BASE_URL
+              value: http://127.0.0.1:8080
+            - name: CUSTOMER_NATIONAL_ID_HMAC_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: customer-service-secrets
+                  key: national-id-hmac-key
+        - name: libpostal-sidecar
+          image: springbankwithmicroservices/libpostal-service:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: libpostal-http
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: libpostal-http
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            failureThreshold: 12
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: libpostal-http
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "3Gi"
+              cpu: "2"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: customer-service-command
+  namespace: banking-microservices
+spec:
+  selector:
+    app: customer-service-command
+  ports:
+    - name: http
+      port: 8100
+      targetPort: 8100
+    - name: grpc
+      port: 9200
+      targetPort: 9200
+
+---
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: customer-service-command-hpa
+  namespace: banking-microservices
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: customer-service-command
+  minReplicas: 1
+  maxReplicas: 1
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 60
+
+---
+
+#
+# Customer-Service-Query -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customer-service-query
+  namespace: banking-microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: customer-service-query
+  template:
+    metadata:
+      labels:
+        app: customer-service-query
+    spec:
+      containers:
+        - name: customer-service-query
+          image: springbankwithmicroservices/customer-service-query:1.0.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8101
+            - containerPort: 9201
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          env:
+            - name: SPRING_MONGODB_URI
+              value: mongodb://mongodb:27017/banking_customer_query
+            - name: SPRING_DATA_MONGODB_URI
+              value: mongodb://mongodb:27017/banking_customer_query
+            - name: SPRING_ELASTICSEARCH_URIS
+              value: http://elasticsearch:9200
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092
+            - name: CUSTOMER_SERVICE_QUERY_PORT
+              value: "8101"
+            - name: CUSTOMER_SERVICE_QUERY_GRPC_PORT
+              value: "9201"
+            - name: CUSTOMER_SERVICE_PROJECTION_TOPIC
+              value: banking-microservices.customer.projection-sync.v1
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: customer-service-query
+  namespace: banking-microservices
+spec:
+  selector:
+    app: customer-service-query
+  ports:
+    - name: http
+      port: 8101
+      targetPort: 8101
+    - name: grpc
+      port: 9201
+      targetPort: 9201
+
+---
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: customer-service-query-hpa
+  namespace: banking-microservices
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: customer-service-query
+  minReplicas: 1
+  maxReplicas: 1
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 60
+
+---
+
+#
+# Customer-Service -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customer-service
+  namespace: banking-microservices
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: customer-service
+  template:
+    metadata:
+      labels:
+        app: customer-service
+    spec:
+      containers:
+        - name: customer-service
+          image: springbankwithmicroservices/customer-service:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8099
+            - containerPort: 9202
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          env:
+            - name: CUSTOMER_SERVICE_PORT
+              value: "8099"
+            - name: CUSTOMER_SERVICE_GRPC_PORT
+              value: "9202"
+            - name: CUSTOMER_SERVICE_COMMAND_GRPC_ADDRESS
+              value: static://customer-service-command:9200
+            - name: CUSTOMER_SERVICE_QUERY_GRPC_ADDRESS
+              value: static://customer-service-query:9201
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: customer-service
+  namespace: banking-microservices
+spec:
+  selector:
+    app: customer-service
+  ports:
+    - name: http
+      port: 8099
+      targetPort: 8099
+    - name: grpc
+      port: 9202
+      targetPort: 9202
+
+---
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: customer-service-hpa
+  namespace: banking-microservices
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: customer-service
+  minReplicas: 1
+  maxReplicas: 1
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 60
 
 ---
 

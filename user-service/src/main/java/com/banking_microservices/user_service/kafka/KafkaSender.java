@@ -1,6 +1,6 @@
 package com.banking_microservices.user_service.kafka;
 
-import com.banking_microservices.user_service.dto.user.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.user_service.model.workflow.TransactionWorkflowState;
 import com.banking_microservices.user_service.exception.KafkaSendException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class KafkaSender {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final TransactionContractMapper contractMapper = new TransactionContractMapper();
     private final Gson gson = new GsonBuilder()
             .serializeNulls()
             .registerTypeAdapter(java.time.LocalDateTime.class,
@@ -53,10 +54,10 @@ public class KafkaSender {
         }
     }
 
-    public void sendTransactionUserValidationSuccess(String key, KafkaTransactionTopicMessageDto dto) {
+    public void sendTransactionUserValidationSuccess(String key, TransactionWorkflowState dto) {
         try {
             log.info(" ({}) > KafkaSender | sendTransactionUserValidationSuccess -> Kafkaya mesaj gonderilmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
-            kafkaTemplate.send(transactionSenderTopic, key, dto);
+            kafkaTemplate.send(transactionSenderTopic, key, contractMapper.toContract(dto));
             log.info(" ({}) > KafkaSender | sendTransactionUserValidationSuccess -> Transaction success kafkaya mesaj gonderildi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(dto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendTransactionUserValidationSuccess -> Transaction kafkaya mesaj gonderilirken hata olustu. Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());
@@ -64,10 +65,10 @@ public class KafkaSender {
         }
     }
 
-    public void sendTransactionUsernameValidationError(String key, KafkaTransactionTopicMessageDto dto) {
+    public void sendTransactionUsernameValidationError(String key, TransactionWorkflowState dto) {
         try {
             log.info(" ({}) > KafkaSender | sendTransactionUsernameValidationError -> Kafkaya mesaj gonderilmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
-            kafkaTemplate.send(transactionErrorTopic, key, dto);
+            kafkaTemplate.send(transactionErrorTopic, key, contractMapper.toContract(dto));
             log.info(" ({}) > KafkaSender | sendTransactionUsernameValidationError -> Transaction error kafkaya mesaj gonderildi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(dto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSender | sendTransactionUsernameValidationError -> Transaction error kafkaya mesaj gonderilirken hata olustu. Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());

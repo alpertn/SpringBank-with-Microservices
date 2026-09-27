@@ -1,7 +1,7 @@
 package com.banking_microservices.money_service.service;
 
 import com.banking_microservices.money_service.dto.SagaEventsDto;
-import com.banking_microservices.money_service.dto.TransactionEntity;
+import com.banking_microservices.money_service.dto.SagaTransactionSnapshot;
 import com.banking_microservices.money_service.dto.enums.SagaStatus;
 import com.banking_microservices.money_service.exception.SagaEventNotFoundException;
 import com.banking_microservices.money_service.exception.SagaTransactionRollbackException;
@@ -57,23 +57,23 @@ public class SagaService {
             throw new SagaTransactionRollbackException("Saga event DB kayit hatasi: " + e.getMessage());
         }
 
-        TransactionEntity transactionEntity = dto.getTransactionEntity();
-        if (transactionEntity == null) {
-            log.warn(" ({}) > SagaService | handleSagaEvent -> TransactionEntity null, saga tamamlanamaz. UUID: {}", currentTime.get(), dto.getUUID());
-            sendSagaError(dto, "TransactionEntity null, saga tamamlanamaz.");
+        SagaTransactionSnapshot transaction = dto.getTransaction();
+        if (transaction == null) {
+            log.warn(" ({}) > SagaService | handleSagaEvent -> Saga transaction snapshot null, saga tamamlanamaz. UUID: {}", currentTime.get(), dto.getUUID());
+            sendSagaError(dto, "Saga transaction snapshot null, saga tamamlanamaz.");
             return;
         }
 
-        String transactionType = transactionEntity.getTransactionType();
+        String transactionType = transaction.getTransactionType();
         log.info(" ({}) > SagaService | handleSagaEvent -> TransactionType: {}, UUID: {}", currentTime.get(), transactionType, dto.getUUID());
 
         try {
             if ("TRANSFER".equals(transactionType)) {
-                handleTransferRollback(dto, transactionEntity);
+                handleTransferRollback(dto, transaction);
             } else if ("DEPOSIT".equals(transactionType)) {
-                handleDepositRollback(dto, transactionEntity);
+                handleDepositRollback(dto, transaction);
             } else if ("WITHDRAW".equals(transactionType)) {
-                handleWithdrawRollback(dto, transactionEntity);
+                handleWithdrawRollback(dto, transaction);
             } else {
                 log.warn(" ({}) > SagaService | handleSagaEvent -> Bilinmeyen TransactionType: {}, UUID: {}", currentTime.get(), transactionType, dto.getUUID());
                 sendSagaError(dto, "Bilinmeyen TransactionType: " + transactionType);
@@ -102,7 +102,7 @@ public class SagaService {
     // - SenderIban'a para iade edilir (deposit)
     // - ReceiverIban'dan para geri alinir (withdraw)
 
-    private void handleTransferRollback(SagaEventsDto dto, TransactionEntity tx) {
+    private void handleTransferRollback(SagaEventsDto dto, SagaTransactionSnapshot tx) {
         log.info(" ({}) > SagaService | handleTransferRollback -> TRANSFER saga rollback baslatiliyor. SenderIban: {}, ReceiverIban: {}, Miktar: {}", currentTime.get(), tx.getSenderIban(), tx.getReceiverIban(), tx.getMoney());
 
         if (tx.getMoney() == null) {
@@ -149,7 +149,7 @@ public class SagaService {
     // ─── DEPOSIT: Saga geri alma ──────────────────────────────────────────────
     // Yatirilan para geri cekiliyor (withdraw)
 
-    private void handleDepositRollback(SagaEventsDto dto, TransactionEntity tx) {
+    private void handleDepositRollback(SagaEventsDto dto, SagaTransactionSnapshot tx) {
         log.info(" ({}) > SagaService | handleDepositRollback -> DEPOSIT saga rollback baslatiliyor. Miktar: {}", currentTime.get(), tx.getMoney());
 
         if (tx.getMoney() == null) {
@@ -178,7 +178,7 @@ public class SagaService {
     // ─── WITHDRAW: Saga geri alma ─────────────────────────────────────────────
     // Cekilen para geri yatiriliyor (deposit)
 
-    private void handleWithdrawRollback(SagaEventsDto dto, TransactionEntity tx) {
+    private void handleWithdrawRollback(SagaEventsDto dto, SagaTransactionSnapshot tx) {
         log.info(" ({}) > SagaService | handleWithdrawRollback -> WITHDRAW saga rollback baslatiliyor. Miktar: {}", currentTime.get(), tx.getMoney());
 
         if (tx.getMoney() == null) {

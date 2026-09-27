@@ -1,7 +1,8 @@
 package com.banking_microservices.user_service.kafka;
 
+import com.banking_microservices.contracts.ContractJsonCodec;
 import com.banking_microservices.user_service.dto.enums.KafkaEventType;
-import com.banking_microservices.user_service.dto.user.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.user_service.model.workflow.TransactionWorkflowState;
 import com.banking_microservices.user_service.service.ProcessedEventStore;
 import com.banking_microservices.user_service.service.UserService;
 import com.google.gson.Gson;
@@ -19,6 +20,8 @@ import java.util.function.Supplier;
 @Service
 @Slf4j
 public class KafkaListenerService {
+
+    private final TransactionContractMapper contractMapper = new TransactionContractMapper();
 
     private final Gson gson = new GsonBuilder()
             .serializeNulls()
@@ -43,7 +46,7 @@ public class KafkaListenerService {
 
     @KafkaListener(topics = "${kafka.topics.create-user.listener}")
     public void listenCreateUserTopic(String topicData) {
-        KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
+        TransactionWorkflowState dto = parseTransaction(topicData);
         if (dto == null || dto.getEventUUID() == null) {
             return;
         }
@@ -54,7 +57,7 @@ public class KafkaListenerService {
 
     @KafkaListener(topics = "${kafka.topics.transaction.listener}")
     public void listenTransactionTopic(String topicData) {
-        KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
+        TransactionWorkflowState dto = parseTransaction(topicData);
         if (dto == null || dto.getEventUUID() == null) {
             return;
         }
@@ -63,6 +66,14 @@ public class KafkaListenerService {
             return;
         }
         userService.transactionTopicMessageVerify(dto);
+    }
+
+    private TransactionWorkflowState parseTransaction(String topicData) {
+        try {
+            return contractMapper.fromContract(ContractJsonCodec.parseTransaction(topicData));
+        } catch (IllegalArgumentException contractError) {
+            return gson.fromJson(topicData, TransactionWorkflowState.class);
+        }
     }
 
 }

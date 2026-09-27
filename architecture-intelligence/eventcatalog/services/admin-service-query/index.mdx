@@ -1,0 +1,16 @@
+---
+id: admin-service-query
+name: Admin Query Service
+version: 1.0.0
+summary: Administrative history read/search model using MongoDB and Elasticsearch.
+owners:
+  - platform-team
+receives:
+  - id: admin-history-projection-sync
+    version: 1.0.0
+repository:
+  language: Java
+  url: https://github.com/alpertn/SpringBank-with-Microservices
+---
+
+**Current role:** Builds administrative history projections and search indexes.\n\n**Consistency:** Eventual, with no automated source-to-projection reconciliation yet.

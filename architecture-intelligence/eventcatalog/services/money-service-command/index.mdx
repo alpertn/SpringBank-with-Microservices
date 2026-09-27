@@ -1,0 +1,16 @@
+---
+id: money-service-command
+name: Money Command Service
+version: 1.0.0
+summary: Separate CQRS money write model that publishes account projection events.
+owners:
+  - platform-team
+sends:
+  - id: money-projection-sync
+    version: 1.0.0
+repository:
+  language: Java
+  url: https://github.com/alpertn/SpringBank-with-Microservices
+---
+
+**Current role:** Handles direct account write operations in a separate PostgreSQL database.\n\n**Ownership conflict:** It is not the account owner used by the live registration and transaction pipeline; a canonical owner must be selected.

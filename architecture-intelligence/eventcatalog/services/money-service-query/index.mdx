@@ -1,0 +1,16 @@
+---
+id: money-service-query
+name: Money Query Service
+version: 1.0.0
+summary: MongoDB and Elasticsearch projection for the separate money command model.
+owners:
+  - platform-team
+receives:
+  - id: money-projection-sync
+    version: 1.0.0
+repository:
+  language: Java
+  url: https://github.com/alpertn/SpringBank-with-Microservices
+---
+
+**Current role:** Materializes searchable money-account views from command-side projection events.\n\n**Scope warning:** This projection does not currently represent all mutations executed by the legacy money-service.

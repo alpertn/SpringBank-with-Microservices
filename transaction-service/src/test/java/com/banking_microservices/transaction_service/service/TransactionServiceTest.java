@@ -1,6 +1,6 @@
 package com.banking_microservices.transaction_service.service;
 
-import com.banking_microservices.transaction_service.dto.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.transaction_service.model.workflow.TransactionWorkflowState;
 import com.banking_microservices.transaction_service.dto.TokenDetailsDto;
 import com.banking_microservices.transaction_service.dto.TransactionRequestDto;
 import com.banking_microservices.transaction_service.dto.enums.TransactionStatus;
@@ -62,9 +62,6 @@ class TransactionServiceTest {
                 .build();
         when(transactionRepository.existsByEventId(any())).thenReturn(false);
         when(transactionRepository.save(any(TransactionEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(transactionRepository.findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc("TRRECEIVER", "TRRECEIVER"))
-                .thenReturn(List.of());
-
         transactionService.createTransaction(request, "sender-keycloak", "sender@springbank.test", "Sender", "User", tokenDetails);
 
         ArgumentCaptor<TransactionEntity> entityCaptor = ArgumentCaptor.forClass(TransactionEntity.class);
@@ -76,7 +73,7 @@ class TransactionServiceTest {
         assertThat(entity.getSenderIban()).isEqualTo("TRSENDER");
         assertThat(entity.getReceiverIban()).isEqualTo("TRRECEIVER");
 
-        ArgumentCaptor<KafkaTransactionTopicMessageDto> kafkaCaptor = ArgumentCaptor.forClass(KafkaTransactionTopicMessageDto.class);
+        ArgumentCaptor<TransactionWorkflowState> kafkaCaptor = ArgumentCaptor.forClass(TransactionWorkflowState.class);
         verify(kafkaSender).sendTransaction(any(), kafkaCaptor.capture());
         assertThat(kafkaCaptor.getValue().getTransactionType()).isEqualTo(TransactionType.TRANSFER);
         assertThat(kafkaCaptor.getValue().getTokenDetails()).isSameAs(tokenDetails);
@@ -91,7 +88,7 @@ class TransactionServiceTest {
                 .build();
         when(transactionRepository.findByEventId("event-1")).thenReturn(Optional.of(entity));
 
-        transactionService.updateTransactionStatus(KafkaTransactionTopicMessageDto.builder()
+        transactionService.updateTransactionStatus(TransactionWorkflowState.builder()
                 .eventUUID("event-1")
                 .status(TransactionStatus.COMPLETED)
                 .statusDescription("completed")

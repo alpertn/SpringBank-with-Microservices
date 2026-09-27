@@ -50,14 +50,16 @@ public class AdminOpsController {
     private static final Set<String> DEPLOYMENTS = Set.of(
             "gateway", "user-service", "money-service", "money-service-command", "money-service-query",
             "transaction-service", "fraud-service", "admin-service", "admin-service-command", "admin-service-query",
+            "customer-service", "customer-service-command", "customer-service-query",
             "postgres", "redis", "mongodb", "elasticsearch", "zookeeper", "kafka", "keycloak");
     private static final List<String> APP_DEPLOYMENTS = List.of(
             "gateway", "user-service", "money-service", "money-service-command", "money-service-query",
-            "transaction-service", "fraud-service", "admin-service", "admin-service-command", "admin-service-query");
+            "transaction-service", "fraud-service", "admin-service", "admin-service-command", "admin-service-query",
+            "customer-service", "customer-service-command", "customer-service-query");
     private static final Set<String> POSTGRES_DATABASES = Set.of(
             "banking", "banking_fraud", "banking_keycloak", "banking_money", "banking_money_command",
-            "banking_transactions", "banking_users", "banking_admin_command");
-    private static final Set<String> MONGO_DATABASES = Set.of("banking_money_query", "banking_admin_query");
+            "banking_transactions", "banking_users", "banking_admin_command", "banking_customer_command");
+    private static final Set<String> MONGO_DATABASES = Set.of("banking_money_query", "banking_admin_query", "banking_customer_query");
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final AdminHistoryDispatchService historyDispatchService;
@@ -89,6 +91,7 @@ public class AdminOpsController {
         topics.put("admin-command", "banking-microservices.admin.history.command.v1");
         topics.put("admin-projection-sync", "banking-microservices.admin.history.projection-sync.v1");
         topics.put("money-projection-sync", "banking-microservices.money.projection-sync.v1");
+        topics.put("customer-projection-sync", "banking-microservices.customer.projection-sync.v1");
         topics.put("transaction-created", "banking-microservices.transaction.created.v1");
 
         result.put("runtime", runtime);

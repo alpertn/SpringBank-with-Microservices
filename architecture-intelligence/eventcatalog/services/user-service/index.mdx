@@ -1,0 +1,27 @@
+---
+id: user-service
+name: User Service
+version: 1.0.0
+summary: Owns Keycloak integration, authentication facade, token decoding and registration orchestration.
+owners:
+  - platform-team
+sends:
+  - id: user-created
+    version: 1.0.0
+  - id: transaction-user-validation-success
+    version: 1.0.0
+  - id: transaction-failed
+    version: 1.0.0
+receives:
+  - id: money-account-created
+    version: 1.0.0
+  - id: money-account-create-failed
+    version: 1.0.0
+  - id: transaction-user-validation-request
+    version: 1.0.0
+repository:
+  language: Java
+  url: https://github.com/alpertn/SpringBank-with-Microservices
+---
+
+**Current role:** Creates users in Keycloak, invokes customer onboarding over gRPC and publishes the account bootstrap event. It also participates in transaction identity validation.\n\n**System of record:** Keycloak is the identity source. Customer profile data belongs to the customer context.

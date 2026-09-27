@@ -1,6 +1,6 @@
 package com.banking_microservices.fraud_service.kafka;
 
-import com.banking_microservices.fraud_service.dto.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.fraud_service.model.workflow.TransactionWorkflowState;
 import com.banking_microservices.fraud_service.exception.KafkaSendException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -17,6 +17,7 @@ import java.util.function.Supplier;
 public class KafkaSenderService {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final TransactionContractMapper contractMapper = new TransactionContractMapper();
     private final Gson gson = new GsonBuilder()
             .serializeNulls()
             .registerTypeAdapter(java.time.LocalDateTime.class,
@@ -38,10 +39,10 @@ public class KafkaSenderService {
         this.currentTime = currentTime;
     }
 
-    public void sendTransaction(String key, KafkaTransactionTopicMessageDto dto) {
+    public void sendTransaction(String key, TransactionWorkflowState dto) {
         try {
             log.info(" ({}) > KafkaSenderService | sendTransaction -> Fraud check oncesi kafkaya gonderilmek uzere alindi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(dto));
-            kafkaTemplate.send(transactionSenderTopic, key, dto);
+            kafkaTemplate.send(transactionSenderTopic, key, contractMapper.toContract(dto));
             log.info(" ({}) > KafkaSenderService | sendTransaction -> Fraud checked kafkaya gonderildi. Key: {}, Dto:\n{}", currentTime.get(), key, gson.toJson(dto));
         } catch (Exception e) {
             log.warn(" ({}) > KafkaSenderService | sendTransaction -> Fraud send hatasi! Key: {}, Hata: {}", currentTime.get(), key, e.getMessage());

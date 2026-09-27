@@ -1,0 +1,31 @@
+---
+id: transaction-service
+name: Transaction Service
+version: 1.0.0
+summary: Persists transaction workflow state and orchestrates Kafka-based transfer and reversal flows.
+owners:
+  - platform-team
+sends:
+  - id: transaction-created
+    version: 1.0.0
+  - id: transaction-saga-created
+    version: 1.0.0
+receives:
+  - id: transaction-money-blocked
+    version: 1.0.0
+  - id: transaction-user-validation-success
+    version: 1.0.0
+  - id: transaction-completed
+    version: 1.0.0
+  - id: transaction-failed
+    version: 1.0.0
+  - id: transaction-saga-money-completed
+    version: 1.0.0
+  - id: transaction-saga-money-failed
+    version: 1.0.0
+repository:
+  language: Java
+  url: https://github.com/alpertn/SpringBank-with-Microservices
+---
+
+**Current role:** Accepts transaction requests, persists workflow state, starts the Kafka pipeline and tracks outcomes. It calls user-service over gRPC to decode tokens.\n\n**Critical gaps:** Database and Kafka are dual writes; access-token details are persisted; reversal state can become visible before financial compensation completes.

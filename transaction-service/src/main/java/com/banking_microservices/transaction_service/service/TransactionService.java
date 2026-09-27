@@ -1,8 +1,8 @@
 package com.banking_microservices.transaction_service.service;
 
-import com.banking_microservices.transaction_service.dto.TransactionHistory;
+import com.banking_microservices.transaction_service.dto.SagaTransactionSnapshot;
 import com.banking_microservices.transaction_service.dto.TransactionRequestDto;
-import com.banking_microservices.transaction_service.dto.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.transaction_service.model.workflow.TransactionWorkflowState;
 import com.banking_microservices.transaction_service.dto.TokenDetailsDto;
 import com.banking_microservices.transaction_service.dto.enums.SagaStatus;
 import com.banking_microservices.transaction_service.dto.enums.TransactionStatus;
@@ -54,7 +54,7 @@ public class TransactionService {
     }
 
     @Transactional
-    public void saveTransaction(KafkaTransactionTopicMessageDto topicMessage) {
+    public void saveTransaction(TransactionWorkflowState topicMessage) {
         log.info(" ({}) > TransactionService | saveTransaction -> Metoda veri geldi. Dto:\n{}", currentTime.get(),
                 gson.toJson(topicMessage));
         TransactionEntity transactiondata = TransactionEntity.builder()
@@ -130,7 +130,7 @@ public class TransactionService {
             receiverSurname = transactionDto.getReceiverSurname();
         }
 
-        KafkaTransactionTopicMessageDto dto = buildKafkaDto(
+        TransactionWorkflowState dto = buildKafkaDto(
                 newEventUUID, senderUserId, senderMail, senderName, senderSurname,
                 senderIban, receiverIban, receiverName, receiverSurname,
                 transactionDto.getAmount(), transactionDto.getDescription(), txType,
@@ -149,21 +149,6 @@ public class TransactionService {
             log.warn(" ({}) > TransactionService | createTransaction -> Model kaydedilemedi! Hata: {}",
                     currentTime.get(), e.getMessage());
             throw new TransactionSaveException("An Error With Save TransactionEntity " + e.getMessage());
-        }
-        try {
-            if (txType == TransactionType.WITHDRAW && dto.getSenderIban() != null) {
-                dto.setSenderTransactionHistory(
-                        transactionRepository.findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc(
-                                dto.getSenderIban(), dto.getSenderIban()));
-            } else if (dto.getReceiverIban() != null) {
-                dto.setReceiverTransactionHistory(
-                        transactionRepository.findBySenderIbanOrReceiverIbanOrderByLocalDateTimeDesc(
-                                dto.getReceiverIban(), dto.getReceiverIban()));
-            }
-        } catch (Exception e) {
-            log.warn(
-                    " ({}) > TransactionService | createTransaction -> Transaction history alinamadi, devam ediliyor: {}",
-                    currentTime.get(), e.getMessage());
         }
         try {
             log.info(" ({}) > TransactionService | createTransaction -> Kafkaya mesaj atiliyor. Dto:\n{}",
@@ -207,7 +192,7 @@ public class TransactionService {
     }
 
     @Transactional
-    public void updateTransactionStatus(KafkaTransactionTopicMessageDto dto) {
+    public void updateTransactionStatus(TransactionWorkflowState dto) {
         var entityOpt = transactionRepository.findByEventId(dto.getEventUUID());
         if (entityOpt.isEmpty()) {
             log.warn(" ({}) > TransactionService | updateTransactionStatus -> Entity bulunamadi! EventUUID: {} Status: {}. DB'de kayit yok, guncelleme atlanacak.",
@@ -265,12 +250,12 @@ public class TransactionService {
         }
     }
 
-    private KafkaTransactionTopicMessageDto buildKafkaDto(
+    private TransactionWorkflowState buildKafkaDto(
             String eventUUID, String senderUserId, String senderEmail, String senderName, String senderSurname,
             String senderIban, String receiverIban, String receiverName, String receiverSurname,
             BigDecimal money, String description, TransactionType transactionType, String keycloakUUID,
             TokenDetailsDto tokenDetails) {
-        return KafkaTransactionTopicMessageDto.builder()
+        return TransactionWorkflowState.builder()
                 .eventUUID(eventUUID)
                 .senderUserId(senderUserId)
                 .senderEmail(senderEmail)
@@ -401,10 +386,14 @@ public class TransactionService {
         SagaEvents sagaEvent = SagaEvents.builder()
                 .kafkaEventUUID(eventUUID)
                 .status(SagaStatus.CREATED)
-                .transactionHistory(
-                        TransactionHistory.builder()
+                .transaction(
+                        SagaTransactionSnapshot.builder()
                                 .eventId(transaction.getEventId())
                                 .receiverName(transaction.getReceiverName())
+                                .senderName(transaction.getSenderName())
+                                .senderSurname(transaction.getSenderSurname())
+                                .senderEmail(transaction.getSenderEmail())
+                                .receiverEmail(transaction.getReceiverEmail())
                                 .receiverSurname(transaction.getReceiverSurname())
                                 .description(transaction.getDescription())
                                 .money(transaction.getMoney())
@@ -417,6 +406,7 @@ public class TransactionService {
                                 .error(transaction.getError())
                                 .errorDescription(transaction.getErrorDescription())
                                 .userValidation(transaction.getUserValidation())
+                                .isMoneyBlocked(transaction.getIsMoneyBlocked())
                                 .status(transaction.getStatus() == null ? null : transaction.getStatus().name())
                                 .tokenDetails(transaction.getTokenDetails())
                                 .build()
@@ -461,8 +451,8 @@ public class TransactionService {
         existingSagaEvent.setStatus(sagaEvents.getStatus());
         existingSagaEvent.setErrorDescripton(sagaEvents.getErrorDescripton());
 
-        if (sagaEvents.getTransactionHistory() != null) {
-            existingSagaEvent.setTransactionHistory(sagaEvents.getTransactionHistory());
+        if (sagaEvents.getTransaction() != null) {
+            existingSagaEvent.setTransaction(sagaEvents.getTransaction());
         }
 
         try {

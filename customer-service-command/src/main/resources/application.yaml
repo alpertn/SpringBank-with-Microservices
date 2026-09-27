@@ -1,0 +1,53 @@
+server:
+  port: ${CUSTOMER_SERVICE_COMMAND_PORT:8100}
+
+spring:
+  application:
+    name: customer-service-command
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/banking_customer_command}
+    username: ${SPRING_DATASOURCE_USERNAME:banking_admin}
+    password: ${SPRING_DATASOURCE_PASSWORD:local_password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:validate}
+    show-sql: false
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: ${SPRING_JPA_PROPERTIES_HIBERNATE_HBM2DDL_AUTO:validate}
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 1
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+grpc:
+  server:
+    port: ${CUSTOMER_SERVICE_COMMAND_GRPC_PORT:9200}
+
+customer-service:
+  national-id-hmac-key: ${CUSTOMER_NATIONAL_ID_HMAC_KEY:local-only-change-this-national-id-key}
+  address-parser:
+    base-url: ${ADDRESS_PARSER_BASE_URL:http://localhost:8080}
+    connect-timeout: ${ADDRESS_PARSER_CONNECT_TIMEOUT:2s}
+    read-timeout: ${ADDRESS_PARSER_READ_TIMEOUT:5s}
+  topics:
+    projection-sync: ${CUSTOMER_SERVICE_PROJECTION_TOPIC:banking-microservices.customer.projection-sync.v1}
+
+management:
+  endpoints:
+    web:
+      base-path: /api/customer-service-command/actuator
+      exposure:
+        include: health,info
+
+logging:
+  pattern:
+    console: "%-5level --- [customer-service-command] : %msg%n"

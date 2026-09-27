@@ -1,6 +1,6 @@
 package com.banking_microservices.money_service.service.helper;
 
-import com.banking_microservices.money_service.dto.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.money_service.model.workflow.TransactionWorkflowState;
 import com.banking_microservices.money_service.dto.enums.TransactionStatus;
 import com.banking_microservices.money_service.exception.DecramentAndBlockMoneyException;
 import com.banking_microservices.money_service.kafka.KafkaSender;
@@ -21,7 +21,7 @@ public class BlockMoneyService {
     private final TransactionErrorHandler errorHandler;
     private final Supplier<String> currentTime;
 
-    public void blockFunds(KafkaTransactionTopicMessageDto dto) {
+    public void blockFunds(TransactionWorkflowState dto) {
         // sadece DB islemi try icerisinde. Kafka gonderimi disarida.
         try {
             int updatedRowCount = repository.decrementAndBlockByIban(dto.getSenderIban(), dto.getMoney());

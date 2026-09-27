@@ -1,0 +1,30 @@
+server:
+  port: ${CUSTOMER_SERVICE_PORT:8099}
+
+spring:
+  application:
+    name: customer-service
+
+grpc:
+  server:
+    port: ${CUSTOMER_SERVICE_GRPC_PORT:9202}
+  client:
+    customer-command:
+      address: ${CUSTOMER_SERVICE_COMMAND_GRPC_ADDRESS:static://customer-service-command:9200}
+      negotiationType: plaintext
+    customer-query:
+      address: ${CUSTOMER_SERVICE_QUERY_GRPC_ADDRESS:static://customer-service-query:9201}
+      negotiationType: plaintext
+
+management:
+  endpoints:
+    web:
+      base-path: /api/customer-service/actuator
+      exposure:
+        include: health,info
+
+logging:
+  pattern:
+    console: "%-5level --- [customer-service] : %msg%n"
+  level:
+    root: INFO

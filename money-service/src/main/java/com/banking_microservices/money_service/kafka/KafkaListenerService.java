@@ -1,6 +1,7 @@
 package com.banking_microservices.money_service.kafka;
 
-import com.banking_microservices.money_service.dto.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.contracts.ContractJsonCodec;
+import com.banking_microservices.money_service.model.workflow.TransactionWorkflowState;
 import com.banking_microservices.money_service.dto.SagaEventsDto;
 import com.banking_microservices.money_service.dto.enums.KafkaEventType;
 import com.banking_microservices.money_service.dto.enums.TransactionStatus;
@@ -24,6 +25,8 @@ import java.util.function.Supplier;
 @Slf4j
 @Service
 public class KafkaListenerService {
+
+    private final TransactionContractMapper contractMapper = new TransactionContractMapper();
 
     private final TransactionService transactionService;
     private final UserMoneyService userMoneyService;
@@ -69,7 +72,7 @@ public class KafkaListenerService {
             return;
         }
 
-        KafkaTransactionTopicMessageDto dto = KafkaTransactionTopicMessageDto.builder()
+        TransactionWorkflowState dto = TransactionWorkflowState.builder()
                 .eventUUID(userId)
                 .keycloakUserUUID(userId)
                 .senderUserId(userId)
@@ -102,7 +105,7 @@ public class KafkaListenerService {
     public void listenCreatedTopic(String topicData) {
         log.info(" ({}) > KafkaListenerService | listenCreatedTopic -> Metoda veri geldi. RawData: {}", currentTime.get(), topicData);
 
-        KafkaTransactionTopicMessageDto dto = parseMessage(topicData);
+        TransactionWorkflowState dto = parseMessage(topicData);
         if (dto == null) return;
 
         if (idempotencyGuard.isDuplicateOrRegister(dto.getEventUUID(), KafkaEventType.TRANSACTION_PROCESS.name())) return;
@@ -140,7 +143,7 @@ public class KafkaListenerService {
     public void listenFraudCheckedTopic(String topicData) {
         log.info(" ({}) > KafkaListenerService | listenFraudCheckedTopic -> Metoda veri geldi. RawData: {}", currentTime.get(), topicData);
 
-        KafkaTransactionTopicMessageDto dto = parseMessage(topicData);
+        TransactionWorkflowState dto = parseMessage(topicData);
         if (dto == null) return;
 
         TransactionType txType = dto.getTransactionType();
@@ -175,7 +178,7 @@ public class KafkaListenerService {
 
     // ─── DEPOSIT ─────────────────────────────────────────────────────────────
 
-    private void handleDeposit(KafkaTransactionTopicMessageDto dto) {
+    private void handleDeposit(TransactionWorkflowState dto) {
         log.info(" ({}) > KafkaListenerService | handleDeposit -> DEPOSIT baslatiliyor. EventUUID: {}", currentTime.get(), dto.getEventUUID());
         try {
             boolean noIban = isMissing(dto.getReceiverIban()) && isMissing(dto.getSenderIban());
@@ -204,7 +207,7 @@ public class KafkaListenerService {
 
     // ─── WITHDRAW ────────────────────────────────────────────────────────────
 
-    private void handleWithdraw(KafkaTransactionTopicMessageDto dto) {
+    private void handleWithdraw(TransactionWorkflowState dto) {
         log.info(" ({}) > KafkaListenerService | handleWithdraw -> WITHDRAW baslatiliyor. EventUUID: {}", currentTime.get(), dto.getEventUUID());
         try {
             boolean noIban = isMissing(dto.getSenderIban()) && isMissing(dto.getReceiverIban());
@@ -233,7 +236,7 @@ public class KafkaListenerService {
 
     // ─── TRANSFER ADIM 1: BlockMoney ────────────────────────────────────────
 
-    private void handleBlockMoney(KafkaTransactionTopicMessageDto dto) {
+    private void handleBlockMoney(TransactionWorkflowState dto) {
         log.info(" ({}) > KafkaListenerService | handleBlockMoney -> TRANSFER icin BlockMoney baslatiliyor. EventUUID: {}", currentTime.get(), dto.getEventUUID());
         try {
             // Sender IBAN resolve + bakiye doğrulama + parayı bloke et
@@ -248,9 +251,14 @@ public class KafkaListenerService {
 
     // ─── Helpers ─────────────────────────────────────────────────────────────
 
-    private KafkaTransactionTopicMessageDto parseMessage(String topicData) {
+    private TransactionWorkflowState parseMessage(String topicData) {
         try {
-            KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
+            TransactionWorkflowState dto;
+            try {
+                dto = contractMapper.fromContract(ContractJsonCodec.parseTransaction(topicData));
+            } catch (IllegalArgumentException contractError) {
+                dto = gson.fromJson(topicData, TransactionWorkflowState.class);
+            }
             if (dto == null || dto.getEventUUID() == null) {
                 log.warn(" ({}) > KafkaListenerService | parseMessage -> Gecersiz mesaj alindi, atlaniyor. RawData: {}", currentTime.get(), topicData);
                 return null;
@@ -293,7 +301,7 @@ public class KafkaListenerService {
      * WITHDRAW → WITHDRAW_FAILED
      * TRANSFER → FAILED
      */
-    private void sendError(KafkaTransactionTopicMessageDto dto, TransactionType txType, String reason) {
+    private void sendError(TransactionWorkflowState dto, TransactionType txType, String reason) {
         dto.setError(true);
         dto.setErrorDescription(reason);
         if (txType == TransactionType.DEPOSIT) {
@@ -328,7 +336,11 @@ public class KafkaListenerService {
 
         SagaEventsDto dto = null;
         try {
-            dto = gson.fromJson(data, SagaEventsDto.class);
+            try {
+                dto = contractMapper.fromContract(ContractJsonCodec.parseSaga(data));
+            } catch (IllegalArgumentException contractError) {
+                dto = gson.fromJson(data, SagaEventsDto.class);
+            }
         } catch (Exception e) {
             log.error(" ({}) > KafkaListenerService | listenSagaTopic -> JSON parse hatasi! RawData: {}, Hata: {}", currentTime.get(), data, e.getMessage());
             return;

@@ -1,0 +1,94 @@
+syntax = "proto3";
+
+package springbank.contracts.transaction.v1;
+
+option java_package = "com.banking_microservices.contracts.transaction.v1";
+option java_multiple_files = true;
+option java_outer_classname = "TransactionWorkflowContracts";
+
+enum TransactionType {
+  TRANSACTION_TYPE_UNSPECIFIED = 0;
+  TRANSFER = 1;
+  DEPOSIT = 2;
+  WITHDRAW = 3;
+}
+
+enum TransactionStatus {
+  TRANSACTION_STATUS_UNSPECIFIED = 0;
+  TRANSACTION_STATUS_CREATED = 1;
+  TRANSACTION_STATUS_VALIDATION_PENDING = 2;
+  TRANSACTION_STATUS_FRAUD_REVIEW = 3;
+  TRANSACTION_STATUS_BLOCK_MONEY = 4;
+  TRANSACTION_STATUS_BLOCK_MONEY_FAILED = 5;
+  TRANSACTION_STATUS_COMPLETED = 6;
+  TRANSACTION_STATUS_CANCELLED = 7;
+  TRANSACTION_STATUS_REVERSED = 8;
+  TRANSACTION_STATUS_FAILED = 9;
+  TRANSACTION_STATUS_DEPOSIT_FAILED = 10;
+  TRANSACTION_STATUS_WITHDRAW_FAILED = 11;
+}
+
+enum SagaStatus {
+  SAGA_STATUS_UNSPECIFIED = 0;
+  SAGA_STATUS_CREATED = 1;
+  SAGA_STATUS_PROCESS = 2;
+  SAGA_STATUS_COMPLETED = 3;
+  SAGA_STATUS_ERROR = 4;
+}
+
+message TransactionWorkflowEvent {
+  string event_uuid = 1 [json_name = "eventUUID"];
+  optional string keycloak_user_uuid = 2 [json_name = "keycloakUserUUID"];
+  optional string sender_name = 3 [json_name = "senderName"];
+  optional string sender_surname = 4 [json_name = "senderSurname"];
+  optional string sender_email = 5 [json_name = "senderEmail"];
+  optional string receiver_email = 6 [json_name = "receiverEmail"];
+  optional string receiver_name = 7 [json_name = "receiverName"];
+  optional string receiver_surname = 8 [json_name = "receiverSurname"];
+  optional string sender_user_id = 9 [json_name = "senderUserId"];
+  optional string sender_iban = 10 [json_name = "senderIban"];
+  optional string receiver_user_id = 11 [json_name = "receiverUserId"];
+  optional string receiver_iban = 12 [json_name = "receiverIban"];
+  string money = 13;
+  TransactionType transaction_type = 14 [json_name = "transactionType"];
+  optional string description = 15;
+  TransactionStatus status = 16;
+  optional string status_description = 17 [json_name = "statusDescription"];
+  bool error = 18;
+  optional string error_description = 19 [json_name = "errorDescription"];
+  bool money_blocked = 20 [json_name = "isMoneyBlocked"];
+  bool user_validation = 21 [json_name = "userValidation"];
+  optional string occurred_at = 22 [json_name = "localDateTime"];
+}
+
+message SagaTransactionSnapshot {
+  optional string id = 1;
+  string event_id = 2 [json_name = "eventId"];
+  optional string receiver_name = 3 [json_name = "receiverName"];
+  optional string sender_name = 4 [json_name = "senderName"];
+  optional string sender_surname = 5 [json_name = "senderSurname"];
+  optional string sender_email = 6 [json_name = "senderEmail"];
+  optional string receiver_email = 7 [json_name = "receiverEmail"];
+  optional string receiver_surname = 8 [json_name = "receiverSurname"];
+  optional string sender_user_id = 9 [json_name = "senderUserId"];
+  optional string receiver_user_id = 10 [json_name = "receiverUserId"];
+  optional string sender_iban = 11 [json_name = "senderIban"];
+  optional string receiver_iban = 12 [json_name = "receiverIban"];
+  string money = 13;
+  TransactionType transaction_type = 14 [json_name = "transactionType"];
+  optional string description = 15;
+  optional string occurred_at = 16 [json_name = "localDateTime"];
+  bool error = 17;
+  optional string error_description = 18 [json_name = "errorDescription"];
+  bool user_validation = 19 [json_name = "userValidation"];
+  bool money_blocked = 20 [json_name = "isMoneyBlocked"];
+  TransactionStatus status = 21;
+}
+
+message SagaWorkflowEvent {
+  string saga_id = 1 [json_name = "UUID"];
+  string transaction_event_id = 2 [json_name = "kafkaEventUUID"];
+  SagaStatus status = 3;
+  optional string error_description = 4 [json_name = "errorDescription"];
+  SagaTransactionSnapshot transaction = 5;
+}

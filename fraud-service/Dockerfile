@@ -2,16 +2,22 @@
 # pom.xml AYRI kopyalanir, dependency'ler oncelikle indirilir.
 # Boylece sadece pom.xml degistiginde dependency'ler yeniden indirilir.
 # Kaynak kod degistiginde bu layer Docker CACHE'den gelir → build suresi 5-10x azalir.
-FROM maven:3.9.6-eclipse-temurin-21-alpine AS deps
+FROM maven:3.9.6-eclipse-temurin-21 AS deps
+WORKDIR /contracts
+COPY banking-contracts/pom.xml ./pom.xml
+RUN mvn dependency:go-offline -B || true
+COPY banking-contracts/src ./src
+RUN mvn clean install -DskipTests -B
+
 WORKDIR /app
-COPY pom.xml .
+COPY fraud-service/pom.xml ./pom.xml
 # -B (batch mode): Maven'i interaktif olmayan modda calistirir (CI/CD uyumlu)
 # dependency:go-offline: Tum bagimliliklari indirir ama derleme yapmaz
 RUN mvn dependency:go-offline -B
 
 # ── Stage 2: Build ───────────────────────────────────────────
 FROM deps AS build
-COPY src ./src
+COPY fraud-service/src ./src
 # Online build resolves artifacts missed by dependency:go-offline.
 RUN mvn clean package -DskipTests
 

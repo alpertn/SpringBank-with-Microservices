@@ -1,0 +1,16 @@
+---
+id: customer-service-query
+name: Customer Query Service
+version: 1.0.0
+summary: Customer read model and search projection backed by MongoDB and Elasticsearch.
+owners:
+  - platform-team
+receives:
+  - id: customer-projection-sync
+    version: 1.0.0
+repository:
+  language: Java
+  url: https://github.com/alpertn/SpringBank-with-Microservices
+---
+
+**Current role:** Consumes customer projection events, updates MongoDB and indexes searchable data in Elasticsearch.\n\n**Consistency:** Eventual; projection ordering currently relies on occurrence time rather than aggregate sequence.

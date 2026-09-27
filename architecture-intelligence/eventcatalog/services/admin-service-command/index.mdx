@@ -1,0 +1,19 @@
+---
+id: admin-service-command
+name: Admin Command Service
+version: 1.0.0
+summary: Authoritative administrative history write model in PostgreSQL.
+owners:
+  - platform-team
+sends:
+  - id: admin-history-projection-sync
+    version: 1.0.0
+receives:
+  - id: admin-history-command
+    version: 1.0.0
+repository:
+  language: Java
+  url: https://github.com/alpertn/SpringBank-with-Microservices
+---
+
+**Current role:** Persists administrative history commands and emits projection events.\n\n**Consistency gap:** It requires outbox and inbox guarantees before being treated as an authoritative audit trail.

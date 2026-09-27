@@ -1,6 +1,7 @@
 package com.banking_microservices.transaction_service.kafka;
 
-import com.banking_microservices.transaction_service.dto.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.contracts.ContractJsonCodec;
+import com.banking_microservices.transaction_service.model.workflow.TransactionWorkflowState;
 import com.banking_microservices.transaction_service.exception.ValueNotFoundException;
 import com.banking_microservices.transaction_service.model.SagaEvents;
 import com.banking_microservices.transaction_service.model.TransactionEntity;
@@ -18,6 +19,8 @@ import java.util.function.Supplier;
 @Slf4j
 @Service
 public class KafkaListenerService {
+
+    private final TransactionContractMapper contractMapper = new TransactionContractMapper();
 
     private final Gson gson = new GsonBuilder()
             .serializeNulls()
@@ -48,7 +51,7 @@ public class KafkaListenerService {
     public void listenErrorTopic(String topicData) {
         log.info(" ({}) > KafkaListenerService | listenErrorTopic -> Metoda veri geldi. RawData:\n{}", currentTime.get(), topicData);
 
-        KafkaTransactionTopicMessageDto dto = parseMessage(topicData, "listenErrorTopic");
+        TransactionWorkflowState dto = parseMessage(topicData, "listenErrorTopic");
         if (dto == null) return;
 
         log.info(" ({}) > KafkaListenerService | listenErrorTopic -> Data islenmek uzere alindi. Dto:\n{}", currentTime.get(), gson.toJson(dto));
@@ -76,7 +79,7 @@ public class KafkaListenerService {
     public void listenAllTransactionTopics(String topicData) {
         log.info(" ({}) > KafkaListenerService | listenAllTransactionTopics -> Metoda veri geldi. RawData:\n{}", currentTime.get(), topicData);
 
-        KafkaTransactionTopicMessageDto dto = parseMessage(topicData, "listenAllTransactionTopics");
+        TransactionWorkflowState dto = parseMessage(topicData, "listenAllTransactionTopics");
         if (dto == null) return;
 
         log.info(" ({}) > KafkaListenerService | listenAllTransactionTopics -> event: {} status: {}, Dto:\n{}", currentTime.get(), dto.getEventUUID(), dto.getStatus(), gson.toJson(dto));
@@ -88,7 +91,7 @@ public class KafkaListenerService {
     public void listenBlockMoneyTopic(String topicData) {
         log.info(" ({}) > KafkaListenerService | listenBlockMoneyTopic -> Metoda veri geldi. RawData:\n{}", currentTime.get(), topicData);
 
-        KafkaTransactionTopicMessageDto dto = parseMessage(topicData, "listenBlockMoneyTopic");
+        TransactionWorkflowState dto = parseMessage(topicData, "listenBlockMoneyTopic");
         if (dto == null) return;
 
         if (isDuplicate(dto, false, "listenBlockMoneyTopic")) return;
@@ -107,7 +110,7 @@ public class KafkaListenerService {
     public void listenUserValidationSuccessTopic(String topicData) {
         log.info(" ({}) > KafkaListenerService | listenUserValidationSuccessTopic -> Metoda veri geldi. RawData:\n{}", currentTime.get(), topicData);
 
-        KafkaTransactionTopicMessageDto dto = parseMessage(topicData, "listenUserValidationSuccessTopic");
+        TransactionWorkflowState dto = parseMessage(topicData, "listenUserValidationSuccessTopic");
         if (dto == null) return;
 
         if (isDuplicate(dto, false, "listenUserValidationSuccessTopic")) return;
@@ -126,7 +129,7 @@ public class KafkaListenerService {
     public void listenTransactionResultTopic(String topicData) {
         log.info(" ({}) > KafkaListenerService | listenTransactionResultTopic -> Metoda veri geldi. RawData:\n{}", currentTime.get(), topicData);
 
-        KafkaTransactionTopicMessageDto dto = parseMessage(topicData, "listenTransactionResultTopic");
+        TransactionWorkflowState dto = parseMessage(topicData, "listenTransactionResultTopic");
         if (dto == null) return;
 
         // COMPLETED/FAILED sonuçları için güçlendirilmiş kontrolü:
@@ -156,8 +159,13 @@ public class KafkaListenerService {
 
     // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-    private KafkaTransactionTopicMessageDto parseMessage(String topicData, String method) {
-        KafkaTransactionTopicMessageDto dto = gson.fromJson(topicData, KafkaTransactionTopicMessageDto.class);
+    private TransactionWorkflowState parseMessage(String topicData, String method) {
+        TransactionWorkflowState dto;
+        try {
+            dto = contractMapper.fromContract(ContractJsonCodec.parseTransaction(topicData));
+        } catch (IllegalArgumentException contractError) {
+            dto = gson.fromJson(topicData, TransactionWorkflowState.class);
+        }
         if (dto == null || dto.getEventUUID() == null) {
             log.warn(" ({}) > KafkaListenerService | {} -> Gecersiz mesaj alindi, atlaniyor.", currentTime.get(), method);
             return null;
@@ -165,7 +173,7 @@ public class KafkaListenerService {
         return dto;
     }
 
-    private boolean isDuplicate(KafkaTransactionTopicMessageDto dto, boolean isCreation, String method) {
+    private boolean isDuplicate(TransactionWorkflowState dto, boolean isCreation, String method) {
         if (isCreation) {
             boolean exists = transactionRepository.existsByEventId(dto.getEventUUID());
             if (exists) log.warn(" ({}) > KafkaListenerService | {} -> Zaten islendi (Created), atlaniyor: {}", currentTime.get(), method, dto.getEventUUID());
@@ -189,7 +197,12 @@ public class KafkaListenerService {
             throw new ValueNotFoundException("Value Not Found On Saga Kafka Topic Listener. data is null or empty");
         }
 
-        SagaEvents model = gson.fromJson(data, SagaEvents.class);
+        SagaEvents model;
+        try {
+            model = contractMapper.fromContract(ContractJsonCodec.parseSaga(data));
+        } catch (IllegalArgumentException contractError) {
+            model = gson.fromJson(data, SagaEvents.class);
+        }
         if (model == null || model.getUUID() == null) {
             log.warn(" ({}) > KafkaListenerService | listenSagaTopic -> Parse edilemedi veya UUID null, atlaniyor. RawData:\n{}", currentTime.get(), data);
             throw new ValueNotFoundException("Value Not Found On Saga Kafka Topic Listener. model: " + data);

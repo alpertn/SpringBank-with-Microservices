@@ -1,0 +1,40 @@
+---
+id: cash-movement
+name: Deposit and Withdrawal
+version: 1.0.0
+summary: Current direct deposit and withdrawal path.
+owners:
+  - platform-team
+steps:
+  - id: request
+    title: Client requests deposit or withdrawal
+    service:
+      id: transaction-service
+      version: 1.0.0
+    next_step: created
+  - id: created
+    title: Publish transaction created
+    message:
+      id: transaction-created
+      version: 1.0.0
+    next_step: execute
+  - id: execute
+    title: Mutate operational account balance
+    service:
+      id: money-service
+      version: 1.0.0
+    next_step: result
+  - id: result
+    title: Publish completed or failed result
+    message:
+      id: transaction-completed
+      version: 1.0.0
+    next_step: state
+  - id: state
+    title: Update transaction workflow state
+    service:
+      id: transaction-service
+      version: 1.0.0
+---
+
+This flow documents behavior observed in the repository. Failure branches, consistency risks and the target-state design are detailed in the enterprise architecture assessment.

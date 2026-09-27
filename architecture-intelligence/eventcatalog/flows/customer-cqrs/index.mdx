@@ -1,0 +1,34 @@
+---
+id: customer-cqrs
+name: Customer CQRS Projection
+version: 1.0.0
+summary: Current customer command-to-query projection flow.
+owners:
+  - platform-team
+steps:
+  - id: command
+    title: Receive customer mutation
+    service:
+      id: customer-service
+      version: 1.0.0
+    next_step: write
+  - id: write
+    title: Validate and persist PostgreSQL write model
+    service:
+      id: customer-service-command
+      version: 1.0.0
+    next_step: event
+  - id: event
+    title: Publish projection event
+    message:
+      id: customer-projection-sync
+      version: 1.0.0
+    next_step: project
+  - id: project
+    title: Update MongoDB and Elasticsearch
+    service:
+      id: customer-service-query
+      version: 1.0.0
+---
+
+This flow documents behavior observed in the repository. Failure branches, consistency risks and the target-state design are detailed in the enterprise architecture assessment.

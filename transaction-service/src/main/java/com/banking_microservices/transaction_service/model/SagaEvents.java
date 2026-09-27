@@ -1,7 +1,10 @@
 package com.banking_microservices.transaction_service.model;
 
-import com.banking_microservices.transaction_service.dto.TransactionHistory;
+import com.banking_microservices.transaction_service.dto.SagaTransactionSnapshot;
 import com.banking_microservices.transaction_service.dto.enums.SagaStatus;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -36,7 +39,10 @@ public class SagaEvents {
     private String errorDescripton;
 
     @Embedded
-    private TransactionHistory transactionHistory;
+    @SerializedName(value = "transaction", alternate = {"transactionHistory", "transactionEntity"})
+    @JsonProperty("transaction")
+    @JsonAlias({"transactionHistory", "transactionEntity"})
+    private SagaTransactionSnapshot transaction;
 
 }
 

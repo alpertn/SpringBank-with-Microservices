@@ -1,6 +1,6 @@
 package com.banking_microservices.money_service.service.helper;
 
-import com.banking_microservices.money_service.dto.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.money_service.model.workflow.TransactionWorkflowState;
 import com.banking_microservices.money_service.exception.IbanNotFoundException;
 import com.banking_microservices.money_service.repository.UserMoneyRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class IbanResolver {
     private final TransactionErrorHandler errorHandler;
     private final Supplier<String> currentTime;
 
-    public void resolveSenderIban(KafkaTransactionTopicMessageDto dto) {
+    public void resolveSenderIban(TransactionWorkflowState dto) {
         if (isMissing(dto.getSenderIban()) && dto.getSenderUserId() != null) {
             String resolvedIban = repository.findIbanByUserId(dto.getSenderUserId()).orElse(null);
             dto.setSenderIban(resolvedIban);
@@ -27,14 +27,14 @@ public class IbanResolver {
         }
     }
 
-    public void assertSenderIbanExists(KafkaTransactionTopicMessageDto dto) {
+    public void assertSenderIbanExists(TransactionWorkflowState dto) {
         if (isMissing(dto.getSenderIban())) {
             log.warn(" ({}) > IbanResolver | assertSenderIbanExists -> Sender IBAN bulunamadi! {}", currentTime.get(), dto);
             errorHandler.sendErrorAndThrow(dto, "Sender Iban Not Found", new IbanNotFoundException("Iban value is empty"));
         }
     }
 
-    public String resolveReceiverUserIdOrThrow(KafkaTransactionTopicMessageDto dto) {
+    public String resolveReceiverUserIdOrThrow(TransactionWorkflowState dto) {
         String receiverUserId = repository.findUserIdByIban(dto.getReceiverIban()).orElse(null);
         if (receiverUserId == null) {
             log.warn(" ({}) > IbanResolver | resolveReceiverUserIdOrThrow -> Receiver IBAN bulunamadi! IBAN: {}", currentTime.get(), dto.getReceiverIban());
@@ -43,7 +43,7 @@ public class IbanResolver {
         return receiverUserId;
     }
 
-    public BigDecimal getBalanceOrThrow(String iban, String role, KafkaTransactionTopicMessageDto dto) {
+    public BigDecimal getBalanceOrThrow(String iban, String role, TransactionWorkflowState dto) {
         BigDecimal balance = repository.findBalanceByIban(iban).orElse(null);
         if (balance == null) {
             log.warn(" ({}) > IbanResolver | getBalanceOrThrow -> {} hesabi bulunamadi! IBAN: {}", currentTime.get(), role, iban);
@@ -52,7 +52,7 @@ public class IbanResolver {
         return balance;
     }
 
-    public void assertAccountExists(String iban, String role, KafkaTransactionTopicMessageDto dto) {
+    public void assertAccountExists(String iban, String role, TransactionWorkflowState dto) {
         getBalanceOrThrow(iban, role, dto);
     }
 

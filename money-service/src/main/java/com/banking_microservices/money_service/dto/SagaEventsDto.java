@@ -1,6 +1,8 @@
 package com.banking_microservices.money_service.dto;
 
 import com.banking_microservices.money_service.dto.enums.SagaStatus;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -36,8 +38,10 @@ public class SagaEventsDto {
     private String errorDescripton;
 
     @Embedded
-    @SerializedName(value = "transactionEntity", alternate = "transactionHistory")
-    private TransactionEntity transactionEntity;
+    @SerializedName(value = "transaction", alternate = {"transactionHistory", "transactionEntity"})
+    @JsonProperty("transaction")
+    @JsonAlias({"transactionHistory", "transactionEntity"})
+    private SagaTransactionSnapshot transaction;
 
 }
 

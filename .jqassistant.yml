@@ -1,0 +1,33 @@
+$schema: "https://jqassistant.github.io/jqassistant/current/schema/jqassistant-configuration-cli-v2.9.schema.json"
+
+jqassistant:
+  scan:
+    reset: true
+    continue-on-error: false
+    include:
+      files:
+        - java:classpath::gateway/target/classes
+        - java:classpath::user-service/target/classes
+        - java:classpath::customer-service/target/classes
+        - java:classpath::customer-service-command/target/classes
+        - java:classpath::customer-service-query/target/classes
+        - java:classpath::money-service/target/classes
+        - java:classpath::money-service-command/target/classes
+        - java:classpath::money-service-query/target/classes
+        - java:classpath::transaction-service/target/classes
+        - java:classpath::fraud-service/target/classes
+        - java:classpath::admin-service/target/classes
+        - java:classpath::admin-service-command/target/classes
+        - java:classpath::admin-service-query/target/classes
+  analyze:
+    groups:
+      - springbank:baseline
+    rule:
+      directory: architecture-intelligence/jqassistant/rules
+    report:
+      directory: architecture-intelligence/build/jqassistant-report
+      continue-on-failure: true
+      fail-on-severity: CRITICAL
+      warn-on-severity: MINOR
+  server:
+    open-browser: false

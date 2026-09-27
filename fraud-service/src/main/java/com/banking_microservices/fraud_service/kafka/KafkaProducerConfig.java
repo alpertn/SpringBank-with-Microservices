@@ -1,5 +1,7 @@
 package com.banking_microservices.fraud_service.kafka;
 
+import com.banking_microservices.contracts.ContractJsonCodec;
+import com.google.protobuf.MessageOrBuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -59,6 +61,9 @@ public class KafkaProducerConfig {
         public byte[] serialize(String topic, Object data) {
             if (data == null) {
                 return null;
+            }
+            if (data instanceof MessageOrBuilder contract) {
+                return ContractJsonCodec.toJson(contract).getBytes(java.nio.charset.StandardCharsets.UTF_8);
             }
             return gson.toJson(data).getBytes(java.nio.charset.StandardCharsets.UTF_8);
         }

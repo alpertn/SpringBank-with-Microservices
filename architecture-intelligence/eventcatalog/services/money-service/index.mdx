@@ -1,0 +1,39 @@
+---
+id: money-service
+name: Money Service
+version: 1.0.0
+summary: Legacy operational account and balance owner used by onboarding and transaction execution.
+owners:
+  - platform-team
+sends:
+  - id: money-account-created
+    version: 1.0.0
+  - id: money-account-create-failed
+    version: 1.0.0
+  - id: transaction-money-blocked
+    version: 1.0.0
+  - id: transaction-user-validation-request
+    version: 1.0.0
+  - id: transaction-completed
+    version: 1.0.0
+  - id: transaction-failed
+    version: 1.0.0
+  - id: transaction-saga-money-completed
+    version: 1.0.0
+  - id: transaction-saga-money-failed
+    version: 1.0.0
+receives:
+  - id: user-created
+    version: 1.0.0
+  - id: transaction-created
+    version: 1.0.0
+  - id: transaction-fraud-checked
+    version: 1.0.0
+  - id: transaction-saga-created
+    version: 1.0.0
+repository:
+  language: Java
+  url: https://github.com/alpertn/SpringBank-with-Microservices
+---
+
+**Current role:** Creates money accounts, mutates available and blocked balances, executes deposit, withdrawal, transfer and reversal steps.\n\n**Critical gap:** This is mutable-balance accounting, not an immutable double-entry ledger. Its ownership overlaps money-service-command.

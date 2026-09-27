@@ -1,0 +1,50 @@
+package com.banking_microservices.customer_service.dto;
+
+public record CustomerReadDto(
+        String id,
+        String keycloakId,
+        String realm,
+        String email,
+        boolean emailVerified,
+        String phoneNumber,
+        boolean phoneVerified,
+        String userType,
+        String status,
+        String birthdate,
+        String name,
+        String middleName,
+        String surname,
+        String sex,
+        int riskScore,
+        boolean mfaEnabled,
+        String mfaMethod,
+        String preferredLanguage,
+        boolean specialCustomer,
+        int specialCustomerScore,
+        String kycStatus,
+        String nationalityCode,
+        String nationalIdMasked,
+        String accountStatus,
+        String maritalStatus,
+        String riskClass,
+        String segment,
+        int segmentScore,
+        String politicalExposureStatus,
+        String employmentCategory,
+        AddressReadDto address,
+        boolean deleted,
+        String lastOperationType,
+        String lastSyncedAt
+) {
+    public CustomerReadDto(String id, String keycloakId, String realm, String email, boolean emailVerified,
+                           String phoneNumber, boolean phoneVerified, String userType, String status, String birthdate,
+                           String name, String middleName, String surname, String sex, int riskScore,
+                           boolean mfaEnabled, String mfaMethod, String preferredLanguage, boolean specialCustomer,
+                           int specialCustomerScore, String kycStatus, String nationalityCode, boolean deleted,
+                           String lastOperationType, String lastSyncedAt) {
+        this(id, keycloakId, realm, email, emailVerified, phoneNumber, phoneVerified, userType, status, birthdate,
+                name, middleName, surname, sex, riskScore, mfaEnabled, mfaMethod, preferredLanguage, specialCustomer,
+                specialCustomerScore, kycStatus, nationalityCode, null, null, null, null, null, 0, null, null, null,
+                deleted, lastOperationType, lastSyncedAt);
+    }
+}

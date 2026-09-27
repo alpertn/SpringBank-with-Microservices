@@ -730,6 +730,7 @@ try {
         "banking-microservices.user.created.v1",
         "banking-microservices.money.account.created.v1",
         "banking-microservices.money.account.create-failed.v1",
+        "banking-microservices.customer.projection-sync.v1",
         "banking-microservices.transaction.created.v1",
         "banking-microservices.transaction.completed.v1",
         "banking-microservices.transaction.failed.v1",
@@ -782,14 +783,40 @@ try {
     Assert-True (-not [string]::IsNullOrWhiteSpace($uuid2)) "user2 JWT sub: $uuid2"
     Assert-True (($adminPayload.realm_access.roles -contains "ADMIN") -or ($adminPayload.realm_access.roles -contains "admin")) "admin JWT ADMIN role iceriyor"
 
+    $h1 = AuthHeaders $token1; $h1["X-User-KeycloakUUID"] = $uuid1
+    $h2 = AuthHeaders $token2; $h2["X-User-KeycloakUUID"] = $uuid2
+
     Invoke-Checked POST "/api/user-service/v1/auth/refresh" @{} @{ refreshToken=$token1Response.refresh_token } @(200) "refresh token user1" | Out-Null
     if (Is-FullMode) {
         Assert-KafkaAdvanced $KafkaBeforeAll "banking-microservices.user.created.v1" "register user"
         Kafka-ConsumeContains "banking-microservices.user.created.v1" $uuid1 "register user1 create-user event" | Out-Null
         Kafka-ConsumeContains "banking-microservices.user.created.v1" $uuid2 "register user2 create-user event" | Out-Null
+        Assert-KafkaAdvanced $KafkaBeforeAll "banking-microservices.customer.projection-sync.v1" "customer onboarding projection"
+        Kafka-ConsumeContains "banking-microservices.customer.projection-sync.v1" $uuid1 "customer projection user1 event" | Out-Null
+        Kafka-ConsumeContains "banking-microservices.customer.projection-sync.v1" $uuid2 "customer projection user2 event" | Out-Null
     } else {
         Skip-FullOnly "register sonrasi Kafka user.created detay kontrolu"
     }
+
+    Step "Customer onboarding ve profil endpointleri"
+    $script:customer1 = $null
+    $script:customer2 = $null
+    Wait-Until {
+        $response = Invoke-Checked GET "/api/customer-service/v1/customers/me" $h1 $null @(200,404) "customer get current user1"
+        if ($response.Status -ne 200 -or $null -eq $response.Json) { return $false }
+        $script:customer1 = $response.Json
+        return $script:customer1.keycloakId -eq $uuid1
+    } 90 3 "customer user1 projection available" | Out-Null
+    Wait-Until {
+        $response = Invoke-Checked GET "/api/customer-service/v1/customers/me" $h2 $null @(200,404) "customer get current user2"
+        if ($response.Status -ne 200 -or $null -eq $response.Json) { return $false }
+        $script:customer2 = $response.Json
+        return $script:customer2.keycloakId -eq $uuid2
+    } 90 3 "customer user2 projection available" | Out-Null
+    Assert-True (-not [string]::IsNullOrWhiteSpace($script:customer1.id)) "customer user1 id var"
+    Assert-True (-not [string]::IsNullOrWhiteSpace($script:customer2.id)) "customer user2 id var"
+    Invoke-Checked PUT "/api/customer-service/v1/customers/me/profile" $h1 @{ id=$script:customer1.id; email=$user1.Email; phoneNumber=""; birthdate=""; name=$user1.Name; middleName=""; surname=$user1.Surname; sex="UNSPECIFIED"; preferredLanguage="tr"; nationalityCode="TR" } @(200) "customer user1 profile update" | Out-Null
+    Invoke-Checked PATCH "/api/customer-service/v1/customers/me/mfa" $h1 @{ id=$script:customer1.id; mfaEnabled=$false; mfaMethod="NONE" } @(200) "customer user1 MFA preference update" | Out-Null
 
     Step "Keycloak DB dogrulamasi"
     $kcCount1 = PsqlScalar "banking_keycloak" "select count(*) from user_entity where lower(email)=lower('$($user1.Email)');"
@@ -809,6 +836,7 @@ try {
     Invoke-Checked GET "/api/user-service/v1/admin/findbykeycloakuuid/$uuid1" $adminHeaders $null @(200) "user admin findbykeycloakuuid user1" | Out-Null
     Invoke-Checked GET "/api/user-service/v1/admin/search?query=$($user1.Name)" $adminHeaders $null @(200) "user admin search name" | Out-Null
     Invoke-Checked GET "/api/user-service/v1/admin/allusers" $adminHeaders $null @(200) "user admin allusers" | Out-Null
+    Invoke-Checked GET "/api/customer-service/v1/admin/customers/keycloak/$uuid1" $adminHeaders $null @(200) "customer admin get user1 by keycloak" | Out-Null
 
     Step "User self-service profil mutasyon endpointleri"
     $user2NewEmail = "e2e.beta.updated.$RunId@springbank.test"
@@ -1090,6 +1118,9 @@ try {
     Capture-PodLogs "app=fraud-service" "fraud-service" $eventUuid | Out-Null
     Capture-PodLogs "app=money-service-command" "money-service-command" $cmdUser2 | Out-Null
     Capture-PodLogs "app=money-service-query" "money-service-query" $cmdUser2 | Out-Null
+    Capture-PodLogs "app=customer-service-command" "customer-service-command" $uuid1 | Out-Null
+    Capture-PodLogs "app=customer-service-query" "customer-service-query" $uuid1 | Out-Null
+    Capture-PodLogs "app=customer-service" "customer-service" $uuid1 | Out-Null
     Capture-PodLogs "app=gateway" "gateway" $RunId | Out-Null
 
     Step "Logout"

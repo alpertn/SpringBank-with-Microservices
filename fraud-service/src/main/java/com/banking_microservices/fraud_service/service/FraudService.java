@@ -1,6 +1,6 @@
 package com.banking_microservices.fraud_service.service;
 
-import com.banking_microservices.fraud_service.dto.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.fraud_service.model.workflow.TransactionWorkflowState;
 import com.banking_microservices.fraud_service.kafka.KafkaSenderService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -34,7 +34,7 @@ public class FraudService {
         this.currentTime = currentTime;
     }
 
-    public void send(KafkaTransactionTopicMessageDto requestDto) {
+    public void send(TransactionWorkflowState requestDto) {
         log.info(" ({}) > FraudService | send -> Metoda veri geldi.\n{}", currentTime.get(), gson.toJson(requestDto));
         kafkaSender.sendTransaction(requestDto.getEventUUID(), requestDto);
         log.info(" ({}) > FraudService | send -> Kafkaya gonderildi.\n{}", currentTime.get(), gson.toJson(requestDto));

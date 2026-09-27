@@ -1,0 +1,104 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.banking_microservices.customer_service_query.grpc";
+option java_outer_classname = "CustomerQueryProto";
+
+package customer.query.v1;
+
+message CustomerAddress {
+  string type = 1; string raw_address = 2; string country = 3; string country_code = 4;
+  string province = 5; string district = 6; string neighborhood = 7; string road = 8;
+  string building = 9; string building_number = 10; string entrance = 11; string floor = 12;
+  string unit = 13; string postal_code = 14; string parse_status = 15; string parser = 16;
+  string parser_version = 17;
+}
+
+message CustomerByIdRequest {
+  string id = 1;
+}
+
+message CustomerByKeycloakIdRequest {
+  string keycloak_id = 1;
+}
+
+message CustomerByEmailRequest {
+  string email = 1;
+}
+
+message CustomerByPhoneRequest {
+  string phone_number = 1;
+}
+
+message CustomerSearchRequest {
+  string keyword = 1;
+  int32 limit = 2;
+}
+
+message CustomerListByStatusRequest {
+  string status = 1;
+  int32 limit = 2;
+}
+
+message CustomerListByKycStatusRequest {
+  string kyc_status = 1;
+  int32 limit = 2;
+}
+
+message CustomerRiskListRequest {
+  int32 min_risk_score = 1;
+  int32 limit = 2;
+}
+
+message CustomerResponse {
+  string id = 1;
+  string keycloak_id = 2;
+  string realm = 3;
+  string email = 4;
+  bool email_verified = 5;
+  string phone_number = 6;
+  bool phone_verified = 7;
+  string user_type = 8;
+  string status = 9;
+  string birthdate = 10;
+  string name = 11;
+  string middle_name = 12;
+  string surname = 13;
+  string sex = 14;
+  int32 risk_score = 15;
+  bool mfa_enabled = 16;
+  string mfa_method = 17;
+  string preferred_language = 18;
+  bool special_customer = 19;
+  int32 special_customer_score = 20;
+  string kyc_status = 21;
+  string nationality_code = 22;
+  bool deleted = 23;
+  string last_operation_type = 24;
+  string last_synced_at = 25;
+  string national_id_masked = 26;
+  string account_status = 27;
+  string marital_status = 28;
+  string risk_class = 29;
+  string segment = 30;
+  int32 segment_score = 31;
+  string political_exposure_status = 32;
+  string employment_category = 33;
+  CustomerAddress address = 34;
+}
+
+message CustomerListResponse {
+  repeated CustomerResponse items = 1;
+}
+
+service CustomerQueryGrpcService {
+  rpc GetById(CustomerByIdRequest) returns (CustomerResponse);
+  rpc GetByKeycloakId(CustomerByKeycloakIdRequest) returns (CustomerResponse);
+  rpc GetByEmail(CustomerByEmailRequest) returns (CustomerResponse);
+  rpc GetByPhoneNumber(CustomerByPhoneRequest) returns (CustomerResponse);
+  rpc Search(CustomerSearchRequest) returns (CustomerListResponse);
+  rpc ListByStatus(CustomerListByStatusRequest) returns (CustomerListResponse);
+  rpc ListByKycStatus(CustomerListByKycStatusRequest) returns (CustomerListResponse);
+  rpc ListSpecialCustomers(CustomerSearchRequest) returns (CustomerListResponse);
+  rpc ListHighRiskCustomers(CustomerRiskListRequest) returns (CustomerListResponse);
+}

@@ -1,2 +1,7 @@
 .idea
 .vscode
+.tools/
+jqassistant/store/
+architecture-intelligence/build/
+**/target/
+.scriptsandhelpers/logs/

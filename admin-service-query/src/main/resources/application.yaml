@@ -4,9 +4,9 @@ server:
 spring:
   application:
     name: admin-service-query
+  mongodb:
+    uri: ${SPRING_MONGODB_URI:mongodb://mongodb:27017/banking_admin_query}
   data:
-    mongodb:
-      uri: ${SPRING_DATA_MONGODB_URI:mongodb://mongodb:27017/banking_admin_query}
     elasticsearch:
       repositories:
         enabled: true

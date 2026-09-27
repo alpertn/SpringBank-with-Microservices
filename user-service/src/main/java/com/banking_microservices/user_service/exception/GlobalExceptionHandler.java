@@ -76,6 +76,22 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(CustomerOnboardingException.class)
+    public ResponseEntity<ErrorResponseDto> handleCustomerOnboardingException(
+            CustomerOnboardingException e, WebRequest webRequest) {
+        log.warn("Customer onboarding failed. {} Path {}", e.getMessage(), webRequest.getDescription(true));
+        ErrorResponseDto response = ErrorResponseDto
+                .builder()
+                .time(LocalDateTime.now())
+                .status(HttpStatus.SERVICE_UNAVAILABLE.value())
+                .error("Customer Onboarding Unavailable")
+                .message(e.getMessage())
+                .path(webRequest.getDescription(true))
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponseDto> handleRuntimeException(RuntimeException e, WebRequest webRequest) {
         log.warn("RuntimeException Error. {} Path {}", e.getMessage(), webRequest.getDescription(true));

@@ -42,6 +42,21 @@ spring:
           predicates:
             - Path=/api/admin-service-command/**
 
+        - id: customer-service
+          uri: ${CUSTOMER_SERVICE_URL:http://customer-service:8099}
+          predicates:
+            - Path=/api/customer-service/**
+
+        - id: customer-service-command
+          uri: ${CUSTOMER_SERVICE_COMMAND_URL:http://customer-service-command:8100}
+          predicates:
+            - Path=/api/customer-service-command/**
+
+        - id: customer-service-query
+          uri: ${CUSTOMER_SERVICE_QUERY_URL:http://customer-service-query:8101}
+          predicates:
+            - Path=/api/customer-service-query/**
+
   security:
     oauth2:
       resourceserver:

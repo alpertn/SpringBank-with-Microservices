@@ -1,0 +1,21 @@
+---
+id: fraud-service
+name: Fraud Service
+version: 1.0.0
+summary: Kafka stage between identity validation and transfer execution.
+owners:
+  - platform-team
+sends:
+  - id: transaction-fraud-checked
+    version: 1.0.0
+  - id: transaction-failed
+    version: 1.0.0
+receives:
+  - id: transaction-user-validation-success
+    version: 1.0.0
+repository:
+  language: Java
+  url: https://github.com/alpertn/SpringBank-with-Microservices
+---
+
+**Current role:** Receives validated transfers and forwards fraud-checked outcomes.\n\n**Maturity gap:** There is no material rules engine, model scoring, case management or manual-review hold workflow yet.

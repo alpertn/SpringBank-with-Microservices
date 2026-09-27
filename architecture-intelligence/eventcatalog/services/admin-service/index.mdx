@@ -1,0 +1,16 @@
+---
+id: admin-service
+name: Admin Service
+version: 1.0.0
+summary: Administrative facade for operations, history commands and query access.
+owners:
+  - platform-team
+sends:
+  - id: admin-history-command
+    version: 1.0.0
+repository:
+  language: Java
+  url: https://github.com/alpertn/SpringBank-with-Microservices
+---
+
+**Current role:** Exposes administrative operations and delegates history write/query work to CQRS services over gRPC and Kafka.\n\n**Risk:** Cluster operational capabilities and business administration should be separated and independently audited.

@@ -103,11 +103,12 @@ env:
 # ==========================================================
 #
 # Bir workflow birden fazla job'dan olusabilir.
-# Bu dosyada 3 job var:
+# Bu dosyada 4 job var:
 #
 # 1) secret-scan
 # 2) quality
-# 3) summary
+# 3) architecture-catalog
+# 4) summary
 #
 # secret-scan once calisir.
 # quality, secret-scan basarili olursa calisir.
@@ -247,9 +248,17 @@ jobs:
 
           - user-service
           - money-service
+          - money-service-command
+          - money-service-query
           - transaction-service
           - fraud-service
           - gateway
+          - customer-service
+          - customer-service-command
+          - customer-service-query
+          - admin-service
+          - admin-service-command
+          - admin-service-query
           # [DEGISEBILIR] Bu liste serbest. Yeni servis ekleyebilir, mevcutlari silip degistirebilirsin.
           # UYARI: Buradaki her isim, repo kokunde ayni isimde bir klasore karsilik gelmeli.
           # Ornegin "user-service" yaziyorsa, repo'nda "user-service/" klasoru olmali;
@@ -312,6 +321,10 @@ jobs:
           cache: maven
           # [DEGISEBILIR] Gradle kullaniyorsan "gradle" yaz. Cache istemiyorsan bu satiri tamamen sil.
           # [SABIT] "cache:" anahtar kelimesini degistirme.
+
+      - name: Build shared Protobuf contracts
+        working-directory: .
+        run: mvn -B -f banking-contracts/pom.xml clean install
 
       - name: Run unit tests and create JaCoCo XML report
         # Bu komut neden uzun?
@@ -395,8 +408,35 @@ jobs:
           # pom.xml'de jacoco cikti dizinini degistirdiysen buraya da yansit.
           # "target/site/jacoco/jacoco.xml" Maven'in varsayilan ciktisuyla eslesiyor; elleme.
 
+  architecture-catalog:
+    name: Architecture Catalog
+    runs-on: ubuntu-latest
+    needs: secret-scan
+    defaults:
+      run:
+        working-directory: architecture-intelligence/eventcatalog
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.12.0"
+          cache: npm
+          cache-dependency-path: architecture-intelligence/eventcatalog/package-lock.json
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Validate architecture catalog
+        run: npm run lint
+
+      - name: Build architecture catalog
+        run: npm run build
+
   # ========================================================
-  # JOB 3: SUMMARY
+  # JOB 4: SUMMARY
   # ========================================================
   #
   # Bu job'un amaci:
@@ -414,6 +454,7 @@ jobs:
     needs:
       - secret-scan
       - quality
+      - architecture-catalog
       # [DEGISEBILIR] Bu listede hangi job'lar varsa o job'larin bitmesini bekler.
       # Yukarida job adlarini degistirdiysen buraya da ayni isimleri yaz.
     if: always()
@@ -429,6 +470,7 @@ jobs:
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "- Secret scan: Gitleaks" >> "$GITHUB_STEP_SUMMARY"
           echo "- Test + Coverage: Maven + JaCoCo" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Architecture: EventCatalog lint + build" >> "$GITHUB_STEP_SUMMARY"
           echo "- Quality Gate: SonarQube (secret varsa aktif)" >> "$GITHUB_STEP_SUMMARY"
           # [DEGISEBILIR] echo satirlarinin icindeki metinleri istedigin gibi degistirebilirsin.
           # [SABIT] "$GITHUB_STEP_SUMMARY" degisken adini degistirme; GitHub Actions bu adi biliyor.

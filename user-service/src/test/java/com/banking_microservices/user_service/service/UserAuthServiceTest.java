@@ -5,6 +5,8 @@ import com.banking_microservices.user_service.dto.auth.LoginRequestDto;
 import com.banking_microservices.user_service.dto.auth.RefleshTokenRequestDto;
 import com.banking_microservices.user_service.dto.auth.RegisterDto;
 import com.banking_microservices.user_service.dto.auth.TokenResponseDto;
+import com.banking_microservices.user_service.exception.CustomerOnboardingException;
+import com.banking_microservices.user_service.grpc.CustomerOnboardingGrpcClient;
 import com.banking_microservices.user_service.kafka.KafkaSender;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +16,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,11 +33,14 @@ class UserAuthServiceTest {
     @Mock
     private KafkaSender kafkaSender;
 
+    @Mock
+    private CustomerOnboardingGrpcClient customerOnboardingGrpcClient;
+
     @InjectMocks
     private UserAuthService userAuthService;
 
     @Test
-    void registerCreatesKeycloakUserAndPublishesCreateUserTopic() {
+    void registerCreatesKeycloakUserCustomerProfileAndPublishesCreateUserTopic() {
         RegisterDto request = RegisterDto.builder()
                 .email("sender@springbank.test")
                 .password("Test1234!")
@@ -41,12 +48,32 @@ class UserAuthServiceTest {
                 .surname("User")
                 .build();
         when(keycloakAdminService.createUser(request, Role.USER)).thenReturn("keycloak-uuid-1");
+        when(customerOnboardingGrpcClient.createCustomerForUser("keycloak-uuid-1", request)).thenReturn("customer-1");
 
         userAuthService.register(request);
 
+        verify(customerOnboardingGrpcClient).createCustomerForUser("keycloak-uuid-1", request);
         ArgumentCaptor<String> userIdCaptor = ArgumentCaptor.forClass(String.class);
         verify(kafkaSender).sendCreateUser(userIdCaptor.capture());
         assertThat(userIdCaptor.getValue()).isEqualTo("keycloak-uuid-1");
+    }
+
+    @Test
+    void registerRollsBackKeycloakUserWhenCustomerOnboardingFails() {
+        RegisterDto request = RegisterDto.builder()
+                .email("sender@springbank.test")
+                .password("Test1234!")
+                .name("Sender")
+                .surname("User")
+                .build();
+        CustomerOnboardingException exception = new CustomerOnboardingException("customer failed", new RuntimeException("grpc"));
+        when(keycloakAdminService.createUser(request, Role.USER)).thenReturn("keycloak-uuid-1");
+        when(customerOnboardingGrpcClient.createCustomerForUser("keycloak-uuid-1", request)).thenThrow(exception);
+
+        assertThatThrownBy(() -> userAuthService.register(request)).isSameAs(exception);
+
+        verify(keycloakAdminService).deleteUserById("keycloak-uuid-1");
+        verifyNoInteractions(kafkaSender);
     }
 
     @Test

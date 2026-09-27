@@ -1,0 +1,13 @@
+---
+id: gateway
+name: API Gateway
+version: 1.0.0
+summary: Single external HTTP ingress, JWT validation, routing and Redis-backed edge controls.
+owners:
+  - platform-team
+repository:
+  language: Java
+  url: https://github.com/alpertn/SpringBank-with-Microservices
+---
+
+**Current role:** Routes public API traffic to internal HTTP services and validates Keycloak JWTs. It also forwards identity headers and supports SSE token adaptation.\n\n**Important boundary:** Internal services currently trust forwarded identity headers; this is not yet a zero-trust service identity boundary.

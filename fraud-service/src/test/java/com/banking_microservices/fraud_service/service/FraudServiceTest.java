@@ -1,6 +1,6 @@
 package com.banking_microservices.fraud_service.service;
 
-import com.banking_microservices.fraud_service.dto.KafkaTransactionTopicMessageDto;
+import com.banking_microservices.fraud_service.model.workflow.TransactionWorkflowState;
 import com.banking_microservices.fraud_service.dto.enums.TransactionStatus;
 import com.banking_microservices.fraud_service.kafka.KafkaSenderService;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ class FraudServiceTest {
     @Test
     void sendForwardsValidatedTransactionToFraudCheckedTopic() {
         FraudService fraudService = new FraudService(kafkaSenderService, currentTime);
-        KafkaTransactionTopicMessageDto dto = KafkaTransactionTopicMessageDto.builder()
+        TransactionWorkflowState dto = TransactionWorkflowState.builder()
                 .eventUUID("event-1")
                 .status(TransactionStatus.VALIDATION_PENDING)
                 .build();
